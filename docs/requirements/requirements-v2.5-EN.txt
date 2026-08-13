@@ -1,0 +1,1251 @@
+Requirements Specification
+MIIS – The Swedish National Mediation Office’s Information System
+Overall and detailed requirements structured as Epics and Features
+Basis
+Call-off request (ref. 2026/0059) and Appendix 1 Requirements Specification v1
+Framework agreement
+Kammarkollegiet framework agreement Systems Development, no. 23.3-2651-2022
+Contracting authority
+Medlingsinstitutet (MI, the Swedish National Mediation Office), org. no. 202100-5174
+Call-off form
+Renewed competition (förnyad konkurrensutsättning)
+Document version
+2.5-EN – English working translation of v2.5
+Date
+2026-08-12
+Note on this translation: This is a working translation for the internal delivery team. The Swedish version (v2.5) is authoritative towards MI. Diagrams and UI sketches retain their Swedish labels, since Swedish is the language of the target system and of the tender; each figure is explained in English in the surrounding text. Swedish domain terms (e.g. Märket, avropssvar, Konjunkturlönerapporten) are kept with an English gloss at first use.
+
+Contents
+TOC \h \o "1-2"
+
+1. What is to be delivered
+1.1 The core of the assignment
+A new, purpose-built web-based information system – MIIS – for the Mediation Office’s handling of information on mediation and collective agreements. The system shall support four core capabilities: registration/input, search, analysis and reporting of collective agreement data.
+The system replaces today’s solution built as a customisation inside the W3D3 case management system (Formpipe), which has reached its limits: a capacity ceiling at about 3,500 agreements, reports that take unreasonable time or cannot run at all, a query builder limited to two document types simultaneously, and difficulties exporting data in a structured way. Data from both W3D3 and the earlier Access database shall be migrated to the new system.
+Collective agreement monitoring covers central industry-level agreements where an employer organisation is a party. Local agreements, company agreements without an employer organisation, and application agreements (hängavtal) are out of scope and shall not be handled in MIIS.
+1.2 Ownership and rights
+The Mediation Office shall fully own the system with the right to freely use, maintain and further develop it without dependence on a single supplier. The authority shall have rights to source code, documentation, database structure, integrations and configurations.
+1.3 Delivery strategy – two-stage rocket plus option
+The system introduction is planned in two stages per Appendix 1, with a subsequent option (stage 3) per the call-off request:
+Stage 1 (before 1 April 2027): Core functionality for registration, search and reporting of wage agreements and general terms, plus mediation – ready in time for the major bargaining round.
+Stage 2 (autumn 2027 at the earliest): Remaining parts – pension agreements, other agreement types etc. Requirements marked "Stage 2" in the tables below belong here.
+Stage 3 (option): A unilateral option for MI on a support and maintenance contract, 2 years extendable 2 + 2 years (max 6 years). Covers bug fixes, minor adaptations, technical support, security updates and some support, plus further development. Fixed annual fee for support/maintenance; variable hourly rates for development at the same rates as in the tender, indexed per Statistics Sweden’s AKI (SNI J), max 4% per year, earliest after 12 months. No guaranteed volume.
+1.4 Requirement classification
+Requirements in Appendix 1 are classified at three levels, reflected in the Class column of the requirement tables:
+Mandatory (Ska-krav) – absolute requirements that must be met in the initial delivery. Included in the procurement.
+Desirable (Bör-krav) – strong wishes, good to have but not decisive for approved delivery.
+Option – wishes for future development. Not part of the initial procurement, but the system shall be designed to enable them.
+2. How we deliver
+2.1 Conditions for the engagement
+All project meetings shall be physical and held at MI’s premises at Drottninggatan 89, Stockholm. Only supplementary questions and shorter check-ins may take place outside the physical meetings.
+MI has 15 employees and no in-house resources for systems development or programming.
+Försäkringskassan (the Swedish Social Insurance Agency) is responsible for operations, in an on-prem solution in MI’s server environment at Försäkringskassan. Försäkringskassan offers a Model as a Service solution with language models for the AI requirements.
+Delivery approval is given in writing by MI after completed acceptance testing per Appendix 1 section 9.2.
+2.2 A complete tender response
+Completed Appendix 2, Supplier verification – incl. confirmation that the ESPD/self-declaration is still correct, and disclosure of all subcontractors.
+Completed Appendix 4, Price form – prices for all stages.
+All mandatory requirements accepted.
+Tender response valid 90 days after the response deadline.
+2.3 Evaluation model
+The added-value model applies: Comparison figure = tender sum − obtained added value. The lowest comparison figure wins. Scoring per criterion: 100% / 75% / 50% / 25% / 0% of the maximum added value, considering relevance, clarity, level of concreteness, feasibility and demonstrated understanding of the assignment’s conditions and needs.
+Award criterion
+Max added value
+Project team
+SEK 500,000
+Work processes and methods
+SEK 500,000
+Role-based user scenarios and user interface
+SEK 1,000,000
+Oral presentation of the tender response
+SEK 500,000
+
+2.4 Timeline for the call-off
+Date
+Activity
+2026-07-28
+Call-off request sent out
+2026-08-18
+Deadline for questions (Peter Lundström, peter.lundstrom@mi.se)
+2026-08-25
+Deadline for tender responses (valid 90 days)
+Week 35
+15-minute oral presentation at the Mediation Office
+2026-09-08
+Award decision, followed by standstill period under LOU (Swedish Public Procurement Act)
+2026-09-22
+Deadline for appeals
+
+2.5 Commercial terms
+Electronic invoicing via the Peppol network, address 0007:2021005174.
+30-day payment terms.
+
+3. User roles and access
+The following user roles shall exist in MIIS (Appendix 1, section 3.1):
+Role
+Description
+Permissions
+Class
+System administrator
+Full access incl. system configuration (excl. permissions)
+Full access
+Mandatory
+Permission administrator
+Registers and administers users
+Read, write, edit users
+Mandatory
+Agreement administrator / Case officer
+Registers and edits agreement information
+Read, write, edit
+Mandatory
+Mediation administrator
+Registers and edits mediation
+Read, write, edit mediation and mediation decisions
+Mandatory
+Mediator administrator
+Registers and edits mediators
+Read, write, edit mediators
+Mandatory
+Statistics user
+Reads and exports data for statistical purposes
+Read, data extract
+Mandatory
+Public computer
+Limited public access via a specific client computer at MI’s premises (allow-listed IP)
+Specific reports
+Mandatory
+Mediator
+Access to mediation-related information
+Specific reports
+Option, Stage 2
+
+MIIS shall be an intranet application with support for future external access. Internal users authenticate with EFOS cards via Försäkringskassan’s identification solution (IdP, SAML2); the system shall consume the existing permission system (Enterprise IAM/SSID). The Public computer gets limited access without login from a dedicated client with IP allow-listing. External access for mediators via Bank-ID is a Stage 2 option.
+4. Key concepts and data model
+Appendix 1 (sections 4.2 and 4.5) defines the concepts at the system’s core. The requirements below refer to these:
+Agreement (Avtal) – overarching entity with name and parties; one agreement is registered per party. Registration status Incomplete or Complete. Linked to the agreement: Wage agreements (with subgroups Minimum wage and Wage revision), General terms, plus Pension agreements, collectively agreed insurance and other agreements – each with its own validity period and signing date.
+Agreement construction (Avtalskonstruktion) – seven constructions defined by MI describing how the wage scope is determined and distributed, incl. Local wage formation – figureless agreements and Wage pot without individual guarantee.
+Agreement area (Avtalsområde) – groups several agreements with different parties.
+Negotiation (Förhandling) – two types: Bargaining round (wages and general terms) and Other negotiation. Can be linked to an existing agreement or standalone with direct links to parties.
+Negotiation procedure agreement (Förhandlingsordningsavtal) – agreements where the parties regulate mediation under their own procedure (currently nine). Decisive for whether MI appoints mediators.
+Mediation (Medling) – decisions on mediation in union-level negotiations and in local disputes over collective agreements.
+Party (Part) – types Employer organisation (AGO) and Employee organisation (ATO), with support for history and name changes.
+Party meetings (Partsträffar) – meetings where MI meets one party ahead of a bargaining round. The parties do not meet each other; a party meeting is not a negotiation.
+Report selections (Rapporturval) – types Eurofound, Minimum Wage, the MI website and the Short-Term Wage Report; properties on agreements governing report inclusion.
+Cooperation body (Samverkansorgan) – an organised form of cooperation between unions; two types, Umbrella organisation and Cooperation, with the attribute Negotiating body Yes/No.
+For agreement types that can be signed via a Party or a Cooperation body (Pension agreements, Other agreements), a link table to Agreement and a support table Signed by are constructed. The complete data model with support tables (Event log, Change log, Terms change, Watchwords) is in Appendix A of Appendix 1; the fields are examples and not exhaustive. Data is stored in a relational database, suggested Microsoft SQL Server.
+
+5. System components and target architecture (on-prem)
+5.1 System components
+The system sketch in Appendix 1 (section 4.3) describes MIIS as three main parts: web application, Windows service and data layer. The components below follow the sketch, with requirement classification per component:
+Web application miis.mi.se – the authenticated entrance for internal users, with the functional modules Agreement registration (wage agreements and general terms), Party management (AGO/ATO with history), Document management, Search & Reports, AI-assisted registration (OCR and field proposals), Change log (audit trail and snapshots) and Mediation management (mediators and party meetings). All are Stage 1 mandatory requirements.
+Public entrance miis.mi.se/allmanheten – access for the Public computer via IP restriction on MI’s network, no login.
+Windows service for scheduled report extracts – desirable requirement (FR-014).
+Agreement registration for pension agreements, insurance and other agreements – Stage 2 mandatory, as its own module in the sketch.
+Relational database – scalable data layer carrying the whole system.
+Entrances and identity – Internal users (various roles) via the EFOS IdP at Försäkringskassan; External access for mediators via the BankID IdP at Försäkringskassan (option, Stage 2); the Public computer via IP restriction.
+File exports – three outbound flows: Documents (Word), Reports (Excel, Word, PDF) and Data extracts (CSV, JSON – desirable).
+5.2 Target architecture on-prem
+The architecture figure below (Swedish labels) details the target architecture based on the premise that the entire solution is operated on-prem in MI’s server environment at Försäkringskassan (Appendix 1 section 4.6), without direct or indirect dependencies on external cloud services (NFA-001). The AI needs are met via Försäkringskassan’s Model as a Service within the same environment, identity via Försäkringskassan’s IdP (SAML 2.0/EFOS, Bank-ID in Stage 2) and permissions via the existing Enterprise IAM/SSID. Requirement references in the figure point to the corresponding Features in chapters 6–7. Layers top to bottom: Klienter = Clients, Åtkomst och säkerhet = Access and security, Applikationslager = Application layer, Datalager = Data layer, Migreringskällor = Migration sources, Filexporter = File exports.
+
+The division of responsibility follows Appendix 1: the supplier is responsible for the application including application-level operations, backup of application data/configuration and RTO max 8 hours for application faults (NFT-002/003), while Försäkringskassan is responsible for the underlying infrastructure and server environment with an availability target of at least 99% of office hours provided the supplied environment is operational (NFT-001).
+
+5.3 Technical solution architecture (supplier’s proposal)
+While section 5.2 describes the logical target architecture, the figure below shows the proposed technical solution architecture with concrete components and technology choices. Appendix 1 prescribes no technology stack beyond a web-based client, a relational database (suggested Microsoft SQL Server) and on-prem operation; the following is therefore the supplier’s proposal, motivated against the requirements and adapted to the Windows-based operating environment at Försäkringskassan.
+In brief: a React/TypeScript web client (SPA) with a restricted public mode, an API and service layer in ASP.NET Core (.NET 8 LTS) on Windows Server/IIS with domain modules per functional area, a .NET Worker Service running as a Windows service for scheduled extracts, reminders, retention and migration jobs, Microsoft SQL Server with temporal tables for version history/snapshots and full-text indexing for document search, file storage for documents, and integration adapters towards Försäkringskassan’s IdP (SAML 2.0), Enterprise IAM/SSID, Model as a Service (REST) and SMTP relay. Four environments are established in MI’s server environment: development, test, UAT and production.
+
+6. Detailed requirements – Functional Epics
+Below, all functional requirements from Appendix 1 (sections 4.1 and 5) are structured as Epics with their Features. Feature IDs correspond to the requirement IDs in Appendix 1 for full traceability. Requirements without a stage marking belong to Stage 1.
+Epic F1: Start page
+Role-adapted start page (Appendix 1, section 5.1).
+Feature ID
+Requirement description
+Class
+Stage
+FS-001
+The system shall have a start page showing information relevant to the user, similar to a dashboard. The information shall be adapted to the different roles in the system; for example, a mediation administrator shall see ongoing mediations.
+Mandatory
+Stage 1
+
+Epic F2: Agreement registration and management
+Registration and management of collective agreements (kollektivavtal) with associated information (Appendix 1, section 5.2).
+Feature ID
+Requirement description
+Class
+Stage
+FA-001
+Registration of agreement area (avtalsområde) and agreement as an overarching entity with agreement name, alternative agreement name, agreement parties and agreement type.
+Mandatory
+Stage 1
+FA-002
+Registration of wage agreements (löneavtal) – one new row per bargaining round/period.
+Mandatory
+Stage 1
+FA-003
+Registration of general terms and conditions (allmänna villkor).
+Mandatory
+Stage 1
+FA-004
+Handling of separate validity periods for wage agreements and general terms within the same agreement settlement.
+Mandatory
+Stage 1
+FA-005
+Registration of insurance information.
+Mandatory
+Stage 1
+FA-006
+Registration of Other agreements, e.g. negotiation procedure agreements (förhandlingsordningsavtal).
+Mandatory
+Stage 1
+FA-007
+Registration of the wage agreement construction: general increase, wage pot, individual negotiation, etc.
+Mandatory
+Stage 1
+FA-008
+Registration of wage increase scope (löneutrymme) and cost frame (kostnadsram).
+Mandatory
+Stage 1
+FA-009
+Registration of working time reduction and its cost.
+Mandatory
+Stage 1
+FA-010
+Registration of individual guarantees.
+Mandatory
+Stage 1
+FA-011
+Gender equality flag per agreement.
+Mandatory
+Stage 1
+FA-012
+Registration of industry benchmark flag (which agreements are part of the norm-setting industry agreements).
+Mandatory
+Stage 1
+FA-013
+Registration of minimum wages grouped by occupational group with revision date.
+Mandatory
+Stage 1
+FA-014
+Registration of working groups with their subject areas.
+Mandatory
+Stage 1
+FA-015
+Registration on agreements that expire and are not renewed.
+Mandatory
+Stage 1
+FA-016
+Registration of early termination.
+Mandatory
+Stage 1
+FA-017
+Registration of mediation under the parties’ own procedure, via negotiation procedure agreements.
+Mandatory
+Stage 1
+FA-018
+Handling of protocols where the agreement name is not stated.
+Mandatory
+Stage 1
+FA-019
+The user shall be able to search for agreements with certain properties.
+Mandatory
+Stage 1
+FA-020
+Display an agreement with its associated wage agreements and general terms valid at a given point in time.
+Mandatory
+Stage 1
+FA-021
+Support for incomplete registration of Agreements (registration status Incomplete vs. Complete).
+Mandatory
+Stage 1
+FA-022
+Marking of a Reminder to update an Agreement on a given date.
+Mandatory
+Stage 1
+FA-023
+Full registration of pension agreements including up to three pension systems with wage thresholds and premiums.
+Mandatory
+Stage 2
+FA-024
+Registration of insurance information (source, illness, work injury, parenthood, death, transition, other).
+Mandatory
+Stage 2
+FA-025
+Display an agreement area and agreement with associated wage agreements, general terms and other agreements valid at a given point in time.
+Mandatory
+Stage 2
+
+Epic F3: Party management
+Register of the labour market parties with history (Appendix 1, section 5.3).
+Feature ID
+Requirement description
+Class
+Stage
+FP-001
+Register of employer organisations (AGO) with name-change history. AGOs are linked to sector (private/state/municipalities and regions) and employer group. AGOs within the Confederation of Swedish Enterprise (Svenskt Näringsliv) are linked to an industry code.
+Mandatory
+Stage 1
+FP-002
+Register of employee organisations (ATO) with history of name changes and organisational changes.
+Mandatory
+Stage 1
+FP-003
+Register of Cooperation bodies (Samverkansorgan) with links to AGO and ATO and time period.
+Mandatory
+Stage 1
+FP-004
+A party name change is made in one place and automatically propagates to all current agreements. Name changes shall not propagate to historical agreements.
+Mandatory
+Stage 1
+FP-005
+The user shall be able to search for parties with certain properties.
+Mandatory
+Stage 1
+FP-006
+Linking of contact persons (name, title, phone, e-mail) for both AGO and ATO.
+Mandatory
+Stage 1
+
+Epic F4: Document management
+Upload and management of documents (Appendix 1, section 5.4).
+Feature ID
+Requirement description
+Class
+Stage
+FD-001
+Upload and management of documents linked to agreements (protocols, agreements, other documents), Director-General (GD) mediation decisions, mediator reports and party meeting documentation.
+Mandatory
+Stage 1
+
+Epic F5: Event and change log
+Traceability and historical reconstruction of data (Appendix 1, section 5.5).
+Feature ID
+Requirement description
+Class
+Stage
+FH-001
+A change log recording what information was changed, by whom and when.
+Mandatory
+Stage 1
+FH-002
+An event log for high-level events linked to an agreement (e.g. "mediation starts", "agreement signed").
+Mandatory
+Stage 1
+FH-003
+"Snapshot" (bokslut) – reconstruct how the data looked on a specific date (e.g. 31 December of a given year).
+Mandatory
+Stage 1
+
+Epic F6: Search, export and reporting
+Search, filtering, export and report generation (Appendix 1, section 5.6).
+Feature ID
+Requirement description
+Class
+Stage
+FR-001
+Search on all key concepts with relevant search filters, both in selections and in documents.
+Mandatory
+Stage 1
+FR-002
+Query builder similar to the current system: choice of information type (agreements, mediation, etc.), flexible search/filtering with selection criteria on all relevant properties combinable with and/or, choice of presentation columns and the ability to save searches.
+Mandatory
+Stage 1
+FR-003
+Free-text search in uploaded documents and in selections.
+Mandatory
+Stage 1
+FR-004
+Export to Excel.
+Mandatory
+Stage 1
+FR-005
+Report generator supporting at least Word/Excel/PDF.
+Mandatory
+Stage 1
+FR-006
+Generate the "Avtalsrörelserapporten" (Bargaining Round Report – prioritised existing report).
+Mandatory
+Stage 1
+FR-007
+Generate the "Avtalskonstruktioner" report (Agreement Constructions – prioritised existing report).
+Mandatory
+Stage 1
+FR-008
+Generate the "Konjunkturlönerapporten" (Short-Term Wage Report). Printed/exported from a view listing monitored agreements, a status column (registered/partially registered), a link to the protocol even when registration is incomplete, and tracking of which agreements have previously been exported to the report.
+Mandatory
+Stage 1
+FR-009
+Generate reports for the Mediation Office website.
+Mandatory
+Stage 2
+FR-010
+Generate reports for Eurofound and Minimum Wage.
+Mandatory
+Stage 2
+FR-011
+Release of protocols and agreement prints without confidentiality-marked agreement information, for mediators and the public.
+Mandatory
+Stage 1
+FR-012
+Colour coding of agreement status: newly signed agreements without mediation green, agreements signed after mediation red, remaining agreements blue but marked red when linked to mediation.
+Mandatory
+Stage 1
+FR-013
+Export in structured formats (e.g. CSV/JSON) for statistical purposes.
+Desirable
+Stage 1
+FR-014
+Scheduled report extracts.
+Desirable
+Stage 1
+
+Epic F7: Create documents
+Document generation from templates pre-filled with MIIS data (Appendix 1, section 5.7).
+Feature ID
+Requirement description
+Class
+Stage
+FSD-001
+Create GD mediation decisions from document templates – one variant with industrial action notice (varsel) and one without.
+Mandatory
+Stage 1
+FSD-002
+Create Party meeting documents from a document template.
+Mandatory
+Stage 1
+
+Epic F8: AI functionality
+AI support as an aid for the case officer – never replacing manual assessment (Appendix 1, sections 4.1 and 5.8).
+Feature ID
+Requirement description
+Class
+Stage
+FAI-001
+When registering agreements, the system shall be able to propose extraction of key information such as validity period, parties and wage increase scope from an uploaded protocol/agreement using AI support.
+Mandatory
+Stage 1
+FAI-002
+AI proposals shall always require manual review and approval by a case officer before being saved. Nothing shall be done automatically.
+Mandatory
+Stage 1
+FAI-003
+OCR interpretation of scanned documents.
+Mandatory
+Stage 1
+FAI-004
+Functionality to highlight and extract watchwords (bevakningsord) from documents based on a predefined and customisable watchword table.
+Mandatory
+Stage 1
+
+Epic F9: Negotiation and mediation management
+Management of negotiations, party meetings, mediation cases and mediators (Appendix 1, section 5.9).
+Feature ID
+Requirement description
+Class
+Stage
+FF-001
+Registration of negotiations, either linked to agreements or standalone.
+Mandatory
+Stage 1
+FF-002
+Negotiations that lead to an agreement are linked to the newly signed agreement via the protocol upload.
+Mandatory
+Stage 1
+FF-003
+Negotiations that do not lead to an agreement shall be markable as closed with a given status, manually or automatically.
+Mandatory
+Stage 1
+FF-004
+Registration and printout of party meeting information – before and after a meeting, plus an interactive view for entering information directly during the meeting.
+Mandatory
+Stage 1
+FF-005
+Registration of coordinated bargaining demands with a coordinated/own-union flag, links to the unions backing the demand, and the ability to store linked documents.
+Mandatory
+Stage 1
+FF-006
+Handling of mediation information for both Special mediations (union-level negotiations with a GD decision) and Standing mediations (local disputes, simplified form in a separate form). The system shall show whether an agreement is covered by a negotiation procedure agreement.
+Mandatory
+Stage 1
+FF-007
+Ability to enter a registry number (diarienummer) in a dedicated field when a mediation case is linked to a case in the registry system.
+Mandatory
+Stage 1
+FF-008
+A mediation case shall be linkable to several agreements.
+Mandatory
+Stage 1
+FF-009
+Mediator register with contact details, type of mediation (special/standing), statistics per mediator (year/agreement area) and history including position (first/second chair).
+Mandatory
+Stage 1
+FF-010
+Register and display mediation outcomes with fields for type of mediation, industrial action, lost working days, number of affected employees and type of industrial action.
+Mandatory
+Stage 1
+
+Epic F10: Registration of "Märket" (the industry benchmark)
+Management of the industry cost norm (Appendix 1, section 5.10).
+Feature ID
+Requirement description
+Class
+Stage
+FM-001
+Register "Märket" as a periodised setting with free text for cost frame (%), periodisation and supplementary agreements.
+Mandatory
+Stage 1
+FM-002
+Alert when a new agreement protocol for the Industry Agreement is registered for a period without a benchmark definition.
+Mandatory
+Stage 1
+FM-003
+Information about the benchmark shall be displayed in relevant views in the system, including the mediator view.
+Mandatory
+Stage 1
+
+Epic F11: Send e-mail
+Notifications and reminders via e-mail (Appendix 1, section 5.11).
+Feature ID
+Requirement description
+Class
+Stage
+FE-001
+Send notifications and reminders via e-mail, e.g. a notification to the mediator administrator when a mediation decision is finalised, and to the agreement administrator when a reminder to update an agreement on a given date has been set.
+Mandatory
+Stage 1
+FE-002
+E-mails from the system may contain information (message text or attached documents) as well as a link into the system to open an agreement or a mediation case.
+Mandatory
+Stage 1
+FE-003
+Sent e-mails shall be logged in the Event log.
+Mandatory
+Stage 1
+
+7. Detailed requirements – Non-functional Epics
+Below, all non-functional requirements from Appendix 1 (section 6), supplier requirements (section 7), data and confidentiality requirements (section 8) and testing and verification (section 9) are structured as Epics with their Features. Feature IDs correspond to the requirement IDs in Appendix 1.
+Epic NF1: Performance and scalability
+Appendix 1, section 6.1.
+Feature ID
+Requirement description
+Class
+Stage
+NFP-001
+The system shall have no capacity ceiling on the number of agreements.
+Mandatory
+Stage 1
+NFP-002
+Reports shall be generated within reasonable time. No reports shall "hang" due to data volume.
+Mandatory
+Stage 1
+NFP-003
+Search shall return results within 3 seconds for standard searches.
+Mandatory
+Stage 1
+NFP-004
+The system shall be scalable to handle increased data volumes without architectural rebuild.
+Mandatory
+Stage 1
+
+Epic NF2: Access control and authentication
+Appendix 1, sections 3.2 and 6.2.
+Feature ID
+Requirement description
+Class
+Stage
+NFÅ-001
+Authentication via a federated identity solution based on SAML 2.0 through Försäkringskassan’s IdP (EFOS cards).
+Mandatory
+Stage 1
+NFÅ-002
+Inactive sessions are terminated automatically after a configurable time limit (default max 30 minutes of inactivity).
+Mandatory
+Stage 1
+NFÅ-003
+Role-based access control (RBAC) so that user groups can only view and change information they are authorised for, per the role descriptions in Appendix 1 section 3.
+Mandatory
+Stage 1
+NFÅ-004
+Confidentiality-marked agreement information shall not be shown to unauthorised users (mediators, the public).
+Mandatory
+Stage 1
+NFÅ-005
+Permissions shall be administrable by MI’s own permission administrators without supplier involvement (creating and editing users, role assignment).
+Mandatory
+Stage 1
+NFÅ-006
+Public access is restricted to the Mediation Office’s IP address (dedicated client computer, IP allow-listing, no login).
+Mandatory
+Stage 1
+NFÅ-007
+External users (mediators) shall be authenticated via Bank-ID or similar, through Försäkringskassan’s identification solution.
+Option
+Stage 2
+
+Epic NF3: Logging and traceability
+Appendix 1, section 6.3.
+Feature ID
+Requirement description
+Class
+Stage
+NFL-001
+Log all logins and logouts with timestamp and user ID.
+Mandatory
+Stage 1
+NFL-002
+Log all creations, changes and deletions of data, including who performed the action, when, and what was changed (old/new value).
+Mandatory
+Stage 1
+NFL-003
+Logs are retained for at least 24 months and cannot be changed or deleted by regular users or system administrators.
+Mandatory
+Stage 1
+NFL-004
+MI shall have access to the logs via an administrative interface or export function without needing to contact the supplier.
+Mandatory
+Stage 1
+
+Epic NF4: Encryption and secure communication
+Appendix 1, section 6.4.
+Feature ID
+Requirement description
+Class
+Stage
+NFK-001
+All client-server communication is encrypted with TLS 1.2 or higher. Older protocol versions (SSL, TLS 1.0, TLS 1.1) shall be disabled.
+Mandatory
+Stage 1
+
+Epic NF5: Secure development and vulnerability management
+Appendix 1, section 6.5.
+Feature ID
+Requirement description
+Class
+Stage
+NFS-001
+The supplier shall follow secure development principles (e.g. OWASP Top 10), perform security testing including penetration tests before go-live, and have a process for ongoing handling of security flaws throughout the system’s lifetime.
+Mandatory
+Stage 1
+NFS-002
+Known vulnerabilities in system dependencies (libraries, frameworks, OS packages) are handled per a defined process with an SLA for critical vulnerabilities (max 30 days).
+Mandatory
+Stage 1
+NFS-003
+Delivered source code shall not contain hard-coded secrets (passwords, API keys, certificates).
+Mandatory
+Stage 1
+NFS-004
+The supplier shall have a documented Vulnerability Disclosure Program (VDP) or other channel for security reports.
+Mandatory
+Stage 1
+
+Epic NF6: Reliability and operational stability
+Appendix 1, section 6.6.
+Feature ID
+Requirement description
+Class
+Stage
+NFT-001
+The application shall be available and functional at least 99% of office hours (08:00–17:00 on weekdays excluding public holidays), excluding planned maintenance, provided that the client’s infrastructure and server environment are operational.
+Mandatory
+Stage 1
+NFT-002
+Documented routines for backup and restore of application data and application configuration under the supplier’s responsibility. Infrastructure/server environment is regulated separately.
+Mandatory
+Stage 1
+NFT-003
+Recovery time objective (RTO) for the application in case of outages caused by application faults: max 8 hours from confirmed supplier responsibility. Faults in infrastructure/server environment outside the commitment are not counted.
+Mandatory
+Stage 1
+
+Epic NF7: Incident management
+Appendix 1, section 6.7.
+Feature ID
+Requirement description
+Class
+Stage
+NFI-001
+Documented incident management process in accordance with NIS2 and ISO/IEC 27001.
+Mandatory
+Stage 1
+NFI-002
+Security incidents affecting MI’s data or service are reported to MI within 24 hours of identification.
+Mandatory
+Stage 1
+NFI-003
+Incident report with root-cause analysis and action plan within 5 working days after incident closure.
+Mandatory
+Stage 1
+
+Epic NF8: Maintainability and ownership
+Appendix 1, section 6.8.
+Feature ID
+Requirement description
+Class
+Stage
+NFU-001
+The system is fully owned by the Mediation Office with full rights to use and further develop it.
+Mandatory
+Stage 1
+NFU-002
+Source code and technical documentation are handed over to the Mediation Office.
+Mandatory
+Stage 1
+NFU-003
+The system is built with open standards and technologies to avoid lock-in to a specific supplier.
+Mandatory
+Stage 1
+NFU-004
+The system is documented so that another supplier can take over maintenance and further development.
+Mandatory
+Stage 1
+
+Epic NF9: Architecture
+Appendix 1, section 6.9. See also the technical platform in section 4.6: web-based client, relational database (suggested: Microsoft SQL Server), on-prem operation at Försäkringskassan in MI’s server environment, Försäkringskassan’s Model as a Service for the AI needs.
+Feature ID
+Requirement description
+Class
+Stage
+NFA-001
+The system must not have direct or indirect dependencies on external cloud services (e.g. Microsoft Azure/Entra ID, AWS or Google Cloud).
+Mandatory
+Stage 1
+
+Epic NF10: User interface
+Appendix 1, section 6.10.
+Feature ID
+Requirement description
+Class
+Stage
+NFUI-001
+The client application is web-based and accessible via modern browsers without local installation.
+Mandatory
+Stage 1
+NFUI-002
+Responsive user interface.
+Mandatory
+Stage 1
+NFUI-003
+Accessibility per WCAG 2.1 level AA.
+Mandatory
+Stage 1
+
+Epic NF11: Migration
+Appendix 1, section 6.11. Formpipe will assist with a database extract from W3D3.
+Feature ID
+Requirement description
+Class
+Stage
+NFM-001
+Current data in W3D3 is migrated to the new system.
+Mandatory
+Stage 1
+NFM-002
+Existing data in the Access database is migrated to the new system.
+Mandatory
+Stage 2
+NFM-003
+Migration is carried out with preserved data quality and is verified.
+Mandatory
+Stage 1
+
+Epic NF12: Data requirements and confidentiality
+Appendix 1, section 8. The system handles contact details for mediators and agreement parties as well as agreement signatures; all personal data processing per GDPR.
+Feature ID
+Requirement description
+Class
+Stage
+D-001
+Confidentiality marking of agreements containing sensitive information. Set by the Agreement administrator; applies primarily to attached documents.
+Mandatory
+Stage 1
+D-002
+Detailed information in confidentiality-marked agreements is not shown to unauthorised users or in public reports, but is included in statistics.
+Mandatory
+Stage 1
+D-003
+The supplier acts as data processor for the processing in the system on behalf of MI. A data processing agreement (DPA) is signed together with the contract.
+Mandatory
+Stage 1
+D-004
+Deletion (gallring) of personal data per MI’s retention routines, including the ability to define automatic deletion rules.
+Mandatory
+Stage 1
+D-005
+All data is stored and processed within the EU/EEA. The supplier informs MI and obtains approval before any processing in a third country.
+Mandatory
+Stage 1
+D-006
+MI’s written approval is obtained before subcontractors processing personal data are engaged or replaced.
+Mandatory
+Stage 1
+
+Epic NF13: Supplier requirements
+Appendix 1, section 7. Requirements related to application-level operations.
+Feature ID
+Requirement description
+Class
+Stage
+L-001
+Documented continuity plan with operations and outage documentation, backup and restore routines, and a description of how endurance and robustness are ensured.
+Mandatory
+Stage 1
+L-002
+Documented crisis plan ensuring the ability to handle crises and limit consequences.
+Mandatory
+Stage 1
+L-003
+During crisis and heightened preparedness, provide the client with ongoing information on status and priority from crisis management meetings, per Ordinance (SFS 2022:524) on state agencies’ preparedness.
+Mandatory
+Stage 1
+L-004
+After contract termination, or on request, irreversibly delete all data attributable to the client, with written confirmation.
+Mandatory
+Stage 1
+L-005
+Documented contact paths and communication plans for handling information security incidents.
+Mandatory
+Stage 1
+L-006
+Documented processes for security updates of the systems used in the delivery.
+Mandatory
+Stage 1
+L-007
+Documented information security management system (ISMS) per ISO/IEC 27001 or equivalent covering the IT service (certificate/documentation).
+Mandatory
+Stage 1
+L-008
+MI has the right to conduct, or have conducted, an audit of the supplier’s information security work within reasonable time (at least 30 days).
+Mandatory
+Stage 1
+
+Epic NF14: Testing and verification
+Appendix 1, section 9. Acceptance testing is performed with actual MI users, with representatives of all user roles. Delivery approval is given in writing after completed acceptance testing.
+Feature ID
+Requirement description
+Class
+Stage
+T-001
+Unit tests, integration tests and system tests before go-live. Tests are documented.
+Mandatory
+Stage 1
+T-002
+Testing against anonymised or fictitious protocols and agreements representing the variation in the Swedish collective agreement landscape.
+Mandatory
+Stage 1
+T-003
+Test data includes edge cases, such as entirely new agreements with no previous version in the system.
+Mandatory
+Stage 1
+T-004
+Regression testing on updates of the system or the AI model to ensure existing functionality is not adversely affected.
+Mandatory
+Stage 1
+T-005
+The supplier provides a test environment for UAT (User Acceptance Testing).
+Mandatory
+Stage 1
+T-006
+All mandatory requirements are verified and approved by MI before final delivery.
+Mandatory
+Stage 1
+T-007
+Migration is verified with respect to data quality and completeness.
+Mandatory
+Stage 1
+T-008
+Functionality is production-verified by MI after go-live before final delivery is approved.
+Mandatory
+Stage 1
+
+8. Role-based user scenarios
+The scenarios below (US-01–US-20) cover all eight user roles in Appendix 1 section 3.1 and all functional Epics in chapter 6. Each scenario is detailed at field level based on the requirement texts, the concepts in section 4.2, the AI support in section 4.1, the data model in Appendix A and the report examples in Appendix F, and is complemented with alternative and exception flows where the requirements indicate them. US-01 follows the user flow for agreement protocol registration that MI itself describes in Appendix 1 section 4.4.
+Each scenario states which Features (chapters 6–7) it verifies, making the scenarios directly usable as acceptance test cases (T-005–T-008) with representatives of all user roles. The scenarios also form the backbone of our response to the award criterion Role-based user scenarios and user interface, and are complemented in the tender response with UI sketches per scenario.
+US-01: Register an incoming agreement protocol with AI support
+Role
+Agreement administrator / Case officer
+Goal
+A new agreement protocol for an existing agreement is registered quickly and correctly with AI assistance at every step, and the protocol is linked to the agreement.
+Preconditions
+An agreement protocol has been received. The agreement already exists in MIIS. The case officer is logged in via EFOS with a role-adapted start page.
+Verifies requirements
+FAI-001–004, FA-001–004, FA-007–012, FA-018, FA-021, FD-001, FF-002, FH-001, FH-002, FR-012, FS-001, Appendix 1 §4.1 and §4.4
+Main flow:
+The case officer uploads the agreement protocol from the start page. Scanned documents are automatically OCR-interpreted (FAI-003) and the document is linked to the relevant entity (FD-001).
+The system highlights text in the protocol based on the predefined and customisable watchword table, giving a quick rough overview of specifically selected demands – for example those identified at party meetings (FAI-004, §4.1).
+AI analysis 1 – identification: the system looks for agreement area, agreement name and parties in the protocol and proposes which existing agreement it concerns, and that e.g. a new wage agreement or general terms agreement should be created (§4.1 Quick registration).
+The system shows the pre-filled form "Register new/update agreement" with agreement name, alternative name, parties and agreement type (FA-001). Validation and logic checks help the officer avoid errors (§4.1). The officer adjusts as needed and approves manually (FAI-002).
+The agreement exists in MIIS – AI analysis 2 proposes signing date, validity period and any termination option based on the protocol content (FAI-001).
+The officer registers the wage agreement as a new row for the bargaining round (FA-002): the agreement construction is chosen among the seven MI-defined constructions, e.g. Local wage formation – figureless agreements or Wage pot without individual guarantee (FA-007, §4.2), wage increase scope and cost frame are entered (FA-008), individual guarantees (FA-010) and any working time reduction with cost (FA-009). The subgroups Wage revision and Minimum wage are handled linked to the wage agreement (§4.2).
+Via free-text search in the protocol the system identifies and proposes registration of specific wording, e.g. on gender equality or working time reduction (§4.1). The officer approves and sets the gender equality flag where applicable (FA-011). If the agreement is part of the norm-setting industry agreements, the industry benchmark flag is set (FA-012).
+General terms are registered with their own validity period and signing date – the periods need not coincide (FA-003, FA-004, §4.2).
+If a negotiation is registered, it is linked to the newly signed agreement via the protocol upload (FF-002).
+The registration is saved with status Complete. The change log records what changed, by whom and when (FH-001), the event log receives "agreement signed" (FH-002), and the agreement is colour-coded green as newly signed without mediation (FR-012).
+Alternative and exception flows:
+Agreement name not stated in the protocol: the system uses the file name or lists the parties’ joint agreements as identification input (FA-018, §4.1).
+Information missing: the agreement is saved with registration status Incomplete and completed later, see US-04 (FA-021).
+The agreement was signed after mediation: colour-coded red instead of green (FR-012), see US-09.
+The AI proposal is wrong: the officer corrects freely before approval – nothing is saved automatically (FAI-002).
+
+US-02: Register an entirely new agreement manually
+Role
+Agreement administrator / Case officer
+Goal
+An agreement never previously signed is registered fully manually, in line with the principle that entirely new agreements are always registered without AI automation.
+Preconditions
+A protocol for an entirely new agreement (no previous version in the system) has been received – one of the edge cases test data must cover (T-003).
+Verifies requirements
+FA-001–004, FA-007, FA-021, FD-001, FH-001, T-003, Appendix 1 §4.1 (Quick registration) and §4.2 (Report selections)
+Main flow:
+The officer uploads the protocol; the AI analysis finds no match against existing agreements and the system leads to the "Register new agreement" form (§4.4).
+The officer enters agreement area (which groups agreements with different parties, §4.2), agreement name, alternative name, parties and agreement type manually (FA-001). Since MI registers one agreement per party, one registration is created per agreement party (§4.2).
+Wage agreement is registered with construction, wage increase scope and validity period; general terms with their own period (FA-002–004, FA-007).
+Report selection properties are set on the agreement – whether it should be included in Eurofound, Minimum Wage, the MI website and the Short-Term Wage Report respectively (§4.2).
+The protocol is linked to the agreement (FD-001) and the registration is logged (FH-001).
+Alternative and exception flows:
+Information missing at registration: the agreement is saved with status Incomplete (FA-021) and followed up per US-04.
+
+US-03: Handle an organisational change of a party
+Role
+Agreement administrator / Case officer
+Goal
+A name change or merger of a party is made in one place and propagates to all current agreements – without affecting historical agreements and without duplicate manual work.
+Preconditions
+An organisational change has been announced, e.g. of the kind where Lärarförbundet and Lärarnas Riksförbund formed Sveriges Lärare, or KFO and Idea merged into Fremia (§2.3). The party exists in the party register.
+Verifies requirements
+FP-001–006, FH-001, Appendix 1 §2.3 and §4.1
+Main flow:
+The officer finds the party in the party register using relevant properties as filters (FP-005).
+The name change is registered with a validity date; the history of previous names is preserved – for AGOs with links to sector (private/state/municipalities and regions), employer group and industry code for organisations within Svenskt Näringsliv (FP-001), for ATOs with history of name changes and organisational changes (FP-002).
+The system automatically propagates the new name to all current agreements, while historical agreements keep the name valid at their time (FP-004) – no affected parts need manual updates (§4.1).
+Where needed, Cooperation body links are updated with time period, including type (Umbrella organisation or Cooperation) and the Negotiating body Yes/No attribute (FP-003, §4.2).
+Contact persons (name, title, phone, e-mail) are reviewed for the party (FP-006). The change is logged with old and new values (FH-001).
+Alternative and exception flows:
+The party changes umbrella organisation, or negotiation rights move between unions (cf. Transportarbetarförbundet/Unionen §2.3): the links are updated with time periods so that history is preserved (FP-002, FP-003).
+
+US-04: Incomplete registration, reminder and the Short-Term Wage Report
+Role
+Agreement administrator / Case officer
+Goal
+A partially registered agreement is followed up via a reminder and appears correctly in the Short-Term Wage Report view with status and protocol link, until registration is complete.
+Preconditions
+An agreement was saved with registration status Incomplete pending supplementary information. The agreement has the Short-Term Wage Report selection property.
+Verifies requirements
+FA-021, FA-022, FE-001–003, FR-008, FH-001
+Main flow:
+The officer sets a reminder on the agreement to update it on a given date (FA-022).
+On that date, the system sends a reminder e-mail to the agreement administrator (FE-001). The e-mail contains a link that opens the agreement directly in the system (FE-002), and the sending is logged in the event log (FE-003).
+The Short-Term Wage Report view lists the monitored agreements with a status column showing whether each agreement is registered or partially registered, plus a link to the protocol even when registration is incomplete (FR-008).
+The view also shows which agreements have previously been exported to the report (FR-008).
+The officer completes the registration, sets status Complete (FA-021) and exports/prints the report from the view. Changes are logged (FH-001).
+Alternative and exception flows:
+Supplementary information is delayed: a new reminder with a later date can be set (FA-022).
+
+US-05: Confidentiality-mark an agreement
+Role
+Agreement administrator / Case officer
+Goal
+An agreement with sensitive information is confidentiality-marked so that details are hidden from unauthorised users and in public reports, while the agreement is still counted in statistics.
+Preconditions
+An agreement with sensitive attachments has been registered.
+Verifies requirements
+D-001, D-002, NFÅ-003, NFÅ-004, FR-011, FH-001
+Main flow:
+The agreement administrator sets a confidentiality mark on the agreement – only this role can set it, and it applies primarily to attached documents (D-001).
+The system then hides the detailed information of the marked agreement from unauthorised users (mediators, the public) and in public reports (D-002, NFÅ-004).
+When releasing protocols and agreement prints to mediators and the public, confidentiality-marked information is excluded (FR-011).
+The agreement is still included in statistics (D-002). The marking is logged in the change log (FH-001).
+Alternative and exception flows:
+The confidentiality need ceases: the marking is removed by the agreement administrator and the change is logged (D-001, FH-001).
+
+US-06: Register "Märket" (the benchmark)
+Role
+Agreement administrator / Case officer
+Goal
+The industry cost norm is registered as a periodised setting, drives alerts when Industry Agreement protocols are registered, and is displayed in relevant views.
+Preconditions
+A new agreement period for the industry agreements is approaching. The industry’s central agreements set the cost norm the rest of the labour market must stay within (§2.3).
+Verifies requirements
+FM-001–003, FA-012, FH-001
+Main flow:
+The officer registers the benchmark for the period with free text for cost frame (%), periodisation and supplementary agreements (FM-001; cf. the Periodised setting support table in Appendix A).
+When a new agreement protocol for the Industry Agreement is registered for a period lacking a benchmark definition, the system alerts (FM-002).
+Benchmark information is then shown in the views where relevant, including the mediator view (FM-003).
+Agreements that are part of the norm-setting industry agreements are identified via the industry benchmark flag (FA-012).
+Alternative and exception flows:
+A supplementary agreement is added during the period: the periodised setting is updated with the new information and the change is logged (FM-001, FH-001).
+
+US-07: Create a mediation case from a GD decision with AI support
+Role
+Mediation administrator
+Goal
+An incoming Director-General mediation decision becomes a complete mediation case (Special mediation) with links to affected agreements and full decision support.
+Preconditions
+A GD mediation decision has been taken in a union-level negotiation. The decision appoints mediators (cf. the examples in Appendix E).
+Verifies requirements
+FF-006–008, FSD-001, FD-001, FA-017, FE-001–003, FR-012, FH-002, Appendix 1 §4.1 (Mediation cases)
+Main flow:
+The mediation administrator uploads the GD decision (FD-001); the system creates a mediation case of type Special mediation linked to the affected agreements (§4.1, FF-006).
+The system lists the other parties in the agreement area and shows information about previous mediations and any contagion risks (§4.1).
+The system shows whether the affected agreements are covered by a negotiation procedure agreement – decisive for whether MI appoints mediators (FF-006, FA-017, §4.2).
+The mediation case is linked to several agreements where needed (FF-008), and the registry number from MI’s registry system is entered in the dedicated field (FF-007).
+Where needed, the GD decision document is created from a template – the variant with or without industrial action notice – pre-filled with MIIS information that can be edited before finalisation (FSD-001).
+When the mediation decision is finalised, a notification e-mail is sent to the mediator administrator (FE-001) with a link to the case (FE-002); the sending is logged (FE-003).
+The event log receives "mediation starts" on the affected agreements (FH-002), and the agreements are colour-coded red as mediation-linked (FR-012).
+Alternative and exception flows:
+Local dispute over a collective agreement (Standing mediation): registered in simplified form in the separate form instead (FF-006), see US-09.
+The agreement is covered by a negotiation procedure agreement: the parties mediate under their own procedure without MI involvement – registered per FA-017, and MI appoints no mediators (§4.2).
+
+US-08: Register a party meeting and coordinated bargaining demands
+Role
+Mediation administrator
+Goal
+A party meeting is documented before, during and after the meeting, and coordinated bargaining demands are registered with links to the unions backing them.
+Preconditions
+A party meeting is booked ahead of a bargaining round – a meeting where MI meets one of the labour market parties to gauge the negotiation situation, identify conflict risks and assess the need for mediation. The parties do not meet each other, and a party meeting is not a negotiation (§4.2).
+Verifies requirements
+FF-004, FF-005, FSD-002, FD-001, FAI-004, FH-001
+Main flow:
+Ahead of the meeting, the mediation administrator registers preparatory information (FF-004) and creates a party meeting document from a template pre-filled with MIIS information (FSD-002).
+During the meeting, information is entered directly in an interactive view (FF-004).
+After the meeting, the registration is completed, the party meeting information can be printed, and the documentation is uploaded and linked to the meeting (FF-004, FD-001).
+Coordinated bargaining demands are registered with a coordinated/own-union flag and linked to the unions backing the demand – e.g. the LO unions’ coordinated demands (§2.3). Documents linked to the demands are stored in the system (FF-005).
+Demands identified at the meeting can be added to the customisable watchword table, so they are highlighted in future incoming protocols (FAI-004, §4.1).
+Alternative and exception flows:
+Information is supplemented afterwards: the registration can be updated both before and after the meeting, with full traceability (FF-004, FH-001).
+
+US-09: Register mediation and mediation outcome
+Role
+Mediation administrator
+Goal
+The outcome of a closed mediation is registered in a structured way for statistics and follow-up – for both Special and Standing mediation.
+Preconditions
+A mediation has been concluded, with or without industrial action.
+Verifies requirements
+FF-006, FF-010, FH-002, FR-012
+Main flow:
+The mediation administrator opens the case and registers the outcome with the fields type of mediation, industrial action, type of industrial action, lost working days and number of affected employees (FF-010).
+For a Standing mediation (local dispute), registration is done in simplified form in the separate form (FF-006; cf. the Mediation, local table in Appendix A with fields incl. company).
+The outcome is shown on the mediation case and the event is logged in the event log on the affected agreements (FH-002).
+If an agreement is signed after the mediation it is colour-coded red in the views (FR-012), and the link to the agreement is made via the protocol registration per US-01.
+Alternative and exception flows:
+The mediation ends without an agreement being signed: the negotiation is marked closed with a given status, manually or automatically (FF-003).
+
+US-10: Administer the mediator register
+Role
+Mediator administrator
+Goal
+Mediators are registered and maintained with contact details, history and statistics as decision support ahead of mediator appointments.
+Preconditions
+A new mediator is to be added after recruitment, or an existing mediator’s details need updating (MI is responsible for recruitment, training, further training and supervision of mediators, §2.2).
+Verifies requirements
+FF-009, FE-001, NFÅ-003, D-004, FH-001
+Main flow:
+The mediator administrator registers the mediator in the register with contact details and type of mediation – special and/or standing (FF-009).
+History is built per mediator with year, agreement area and position (first/second chair) (FF-009).
+Statistics per mediator (year/agreement area) are shown as decision support for future appointments (FF-009; cf. report 5 Mediators in Appendix F showing the mediator’s agreements per agreement area).
+The mediator administrator receives a notification e-mail when a mediation decision is finalised (FE-001, from US-07) and completes the case with appointed mediators.
+The mediator’s personal data is covered by the retention rules per MI’s routines (D-004). Changes are logged (FH-001).
+Alternative and exception flows:
+A mediator ends their engagement: the mediator is deactivated in the register (cf. the active field in the Mediator table, Appendix A) but history is preserved for statistics (FF-009).
+
+US-11: Composite search, snapshot and export
+Role
+Statistics user
+Goal
+A data set for the annual report is produced through a composite search in the query builder, reconstructed to how the data looked on 31 December, and exported for statistical processing.
+Preconditions
+The statistics user is logged in with read and data extract permissions. The bargaining round is to be finally reported in MI’s annual report (§2.4).
+Verifies requirements
+FR-001–004, FR-013, FH-003, FA-019, FA-020, FA-025 (Stage 2), NFP-002, NFP-003
+Main flow:
+The user opens the query builder and selects that the search concerns agreement information (as opposed to e.g. mediation information) (FR-002).
+Selection criteria are set on all relevant properties – e.g. agreement construction, sector, industry code, validity period and report selection – freely combinable with and/or (FR-002). The search covers both selections and documents, with free-text search in uploaded protocols (FR-001, FR-003).
+Presentation columns are chosen and the search is saved for reuse at the next extract (FR-002). Standard searches return results within 3 seconds (NFP-003).
+The snapshot function is used to reconstruct how the data looked on 31 December of the year in question (FH-003).
+Individual agreements can be opened with their wage agreements and general terms valid at that point in time (FA-020).
+The data set is exported to Excel (FR-004), or in structured format (CSV/JSON) for statistical purposes (FR-013, desirable).
+Alternative and exception flows:
+The search combines more than two document types (e.g. wage agreements, pension agreements and general terms simultaneously): fully supported, without the technical helper variables today’s query builder has forced (§2.5, FR-002).
+In Stage 2, an agreement area with associated wage agreements, general terms and other agreements can also be displayed for a given point in time (FA-025).
+
+US-12: Create a user and assign a role
+Role
+Permission administrator
+Goal
+A new employee gets the right permissions in MIIS – entirely without supplier involvement.
+Preconditions
+A new employee has started at MI and exists in Enterprise IAM/SSID.
+Verifies requirements
+NFÅ-001–003, NFÅ-005, NFL-001, FS-001
+Main flow:
+The permission administrator creates the user in MIIS and assigns a role, e.g. Agreement administrator – creation, editing and role assignment are done in the system by MI’s own permission administrators (NFÅ-005).
+The user authenticates with an EFOS card via Försäkringskassan’s identification solution (SAML 2.0) (NFÅ-001); the system consumes the existing Enterprise IAM/SSID permission system (§3.2). Logins and logouts are logged with timestamp and user ID (NFL-001).
+Role-based access control ensures the user only sees and can change information per their role (NFÅ-003), and the start page shows role-adapted information – e.g. a mediation administrator sees ongoing mediations (FS-001).
+After a configurable inactivity period (default max 30 minutes) the session is terminated automatically (NFÅ-002).
+Alternative and exception flows:
+The employee changes duties or leaves: the permission administrator edits the role assignment or deactivates the user – without supplier involvement (NFÅ-005).
+
+US-13: Review logs and maintain system configuration
+Role
+System administrator
+Goal
+Traceability can be reviewed and exported when needed without contacting the supplier, and the system’s configurable parts – such as the watchword table – are kept current.
+Preconditions
+The system administrator has full access including system configuration, but excluding permission administration (§3.1).
+Verifies requirements
+NFL-001–004, FH-001, FH-002, FAI-004
+Main flow:
+The system administrator opens the administrative log interface and looks up changes for a given agreement: what was changed, by whom, when, and old and new values (NFL-002, FH-001).
+Logins and logouts can also be reviewed with timestamp and user ID (NFL-001), as can the event log’s high-level events per agreement (FH-002).
+A log extract is exported via the interface or export function – without contacting the supplier (NFL-004).
+The logs are immutable: retained at least 24 months and cannot be changed or deleted even by the system administrator (NFL-003).
+The predefined and customisable watchword table is updated ahead of the coming bargaining round (FAI-004).
+Alternative and exception flows:
+A suspected incorrect change is discovered: the change log’s old/new values are used to establish the sequence and correct the data in a new, logged change (NFL-002, FH-001).
+
+US-14: Produce a public report from the Public computer
+Role
+Public computer
+Goal
+A visitor accesses public agreement reports without login, without exposure to confidentiality-marked information.
+Preconditions
+The visitor uses the dedicated standalone client computer at MI’s premises. It is from MI that parties, media and others obtain information about the scope of the bargaining round (§2.1).
+Verifies requirements
+NFÅ-004, NFÅ-006, FR-011, D-002
+Main flow:
+The visitor opens the public entrance (miis.mi.se/allmanheten, cf. the system sketch §4.3); access is granted only from MI’s allow-listed IP address and requires no login (NFÅ-006, §3.2).
+The visitor chooses among the specific reports available for the role (§3.1) – the equivalent of today’s report "Agreements – The Public" with selections on employer organisation, employee organisation and agreement (Appendix F, report 1).
+The report shows validity periods and protocols – but without confidentiality-marked agreement information (FR-011, NFÅ-004).
+Confidentiality-marked agreements are only included in aggregate statistics, never with details (D-002).
+Alternative and exception flows:
+Access attempt from an IP address other than MI’s: access is denied (NFÅ-006).
+
+US-15: External access for mediators (Option, Stage 2)
+Role
+Mediator
+Goal
+An appointed mediator accesses mediation-related information externally before and during a mediation assignment.
+Preconditions
+The external access option is implemented (Stage 2). The mediator is appointed in a mediation case and exists in the mediator register.
+Verifies requirements
+NFÅ-004, NFÅ-007, FM-003, FR-011, FF-006
+Main flow:
+The mediator logs in externally with Bank-ID via Försäkringskassan’s identification solution (NFÅ-007, §3.2).
+The mediator sees mediation-related information and the specific reports available to the role (§3.1), including whether the affected agreements are covered by a negotiation procedure agreement (FF-006).
+Benchmark information is shown in the mediator view as a reference for the cost norm (FM-003).
+Protocols and agreement prints are released without confidentiality-marked information (FR-011, NFÅ-004).
+Alternative and exception flows:
+The mediator is not appointed in any active case: access is limited per the role’s permissions to specific reports (§3.1, NFÅ-003).
+
+US-16: Register a negotiation – with and without agreement outcome
+Role
+Agreement administrator / Case officer
+Goal
+Negotiations are registered and followed through their whole lifecycle – whether they lead to a newly signed agreement or close without one.
+Preconditions
+A negotiation has begun – either a Bargaining round (wages and general terms) or an Other negotiation (§4.2).
+Verifies requirements
+FF-001–003, FH-002, Appendix 1 §4.2 (Negotiation)
+Main flow:
+The officer registers the negotiation with type Bargaining round or Other negotiation (§4.2).
+The negotiation is linked to an existing agreement – or registered standalone with direct links to the parties, e.g. when the parties do not yet have a joint agreement (FF-001, §4.2).
+If the negotiation leads to an agreement, it is linked to the newly signed agreement via the protocol upload (FF-002) – the flow continues per US-01.
+If the negotiation does not lead to an agreement, it is marked closed with a given status – manually by the officer or automatically (FF-003).
+The negotiation’s events are reflected in the event log on the affected agreements (FH-002).
+Alternative and exception flows:
+The negotiation turns into mediation: a GD decision is taken and a mediation case is created per US-07; the negotiation and mediation are held together via the agreement link (FF-006, FF-008).
+
+US-17: Generate standard reports and schedule report extracts
+Role
+Agreement administrator / Case officer
+Goal
+The prioritised standard reports are produced with correct selections and formats, and recurring extracts are scheduled.
+Preconditions
+Agreement data is registered. Reporting needs correspond to today’s reports (Appendix F), but without the current performance problems (§2.5).
+Verifies requirements
+FR-005–008, FR-012, FR-014, NFP-002, FH-003
+Main flow:
+The officer opens the report generator and selects report and output format – at least Word, Excel or PDF (FR-005).
+The Bargaining Round Report is generated with selections on year, employer organisation, sector, industry code, central organisation, employer group, employee organisation and cooperation group (FR-006; cf. Appendix F report 3): remaining, newly signed and post-mediation agreements per month, agreements by expiry date, and agreements expiring during the year.
+The Agreement Constructions report is generated with the distribution of agreements and employees per sector and per the seven agreement constructions, including the wage formation and wage setting figures (FR-007; cf. Appendix F report 2).
+The agreement status colour coding carries into the report views: newly signed without mediation green, signed after mediation red, remaining blue – red when mediation-linked (FR-012).
+Reports are generated within reasonable time regardless of data volume – no reports "hang" (NFP-002, cf. §2.5).
+Recurring extracts are scheduled via the system’s scheduled report extract function (FR-014, desirable; the Windows service in the system sketch §4.3).
+Alternative and exception flows:
+A historical report state is desired: the report is produced against a snapshot reconstructing data as of a specific date (FH-003).
+In Stage 2, reports for the MI website and for Eurofound and Minimum Wage are added, driven by the agreements’ report selection properties (FR-009, FR-010, §4.2).
+
+US-18: Register supplementary agreement information
+Role
+Agreement administrator / Case officer
+Goal
+The agreement’s supplementary parts – minimum wages, working groups, insurance information, other agreements and mediation under the parties’ own procedure – are registered in a structured way.
+Preconditions
+An agreement is registered per US-01/US-02 and the protocol contains supplementary settlements.
+Verifies requirements
+FA-005, FA-006, FA-013, FA-014, FA-017, FH-001
+Main flow:
+Minimum wages are registered grouped by occupational group with revision date (FA-013; cf. the Minimum wage table in Appendix A with minimum wage in SEK, occupational group and revision date).
+Working groups set up by the parties are registered with their subject areas (FA-014).
+Insurance information is registered on the agreement (FA-005).
+Other agreements are registered, e.g. negotiation procedure agreements – linked to specific central collective agreements but not necessarily to all of a party’s agreements (FA-006, §4.2).
+Mediation under the parties’ own procedure via negotiation procedure agreements is registered (FA-017), which then drives what the mediation views show (FF-006, US-07).
+All registrations are logged (FH-001).
+Alternative and exception flows:
+The settlement is signed at umbrella organisation level (e.g. by LO or PTK, §2.3): handled as pension/other agreements signed via Party or Cooperation body per US-20 (Stage 2).
+
+US-19: Handle expiring agreements and early termination
+Role
+Agreement administrator / Case officer
+Goal
+Agreements that end – as planned or by early termination – are registered correctly so that the agreement picture and the reports reflect reality.
+Preconditions
+An agreement is approaching its expiry date, or a party has terminated the agreement early. Good knowledge of expiry dates is central to anticipating the scope of the bargaining round (§2.4).
+Verifies requirements
+FA-015, FA-016, FA-022, FE-001, FH-002, FR-006
+Main flow:
+The officer registers on the agreement that it expires and will not be renewed (FA-015).
+For early termination, the termination is registered on the agreement (FA-016; cf. the early termination field on wage agreements in Appendix A).
+The event is logged in the event log (FH-002).
+The agreement is reported correctly in the Bargaining Round Report’s section on agreements expiring during the year (FR-006; cf. Appendix F report 3, "Agreements expiring during 2026").
+Where needed, a reminder is set for follow-up of the agreement status on a given date, with an e-mail notification to the officer (FA-022, FE-001).
+Alternative and exception flows:
+The agreement is replaced by a new agreement with a different party constellation: the new agreement is registered per US-02 and the parties’ history is preserved (FP-001, FP-002).
+
+US-20: Register pension agreements and full insurance information (Stage 2)
+Role
+Agreement administrator / Case officer
+Goal
+Pension agreements and full insurance information are registered, including agreements signed at umbrella organisation level, and the agreement picture can be displayed per point in time.
+Preconditions
+Stage 2 is live. Pensions and insurance are handled at umbrella organisation level – only LO and PTK sign their own collective agreements on e.g. pensions (§2.3).
+Verifies requirements
+FA-023–025, FH-001, Appendix 1 §4.5 (link tables and Signed by), NFM-002
+Main flow:
+The officer registers the pension agreement with up to three pension systems, each with wage thresholds and premiums (FA-023; cf. Appendix A: pension system name, wage threshold in SEK, premium in per cent, central or local).
+The agreement is linked via a link table to the affected agreements, and the Signed by support table indicates whether it was signed by a Party or a Cooperation body (§4.5).
+Full insurance information is registered with source and the categories illness, work injury, parenthood, death, transition and other (FA-024).
+The officer can then display an agreement area and agreement with associated wage agreements, general terms and other agreements valid at a given point in time (FA-025).
+The pension and other agreements report is produced with selections on parties for wage agreements/general terms and parties on pension and other agreements respectively (cf. Appendix F report 6).
+Alternative and exception flows:
+Historical pension agreement information from the Access database: migrated in Stage 2 with verified data quality (NFM-002, NFM-003) and becomes searchable together with newly registered information.
+
+9. UI sketches per scenario
+The sketches below (Swedish UI labels – Swedish is the language of the target system) concretise the prioritised user scenarios in a coherent MIIS interface. Each sketch is annotated with the Feature IDs (chapters 6–7) that the respective interface element realises, giving direct traceability from requirement to interface. The sketches are deliberately technology-neutral design input – final design is detailed together with MI’s users during the project, with WCAG 2.1 AA as the accessibility frame (NFUI-003).
+9.1 Role-adapted start page (FS-001)
+The start page for an agreement administrator: benchmark banner (FM-003), own reminders ("Mina påminnelser", FA-022), incomplete registrations ("Ofullständiga registreringar", FA-021), recently registered agreements with green/red/blue colour coding (FR-012) and the latest events from the event log ("Senaste händelser", FH-002). A mediation administrator instead sees ongoing mediations, per the requirement’s example.
+
+9.2 US-01 – Register an agreement protocol with AI support
+The registration view follows the steps of MI’s user flow (Appendix 1 §4.4), with the protocol on the left – OCR-interpreted (FAI-003) and with watchwords highlighted (FAI-004) – and the AI pre-filled forms on the right. Every AI proposal is clearly labelled ("AI-FÖRSLAG") and requires manual approval before anything is saved (FAI-002). The wage agreement section holds agreement construction (FA-007), wage scope/cost frame (FA-008), individual guarantee (FA-010), working time reduction (FA-009) and the gender equality flag (FA-011), with a separate validity period for general terms (FA-004) and the option to save as incomplete ("Spara som ofullständig", FA-021).
+
+9.3 US-07 – Mediation case from a GD decision
+The mediation case view gathers all decision support: the registry number field (FF-007), the negotiation procedure agreement indicator that determines whether MI appoints mediators (FF-006), several linked agreements with red colour coding (FF-008, FR-012), the AI panel with other parties, previous mediations and contagion risks (§4.1), mediators from the register (FF-009), the benchmark as reference in the mediator view (FM-003), document generation with and without industrial action notice (FSD-001), finalisation with notification (FE-001) and the mediation outcome fields (FF-010).
+
+9.4 US-11 – Query builder with snapshot and export
+The query builder without today’s limitations: choice of information type, selection criteria freely combinable with and/or, selectable presentation columns and saved searches (FR-002), free-text search in documents (FR-003), snapshot per any date (FH-003), response time within 3 seconds (NFP-003) and export to Excel and CSV/JSON respectively (FR-004, FR-013).
+
+10. Requirements summary
+In total, the requirements specification comprises 25 Epics: 11 functional (F1–F11) and 14 non-functional (NF1–NF14). Distribution of Features per class:
+Functional requirements: 72 Features, of which 70 mandatory and 2 desirable (FR-013, FR-014). Five mandatory requirements are marked Stage 2: FA-023, FA-024, FA-025, FR-009 and FR-010.
+Non-functional requirements: 59 Features, of which 58 mandatory and 1 option (NFÅ-007, Bank-ID for mediators, Stage 2). Among the mandatory requirements, migration of the Access database (NFM-002) is marked Stage 2.
+All mandatory requirements must be accepted for the tender response to be evaluated, and all mandatory requirements are verified and approved by the Mediation Office before final delivery (T-006).
+Chapter 8 contains 20 detailed role-based user scenarios (US-01–US-20) with field-level main flows plus alternative and exception flows. The scenarios cover all eight user roles and all functional Epics – including the external mediator access option (US-15) and the Stage 2 pension agreement functionality (US-20) – with traceability from scenario to Feature ID. Chapter 9 contains requirement-annotated UI sketches for the role-adapted start page and scenarios US-01, US-07 and US-11.
+

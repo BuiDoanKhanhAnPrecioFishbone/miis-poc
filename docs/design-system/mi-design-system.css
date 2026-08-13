@@ -1,0 +1,63 @@
+/* Medlingsinstitutet-inspired web design system
+   NOTE: Brand colors are an extended working palette derived from the visible MI identity.
+   Replace --font-* with the customer's licensed/confirmed brand font files if supplied.
+*/
+:root {
+  --mi-ink: #17252C;
+  --mi-slate-900: #314852;
+  --mi-slate-800: #405966;
+  --mi-slate-700: #526A75;
+  --mi-slate-600: #6C818A;
+  --mi-slate-500: #879AA1;
+  --mi-slate-300: #B7C3C7;
+  --mi-slate-100: #E7ECEE;
+  --mi-sand-600: #A88757;
+  --mi-sand-500: #CBB184;
+  --mi-sand-300: #E0CFAD;
+  --mi-sand-100: #F3ECDD;
+  --mi-paper: #F7F5F0;
+  --mi-white: #fff;
+  --mi-focus: #1D5F7A;
+  --mi-success: #2E6B57;
+  --mi-warning: #8A641E;
+  --mi-danger: #A33B35;
+
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: Arial, Helvetica, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(23,37,44,.10);
+  --shadow-md: 0 8px 24px rgba(23,37,44,.12);
+}
+
+body {
+  color: var(--mi-ink);
+  background: var(--mi-paper);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.6;
+}
+h1,h2,h3,h4 { font-family: var(--font-display); color: var(--mi-slate-900); line-height: 1.12; }
+h1 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 500; letter-spacing: -.035em; }
+h2 { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 500; letter-spacing: -.025em; }
+h3 { font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 600; }
+
+.mi-btn {
+  min-height: 48px; padding: .75rem 1.25rem; border-radius: var(--radius-sm);
+  border: 2px solid transparent; font-weight: 700; cursor: pointer;
+}
+.mi-btn--primary { background: var(--mi-slate-800); color: #fff; }
+.mi-btn--primary:hover { background: var(--mi-slate-900); }
+.mi-btn--secondary { background: transparent; color: var(--mi-slate-900); border-color: var(--mi-slate-800); }
+.mi-btn--secondary:hover { background: var(--mi-slate-100); }
+.mi-btn--accent { background: var(--mi-sand-500); color: var(--mi-ink); }
+.mi-btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--mi-focus); outline-offset: 3px;
+}
+.mi-card { background:#fff; border:1px solid var(--mi-slate-300); border-radius:var(--radius-md); padding:24px; }
+.mi-card--feature { background:var(--mi-slate-800); color:#fff; border:0; }
+.mi-input { min-height:48px; border:2px solid var(--mi-slate-600); border-radius:var(--radius-sm); padding:.65rem .8rem; background:#fff; }
+.mi-kicker { text-transform:uppercase; letter-spacing:.12em; font-size:.78rem; font-weight:700; }
+.mi-link { color:var(--mi-slate-900); text-decoration-thickness:2px; text-underline-offset:3px; }

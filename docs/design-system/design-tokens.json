@@ -1,0 +1,53 @@
+{
+  "color": {
+    "ink": "#17252C",
+    "slate_900": "#314852",
+    "slate_800": "#405966",
+    "slate_700": "#526A75",
+    "slate_600": "#6C818A",
+    "slate_500": "#879AA1",
+    "slate_300": "#B7C3C7",
+    "slate_100": "#E7ECEE",
+    "sand_600": "#A88757",
+    "sand_500": "#CBB184",
+    "sand_300": "#E0CFAD",
+    "sand_100": "#F3ECDD",
+    "paper": "#F7F5F0",
+    "white": "#FFFFFF",
+    "black": "#111111",
+    "success": "#2E6B57",
+    "warning": "#8A641E",
+    "danger": "#A33B35",
+    "focus": "#1D5F7A"
+  },
+  "font": {
+    "sans": "Arial, Helvetica, sans-serif",
+    "display": "Arial, Helvetica, sans-serif",
+    "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+  },
+  "radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "14px",
+    "pill": "999px"
+  },
+  "space": {
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "24px",
+    "6": "32px",
+    "7": "48px",
+    "8": "64px",
+    "9": "96px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px rgba(23,37,44,.10)",
+    "md": "0 8px 24px rgba(23,37,44,.12)"
+  },
+  "container": {
+    "content": "760px",
+    "wide": "1200px"
+  }
+}

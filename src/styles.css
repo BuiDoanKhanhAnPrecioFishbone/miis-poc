@@ -1,0 +1,224 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * MIIS designsystem – modern myndighet.
+ * Djup petrol/teal som identitetsfärg, varm sand för märket-referenser,
+ * neutral ljusgrå arbetsyta och tydliga statusfärger.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-surface: var(--surface);
+  --color-sand: var(--sand);
+  --color-sand-border: var(--sand-border);
+  --color-sand-foreground: var(--sand-foreground);
+  --color-mint: var(--mint);
+  --color-mint-border: var(--mint-border);
+  --color-ai: var(--ai);
+  --color-ai-foreground: var(--ai-foreground);
+  --color-ai-border: var(--ai-border);
+  --color-req: var(--req);
+  --color-req-foreground: var(--req-foreground);
+  --color-status-green: var(--status-green);
+  --color-status-red: var(--status-red);
+  --color-status-blue: var(--status-blue);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: Arial, Helvetica, sans-serif;
+  --shadow-card: 0 1px 2px rgba(23, 37, 44, 0.1);
+}
+
+:root {
+  /* Medlingsinstitutet designsystem – tokens */
+  --mi-ink: #17252C;
+  --mi-slate-900: #314852;
+  --mi-slate-800: #405966;
+  --mi-slate-700: #526A75;
+  --mi-slate-600: #6C818A;
+  --mi-slate-500: #879AA1;
+  --mi-slate-300: #B7C3C7;
+  --mi-slate-100: #E7ECEE;
+  --mi-sand-600: #A88757;
+  --mi-sand-500: #CBB184;
+  --mi-sand-300: #E0CFAD;
+  --mi-sand-100: #F3ECDD;
+  --mi-paper: #F7F5F0;
+  --mi-focus: #1D5F7A;
+
+  --radius: 8px;
+  --background: var(--mi-paper);
+  --foreground: var(--mi-ink);
+  --surface: #F0EEE8;
+  --card: #ffffff;
+  --card-foreground: var(--mi-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--mi-ink);
+  --primary: var(--mi-slate-800);
+  --primary-foreground: #ffffff;
+  --secondary: var(--mi-slate-100);
+  --secondary-foreground: var(--mi-slate-900);
+  --muted: var(--mi-slate-100);
+  --muted-foreground: var(--mi-slate-700);
+  --accent: var(--mi-sand-100);
+  --accent-foreground: var(--mi-ink);
+  --destructive: #A33B35;
+  --destructive-foreground: #ffffff;
+  --border: var(--mi-slate-300);
+  --input: var(--mi-slate-600);
+  --ring: var(--mi-focus);
+
+  --sand: var(--mi-sand-100);
+  --sand-border: var(--mi-sand-500);
+  --sand-foreground: #4A3A1C;
+  --mint: #E9F0EC;
+  --mint-border: #2E6B57;
+  --ai: var(--mi-sand-100);
+  --ai-foreground: #6B4E14;
+  --ai-border: var(--mi-sand-600);
+  --req: var(--mi-slate-700);
+  --req-foreground: #ffffff;
+
+  --status-green: #2E6B57;
+  --status-red: #A33B35;
+  --status-blue: #1D5F7A;
+
+  --chart-1: var(--mi-slate-800);
+  --chart-2: var(--mi-slate-600);
+  --chart-3: var(--mi-slate-300);
+  --chart-4: var(--mi-sand-500);
+  --chart-5: var(--mi-sand-600);
+  --sidebar: #EFEDE7;
+  --sidebar-foreground: var(--mi-slate-900);
+  --sidebar-primary: var(--mi-slate-800);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--mi-slate-100);
+  --sidebar-accent-foreground: var(--mi-ink);
+  --sidebar-border: var(--mi-slate-300);
+  --sidebar-ring: var(--mi-focus);
+}
+
+.dark {
+  --background: #17252C;
+  --foreground: #F7F5F0;
+  --surface: #1F3138;
+  --card: #22353D;
+  --card-foreground: #F7F5F0;
+  --popover: #22353D;
+  --popover-foreground: #F7F5F0;
+  --primary: #B7C3C7;
+  --primary-foreground: #17252C;
+  --secondary: #314852;
+  --secondary-foreground: #F7F5F0;
+  --muted: #314852;
+  --muted-foreground: #B7C3C7;
+  --accent: #405966;
+  --accent-foreground: #F7F5F0;
+  --border: #405966;
+  --input: #6C818A;
+  --ring: #7FB6CE;
+  --sidebar: #1F3138;
+  --sidebar-foreground: #E7ECEE;
+  --sidebar-primary: #CBB184;
+  --sidebar-primary-foreground: #17252C;
+  --sidebar-accent: #314852;
+  --sidebar-accent-foreground: #F7F5F0;
+  --sidebar-border: #405966;
+  --sidebar-ring: #7FB6CE;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--mi-slate-900);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+  }
+
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--mi-focus);
+    outline-offset: 3px;
+  }
+}
+
+@utility card-panel {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+@utility field-input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  border: 2px solid var(--color-input);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+  padding: 0.65rem 0.8rem;
+  font-size: 1rem;
+  color: var(--color-foreground);
+}
