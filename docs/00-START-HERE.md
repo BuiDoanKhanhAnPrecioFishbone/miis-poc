@@ -60,6 +60,7 @@ docs/
   02-prompt-library.md    copy-paste prompts that work — start here when stuck
   03-screen-backlog.md    all 12 screens, priority, requirement IDs, status
   04-ux-brief.md          what actually earns points, per screen
+  05-claude-design-setup.md  what to upload, creating the project, syncing back
   requirements/           the requirement spec (.docx + searchable .txt)
   design-system/          MI tokens, CSS, Tailwind theme, the PDF spec
   sketches/               the CEO's four v1 UI sketches (PNG)

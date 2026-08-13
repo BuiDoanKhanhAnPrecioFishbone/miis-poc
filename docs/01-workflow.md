@@ -74,24 +74,27 @@ later screen faster, it keeps the mockup visually consistent, and *it is itself 
 asset* — a screenshot of a coherent component library is direct evidence of design
 maturity for the "user interface" criterion.
 
-Feed it the real inputs at the start: `docs/design-system/mi-design-system.css`,
-`design-tokens.json`, the `MI_Design_System.pdf`, and the four sketches in
-`docs/sketches/`. Prompts to paste are in [`02-prompt-library.md`](02-prompt-library.md).
+> **Set this up first.** [`05-claude-design-setup.md`](05-claude-design-setup.md) has
+> the exact file list to upload, how to create the project (its type is fixed at
+> creation — it must be a *design system*), what folder structure you get, and the three
+> ways to bring work back. Do that once before your first screen.
 
-**Bringing it back into the repo.** In Claude Code:
+**Bringing it back into the repo.** Most of the time you don't need to sync anything —
+you made a *decision*, and you just tell `/skiss` what you decided. When you did build
+components, in Claude Code:
 
 ```
-Sync my "MIIS Design System" project from Claude Design into design/
+Pull my "MIIS Design System" project from Claude Design into design/
 ```
 
-Claude Code lists your design projects, shows you exactly which files it will read or
-write, and pulls them into `design/`. Ask it to *pull* (read the project into the repo)
-when you designed in the browser, and to *push* (write the repo's components up) when
-you built something in code you want visible on the canvas. The first sync asks for
-permission to reach your claude.ai design projects — that's expected.
+Claude Code lists your design projects, shows exactly which files it will read or write,
+and pulls them into `design/`. Push works the same way, for when you built something in
+code you want to look at on the canvas. The first sync asks permission to reach your
+claude.ai design projects — that's expected.
 
-The synced files are reference material. Claude Code translates them into the real
-React components in `src/` — it does not drop raw HTML into the app.
+What comes down is real JSX plus `.d.ts` contracts and `.prompt.md` usage notes, not
+pictures — which is why the round trip is cheap. Claude Code adapts it into the app's
+own components in `src/`; nothing in `design/` is imported by the running mockup.
 
 ## Step 3 — Implement (Claude Code, ~30 min)
 
