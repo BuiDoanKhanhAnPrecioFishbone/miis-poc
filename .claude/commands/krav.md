@@ -11,7 +11,8 @@ Sources, in this order:
 1. `docs/requirements/requirements-v2.5-EN.txt` — the full spec. Search it for the
    scenario ID, the feature IDs it verifies, and any chapter-4 concept it references.
 2. `docs/sketches/` — if a sketch covers this area, read it.
-3. `src/routes/` — what, if anything, exists in the mockup today.
+3. `app/(miis)/` — what, if anything, exists in the mockup today, and
+   `lib/domain/` — which of these concepts are already modelled as types.
 
 Then report, concisely:
 

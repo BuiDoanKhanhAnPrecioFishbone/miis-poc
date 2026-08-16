@@ -7,8 +7,9 @@ This folder holds the MIIS design system as it exists in **Claude Design**
 
 Component previews and specs synced from the Claude Design project — buttons, form
 fields, panels, tables, status coding, the AI-proposal pattern, alerts — each with its
-states. The application's real components live in `src/components/`, and Claude Code
-translates from here to there. Nothing in this folder is imported by the app.
+states. The application's real components live in `components/miis/` and
+`components/ui/`, and Claude Code translates from here to there. Nothing in this folder
+is imported by the app.
 
 ## Syncing
 
@@ -22,7 +23,7 @@ It lists your design projects, shows exactly which files it will read or write, 
 pulls them down. The reverse works too:
 
 ```
-Push the MIIS components in src/components/miis/ up to my Claude Design project
+Push the MIIS components in components/miis/ up to my Claude Design project
 ```
 
 The first sync asks permission to reach your claude.ai design projects.

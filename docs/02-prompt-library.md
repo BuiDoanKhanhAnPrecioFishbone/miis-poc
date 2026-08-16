@@ -154,11 +154,11 @@ Sync my "MIIS Design System" project from Claude Design into design/
 
 ```
 The Panel component in design/ has three tones now. Update
-src/components/miis/AppShell.tsx to match, and update every route that uses it.
+components/miis/primitives.tsx to match, and update every page that uses it.
 ```
 
 ```
-Push the current MIIS components in src/components/miis/ up to my Claude Design
+Push the current MIIS components in components/miis/ up to my Claude Design
 project so I can look at them on the canvas.
 ```
 
@@ -167,6 +167,11 @@ project so I can look at them on the canvas.
 ```
 Take full-page screenshots of all 12 routes at 1440px into screenshots/, named by
 route, so I can drop them into the tender document.
+```
+
+```
+Screenshot the start page once per role using the role switcher, so I have the
+role-adaptation story (FS-001) as a set of images for the tender document.
 ```
 
 ```

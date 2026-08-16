@@ -1,29 +1,54 @@
-# Welcome to your Lovable project
+# MIIS — UX/UI prototype
 
-This project was built with [Lovable](https://lovable.dev).
+Interactive prototype of **MIIS**, the Swedish National Mediation Office's
+(Medlingsinstitutet) information system for collective agreements and mediation. Built
+for a public procurement bid, where the UX/UI is 40% of the scorable added value.
 
-## Build with Lovable
+Not production software. Synthetic data only.
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## Run it
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```bash
+npm install
+npm run dev        # http://localhost:8080
 ```
 
-## Built with
+Requires Node.js 22 or newer.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+```bash
+npm run build      # production build, includes TypeScript
+npm run lint       # includes the architecture guards
+```
+
+## Where things are
+
+```
+app/(miis)/**/page.tsx   the 12 screens
+components/miis/         product components (AppShell, primitives, AiPanel)
+components/ui/           vendored shadcn/ui — restyle via tokens, don't edit
+app/globals.css          design tokens
+lib/domain/              types + pure rules — imports nothing
+lib/data/                the seam: every data read goes through here
+lib/mock/                Swedish sample data
+docs/                    requirements, workflow, backlog, design system
+```
+
+Next.js 16 App Router · React 19 · TypeScript · Tailwind v4 · shadcn/ui.
+
+## Start here
+
+- **[`docs/00-START-HERE.md`](docs/00-START-HERE.md)** — the designer's guide and daily
+  workflow
+- [`CLAUDE.md`](CLAUDE.md) — project rules, loaded automatically by Claude Code
+- [`docs/03-screen-backlog.md`](docs/03-screen-backlog.md) — what's built, what's next
+- [`docs/06-migration-plan.md`](docs/06-migration-plan.md) — architecture and the
+  week-2 Supabase plan
+
+## Two rules that are enforced, not just documented
+
+`npm run lint` fails if either is broken:
+
+1. `lib/domain/` imports nothing — no React, no Next, no data access.
+2. Only `lib/data/` may import a database client or `lib/mock/`.
+
+That is what keeps the swap from mock data to a real backend from reaching any screen.

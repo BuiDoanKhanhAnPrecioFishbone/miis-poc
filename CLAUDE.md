@@ -13,8 +13,8 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
 
 1. **All UI text is in Swedish.** The requirements are an English working translation;
    the target system, the tender and the sketches are Swedish. Never write English
-   labels, buttons, headings, placeholders or empty states into `src/`.
-2. **No hard-coded colours.** Use the tokens in `src/styles.css` (`bg-primary`,
+   labels, buttons, headings, placeholders or empty states into the app.
+2. **No hard-coded colours.** Use the tokens in `app/globals.css` (`bg-primary`,
    `text-muted-foreground`, `var(--mi-sand-500)`, …). The palette is derived from
    Medlingsinstitutet's identity — see `docs/design-system/`.
 3. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
@@ -30,8 +30,7 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
    The `MI` square in the header is a placeholder until MI supplies the official asset.
    Never generate, redraw or "improve" it.
 7. **Never rewrite pushed git history** (no force-push, rebase, amend or squash of
-   pushed commits). This repo syncs with Lovable and history rewrites destroy the
-   CEO's project history there. See `AGENTS.md`.
+   pushed commits). Others review from this history and from deployed builds of it.
 
 ## Stack
 
@@ -72,14 +71,19 @@ FR-012 status can never be rendered as colour alone. Get one from `statusInfo()`
 
 ## Working agreement
 
-- Prototype data is hard-coded in each route file, in Swedish, and must be
+- **Prototype data lives in `lib/mock/`, never inside a page.** In Swedish, and
   **realistic**: real Swedish party names (Teknikföretagen, IF Metall, Almega, Unionen,
   Kommunal, Sveriges Lärare, Fremia), plausible agreement names, dates in the
   2026–2027 bargaining round. Fake-looking data reads as an unfinished prototype.
+  Relations are id strings (`Medlingsarende.avtalIds` → `Avtal.id`) with nothing
+  enforcing them — when you add a record, check the ids it points at actually exist.
+- A page that needs data adds a function to `lib/data/`; it does not reach into
+  `lib/mock/` itself. Lint enforces this.
 - Prefer editing an existing view over adding a new route. The nav in `AppShell.tsx`
   is fixed at 11 items and mirrors the requirement Epics.
 - After a UI change, verify it in the browser (`/skiss-test`), don't just assume.
-- Keep the branch working: commits pushed to the connected branch appear in Lovable.
+- Keep the branch working — the Vercel deployment builds from it and the CEO reviews
+  there.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

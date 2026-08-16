@@ -27,7 +27,7 @@ Practically: the evaluators want to see that we understood **their** work — ei
 |---|---|---|
 | **Claude Design** | Visual thinking. Explore layouts, component variants, states, and a real design system — fast, disposable, no code discipline. | claude.ai/design, in the browser |
 | **Claude Code** | Turning decisions into the actual mockup, in this repo. Reads the requirements, keeps tokens/Swedish/WCAG consistent, screenshots the result. | this terminal |
-| **Lovable** | The CEO's original mockup, and where she can look at progress. Sync is via GitHub. | lovable.dev |
+| **Vercel** | Where the CEO sees your work. Every push builds a URL she can click. | vercel.com |
 
 The loop is: **explore in Claude Design → decide → implement in Claude Code → look at it
 in the browser → repeat.** Details in [`01-workflow.md`](01-workflow.md).
@@ -44,6 +44,10 @@ Click through all 11 nav items. Four are designed (Start, Registrera avtal,
 Medling → open ärende M-2027/12, Sök & Rapporter); the rest show their requirement list
 as a stub. That is the gap you are closing.
 
+Then use the **role switcher in the top-right corner** and watch the start page change.
+Eight roles, genuinely different dashboards. That is requirement FS-001 and it is the
+single strongest thing to open a demo with.
+
 Then open Claude Code in this folder and type:
 
 ```
@@ -54,6 +58,13 @@ things to fix in the existing four screens before I start on the stubs.
 ## 4. What's in this repo
 
 ```
+app/(miis)/**/page.tsx    THE SCREENS — you work here
+components/miis/          product components — and here
+components/ui/            vendored shadcn/ui — restyle via tokens, don't edit
+app/globals.css           all design tokens — change design here first
+lib/domain/               types + pure rules (roles, status, agreements)
+lib/data/                 every data read goes through here
+lib/mock/                 the Swedish sample data
 docs/
   00-START-HERE.md        this file
   01-workflow.md          the daily Claude Design ↔ Claude Code loop
@@ -61,14 +72,20 @@ docs/
   03-screen-backlog.md    all 12 screens, priority, requirement IDs, status
   04-ux-brief.md          what actually earns points, per screen
   05-claude-design-setup.md  what to upload, creating the project, syncing back
+  06-migration-plan.md    the architecture, and the week-2 backend plan
   requirements/           the requirement spec (.docx + searchable .txt)
   design-system/          MI tokens, CSS, Tailwind theme, the PDF spec
   sketches/               the CEO's four v1 UI sketches (PNG)
   source-zips/            original attachments, untouched, for reference
-src/                      the mockup itself
 design/                   design-system bundle synced with Claude Design
 .claude/commands/         slash commands: /skiss, /skiss-test, /granska, /krav
 ```
+
+**You only ever need to touch the first three.** The `lib/` folders exist so that when
+a real database arrives next week, none of your screens have to change — a page asks
+`lib/data/` for what it needs and renders it. If you need data that doesn't exist yet,
+ask Claude Code to add it to `lib/mock/` and expose it through `lib/data/`; don't paste
+sample data into a page. `npm run lint` will stop you anyway.
 
 ## 5. The four custom commands
 
@@ -95,25 +112,40 @@ session). The short version:
 - AI proposals always need human approval, always labelled `AI-FÖRSLAG` (FAI-002).
 - Never redraw the MI logo — it contains a protected state emblem.
 
-## 7. Syncing with the CEO's Lovable project
+## 7. Showing the CEO
 
-This repo was bootstrapped from the CEO's export (`MIIS Demo Delight.zip`), so it is
-identical to her mockup but not yet *connected* to it. To connect:
+The repo started as her Lovable export (`MIIS Demo Delight.zip`) and has since moved to
+Next.js — see [`06-migration-plan.md`](06-migration-plan.md). **It no longer opens in
+the Lovable editor.** She reviews the deployed Vercel URL instead.
 
-1. Ask her to open the Lovable project → **GitHub → Connect** (only the project owner
-   can do this), and to give you the repository URL.
-2. Then, in this folder:
+Working rhythm:
 
-   ```powershell
-   git remote add origin <repository-url>
-   git fetch origin
-   git checkout -b design origin/main   # work on a branch, not on main
-   ```
+```powershell
+git checkout -b design          # work on a branch, not on main
+# …build a screen…
+git add -A
+git commit -m "US-08: partsträffar med interaktiv mötesvy"
+```
 
-3. Push the `design` branch and open a pull request when you want her to review.
-   Anything merged to the connected branch shows up in her Lovable editor.
+- Commit after each finished screen, with the scenario in the message.
+- Push and the deployment updates; send her the link.
+- Screenshots from `/skiss-test` are the fastest way to show progress in a message —
+  she can react to pictures without opening anything.
 
-Until then, work locally — nothing is lost, the history transfers.
+> Do not force-push, rebase or amend pushed commits. Others review from this history and
+> from builds of it.
 
-> Do not force-push, rebase or amend pushed commits. Lovable mirrors this history and
-> rewriting it destroys her project history.
+## 8. Working with data
+
+There is no database yet — one arrives next week if the CEO says go. Until then the app
+runs on Swedish sample data in `lib/mock/`, read through `lib/data/`.
+
+What that means for you day to day:
+
+- **Need different sample data on a screen?** Ask Claude Code to change `lib/mock/`. It
+  is one place, plainly written, no database knowledge needed.
+- **Relations are by id and nothing enforces them.** A mediation case lists
+  `avtalIds: ["A-002"]`, and if no agreement `A-002` exists, nothing complains — the
+  screen just shows less than you expected. When you add records, check the ids match.
+- **Everything is fake, including the AI.** The AI panel returns a canned answer. That
+  is fine for demonstrating the *interaction*, which is what is being scored.

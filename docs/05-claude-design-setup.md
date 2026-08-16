@@ -64,9 +64,9 @@ In Claude Code, in this folder:
 Create a new Claude Design design-system project called "MIIS Design System",
 then push our MI tokens and the existing MIIS components into it:
 - docs/design-system/design-tokens.json and mi-design-system.css as the tokens
-- src/components/miis/AppShell.tsx as the product components
+- components/miis/primitives.tsx and AppShell.tsx as the product components
   (Panel, Field, Button, PageHeading, ReqTag, StatusDot)
-- src/components/miis/AiPanel.tsx as the AI-proposal pattern
+- components/miis/AiPanel.tsx as the AI-proposal pattern
 Keep the Swedish labels.
 ```
 
@@ -96,13 +96,13 @@ because each folder has a home in our repo:
 | In Claude Design | What it is | Where it lands here |
 |---|---|---|
 | `styles.css` | Single entry point, `@import` list only | — |
-| `tokens/*.css` | `colors.css`, `typography.css`, `radius.css`, `layout.css`, `motion.css` | `src/styles.css` — the `:root` token block |
+| `tokens/*.css` | `colors.css`, `typography.css`, `radius.css`, `layout.css`, `motion.css` | `app/globals.css` — the `:root` token block |
 | `guidelines/*.html` | One specimen card per rule: colour rules, type roles, layout rhythm, hard rules | `CLAUDE.md` rules + `docs/04-ux-brief.md` |
-| `components/ui/*.jsx` | The shadcn primitives, styled | `src/components/ui/*` |
-| `components/design/*.jsx` | The **product** components — ours would be `Panel`, `Field`, `ReqTag`, `StatusDot`, `AiPanel`, `AppShell` | `src/components/miis/AppShell.tsx` |
+| `components/ui/*.jsx` | The shadcn primitives, styled | `components/ui/*` |
+| `components/design/*.jsx` | The **product** components — ours would be `Panel`, `Field`, `ReqTag`, `StatusDot`, `AiPanel`, `AppShell` | `components/miis/primitives.tsx` |
 | `components/**/*.prompt.md` | Usage notes per component — when to use it, when not to | Read them; they are the design rationale |
 | `components/**/*.d.ts` | The component's prop contract | Keeps the React implementation honest |
-| `ui_kits/app/*.jsx` | Full click-through screens | `src/routes/*.tsx` |
+| `ui_kits/app/*.jsx` | Full click-through screens | `app/(miis)/**/page.tsx` |
 | `templates/` | A screen as a copyable starting point | The skeleton for a new route |
 | `*.card.html` | The preview cards you see on the canvas | Reference only |
 
@@ -133,7 +133,7 @@ demands as a checklist on the right.
 ```
 
 This is the fastest path and it is not cheating. The design system already lives in
-`CLAUDE.md` and `src/styles.css`; you are supplying the layout decision, which is the
+`CLAUDE.md` and `app/globals.css`; you are supplying the layout decision, which is the
 part that needed a human.
 
 ### Level 2 — you built components you want in the app
@@ -146,7 +146,7 @@ Then, component by component:
 
 ```
 design/components/design/Panel.jsx has a new "warning" tone and a collapsible header.
-Port that into src/components/miis/AppShell.tsx, keep our TypeScript types, and update
+Port that into components/miis/primitives.tsx, keep our TypeScript types, and update
 every route that uses Panel.
 ```
 
@@ -156,8 +156,8 @@ design system" instruction touches 12 routes at once and is hard to review.
 ### Level 3 — you designed a whole screen there
 
 ```
-Pull my "MIIS Design System" project into design/, then build src/routes/partstraffar.tsx
-from design/ui_kits/app/PartsmoteScreen.jsx — adapt it to TanStack Start, our AppShell
+Pull my "MIIS Design System" project into design/, then build app/(miis)/partstraffar/page.tsx
+from design/ui_kits/app/PartsmoteScreen.jsx — adapt it to Next.js App Router, our
 primitives and TypeScript, keep the Swedish copy, and add the ReqTags for
 FF-004, FF-005, FSD-002.
 ```
@@ -167,7 +167,7 @@ FF-004, FF-005, FSD-002.
 When you built something good in code and want it on the canvas:
 
 ```
-Push src/components/miis/AppShell.tsx up to my Claude Design project as product
+Push components/miis/ up to my Claude Design project as product
 components, with usage notes for each.
 ```
 

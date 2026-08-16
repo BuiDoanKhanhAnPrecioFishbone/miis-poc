@@ -23,19 +23,27 @@ proceed.
 
 ## 3. Build
 
-- The route file in `src/routes/`, replacing the `PlaceholderPage` stub if there is one.
-- Compose from the existing primitives in `src/components/miis/AppShell.tsx`
-  (`Panel`, `Field`, `Button`, `PageHeading`, `ReqTag`, `StatusDot`) and shadcn/ui in
-  `src/components/ui/`. Add a new primitive to `AppShell.tsx` only if it will be reused.
+- `app/(miis)/<route>/page.tsx`, replacing the `PlaceholderPage` stub if there is one.
+  It is a **server component**: `await` the data it needs from `lib/data/`, then render.
+- Compose from `components/miis/primitives.tsx` (`Panel`, `Field`, `Button`,
+  `PageHeading`, `ReqTag`, `StatusDot`) and shadcn/ui in `components/ui/`. Add a new
+  primitive to `primitives.tsx` only if it will be reused. Anything needing state or
+  event handlers is a separate `"use client"` component under `components/miis/`.
+- **Sample data goes in `lib/mock/` and is exposed through a `lib/data/` function —
+  never inline in the page.** Add types to `lib/domain/` if the concept is new. Lint
+  fails if a page imports `lib/mock/` directly.
 - Realistic Swedish sample data: real party names (Teknikföretagen, IF Metall, Almega,
   Unionen, Kommunal, Sveriges Lärare, Fremia, Svenskt Näringsliv), plausible agreement
   names, dates in the 2026–2027 bargaining round. No `Lorem ipsum`, no "Example AB".
+  Check that ids you reference (`avtalIds`, party ids) point at records that exist.
 - `<ReqTag id="…" />` on the page heading and on each panel that realises a requirement.
-- Set `head.meta` title and description in Swedish, matching the pattern in the
-  existing routes.
+- `export const metadata` with a Swedish title and description, matching the pattern in
+  the existing pages. For a dynamic route use `generateMetadata`.
+- Use `statusInfo()` / `avtalStatus()` from `lib/domain/status.ts` for FR-012 colour
+  coding — never a bare colour string.
 - Design the states, not just the happy path: empty, incomplete registration, error,
   and — where AI is involved — the proposal-rejected state.
-- Set the right user and role on `<AppShell user role>` for the scenario.
+- Set the scenario's role via `rollInfo("…")` on `<AppShell roll={…}>`.
 
 ## 4. Verify
 

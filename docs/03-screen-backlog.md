@@ -1,6 +1,6 @@
 # Screen backlog
 
-Status as bootstrapped from the CEO's Lovable export, 2026-08-13.
+Updated 2026-08-17, after the move to Next.js.
 **4 designed · 8 stubs.** Priority is by bid value, not by menu order.
 
 Legend: ✅ designed · 🟡 stub with requirement list only · ⬜ not in the mockup
@@ -9,29 +9,34 @@ Legend: ✅ designed · 🟡 stub with requirement list only · ⬜ not in the m
 
 ## Already designed — improve, don't rebuild
 
-| # | Route | Screen | Scenario | Status |
-|---|---|---|---|---|
-| 1 | `/` | Startsida | FS-001 | ✅ |
-| 2 | `/registrera` | Registrera avtalsprotokoll med AI-stöd | US-01 | ✅ |
-| 3 | `/medling/arende` | Medlingsärende från GD-beslut | US-07 | ✅ |
-| 4 | `/sok` | Sökbyggaren | US-11 | ✅ |
+| # | Page file | Route | Screen | Scenario | Status |
+|---|---|---|---|---|---|
+| 1 | `app/(miis)/page.tsx` | `/` | Startsida, rollanpassad | FS-001 | ✅ |
+| 2 | `app/(miis)/registrera/page.tsx` | `/registrera` | Registrera avtalsprotokoll med AI-stöd | US-01 | ✅ |
+| 3 | `app/(miis)/medling/[id]/page.tsx` | `/medling/M-2027-12` | Medlingsärende från GD-beslut | US-07 | ✅ |
+| 4 | `app/(miis)/sok/page.tsx` | `/sok` | Sökbyggaren | US-11 | ✅ |
 
 These four match the sketches in `docs/sketches/` and chapter 9 of the spec. They are
-the strongest part of the bid. Improvements worth making, in order:
+the strongest part of the bid.
 
-1. **Role switcher on the start page.** FS-001 *requires* the start page to adapt per
-   role, and the award criterion is literally called "role-based user scenarios". Right
-   now the mockup shows one role. A visible demo control that switches between
-   Avtalsadministratör / Medlingsadministratör / Medlaradministratör /
-   Statistikanvändare / Systemadministratör, changing the dashboard content, is the
-   single highest-value change in this repo. It also gives the oral presentation its
-   opening move.
-2. **The AI-got-it-wrong state** in `/registrera`. FAI-002 says nothing is saved
+**Done since the first version of this backlog:**
+
+- ~~Role switcher~~ — built. All eight roles, in the header, with genuinely different
+  dashboards. Content per role lives in `lib/data/start.ts`; adding a panel is a few
+  lines there, not a new screen.
+- ~~Status colour + text label~~ — `StatusDot` now takes a `StatusInfo` carrying colour
+  *and* label, so FR-012 can't be rendered as colour alone. The label is `sr-only` in
+  dense tables; pass `visaEtikett` to show it.
+
+**Still the top improvement:**
+
+1. **The AI-got-it-wrong state** in `/registrera`. FAI-002 says nothing is saved
    automatically and every proposal needs manual approval. Showing a *rejected* AI
    proposal and the correction path proves we understood that requirement, not just
-   the happy path.
-3. **Status colour + text label everywhere** (FR-012). Green/red/blue alone fails WCAG
-   and fails the requirement's intent.
+   the happy path. No other bidder will demo this.
+2. **Consider showing the status label visibly** in the start page table, not just to
+   screen readers. It was kept hidden to preserve visual parity during the migration —
+   that was a migration decision, not a design one, and it is yours to overrule.
 
 ## P1 — build these next, they carry scenarios with real weight
 

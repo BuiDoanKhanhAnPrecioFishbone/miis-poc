@@ -94,7 +94,8 @@ claude.ai design projects — that's expected.
 
 What comes down is real JSX plus `.d.ts` contracts and `.prompt.md` usage notes, not
 pictures — which is why the round trip is cheap. Claude Code adapts it into the app's
-own components in `src/`; nothing in `design/` is imported by the running mockup.
+own components in `components/miis/`; nothing in `design/` is imported by the running
+mockup.
 
 ## Step 3 — Implement (Claude Code, ~30 min)
 
@@ -103,7 +104,7 @@ own components in `src/`; nothing in `design/` is imported by the running mockup
 ```
 
 This does the whole screen: reads the requirements, builds the route, writes realistic
-Swedish sample data, uses the shared primitives from `AppShell.tsx`, tags requirement
+Swedish sample data, uses the shared primitives from `primitives.tsx`, tags requirement
 IDs, and screenshots the result.
 
 Then iterate in plain language. You do not need to describe code:
@@ -144,8 +145,8 @@ before moving on — accessibility debt across 12 screens is much worse than acr
 
 - Commit after each finished screen, with the scenario in the message:
   `git commit -m "US-08: partsträffar med interaktiv mötesvy"`
-- Push the `design` branch and open a pull request when you want her eyes on it.
-  Merged work appears in her Lovable editor.
+- Push the `design` branch — the Vercel deployment rebuilds and she reviews there.
+  The repo no longer opens in Lovable; the URL replaces it.
 - Screenshots from `/skiss-test` are the fastest way to show progress in a message —
   she can react to pictures without opening anything.
 
