@@ -35,19 +35,40 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
 
 ## Stack
 
-TanStack Start (SSR React 19) · TypeScript · Tailwind v4 · shadcn/ui · file-based routes
-in `src/routes/`. `npm run dev` → http://localhost:8080.
+Next.js 16 App Router (React 19, Turbopack) · TypeScript · Tailwind v4 · shadcn/ui.
+`npm run dev` → http://localhost:8080.
 
-- `src/components/miis/AppShell.tsx` — shell, sidebar nav, and the shared primitives
-  (`Panel`, `Field`, `Button`, `PageHeading`, `ReqTag`, `StatusDot`). Build on these
-  rather than inventing new ones; if a new primitive is needed, add it here.
-- `src/components/miis/AiPanel.tsx` — the AI assistant side panel.
-- `src/components/miis/Placeholder.tsx` — the stub used by not-yet-designed views.
-- `src/components/ui/*` — untouched shadcn/ui. Restyle via tokens, not by editing these.
-- `src/styles.css` — all design tokens. Change design here first, components second.
+```
+app/(miis)/**/page.tsx      the screens ← you work here
+components/miis/            product components ← and here
+components/ui/              vendored shadcn — restyle via tokens, don't edit
+app/globals.css             all design tokens — change design here first
+lib/domain/                 types + pure rules (status, roles, agreements)
+lib/data/                   THE SEAM — every data read goes through here
+lib/mock/                   the Swedish sample data
+lib/session.ts              which role the current request is
+```
 
-Routes are generated into `src/routeTree.gen.ts` by the Vite plugin — never edit that
-file by hand.
+### Four structural rules
+
+1. **`lib/domain/` imports nothing.** Types and pure functions only — no React, no
+   Next, no data access. It is the part that survives a change of framework or backend.
+2. **`lib/data/` is the only place that may touch a database.** Today it reads
+   `lib/mock/`; in week 2 it reads Supabase. Nothing else imports either — enforced by
+   `no-restricted-imports` in `eslint.config.mjs`, so a violation fails `npm run lint`.
+3. **Pages are server components that `await` a `lib/data/` function.** Never fetch
+   inside a component. This is what makes the mock→Supabase swap invisible to screens.
+4. **Anything interactive is `"use client"` under `components/miis/`,** fed by props.
+   `components/miis/primitives.tsx` stays server-side — no hooks in it.
+
+Key files: `AppShell.tsx` (shell + nav, client) · `primitives.tsx` (`Panel`, `Field`,
+`Button`, `PageHeading`, `ReqTag`, `StatusDot`, server) · `AiPanel.tsx` (client) ·
+`RollVaxlare.tsx` (the demo role switcher) · `Placeholder.tsx` (stub for undesigned
+views).
+
+`StatusDot` takes a whole `StatusInfo` (`{kod, farg, etikett}`) rather than a colour, so
+FR-012 status can never be rendered as colour alone. Get one from `statusInfo()` or
+`avtalStatus()` in `lib/domain/status.ts`.
 
 ## Working agreement
 
@@ -59,3 +80,13 @@ file by hand.
   is fixed at 11 items and mirrors the requirement Epics.
 - After a UI change, verify it in the browser (`/skiss-test`), don't just assume.
 - Keep the branch working: commits pushed to the connected branch appear in Lovable.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

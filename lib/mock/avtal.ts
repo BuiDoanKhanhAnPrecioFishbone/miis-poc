@@ -1,0 +1,178 @@
+/**
+ * Mock agreement data. Swedish labour-market names and a 2026–2027 bargaining
+ * round, so the prototype reads as real.
+ *
+ * Week 2: this becomes supabase/seed.sql. Nothing outside lib/data/ imports it.
+ */
+
+import type { Avtal, AvtalRad } from "@/lib/domain/avtal";
+
+export const AVTAL: Avtal[] = [
+  {
+    id: "A-001",
+    avtalsomrade: "Stål och metall",
+    namn: "Stål- och metallindustrin",
+    ago: { id: "P-010", namn: "Industriarbetsgivarna" },
+    ato: { id: "P-020", namn: "IF Metall" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "klar",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: true,
+      minimilon: true,
+      webbplatsen: true,
+      konjunkturlonerapporten: true,
+    },
+    teckningsdatum: "2027-03-31",
+    loptidFrom: "2027-04-01",
+    loptidTom: "2029-03-31",
+  },
+  {
+    id: "A-002",
+    avtalsomrade: "Spårtrafik",
+    namn: "Spårtrafik",
+    ago: { id: "P-011", namn: "Tågföretagen" },
+    ato: { id: "P-021", namn: "Seko" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "klar",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: true,
+      minimilon: false,
+      webbplatsen: true,
+      konjunkturlonerapporten: true,
+    },
+    medlingskoppling: true,
+    teckningsdatum: "2027-05-12",
+    loptidFrom: "2027-05-01",
+    loptidTom: "2029-04-30",
+  },
+  {
+    id: "A-003",
+    avtalsomrade: "Fastigheter",
+    namn: "Fastigheter",
+    ago: { id: "P-012", namn: "Almega Tjänsteförbunden", kortnamn: "Almega" },
+    ato: { id: "P-022", namn: "Unionen" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "klar",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: false,
+      minimilon: false,
+      webbplatsen: true,
+      konjunkturlonerapporten: true,
+    },
+    loptidTom: "2027-07-31",
+  },
+  {
+    id: "A-004",
+    avtalsomrade: "Apotek",
+    namn: "Apotek",
+    ago: { id: "P-012", namn: "Almega Tjänsteförbunden", kortnamn: "Almega" },
+    ato: { id: "P-023", namn: "Sveriges Farmaceuter" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "ofullstandig",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: false,
+      minimilon: true,
+      webbplatsen: true,
+      konjunkturlonerapporten: true,
+    },
+    teckningsdatum: "2027-06-02",
+    loptidFrom: "2027-06-01",
+    loptidTom: "2028-05-31",
+  },
+  {
+    id: "A-005",
+    avtalsomrade: "Kommunikation",
+    namn: "Kommunikation",
+    alternativtNamn: "Kommunikationsavtalet",
+    ago: { id: "P-012", namn: "Almega Tjänsteförbunden", kortnamn: "Almega" },
+    ato: { id: "P-021", namn: "Seko" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "ofullstandig",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: false,
+      minimilon: false,
+      webbplatsen: true,
+      konjunkturlonerapporten: true,
+    },
+  },
+  {
+    id: "A-006",
+    avtalsomrade: "Utveckling och tjänster",
+    namn: "Utveckling och tjänster",
+    ago: { id: "P-012", namn: "Almega Tjänsteförbunden", kortnamn: "Almega" },
+    ato: { id: "P-022", namn: "Unionen" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "ofullstandig",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: false,
+      minimilon: false,
+      webbplatsen: true,
+      konjunkturlonerapporten: true,
+    },
+  },
+  {
+    id: "A-007",
+    avtalsomrade: "Spel",
+    namn: "Spel",
+    ago: { id: "P-012", namn: "Almega Tjänsteförbunden", kortnamn: "Almega" },
+    ato: { id: "P-024", namn: "Hotell- och Restaurangfacket" },
+    avtalstyp: "Löneavtal + Allmänna villkor",
+    registreringsstatus: "ofullstandig",
+    konfidentiell: false,
+    rapporturval: {
+      eurofound: false,
+      minimilon: false,
+      webbplatsen: false,
+      konjunkturlonerapporten: true,
+    },
+  },
+];
+
+/**
+ * Display rows for the "senast registrerade avtal" table. Kept as an explicit
+ * read model rather than derived, so the exact strings the sketches use survive.
+ */
+export const SENASTE_AVTAL: AvtalRad[] = [
+  {
+    id: "A-001",
+    namn: "Stål- och metallindustrin – Industriarbetsgivarna/IF Metall",
+    parter: "Industriarbetsgivarna / IF Metall",
+    teckningsdatum: "2027-03-31",
+    loptid: "2027-04-01–2029-03-31",
+    registreringsstatus: "klar",
+    status: "nytecknat",
+  },
+  {
+    id: "A-002",
+    namn: "Spårtrafik – Tågföretagen/Seko",
+    parter: "Tågföretagen / Seko",
+    teckningsdatum: "2027-05-12",
+    loptid: "2027-05-01–2029-04-30",
+    registreringsstatus: "klar",
+    status: "efter-medling",
+    medlingskoppling: true,
+  },
+  {
+    id: "A-003",
+    namn: "Fastigheter – Almega Tjänsteförbunden/Unionen",
+    parter: "Almega Tjänsteförbunden / Unionen",
+    loptid: "Kvarstående, utlöper 2027-07-31",
+    registreringsstatus: "klar",
+    status: "kvarstaende",
+  },
+  {
+    id: "A-004",
+    namn: "Apotek – Almega Tjänsteförbunden/Sveriges Farmaceuter",
+    parter: "Almega Tjänsteförbunden / Sveriges Farmaceuter",
+    teckningsdatum: "2027-06-02",
+    loptid: "2027-06-01–2028-05-31",
+    registreringsstatus: "ofullstandig",
+    status: "nytecknat",
+  },
+];

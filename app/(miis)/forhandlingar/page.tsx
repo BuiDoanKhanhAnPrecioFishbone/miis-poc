@@ -1,0 +1,35 @@
+import type { Metadata } from "next";
+
+import { PlaceholderPage } from "@/components/miis/Placeholder";
+import { rollInfo } from "@/lib/domain/roll";
+
+export const metadata: Metadata = {
+  title: "MIIS – Förhandlingar och avtalsrörelser",
+  description:
+    "Registrering av avtalsrörelser och övriga förhandlingar, med och utan avtalsutfall, samt koppling till avtal och medling.",
+  openGraph: {
+    title: "MIIS – Förhandlingar och avtalsrörelser",
+    description:
+      "Registrering av avtalsrörelser och övriga förhandlingar, med och utan avtalsutfall, samt koppling till avtal och medling.",
+  },
+};
+
+export default function ForhandlingarPage() {
+  return (
+    <PlaceholderPage
+      title="Förhandlingar"
+      epic="Epic F9 – Förhandlings- och medlingshantering"
+      subtitle="Avtalsrörelse och övrig förhandling (US-16)"
+      roll={rollInfo("avtalsadministrator")}
+      features={[
+        {
+          id: "FF-001",
+          text: "Registrering av förhandling av typen Avtalsrörelse eller Övrig förhandling.",
+        },
+        { id: "FF-002", text: "Koppling av förhandling till avtal via protokollsuppladdning." },
+        { id: "FF-003", text: "Fristående förhandling med direkta kopplingar till parter." },
+        { id: "FF-004", text: "Uppföljning av förhandlingens status och utfall." },
+      ]}
+    />
+  );
+}

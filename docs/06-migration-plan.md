@@ -1,6 +1,11 @@
 # Migration plan — TanStack Start → Next.js + Supabase
 
-**Status: proposed, not executed.** Review before anything is touched.
+**Status: week 1 executed on 2026-08-17** (commit on branch `next-migration`). The
+Next.js migration, the `lib/` seam and the role switcher are done and verified; §7 and §8
+below are kept as the record of what was planned and what it cost. Week 2 (Supabase) is
+still proposal.
+
+See the end of this document for what actually changed against the plan.
 
 Two weeks, two phases:
 
@@ -318,3 +323,44 @@ parity is the bar — this migration should change nothing a user can see.
 | **RSC footgun.** `useState` in a server component is the error a vibe-coding designer will hit most. | The split in step 4 plus the `"use client"` sweep in step 3 handles it structurally, and the rule goes in `CLAUDE.md`. |
 | **Migration overruns into her design time.** | Hard stop: if it isn't visually at parity by end of Monday, abandon the branch and stay on TanStack Start with only the `lib/data/` seam (~2 hours). Nothing is lost — `main` is untouched. |
 | Only synthetic data ever reaches Vercel/Supabase. | Aligned with T-002, which asks for anonymised or fictitious protocols anyway. |
+
+---
+
+## 9. Execution record — 2026-08-17
+
+Week 1 of the plan is done. Verified: `npm run build` clean (TypeScript included), all
+13 routes return 200, `/medling/finns-inte` returns 404, `npm run lint` clean, and the
+`/medling/M-2027-12` screenshot is pixel-identical to the pre-migration baseline apart
+from the added role switcher.
+
+### Delivered
+
+- Next.js 16 App Router + Turbopack, Tailwind v4 via PostCSS, all 12 screens ported
+- `medling/arende` is now `medling/[id]`, with real 404 handling
+- `AppShell.tsx` split into shell (client) and `primitives.tsx` (server)
+- `lib/domain/` — roll, status, avtal, part, medling, marke, handelse, startsida
+- `lib/data/` — the seam: avtal, medling, marke, handelser, start
+- `lib/mock/` — Swedish sample data, previously inline in each route file
+- **Role switcher**, cookie-backed and server-read, with real per-role dashboards for
+  all eight roles
+- Lint-enforced isolation: `app/`, `components/`, `lib/domain/`, `lib/mock/` cannot
+  import Supabase or mock data. Verified by a deliberate violation.
+
+### Changed against the plan
+
+| Change | Why |
+|---|---|
+| Root layout is `lang="sv"`, was `lang="en"` | The interface is Swedish. A wrong `lang` is a WCAG 3.1.1 failure and it was wrong before the migration too. |
+| `StatusDot` takes `StatusInfo`, not a colour string | Makes FR-012 colour-only rendering structurally impossible. Label is `sr-only` in dense tables, so nothing moved visually. |
+| `Field` renders `<span>`, was `<label>` | These are read-only displays with no control to associate. A label pointing at nothing is worse than a caption. |
+| Dropped three tsconfig strictness flags | `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` and `noPropertyAccessFromIndexSignature` are beyond-strict and add friction for a designer vibe-coding. `strict: true` is kept. |
+| `react-hooks/purity` and `set-state-in-effect` off for `components/ui/**` and `hooks/**` | Next 16 flags patterns that ship inside shadcn/ui itself. Scoped off rather than forking vendored code. |
+| Partsträffar stub is now the mediation administrator's | US-08 names that role; the old stub said agreement administrator. |
+
+### Still open
+
+- **Lovable round-trip is now dead.** The repo no longer matches the
+  `tanstack_start_ts_current` template. Confirm the CEO reviews via a deployed URL.
+- Not yet done from §7: the Vercel deploy (step 9). Everything before it is complete.
+- `screenshots/` holds both baselines (`00`–`03`) and post-migration shots (`next-*`)
+  for comparison. The folder is gitignored.
