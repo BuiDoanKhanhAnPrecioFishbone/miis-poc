@@ -39,6 +39,8 @@ Next.js 16 App Router · React 19 · TypeScript · Tailwind v4 · shadcn/ui.
 
 - **[`docs/00-START-HERE.md`](docs/00-START-HERE.md)** — the designer's guide and daily
   workflow
+- [`docs/07-designer-setup.md`](docs/07-designer-setup.md) — setting up a new laptop
+  from scratch
 - [`CLAUDE.md`](CLAUDE.md) — project rules, loaded automatically by Claude Code
 - [`docs/03-screen-backlog.md`](docs/03-screen-backlog.md) — what's built, what's next
 - [`docs/06-migration-plan.md`](docs/06-migration-plan.md) — architecture and the
