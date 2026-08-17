@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
-import { Panel, ReqTag } from "./primitives";
+import { Button, Callout, Chip, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
  * FR-002 — the query builder.
@@ -70,9 +70,7 @@ export function SearchBuilder({
     })),
   );
   const [nextId, setNextId] = useState(100);
-  const [columns, setColumns] = useState<boolean[]>(() =>
-    t.columns.items.map((_, i) => i < 4),
-  );
+  const [columns, setColumns] = useState<boolean[]>(() => t.columns.items.map((_, i) => i < 4));
 
   const newCondition: SeedCondition = c.newCondition;
 
@@ -128,42 +126,29 @@ export function SearchBuilder({
     <>
       <div className="grid gap-5 @3xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
         <Panel title={c.title} tags={["FR-002"]}>
-          <p className="mb-4 rounded-md border border-border bg-secondary px-4 py-3 text-label text-muted-foreground">
-            {c.joinExplain}
-          </p>
+          <Rationale>{c.joinExplain}</Rationale>
 
           <div className="space-y-4">
             {groups.map((g, gi) => (
-              <fieldset
-                key={g.id}
-                className="rounded-md border-2 border-border bg-surface/40 p-4"
-              >
+              <fieldset key={g.id} className="rounded-md border-2 border-border bg-surface/40 p-4">
                 <legend className="flex flex-wrap items-center gap-3 px-1">
                   <span className="text-label font-bold">{c.groupLabel(gi + 1)}</span>
                   <span className="inline-flex overflow-hidden rounded-md border-2 border-primary">
                     {(["all", "any"] as const).map((j) => (
-                      <button
+                      <Button
                         key={j}
-                        type="button"
-                        aria-pressed={g.join === j}
+                        variant={g.join === j ? "primary" : "ghost"}
+                        size="sm"
+                        pressed={g.join === j}
                         onClick={() => setJoin(g.id, j)}
-                        className={`min-h-11 px-4 py-1.5 text-label font-bold ${
-                          g.join === j
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-card text-primary"
-                        }`}
                       >
                         {joinWord(j)}
-                      </button>
+                      </Button>
                     ))}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => removeGroup(g.id)}
-                    className="min-h-11 rounded-sm border-2 border-input px-3 py-1.5 text-label font-bold text-foreground transition-colors hover:bg-secondary"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => removeGroup(g.id)}>
                     {c.removeGroup(gi + 1)}
-                  </button>
+                  </Button>
                 </legend>
 
                 <ul className="mt-3 space-y-2">
@@ -178,42 +163,36 @@ export function SearchBuilder({
                         <span className="field-input">{cond.field} ▾</span>
                         <span className="field-input">{cond.operator} ▾</span>
                         <span className="field-input">{cond.value} ▾</span>
-                        <button
-                          type="button"
+                        <Button
+                          variant="ghost"
                           onClick={() => removeCondition(cond.id)}
-                          aria-label={c.removeCondition(`${cond.field} ${cond.value}`)}
-                          className="min-h-12 min-w-12 rounded-sm border-2 border-input px-3 text-label font-bold transition-colors hover:bg-secondary"
+                          ariaLabel={c.removeCondition(`${cond.field} ${cond.value}`)}
                         >
                           ✕
-                        </button>
+                        </Button>
                       </div>
                     </li>
                   ))}
                 </ul>
 
-                <button
-                  type="button"
-                  onClick={() => addCondition(g.id)}
-                  className="mt-3 min-h-12 rounded-sm border-2 border-primary px-4 py-2 text-label font-bold text-primary transition-colors hover:bg-secondary"
-                >
-                  {c.addCondition}
-                </button>
+                <div className="mt-3">
+                  <Button variant="secondary" size="sm" onClick={() => addCondition(g.id)}>
+                    {c.addCondition}
+                  </Button>
+                </div>
               </fieldset>
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={addGroup}
-            className="mt-4 min-h-12 rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-label font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
-            {c.addGroup}
-          </button>
+          <div className="mt-4">
+            <Button onClick={addGroup}>{c.addGroup}</Button>
+          </div>
 
-          <p className="mt-4 rounded-md border-2 border-sand-border bg-sand px-4 py-3 text-label text-sand-foreground">
-            <span className="font-bold">{c.expression}</span>{" "}
-            <span className="break-words">{expression || c.newCondition.value}</span>
-          </p>
+          <div className="mt-4">
+            <Callout tone="attention" label={c.expression}>
+              <span className="break-words">{expression || t.chips.empty}</span>
+            </Callout>
+          </div>
 
           <div className="mt-5 grid items-end gap-3 @xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
             <span className="text-label font-bold">{c.freeText}</span>
@@ -228,19 +207,12 @@ export function SearchBuilder({
             </div>
             <div className="flex flex-wrap gap-2">
               {c.documentTypeItems.map((h, i) => (
-                <span
-                  key={h}
-                  className={`rounded-md px-3 py-1.5 text-label font-semibold ${
-                    i < 3
-                      ? "bg-accent text-accent-foreground"
-                      : "bg-secondary text-muted-foreground"
-                  }`}
-                >
+                <Chip key={h} selected={i < 3}>
                   {h}
-                </span>
+                </Chip>
               ))}
             </div>
-            <p className="mt-2 text-label text-muted-foreground">{c.documentTypesNote}</p>
+            <Rationale>{c.documentTypesNote}</Rationale>
           </div>
 
           <div className="mt-5 grid items-end gap-3 @xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
@@ -264,9 +236,7 @@ export function SearchBuilder({
                   <input
                     type="checkbox"
                     checked={columns[i] ?? false}
-                    onChange={() =>
-                      setColumns((cs) => cs.map((on, j) => (j === i ? !on : on)))
-                    }
+                    onChange={() => setColumns((cs) => cs.map((on, j) => (j === i ? !on : on)))}
                     className="size-5 accent-[var(--primary)]"
                   />
                   {item}
@@ -276,19 +246,11 @@ export function SearchBuilder({
           </ul>
 
           <div className="mt-5 space-y-3">
-            <button
-              type="button"
-              className="min-h-12 w-full rounded-sm border-2 border-primary px-4 py-3 text-label font-bold text-primary transition-colors hover:bg-secondary"
-            >
+            <Button variant="secondary" fullWidth>
               {t.columns.saveSearch}: {t.columns.savedSearchName}
-            </button>
-            <p className="text-label text-muted-foreground">{t.columns.savedSearchNote}</p>
-            <button
-              type="button"
-              className="min-h-12 w-full rounded-md bg-primary px-4 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-            >
-              {d.common.search}
-            </button>
+            </Button>
+            <Rationale>{t.columns.savedSearchNote}</Rationale>
+            <Button fullWidth>{d.common.search}</Button>
           </div>
         </Panel>
       </div>
@@ -305,19 +267,13 @@ export function SearchBuilder({
           <ul className="flex flex-wrap gap-2">
             {allConditions.map((cond) => (
               <li key={cond.id}>
-                <button
-                  type="button"
-                  onClick={() => removeCondition(cond.id)}
-                  aria-label={t.chips.remove(`${cond.field} ${cond.value}`)}
-                  className="flex min-h-11 items-center gap-2 rounded-full border-2 border-primary bg-secondary px-4 py-1.5 text-label font-semibold text-secondary-foreground transition-colors hover:bg-accent"
+                <Chip
+                  selected
+                  onRemove={() => removeCondition(cond.id)}
+                  removeLabel={t.chips.remove(`${cond.field} ${cond.value}`)}
                 >
-                  <span>
-                    {cond.field} {cond.operator} {cond.value}
-                  </span>
-                  <span aria-hidden className="font-bold">
-                    ✕
-                  </span>
-                </button>
+                  {cond.field} {cond.operator} {cond.value}
+                </Chip>
               </li>
             ))}
           </ul>
@@ -327,7 +283,7 @@ export function SearchBuilder({
       <div className="mt-5">
         <Panel title={t.results.title(hits, seconds, snapshotDate)} tags={["FH-003", "NFP-003"]}>
           {children}
-          <p className="mt-3 text-label text-muted-foreground">{t.results.responseNote(seconds)}</p>
+          <Rationale>{t.results.responseNote(seconds)}</Rationale>
         </Panel>
       </div>
     </>

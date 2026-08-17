@@ -20,6 +20,12 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
 2. **No hard-coded colours.** Use the tokens in `app/globals.css` (`bg-primary`,
    `text-muted-foreground`, `var(--mi-sand-500)`, …). The palette is derived from
    Medlingsinstitutet's identity — see `docs/design-system/`.
+   **`--status-green/red/blue` belong to FR-012 and to nothing else.** In MIIS red is a
+   neutral fact ("tecknat efter medling"), not a complaint; if it also meant "error" an
+   agreement table would be unreadable. System feedback is a `<Callout>` — a left rule,
+   an icon and a label word — never a coloured sentence. There are **no trend colours**:
+   MI mediates between the parties and does not shade a settlement good or bad.
+   Never soften text with an opacity modifier; that is how contrast failures get in.
 3. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —
@@ -101,10 +107,21 @@ in a Swedish authority's system.
    `components/miis/primitives.tsx` stays server-side — no hooks in it.
 
 Key files: `AppShell.tsx` (shell + role-filtered nav, client) · `primitives.tsx`
-(`Panel`, `Field`, `Button`, `PageHeading`, `ReqTag`, `StatusDot`,
-`ConfidentialityMarker`, server) · `DemoBar.tsx` (the reviewer controls, above the
-product chrome) · `DecisionSupportPanel.tsx` (§4.1 AI decision support, mediation only)
+(`Panel`, `Field`, `Button`, `Badge`, `Callout`, `Chip`, `PageHeading`, `ReqTag`,
+`Rationale`, `StatusDot`, `ConfidentialityMarker`) · `DataTable.tsx` (sticky header,
+sort, overflow guard) · `DemoBar.tsx` (the reviewer controls, above the product chrome)
 · `SessionTimeoutWarning.tsx` (NFÅ-002) · `Placeholder.tsx` (stub for undesigned views).
+
+**A screen does not build its own button or table.** `no-restricted-syntax` in
+`eslint.config.mjs` fails the build on a raw `<button>` or `<table>` under `app/`,
+because the system only holds if it is cheaper to use than to bypass — it previously was
+not. `DataTable` takes server-rendered cells plus plain sort values, so ordering happens
+in the browser while rendering stays on the server.
+
+**Two kinds of prose.** A sentence the user needs to do the task correctly is a plain
+paragraph. A sentence that justifies the design or restates a requirement is
+`<Rationale>`, which rides the `miis_reqtags` switch and is absent from the product
+view. If you cannot decide which one it is, it is a `Rationale`.
 
 **The demo bar is not part of MIIS.** Role, dataset, language and requirement-ID
 switches are reviewer tools. They live in a visually distinct strip *above* the header,

@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { SearchBuilder } from "@/components/miis/SearchBuilder";
 import {
   Button,
   ConfidentialityMarker,
   PageHeading,
+  Rationale,
   ReqTag,
+  ReqTags,
   StatusDot,
   StatusLegend,
 } from "@/components/miis/primitives";
@@ -38,6 +41,42 @@ export default async function SokPage() {
   const [rows, total] = await Promise.all([listRecentAgreements(lang, 6), countAgreements()]);
   const t = i18n.sok;
 
+  const columns: Column[] = [
+    { key: "status", header: t.results.status, sortable: true },
+    { key: "agreement", header: t.results.agreement, sortable: true },
+    { key: "parties", header: t.results.parties, sortable: true },
+    { key: "construction", header: t.results.construction, sortable: true },
+    { key: "scope", header: t.results.scope, numeric: true },
+    { key: "open", header: t.results.open },
+  ];
+
+  const tableRows: Row[] = rows.map((row) => {
+    const status = statusInfo(row.status, lang);
+    return {
+      key: row.id,
+      cells: [
+        <StatusDot key="s" status={status} showLabel />,
+        <span key="a" className="flex flex-wrap items-center gap-2">
+          {row.name}
+          {row.confidential && (
+            <ConfidentialityMarker
+              compact
+              label={i18n.confidentiality.marked}
+              note={i18n.confidentiality.inStatistics}
+            />
+          )}
+        </span>,
+        row.parties,
+        AGREEMENT_CONSTRUCTIONS[lang][1],
+        i18n.common.none,
+        <span key="o" className="font-semibold text-primary underline underline-offset-2">
+          {t.results.openAt(SNAPSHOT_DATE)}
+        </span>,
+      ],
+      sort: [status.label, row.name, row.parties, AGREEMENT_CONSTRUCTIONS[lang][1], 0, ""],
+    };
+  });
+
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FR-001", "FR-002"]} />
@@ -65,60 +104,12 @@ export default async function SokPage() {
         seconds={decimal(RESPONSE_SECONDS, lang)}
         snapshotDate={SNAPSHOT_DATE}
       >
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[52rem] text-table">
-            <thead>
-              <tr className="border-b border-border text-left text-label text-muted-foreground">
-                <th scope="col" className="py-2 pr-4 font-semibold">
-                  {t.results.status}
-                </th>
-                <th scope="col" className="py-2 pr-4 font-semibold">
-                  {t.results.agreement}
-                </th>
-                <th scope="col" className="py-2 pr-4 font-semibold">
-                  {t.results.parties}
-                </th>
-                <th scope="col" className="py-2 pr-4 font-semibold">
-                  {t.results.construction}
-                </th>
-                <th scope="col" className="py-2 pr-4 font-semibold">
-                  {t.results.scope}
-                </th>
-                <th scope="col" className="py-2 font-semibold">
-                  {t.results.open}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.id} className="border-b border-border/60 last:border-0">
-                  <td className="py-3 pr-4">
-                    <StatusDot status={statusInfo(row.status, lang)} showLabel />
-                  </td>
-                  <td className="py-3 pr-4">
-                    <span className="flex flex-wrap items-center gap-2">
-                      {row.name}
-                      {row.confidential && (
-                        <ConfidentialityMarker
-                          label={i18n.confidentiality.marked}
-                          note={i18n.confidentiality.inStatistics}
-                        />
-                      )}
-                    </span>
-                  </td>
-                  <td className="py-3 pr-4">{row.parties}</td>
-                  <td className="py-3 pr-4">{AGREEMENT_CONSTRUCTIONS[lang][1]}</td>
-                  <td className="py-3 pr-4 tabular-nums">{i18n.common.none}</td>
-                  <td className="py-3">
-                    <span className="font-semibold text-primary underline underline-offset-2">
-                      {t.results.openAt(SNAPSHOT_DATE)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          columns={columns}
+          rows={tableRows}
+          lang={lang}
+          caption={t.results.title(total, decimal(RESPONSE_SECONDS, lang), SNAPSHOT_DATE)}
+        />
 
         <StatusLegend text={STATUS_LEGEND[lang]} />
 
@@ -126,24 +117,28 @@ export default async function SokPage() {
           {i18n.common.andMoreRows(Math.max(total - rows.length, 0))}
         </p>
 
-        <p className="mt-2 flex flex-wrap items-center gap-2 text-label text-muted-foreground">
-          {t.results.pointInTimeNote}
-          <ReqTag id="FA-020" />
-          <span>· {t.results.stage2Note}</span>
-          <ReqTag id="FA-025" />
-        </p>
+        <Rationale>
+          {t.results.pointInTimeNote} · {t.results.stage2Note}{" "}
+          <ReqTags ids={["FA-020", "FA-025"]} />
+        </Rationale>
 
         <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-4">
           <span className="text-label font-bold">{i18n.common.exportLabel}</span>
-          <Button variant="outline">Excel</Button>
-          <Button variant="outline">CSV</Button>
-          <Button variant="outline">JSON</Button>
-          <Button variant="outline">Word / PDF</Button>
-          <span className="text-label text-muted-foreground">{t.results.exportNote}</span>
-          <ReqTag id="FR-004" />
-          <ReqTag id="FR-005" />
-          <ReqTag id="FR-013" />
+          <Button variant="secondary" size="sm">
+            Excel
+          </Button>
+          <Button variant="secondary" size="sm">
+            CSV
+          </Button>
+          <Button variant="secondary" size="sm">
+            JSON
+          </Button>
+          <Button variant="secondary" size="sm">
+            Word / PDF
+          </Button>
+          <ReqTags ids={["FR-004", "FR-005", "FR-013"]} />
         </div>
+        <Rationale>{t.results.exportNote}</Rationale>
 
         <p className="mt-3 text-label text-muted-foreground">
           {t.results.savedSearches} {i18n.start.savedSearches.items.join(" · ")}

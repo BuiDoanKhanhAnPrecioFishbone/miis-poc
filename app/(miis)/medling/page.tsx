@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
-import { EmptyState, PageHeading, Panel, StatusDot } from "@/components/miis/primitives";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { Badge, EmptyState, PageHeading, Panel, StatusDot } from "@/components/miis/primitives";
 import { listMediationCases } from "@/lib/data/mediation";
 import { t } from "@/lib/domain/lang";
 import { caseNumber, MEDIATION_TYPE_LABEL } from "@/lib/domain/mediation";
@@ -22,6 +23,54 @@ export default async function MediationListPage() {
   const cases = await listMediationCases();
   const m = i18n.medling;
 
+  const columns: Column[] = [
+    { key: "status", header: m.table.status, sortable: true },
+    { key: "case", header: m.table.caseNumber, sortable: true },
+    { key: "name", header: m.table.name, sortable: true },
+    { key: "type", header: m.table.type, sortable: true },
+    { key: "dg", header: m.table.dgDecision, sortable: true },
+    { key: "agreements", header: m.table.agreements, numeric: true, sortable: true },
+    { key: "mediators", header: m.table.mediators },
+    { key: "state", header: m.table.status, sortable: true },
+  ];
+
+  const rows: Row[] = cases.map((c) => {
+    const status = statusInfo(c.ongoing ? "after-mediation" : "remaining", lang);
+    return {
+      key: c.id,
+      cells: [
+        <StatusDot key="s" status={status} showLabel />,
+        <Link
+          key="c"
+          href={`/medling/${c.id}`}
+          className="font-semibold text-primary underline underline-offset-2"
+        >
+          {caseNumber(c.id)}
+        </Link>,
+        c.name,
+        MEDIATION_TYPE_LABEL[lang][c.type],
+        <span key="d" className="tabular-nums">
+          {c.dgDecision.number} · {c.dgDecision.date}
+        </span>,
+        c.agreementIds.length,
+        c.mediators.length === 0 ? m.noMediators : c.mediators.map((x) => x.name).join(", "),
+        <Badge key="b" tone={c.ongoing ? "attention" : "ok"}>
+          {t(c.status, lang)}
+        </Badge>,
+      ],
+      sort: [
+        status.label,
+        c.id,
+        c.name,
+        MEDIATION_TYPE_LABEL[lang][c.type],
+        c.dgDecision.date,
+        c.agreementIds.length,
+        "",
+        t(c.status, lang),
+      ],
+    };
+  });
+
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={m.title} subtitle={m.subtitle} tags={["FF-006", "FF-007"]} />
@@ -30,70 +79,7 @@ export default async function MediationListPage() {
         {cases.length === 0 ? (
           <EmptyState text={m.empty} />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[52rem] text-table">
-              <thead>
-                <tr className="border-b border-border text-left text-label text-muted-foreground">
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.status}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.caseNumber}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.name}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.type}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.dgDecision}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.agreements}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {m.table.mediators}
-                  </th>
-                  <th scope="col" className="py-2 font-semibold">
-                    {m.table.status}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {cases.map((c) => (
-                  <tr key={c.id} className="border-b border-border/60 last:border-0">
-                    <td className="py-3 pr-4">
-                      <StatusDot
-                        status={statusInfo(c.ongoing ? "after-mediation" : "remaining", lang)}
-                        showLabel
-                      />
-                    </td>
-                    <td className="py-3 pr-4 font-semibold text-primary">
-                      <Link
-                        href={`/medling/${c.id}`}
-                        className="underline underline-offset-2"
-                      >
-                        {caseNumber(c.id)}
-                      </Link>
-                    </td>
-                    <td className="py-3 pr-4">{c.name}</td>
-                    <td className="py-3 pr-4">{MEDIATION_TYPE_LABEL[lang][c.type]}</td>
-                    <td className="py-3 pr-4 tabular-nums">
-                      {c.dgDecision.number} · {c.dgDecision.date}
-                    </td>
-                    <td className="py-3 pr-4">{i18n.common.agreementCount(c.agreementIds.length)}</td>
-                    <td className="py-3 pr-4">
-                      {c.mediators.length === 0
-                        ? m.noMediators
-                        : c.mediators.map((x) => x.name).join(", ")}
-                    </td>
-                    <td className="py-3">{t(c.status, lang)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable columns={columns} rows={rows} lang={lang} caption={m.title} />
         )}
       </Panel>
     </AppShell>

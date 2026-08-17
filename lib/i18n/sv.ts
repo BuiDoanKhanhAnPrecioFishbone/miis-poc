@@ -38,6 +38,11 @@ export const sv = {
     agreementCount: (n: number) => `${n} avtal`,
     andMoreRows: (n: number) => `… ytterligare ${n} rader`,
     reqTagAria: (id: string) => `Krav-ID ${id}`,
+    sortBy: (column: string) => `Sortera på ${column}`,
+    sortedAscending: "Sorterat stigande",
+    sortedDescending: "Sorterat fallande",
+    backTo: (page: string) => `Tillbaka till ${page}`,
+    notInDemo: "Ej aktiv i demon",
     requirementUnknown: "Kravtexten finns inte registrerad för detta id.",
   },
 

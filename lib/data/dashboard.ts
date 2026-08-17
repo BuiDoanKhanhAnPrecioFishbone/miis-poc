@@ -47,7 +47,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
         text: eventText(e, lang),
       })),
       emptyText: s.events.empty,
-      footnote: s.events.footnote,
+      note: s.events.footnote,
     };
   }
 
@@ -72,7 +72,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
             text: t(r.text, lang),
           })),
           emptyText: s.reminders.empty,
-          footnote: s.reminders.footnote,
+          rationale: s.reminders.footnote,
           ...(total > 0 ? { action: { text: i18n.common.showAll(total) } } : {}),
         },
         {
@@ -90,7 +90,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
               badge: s.incomplete.badge,
             })),
           emptyText: s.incomplete.empty,
-          footnote: s.incomplete.footnote,
+          rationale: s.incomplete.footnote,
           action: {
             text: s.incomplete.action,
             href: NAV_HREF.rapporter,
@@ -127,7 +127,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
             badge: s.ongoingMediations.badge,
           })),
           emptyText: s.ongoingMediations.empty,
-          footnote: s.ongoingMediations.footnote,
+          rationale: s.ongoingMediations.footnote,
           action: { text: s.ongoingMediations.action, href: NAV_HREF.medling },
         },
         {
@@ -139,7 +139,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
             badge: s.dgDecisions.badge,
           })),
           emptyText: s.dgDecisions.empty,
-          footnote: s.dgDecisions.footnote,
+          note: s.dgDecisions.footnote,
         },
         {
           kind: "list",
@@ -147,7 +147,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           reqTags: ["FF-004"],
           items: s.partyMeetings.items.map((text) => ({ text })),
           emptyText: s.partyMeetings.empty,
-          footnote: s.partyMeetings.footnote,
+          rationale: s.partyMeetings.footnote,
           action: { text: s.partyMeetings.action, href: NAV_HREF.partstraffar },
         },
         events,
@@ -173,7 +173,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
             badge: m.active ? s.mediatorRegister.active : s.mediatorRegister.inactive,
           })),
           emptyText: s.mediatorRegister.empty,
-          footnote: s.mediatorRegister.footnote,
+          rationale: s.mediatorRegister.footnote,
           action: { text: s.mediatorRegister.action, href: NAV_HREF.medlare },
         },
         {
@@ -188,7 +188,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
                 : s.casesNeedingMediators.missing,
           })),
           emptyText: s.casesNeedingMediators.empty,
-          footnote: s.casesNeedingMediators.footnote,
+          note: s.casesNeedingMediators.footnote,
         },
       ];
 
@@ -202,7 +202,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           title: s.savedSearches.title,
           reqTags: ["FR-002"],
           items: s.savedSearches.items.map((text) => ({ text })),
-          footnote: s.savedSearches.footnote,
+          rationale: s.savedSearches.footnote,
           action: { text: s.savedSearches.action, href: NAV_HREF.sok },
         },
         {
@@ -213,7 +213,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
             text,
             ...(i === 0 ? { badge: s.snapshots.latest } : {}),
           })),
-          footnote: s.snapshots.footnote,
+          rationale: s.snapshots.footnote,
         },
       ];
 
@@ -227,7 +227,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           title: s.logs.title,
           reqTags: ["NFL-001", "NFL-002", "NFL-004"],
           items: s.logs.items.map((text) => ({ text })),
-          footnote: s.logs.footnote,
+          rationale: s.logs.footnote,
           action: { text: s.logs.action, href: NAV_HREF.administration },
         },
         {
@@ -235,7 +235,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           title: s.watchwords.title,
           reqTags: ["FAI-004"],
           items: s.watchwords.items.map((text) => ({ text, badge: s.watchwords.active })),
-          footnote: s.watchwords.footnote,
+          rationale: s.watchwords.footnote,
         },
       ];
 
@@ -249,7 +249,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           title: s.users.title,
           reqTags: ["NFÅ-005", "NFÅ-003"],
           items: s.users.items.map((text) => ({ text, badge: s.users.active })),
-          footnote: s.users.footnote,
+          rationale: s.users.footnote,
           action: { text: s.users.action, href: NAV_HREF.anvandare },
         },
         {
@@ -257,7 +257,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           title: s.userTasks.title,
           reqTags: ["NFÅ-005"],
           items: [{ text: s.userTasks.item, badge: s.userTasks.badge }],
-          footnote: s.userTasks.footnote,
+          rationale: s.userTasks.footnote,
         },
       ];
 
@@ -273,7 +273,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           title: i18n.allmanheten.result.title,
           reqTags: ["FR-011", "NFÅ-006"],
           items: [{ text: i18n.allmanheten.publicExplain }],
-          footnote: i18n.allmanheten.subtitle,
+          note: i18n.allmanheten.subtitle,
           action: { text: i18n.allmanheten.title, href: "/allmanheten" },
         },
       ];
@@ -294,7 +294,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           reqTags: ["FF-006", "NFÅ-007"],
           items: [{ text: s.mediatorAssignments.item, badge: s.mediatorAssignments.badge }],
           emptyText: s.mediatorAssignments.empty,
-          footnote: s.mediatorAssignments.footnote,
+          rationale: s.mediatorAssignments.footnote,
         },
         {
           kind: "list",

@@ -36,12 +36,24 @@ const ROLE_DEFAULT = "agreement-admin";
  * The screens the tender shows, with the role each one belongs to. The role is
  * part of the shot: the award criterion is role-based scenarios, so a screen
  * captured under the wrong persona shows the wrong menu.
+ *
+ * `fullPage` defaults to true. Set it false with a `scrollTo` where the point of
+ * the screen is what happens *while* you scroll — /registrera pins the protocol
+ * beside the form, and a full-page capture flattens that into a tall left-hand
+ * gap rather than showing the behaviour it exists for.
  */
 const SHOTS = [
   { name: "start-avtalsadministrator", path: "/", role: "agreement-admin" },
   { name: "start-medlingsadministrator", path: "/", role: "mediation-admin" },
   { name: "start-statistikanvandare", path: "/", role: "statistics-user" },
   { name: "registrera-protokoll", path: "/registrera", role: "agreement-admin" },
+  {
+    name: "registrera-protokoll-kallkoppling",
+    path: "/registrera",
+    role: "agreement-admin",
+    fullPage: false,
+    scrollTo: 900,
+  },
   { name: "rapporter-konjunkturlonerapporten", path: "/rapporter", role: "agreement-admin" },
   { name: "sok-sokbyggaren", path: "/sok", role: "statistics-user" },
   { name: "medling-arendelista", path: "/medling", role: "mediation-admin" },
@@ -65,7 +77,7 @@ async function main() {
 
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    viewport: { width: WIDTH, height: 1000 },
+    viewport: { width: WIDTH, height: 1200 },
     deviceScaleFactor: 2,
     locale: LANG === "en" ? "en-GB" : "sv-SE",
     // The recording is of a screen, not of an animation.
@@ -93,9 +105,14 @@ async function main() {
         continue;
       }
 
+      if (shot.scrollTo) {
+        await page.evaluate((y) => window.scrollTo(0, y), shot.scrollTo);
+        await page.waitForTimeout(150);
+      }
+
       const suffix = [LANG, WIDTH, reqTags === "on" ? "kravid" : "produkt"].join("-");
       const file = path.join(OUT, `${shot.name}--${suffix}.png`);
-      await page.screenshot({ path: file, fullPage: true });
+      await page.screenshot({ path: file, fullPage: shot.fullPage !== false });
       console.log(`  ${path.relative(process.cwd(), file)}`);
     }
   }

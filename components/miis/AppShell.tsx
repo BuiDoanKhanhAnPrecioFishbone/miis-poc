@@ -58,7 +58,11 @@ export function AppShell({
     const href = NAV_HREF[id];
     const active = isActive(pathname, href);
     return (
-      <Link href={href} aria-current={active ? "page" : undefined} className={itemClass(active, nested)}>
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={itemClass(active, nested)}
+      >
         {t.nav[id]}
       </Link>
     );

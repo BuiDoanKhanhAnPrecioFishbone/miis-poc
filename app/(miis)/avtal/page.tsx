@@ -4,7 +4,16 @@ import { PlaceholderPage } from "@/components/miis/Placeholder";
 import { getSession } from "@/lib/session";
 
 /** Requirement IDs are structure, so they stay here; the sentences are copy. */
-const FEATURE_IDS = ["FA-001", "FA-002", "FA-003", "FA-004", "FA-011", "FA-017", "FA-021", "FA-022"];
+const FEATURE_IDS = [
+  "FA-001",
+  "FA-002",
+  "FA-003",
+  "FA-004",
+  "FA-011",
+  "FA-017",
+  "FA-021",
+  "FA-022",
+];
 
 export async function generateMetadata(): Promise<Metadata> {
   const { i18n } = await getSession();

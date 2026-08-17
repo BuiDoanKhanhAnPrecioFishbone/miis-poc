@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
-import { ReqTag } from "./primitives";
+import { Button, ReqTag } from "./primitives";
 
 /**
  * NFÅ-002 — inactive sessions end automatically after a configurable limit,
@@ -102,7 +102,9 @@ export function SessionTimeoutWarning({
         return;
       }
       if (e.key !== "Tab") return;
-      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>("button, [href], [tabindex]:not([tabindex='-1'])");
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        "button, [href], [tabindex]:not([tabindex='-1'])",
+      );
       if (!focusable || focusable.length === 0) return;
       const first = focusable[0]!;
       const last = focusable[focusable.length - 1]!;
@@ -156,20 +158,10 @@ export function SessionTimeoutWarning({
         <p className="mt-3 text-label text-muted-foreground">{t.unsaved}</p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={close}
-            className="min-h-12 rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
-            {t.continueWorking}
-          </button>
-          <button
-            type="button"
-            onClick={close}
-            className="min-h-12 rounded-sm border-2 border-primary bg-transparent px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-          >
+          <Button onClick={close}>{t.continueWorking}</Button>
+          <Button variant="secondary" onClick={close}>
             {t.logout}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

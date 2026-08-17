@@ -5,7 +5,16 @@ import { useState } from "react";
 import type { Lang } from "@/lib/domain/lang";
 import type { ExtractStatus, MonitoredAgreementRow } from "@/lib/domain/report";
 import { dictionary } from "@/lib/i18n";
-import { ConfidentialityMarker, Panel, ReqTag } from "./primitives";
+import { DataTable, type Column, type Row } from "./DataTable";
+import {
+  Badge,
+  Button,
+  Callout,
+  ConfidentialityMarker,
+  Panel,
+  Rationale,
+  ReqTag,
+} from "./primitives";
 
 /**
  * FR-008 — Konjunkturlönerapporten.
@@ -22,6 +31,12 @@ import { ConfidentialityMarker, Panel, ReqTag } from "./primitives";
  * partial ones are live rather than decorative, and the reminder (FA-022) sits
  * on the same row as the gap it is about.
  */
+
+const STATUS_TONE: Record<ExtractStatus, "ok" | "attention" | "neutral"> = {
+  registered: "ok",
+  partial: "attention",
+  "not-registered": "neutral",
+};
 
 export function ShortTermWageReport({
   rows,
@@ -50,11 +65,76 @@ export function ShortTermWageReport({
     "not-registered": t.notRegistered,
   };
 
-  const statusClass: Record<ExtractStatus, string> = {
-    registered: "border-mint-border bg-mint text-primary",
-    partial: "border-sand-border bg-sand text-sand-foreground",
-    "not-registered": "border-input bg-card text-muted-foreground",
-  };
+  const columns: Column[] = [
+    { key: "select", header: t.table.select },
+    { key: "agreement", header: t.table.agreement, sortable: true },
+    { key: "parties", header: t.table.parties, sortable: true },
+    { key: "registration", header: t.table.registration, sortable: true },
+    { key: "protocol", header: t.table.protocol, sortable: true },
+    { key: "exported", header: t.table.exported, sortable: true },
+    { key: "reminder", header: t.table.reminder, sortable: true },
+  ];
+
+  const tableRows: Row[] = rows.map((r) => ({
+    key: r.id,
+    cells: [
+      <label key="s" className="flex min-h-11 min-w-11 items-center gap-2">
+        <input
+          type="checkbox"
+          checked={selected[r.id] ?? false}
+          onChange={() => setSelected((s) => ({ ...s, [r.id]: !s[r.id] }))}
+          className="size-5 accent-[var(--primary)]"
+        />
+        <span className="sr-only">
+          {t.table.select}: {r.name}
+        </span>
+      </label>,
+      <span key="a" className="flex flex-wrap items-center gap-2">
+        {r.name}
+        {r.confidential && (
+          <ConfidentialityMarker
+            compact
+            label={d.confidentiality.marked}
+            note={d.confidentiality.inStatistics}
+          />
+        )}
+      </span>,
+      r.parties,
+      <Badge key="r" tone={STATUS_TONE[r.status]}>
+        {statusLabel[r.status]}
+      </Badge>,
+      r.protocolFile ? (
+        <a key="p" href="#" className="font-semibold text-primary underline underline-offset-2">
+          {t.openProtocol}
+        </a>
+      ) : (
+        <span key="p" className="text-muted-foreground">
+          {t.protocolMissing}
+        </span>
+      ),
+      <span key="e" className="tabular-nums">
+        {r.lastExported ? t.exportedYes(r.lastExported) : t.exportedNo}
+      </span>,
+      r.reminderDate ? (
+        <span key="m" className="tabular-nums">
+          {t.reminderSet(r.reminderDate)}
+        </span>
+      ) : (
+        <Button key="m" variant="secondary" size="sm">
+          {t.setReminder}
+        </Button>
+      ),
+    ],
+    sort: [
+      "",
+      r.name,
+      r.parties,
+      statusLabel[r.status],
+      r.protocolFile ? t.openProtocol : t.protocolMissing,
+      r.lastExported ?? "",
+      r.reminderDate ?? "",
+    ],
+  }));
 
   return (
     <Panel title={t.heading} tags={["FR-008", "FA-021"]}>
@@ -71,133 +151,37 @@ export function ShortTermWageReport({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[60rem] text-table">
-          <thead>
-            <tr className="border-b border-border text-left text-label text-muted-foreground">
-              <th scope="col" className="py-2 pr-4 font-semibold">
-                {t.table.select}
-              </th>
-              <th scope="col" className="py-2 pr-4 font-semibold">
-                {t.table.agreement}
-              </th>
-              <th scope="col" className="py-2 pr-4 font-semibold">
-                {t.table.parties}
-              </th>
-              <th scope="col" className="py-2 pr-4 font-semibold">
-                {t.table.registration}
-              </th>
-              <th scope="col" className="py-2 pr-4 font-semibold">
-                {t.table.protocol}
-              </th>
-              <th scope="col" className="py-2 pr-4 font-semibold">
-                {t.table.exported}
-              </th>
-              <th scope="col" className="py-2 font-semibold">
-                {t.table.reminder}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.id} className="border-b border-border/60 last:border-0">
-                <td className="py-3 pr-4">
-                  <label className="flex min-h-11 min-w-11 items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selected[r.id] ?? false}
-                      onChange={() => setSelected((s) => ({ ...s, [r.id]: !s[r.id] }))}
-                      className="size-5 accent-[var(--primary)]"
-                    />
-                    <span className="sr-only">
-                      {t.table.select}: {r.name}
-                    </span>
-                  </label>
-                </td>
-                <td className="py-3 pr-4">
-                  <span className="flex flex-wrap items-center gap-2">
-                    {r.name}
-                    {r.confidential && (
-                      <ConfidentialityMarker
-                        label={d.confidentiality.marked}
-                        note={d.confidentiality.inStatistics}
-                      />
-                    )}
-                  </span>
-                </td>
-                <td className="py-3 pr-4">{r.parties}</td>
-                <td className="py-3 pr-4">
-                  <span
-                    className={`inline-block rounded-sm border px-2 py-0.5 text-meta font-bold tracking-wide ${statusClass[r.status]}`}
-                  >
-                    {statusLabel[r.status]}
-                  </span>
-                </td>
-                <td className="py-3 pr-4">
-                  {r.protocolFile ? (
-                    <a
-                      href="#"
-                      className="font-semibold text-primary underline underline-offset-2"
-                    >
-                      {t.openProtocol}
-                    </a>
-                  ) : (
-                    <span className="text-muted-foreground">{t.protocolMissing}</span>
-                  )}
-                </td>
-                <td className="py-3 pr-4 tabular-nums">
-                  {r.lastExported ? t.exportedYes(r.lastExported) : t.exportedNo}
-                </td>
-                <td className="py-3">
-                  {r.reminderDate ? (
-                    <span className="tabular-nums">{t.reminderSet(r.reminderDate)}</span>
-                  ) : (
-                    <button
-                      type="button"
-                      className="min-h-11 rounded-sm border-2 border-primary px-3 py-1.5 text-label font-bold text-primary transition-colors hover:bg-secondary"
-                    >
-                      {t.setReminder}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        columns={columns}
+        rows={tableRows}
+        lang={lang}
+        caption={t.heading}
+        minWidth="60rem"
+      />
 
-      <p className="mt-3 flex flex-wrap items-center gap-2 text-label text-muted-foreground">
-        {t.protocolIncompleteNote}
-        <ReqTag id="FR-008" />
-      </p>
+      <Rationale>
+        {t.protocolIncompleteNote} <ReqTag id="FR-008" />
+      </Rationale>
 
       <p aria-live="polite" className="mt-4 text-table font-semibold">
         {t.selectedCount(selectedRows.length, rows.length)}
       </p>
 
       {partialInExtract > 0 && (
-        <p className="mt-2 rounded-md border-2 border-sand-border bg-sand px-4 py-3 text-label text-sand-foreground">
-          {t.incompleteWarning(partialInExtract)}
-        </p>
+        <div className="mt-2">
+          <Callout tone="attention" live>
+            {t.incompleteWarning(partialInExtract)}
+          </Callout>
+        </div>
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-        <button
-          type="button"
-          className="min-h-12 rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-        >
-          {t.export}
-        </button>
+        <Button>{t.export}</Button>
         <span className="text-label text-muted-foreground">{t.exportFormats}</span>
         <ReqTag id="FR-005" />
-        <button
-          type="button"
-          className="min-h-12 rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-        >
-          {t.markExported}
-        </button>
+        <Button variant="secondary">{t.markExported}</Button>
       </div>
-      <p className="mt-2 text-label text-muted-foreground">{t.markExportedNote}</p>
+      <Rationale>{t.markExportedNote}</Rationale>
     </Panel>
   );
 }

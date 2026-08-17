@@ -40,6 +40,11 @@ export const en: Dictionary = {
     agreementCount: (n: number) => `${n} agreements`,
     andMoreRows: (n: number) => `… ${n} more rows`,
     reqTagAria: (id: string) => `Requirement ID ${id}`,
+    sortBy: (column: string) => `Sort by ${column}`,
+    sortedAscending: "Sorted ascending",
+    sortedDescending: "Sorted descending",
+    backTo: (page: string) => `Back to ${page}`,
+    notInDemo: "Not active in the demo",
     requirementUnknown: "No requirement text is registered for this ID.",
   },
 

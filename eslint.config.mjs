@@ -48,6 +48,34 @@ const config = [
     },
   },
   {
+    // THE DRIFT RULE.
+    //
+    // The design system only holds if it is cheaper to use than to bypass. It
+    // was not: `Button` was used 13 times and hand-rolled 27, badges existed as
+    // ten copies of the same class string, and seven tables repeated the same
+    // <thead> markup. Duplicated Tailwind is also what makes NFU-002/NFU-004 —
+    // "another supplier can take this over" — ring hollow to a technical
+    // evaluator reading the handed-over source.
+    //
+    // So a screen may not build its own. Import from components/miis/.
+    files: ["app/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "JSXOpeningElement[name.name='button']",
+          message:
+            "Use <Button> from components/miis/primitives. Variants: primary, secondary, ghost, danger.",
+        },
+        {
+          selector: "JSXOpeningElement[name.name='table']",
+          message:
+            "Use <DataTable> from components/miis/DataTable — it carries the sticky header, sorting and the overflow guard.",
+        },
+      ],
+    },
+  },
+  {
     // lib/domain/ is pure: types and rules, no I/O, no framework.
     files: ["lib/domain/**/*.ts"],
     rules: {

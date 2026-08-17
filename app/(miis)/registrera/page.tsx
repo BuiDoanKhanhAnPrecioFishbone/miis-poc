@@ -3,11 +3,13 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/miis/AppShell";
 import { ProtocolReview } from "@/components/miis/ProtocolReview";
 import {
+  Badge,
   Button,
   ConfidentialityMarker,
   Field,
   PageHeading,
   Panel,
+  Rationale,
   ReqTag,
 } from "@/components/miis/primitives";
 import { listExtractionProposals } from "@/lib/data/extraction";
@@ -31,11 +33,7 @@ export default async function RegistreraPage() {
 
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
-      <PageHeading
-        title={t.title}
-        subtitle={t.subtitle}
-        tags={["FAI-001", "FAI-002", "FAI-003"]}
-      />
+      <PageHeading title={t.title} subtitle={t.subtitle} tags={["FAI-001", "FAI-002", "FAI-003"]} />
 
       <ol className="mb-6 flex flex-wrap gap-3">
         {t.steps.map((s, i) => (
@@ -53,9 +51,7 @@ export default async function RegistreraPage() {
         ))}
       </ol>
 
-      <ProtocolReview proposals={proposals} lang={lang} />
-
-      <div className="mt-5 space-y-5">
+      <ProtocolReview proposals={proposals} lang={lang}>
         <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
           <div className="space-y-4">
             <Field
@@ -121,21 +117,18 @@ export default async function RegistreraPage() {
           </div>
         </Panel>
 
-        <div className="grid gap-5 @3xl:grid-cols-2">
+        <div className="grid gap-5 @5xl:grid-cols-2">
           <Panel title={t.terms.title} tags={["FA-003", "FA-004"]}>
             <div className="grid gap-4 @xl:grid-cols-2">
               <Field label={t.terms.ownSignedDate} value="2027-05-28" />
               <Field label={t.terms.ownValidity} value="2027-06-01 – 2030-05-31" />
             </div>
-            <p className="mt-3 text-label text-muted-foreground">{t.terms.note}</p>
+            <Rationale>{t.terms.note}</Rationale>
           </Panel>
 
           <Panel title={t.link.title} tags={["FF-002", "FD-001"]}>
             <div className="grid gap-4 @xl:grid-cols-2">
-              <Field
-                label={t.link.negotiation}
-                value="FÖ-2027/218 – Kommunikation, 2027-05-28"
-              />
+              <Field label={t.link.negotiation} value="FÖ-2027/218 – Kommunikation, 2027-05-28" />
               <Field label={t.link.documentLinkedTo} value={t.link.documentLinkedToValue} />
             </div>
           </Panel>
@@ -173,26 +166,24 @@ export default async function RegistreraPage() {
                 note={i18n.confidentiality.inStatistics}
               />
             </div>
-            <p className="mt-1 text-label text-muted-foreground">{t.save.confidentialityHint}</p>
+            <Rationale>{t.save.confidentialityHint}</Rationale>
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-4">
+          <div className="mt-5 flex flex-wrap items-center gap-3">
             <Button>{t.save.approveAndLink}</Button>
-            <Button variant="outline">{t.save.saveIncomplete}</Button>
-            <span className="text-label text-muted-foreground">{t.save.incompleteNote}</span>
+            <Button variant="secondary">{t.save.saveIncomplete}</Button>
             <ReqTag id="FA-022" />
           </div>
+          <Rationale>{t.save.incompleteNote}</Rationale>
 
-          <p className="mt-4 rounded-md border border-border bg-secondary px-4 py-3 text-label text-muted-foreground">
-            {t.save.auditNote}
-          </p>
+          <Rationale>{t.save.auditNote}</Rationale>
           <div className="mt-2 flex flex-wrap gap-2">
             <ReqTag id="FH-001" />
             <ReqTag id="FH-002" />
             <ReqTag id="FR-012" />
           </div>
         </Panel>
-      </div>
+      </ProtocolReview>
     </AppShell>
   );
 }

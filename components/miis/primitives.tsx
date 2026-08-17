@@ -5,12 +5,19 @@
  * stay server-rendered AND lets the same primitives be used inside the few
  * "use client" screens without a second set of look-alikes. Anything that needs
  * the request (role, language, cookies) is resolved in the page and passed in.
+ *
+ * If a screen needs a button, a badge, a note box or a chip, it comes from here.
+ * A raw <button> outside components/ fails `npm run lint` — see eslint.config.mjs.
  */
 
 import type { ReactNode } from "react";
 
 import { REQUIREMENTS } from "@/lib/domain/requirements";
 import type { StatusInfo } from "@/lib/domain/status";
+
+/* -------------------------------------------------------------------------- */
+/* Annotation layer                                                            */
+/* -------------------------------------------------------------------------- */
 
 /**
  * A requirement ID, rendered as a margin annotation.
@@ -70,6 +77,211 @@ export function ReqTags({ ids }: { ids?: readonly string[] }) {
   );
 }
 
+/**
+ * Prose that explains *why* a screen is built this way, rather than telling the
+ * user what to do next.
+ *
+ * It rides the same `data-reqtags` switch as `ReqTag`, so the product view stays
+ * a product and the traceability view carries the argument. If a sentence is
+ * something a case officer needs in order to do the task correctly, it does not
+ * belong in here — it belongs in the screen.
+ */
+export function Rationale({ children }: { children: ReactNode }) {
+  return <p className="rationale mt-3 text-label text-muted-foreground">{children}</p>;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Controls                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+
+const BUTTON_VARIANT: Record<ButtonVariant, string> = {
+  primary: "border-transparent bg-primary text-primary-foreground hover:bg-[var(--mi-slate-900)]",
+  secondary: "border-primary bg-transparent text-primary hover:bg-secondary",
+  ghost: "border-transparent bg-transparent text-primary hover:bg-secondary",
+  danger: "border-error-border bg-transparent text-error-foreground hover:bg-error",
+};
+
+/**
+ * The one button.
+ *
+ * `md` is 48px and `sm` is 44px — both clear the 44×44 target minimum, so an
+ * in-row action can be compact without failing it.
+ *
+ * `disabledReason` exists because a control that silently does nothing teaches
+ * an evaluator that the prototype is a picture. If something is not wired up,
+ * say so on the control rather than letting the click vanish.
+ */
+export function Button({
+  children,
+  variant = "primary",
+  size = "md",
+  type = "button",
+  onClick,
+  disabled,
+  disabledReason,
+  fullWidth,
+  pressed,
+  ariaLabel,
+}: {
+  children: ReactNode;
+  variant?: ButtonVariant;
+  size?: "md" | "sm";
+  type?: "button" | "submit";
+  /** Only passed from client components; server pages leave it out. */
+  onClick?: () => void;
+  disabled?: boolean;
+  disabledReason?: string;
+  fullWidth?: boolean;
+  pressed?: boolean;
+  ariaLabel?: string;
+}) {
+  const sizeClass =
+    size === "sm" ? "min-h-11 px-3 py-2 text-label" : "min-h-12 px-5 py-3 text-table";
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      aria-disabled={disabled || undefined}
+      aria-pressed={pressed}
+      aria-label={ariaLabel}
+      title={disabled ? disabledReason : undefined}
+      className={[
+        "rounded-sm border-2 font-bold transition-colors",
+        sizeClass,
+        BUTTON_VARIANT[variant],
+        fullWidth ? "w-full" : "",
+        disabled ? "cursor-not-allowed opacity-60" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {children}
+    </button>
+  );
+}
+
+export type Tone = "neutral" | "ok" | "attention" | "error" | "ai";
+
+const BADGE_TONE: Record<Tone, string> = {
+  neutral: "border-input bg-card text-muted-foreground",
+  ok: "border-ok-border bg-ok text-ok-foreground",
+  attention: "border-attention-border bg-attention text-attention-foreground",
+  error: "border-error-border bg-error text-error-foreground",
+  ai: "border-ai-border bg-ai text-ai-foreground",
+};
+
+/**
+ * A short state word. Always a word — a badge is never a bare colour, and never
+ * borrows the FR-012 status hues (see the token comments in globals.css).
+ */
+export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: Tone }) {
+  return (
+    <span
+      className={`inline-block shrink-0 rounded-sm border px-2 py-0.5 text-meta font-bold tracking-wide ${BADGE_TONE[tone]}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+const CALLOUT_TONE: Record<Exclude<Tone, "neutral">, string> = {
+  ok: "border-l-ok-border bg-ok text-ok-foreground",
+  attention: "border-l-attention-border bg-attention text-attention-foreground",
+  error: "border-l-error-border bg-error text-error-foreground",
+  ai: "border-l-ai-border bg-ai text-ai-foreground",
+};
+
+const CALLOUT_ICON: Record<Exclude<Tone, "neutral">, string> = {
+  ok: "✓",
+  attention: "!",
+  error: "✕",
+  ai: "✦",
+};
+
+/**
+ * System feedback.
+ *
+ * Deliberately shaped rather than merely coloured: a 4px left rule, an icon and
+ * an optional bold label word. That is what keeps it distinguishable from an
+ * agreement's FR-012 status, which owns green, red and blue and means something
+ * else entirely.
+ */
+export function Callout({
+  children,
+  tone = "attention",
+  label,
+  live,
+  tags,
+}: {
+  children: ReactNode;
+  tone?: Exclude<Tone, "neutral">;
+  label?: string;
+  /** Set when the message changes in response to what the user just did. */
+  live?: boolean;
+  tags?: readonly string[];
+}) {
+  return (
+    <div
+      aria-live={live ? "polite" : undefined}
+      className={`flex flex-wrap items-start gap-x-2 gap-y-1 rounded-md border border-l-4 px-4 py-3 text-label ${CALLOUT_TONE[tone]}`}
+    >
+      <span aria-hidden className="font-bold">
+        {CALLOUT_ICON[tone]}
+      </span>
+      <span className="min-w-0 flex-1">
+        {label && <span className="font-bold">{label} </span>}
+        {children}
+      </span>
+      <ReqTags ids={tags} />
+    </div>
+  );
+}
+
+/** A selection, shown where its effect is — removable when the user chose it. */
+export function Chip({
+  children,
+  selected,
+  onRemove,
+  removeLabel,
+}: {
+  children: ReactNode;
+  selected?: boolean;
+  onRemove?: () => void;
+  removeLabel?: string;
+}) {
+  const base =
+    "inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-label font-semibold";
+  const tone = selected
+    ? "border-primary bg-accent text-accent-foreground"
+    : "border-border bg-secondary text-secondary-foreground";
+
+  if (!onRemove) {
+    return <span className={`${base} ${tone}`}>{children}</span>;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onRemove}
+      aria-label={removeLabel}
+      className={`${base} ${tone} min-h-11 transition-colors hover:bg-accent`}
+    >
+      <span>{children}</span>
+      <span aria-hidden className="font-bold">
+        ✕
+      </span>
+    </button>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Layout                                                                       */
+/* -------------------------------------------------------------------------- */
+
 export function Panel({
   title,
   action,
@@ -77,6 +289,7 @@ export function Panel({
   children,
   tone = "default",
   headingLevel = 2,
+  id,
 }: {
   title?: string;
   action?: ReactNode;
@@ -85,6 +298,7 @@ export function Panel({
   tone?: "default" | "sand" | "mint" | "demo";
   /** Drops to 3 when the panel sits under another heading — order matters (WCAG 1.3.1). */
   headingLevel?: 2 | 3;
+  id?: string;
 }) {
   const toneClass =
     tone === "sand"
@@ -98,7 +312,7 @@ export function Panel({
   const Heading = headingLevel === 3 ? "h3" : "h2";
 
   return (
-    <section className={`rounded-lg border p-5 ${toneClass}`}>
+    <section id={id} className={`rounded-lg border p-5 ${toneClass}`}>
       {(title || action || tags) && (
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -151,11 +365,7 @@ export function Field({
       {(label || ai) && (
         <div className="mb-1 flex flex-wrap items-center gap-2">
           {label && <span className="text-label font-bold text-foreground">{label}</span>}
-          {ai && aiLabel && (
-            <span className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold tracking-wide text-ai-foreground">
-              {aiLabel}
-            </span>
-          )}
+          {ai && aiLabel && <Badge tone="ai">{aiLabel}</Badge>}
         </div>
       )}
       {masked ? (
@@ -174,26 +384,9 @@ export function Field({
   );
 }
 
-export function Button({
-  children,
-  variant = "primary",
-}: {
-  children: ReactNode;
-  variant?: "primary" | "outline";
-}) {
-  return (
-    <button
-      type="button"
-      className={
-        variant === "primary"
-          ? "min-h-12 rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          : "min-h-12 rounded-sm border-2 border-primary bg-transparent px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-      }
-    >
-      {children}
-    </button>
-  );
-}
+/* -------------------------------------------------------------------------- */
+/* Domain markers                                                               */
+/* -------------------------------------------------------------------------- */
 
 /**
  * FR-012 status marker.
@@ -220,8 +413,7 @@ export function StatusDot({
         ? "var(--status-red)"
         : "var(--status-blue)";
 
-  const shapeClass =
-    status.shape === "square" ? "rounded-[2px]" : status.shape === "ring" ? "rounded-full" : "rounded-full";
+  const shapeClass = status.shape === "square" ? "rounded-[2px]" : "rounded-full";
 
   const style =
     status.shape === "ring"
@@ -249,16 +441,35 @@ export function StatusLegend({ text }: { text: string }) {
  * D-001 / D-002. A marked record says so in words, not by colour, and says in
  * the same breath that it still counts in the statistics — that distinction is
  * the requirement's actual substance.
+ *
+ * `compact` is for table rows. The full marker with its note triples the height
+ * of any row it lands in, which pushes the rest of the table off screen; in a
+ * row the icon carries the meaning and the label goes to assistive technology
+ * and to the tooltip. Detail views, which have the room, keep the full marker.
  */
 export function ConfidentialityMarker({
   label,
   note,
+  compact,
 }: {
   label: string;
   note?: string;
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <span
+        title={note ? `${label} — ${note}` : label}
+        className="inline-flex size-6 shrink-0 items-center justify-center rounded-sm border border-attention-border bg-attention text-attention-foreground"
+      >
+        <span aria-hidden>🔒</span>
+        <span className="sr-only">{note ? `${label}. ${note}` : label}</span>
+      </span>
+    );
+  }
+
   return (
-    <span className="inline-flex flex-wrap items-center gap-2 rounded-sm border-2 border-sand-border bg-sand px-3 py-1 text-label font-bold text-sand-foreground">
+    <span className="inline-flex flex-wrap items-center gap-2 rounded-sm border-2 border-attention-border bg-attention px-3 py-1 text-label font-bold text-attention-foreground">
       <span aria-hidden>🔒</span>
       {label}
       {note && <span className="font-normal">· {note}</span>}
@@ -281,26 +492,34 @@ export function PageHeading({
   action,
   tags,
   marker,
+  back,
 }: {
   title: string;
   subtitle?: string;
   action?: ReactNode;
   tags?: readonly string[];
   marker?: ReactNode;
+  /** A way out of a detail view that is not the main menu. */
+  back?: ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="font-display text-page-title font-semibold text-[var(--mi-slate-900)]">
-            {title}
-          </h1>
-          <ReqTags ids={tags} />
+    <div className="mb-6">
+      {back && <div className="mb-2">{back}</div>}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="font-display text-page-title font-semibold text-[var(--mi-slate-900)]">
+              {title}
+            </h1>
+            <ReqTags ids={tags} />
+          </div>
+          {subtitle && (
+            <p className="mt-1 max-w-3xl text-label text-muted-foreground">{subtitle}</p>
+          )}
+          {marker && <div className="mt-3">{marker}</div>}
         </div>
-        {subtitle && <p className="mt-1 max-w-3xl text-label text-muted-foreground">{subtitle}</p>}
-        {marker && <div className="mt-3">{marker}</div>}
+        {action}
       </div>
-      {action}
     </div>
   );
 }

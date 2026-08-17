@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import {
+  Badge,
   ConfidentialityMarker,
   EmptyState,
   PageHeading,
   Panel,
+  Rationale,
   ReqTag,
   StatusDot,
   StatusLegend,
@@ -30,15 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-function PanelBody({
-  panel,
-  i18n,
-  lang,
-}: {
-  panel: DashboardPanel;
-  i18n: Dictionary;
-  lang: Lang;
-}) {
+function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Dictionary; lang: Lang }) {
   switch (panel.kind) {
     case "log":
       if (panel.items.length === 0) {
@@ -63,74 +58,76 @@ function PanelBody({
           {panel.items.map((item) => (
             <li key={item.text} className="flex items-center justify-between gap-4 py-2.5">
               <span className="text-table">{item.text}</span>
-              {item.badge && (
-                <span className="shrink-0 rounded-md border border-mint-border bg-mint px-3 py-1 text-meta font-bold tracking-wide text-primary">
-                  {item.badge}
-                </span>
-              )}
+              {item.badge && <Badge tone="attention">{item.badge}</Badge>}
             </li>
           ))}
         </ul>
       );
 
-    case "agreement-table":
+    case "agreement-table": {
       if (panel.rows.length === 0) {
         return <EmptyState text={panel.emptyText ?? i18n.common.empty} />;
       }
+
+      const columns: Column[] = [
+        { key: "status", header: i18n.start.table.status, sortable: true },
+        { key: "name", header: i18n.start.table.agreement, sortable: true },
+        { key: "signed", header: i18n.start.table.signed, sortable: true },
+        { key: "validity", header: i18n.start.table.validity },
+        { key: "reg", header: i18n.start.table.registrationStatus, sortable: true },
+      ];
+
+      const rows: Row[] = panel.rows.map((row) => {
+        const status = statusInfo(row.status, lang);
+        return {
+          key: row.id,
+          // The status label is visible now, not only announced. It was hidden
+          // to keep visual parity during the migration, which was a migration
+          // decision rather than a design one — FR-012 status is information the
+          // reader of the table actually needs.
+          cells: [
+            <StatusDot key="s" status={status} showLabel />,
+            <span key="n" className="flex flex-wrap items-center gap-2">
+              {row.name}
+              {row.confidential && (
+                <ConfidentialityMarker
+                  compact
+                  label={i18n.confidentiality.marked}
+                  note={i18n.confidentiality.inStatistics}
+                />
+              )}
+            </span>,
+            <span key="d" className="tabular-nums">
+              {row.signedDate ?? i18n.common.none}
+            </span>,
+            <span key="v" className="tabular-nums">
+              {row.validity}
+            </span>,
+            registrationStatusLabel(row.registrationStatus, lang),
+          ],
+          sort: [
+            status.label,
+            row.name,
+            row.signedDate ?? "",
+            row.validity,
+            registrationStatusLabel(row.registrationStatus, lang),
+          ],
+        };
+      });
+
       return (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[44rem] text-table">
-              <thead>
-                <tr className="border-b border-border text-left text-label font-semibold text-muted-foreground">
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {i18n.start.table.status}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {i18n.start.table.agreement}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {i18n.start.table.signed}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {i18n.start.table.validity}
-                  </th>
-                  <th scope="col" className="py-2 font-semibold">
-                    {i18n.start.table.registrationStatus}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {panel.rows.map((row) => (
-                  <tr key={row.id} className="border-b border-border/60 last:border-0">
-                    {/*
-                      The status label is visible now, not only announced. It was
-                      hidden to keep visual parity during the migration, which was
-                      a migration decision rather than a design one — FR-012 status
-                      is information the reader of the table actually needs.
-                    */}
-                    <td className="py-3 pr-4">
-                      <StatusDot status={statusInfo(row.status, lang)} showLabel />
-                    </td>
-                    <td className="py-3 pr-4">
-                      <span className="flex flex-wrap items-center gap-2">
-                        {row.name}
-                        {row.confidential && (
-                          <ConfidentialityMarker label={i18n.confidentiality.marked} />
-                        )}
-                      </span>
-                    </td>
-                    <td className="py-3 pr-4 tabular-nums">{row.signedDate ?? i18n.common.none}</td>
-                    <td className="py-3 pr-4 tabular-nums">{row.validity}</td>
-                    <td className="py-3">{registrationStatusLabel(row.registrationStatus, lang)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={columns}
+            rows={rows}
+            lang={lang}
+            caption={panel.title}
+            minWidth="44rem"
+          />
           <StatusLegend text={STATUS_LEGEND[lang]} />
         </>
       );
+    }
   }
 }
 
@@ -143,6 +140,15 @@ export default async function DashboardPage() {
   const halfWidth = page.panels.filter(isHalfWidth);
   const fullWidth = page.panels.filter((p) => !isHalfWidth(p));
 
+  function Prose({ panel }: { panel: DashboardPanel }) {
+    return (
+      <>
+        {panel.note && <p className="mt-3 text-label text-muted-foreground">{panel.note}</p>}
+        {panel.rationale && <Rationale>{panel.rationale}</Rationale>}
+      </>
+    );
+  }
+
   return (
     <AppShell role={page.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
@@ -153,7 +159,7 @@ export default async function DashboardPage() {
           page.primaryAction ? (
             <Link
               href={page.primaryAction.href}
-              className="inline-flex min-h-12 items-center rounded-md bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
+              className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
             >
               {page.primaryAction.text}
             </Link>
@@ -187,9 +193,7 @@ export default async function DashboardPage() {
         {halfWidth.map((panel) => (
           <Panel key={panel.title} title={panel.title} tags={panel.reqTags}>
             <PanelBody panel={panel} i18n={i18n} lang={lang} />
-            {"footnote" in panel && panel.footnote && (
-              <p className="mt-3 text-label text-muted-foreground">{panel.footnote}</p>
-            )}
+            <Prose panel={panel} />
             {"action" in panel && panel.action && (
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 {panel.action.href ? (
@@ -200,12 +204,12 @@ export default async function DashboardPage() {
                     {panel.action.text}
                   </Link>
                 ) : (
-                  <button
-                    type="button"
-                    className="min-h-12 rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
+                  <Link
+                    href="/rapporter"
+                    className="inline-flex min-h-12 items-center rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
                   >
                     {panel.action.text}
-                  </button>
+                  </Link>
                 )}
                 {panel.action.reqTag && <ReqTag id={panel.action.reqTag} />}
               </div>
@@ -218,6 +222,7 @@ export default async function DashboardPage() {
         <div key={panel.title} className="mt-5">
           <Panel title={panel.title} tags={panel.reqTags}>
             <PanelBody panel={panel} i18n={i18n} lang={lang} />
+            <Prose panel={panel} />
           </Panel>
         </div>
       ))}

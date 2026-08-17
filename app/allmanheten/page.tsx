@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { PublicShell } from "@/components/miis/PublicShell";
 import {
+  Button,
   ConfidentialityMarker,
   EmptyState,
   PageHeading,
   Panel,
-  ReqTag,
+  Rationale,
+  ReqTags,
   StatusDot,
   StatusLegend,
 } from "@/components/miis/primitives";
@@ -32,6 +35,56 @@ export default async function AllmanhetenPage() {
     listEmployeeOrgs(),
   ]);
   const t = i18n.allmanheten;
+
+  const columns: Column[] = [
+    { key: "status", header: t.result.table.status, sortable: true },
+    { key: "agreement", header: t.result.table.agreement, sortable: true },
+    { key: "ago", header: t.result.table.employerOrg, sortable: true },
+    { key: "ato", header: t.result.table.employeeOrg, sortable: true },
+    { key: "validity", header: t.result.table.validity, sortable: true },
+  ];
+
+  const rows: Row[] = agreements.map((a) => {
+    const status = agreementStatus(a, lang);
+    return {
+      key: a.id,
+      cells: [
+        <StatusDot key="s" status={status} showLabel />,
+        <span key="a" className="flex flex-wrap items-center gap-2">
+          {a.name}
+          {/*
+            D-002: a marked agreement is still listed and still counted. What is
+            withheld is the detail, and the row says so rather than leaving a blank.
+          */}
+          {a.confidential && (
+            <ConfidentialityMarker
+              compact
+              label={i18n.confidentiality.marked}
+              note={i18n.confidentiality.reasonPublic}
+            />
+          )}
+        </span>,
+        a.employerOrg.name,
+        a.employeeOrg.name,
+        a.confidential ? (
+          <span key="v" className="text-muted-foreground">
+            {i18n.confidentiality.maskedValue}
+          </span>
+        ) : (
+          <span key="v" className="tabular-nums">
+            {validityLabel(a, lang)}
+          </span>
+        ),
+      ],
+      sort: [
+        status.label,
+        a.name,
+        a.employerOrg.name,
+        a.employeeOrg.name,
+        a.confidential ? "" : validityLabel(a, lang),
+      ],
+    };
+  });
 
   return (
     <PublicShell
@@ -113,18 +166,8 @@ export default async function AllmanhetenPage() {
         <p className="mt-3 text-label text-muted-foreground">{t.selection.hint}</p>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button
-            type="button"
-            className="min-h-12 rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
-            {t.selection.search}
-          </button>
-          <button
-            type="button"
-            className="min-h-12 rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-          >
-            {t.selection.reset}
-          </button>
+          <Button>{t.selection.search}</Button>
+          <Button variant="secondary">{t.selection.reset}</Button>
         </div>
       </Panel>
 
@@ -137,78 +180,13 @@ export default async function AllmanhetenPage() {
             <EmptyState text={t.result.empty} />
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[52rem] text-table">
-                  <thead>
-                    <tr className="border-b border-border text-left text-label text-muted-foreground">
-                      <th scope="col" className="py-2 pr-4 font-semibold">
-                        {t.result.table.status}
-                      </th>
-                      <th scope="col" className="py-2 pr-4 font-semibold">
-                        {t.result.table.agreement}
-                      </th>
-                      <th scope="col" className="py-2 pr-4 font-semibold">
-                        {t.result.table.employerOrg}
-                      </th>
-                      <th scope="col" className="py-2 pr-4 font-semibold">
-                        {t.result.table.employeeOrg}
-                      </th>
-                      <th scope="col" className="py-2 font-semibold">
-                        {t.result.table.validity}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {agreements.map((a) => (
-                      <tr key={a.id} className="border-b border-border/60 last:border-0">
-                        <td className="py-3 pr-4">
-                          <StatusDot status={agreementStatus(a, lang)} showLabel />
-                        </td>
-                        <td className="py-3 pr-4">
-                          <span className="flex flex-wrap items-center gap-2">
-                            {a.name}
-                            {/*
-                              D-002: a marked agreement is still listed and still
-                              counted. What is withheld is the detail, and the
-                              row says so rather than leaving a blank.
-                            */}
-                            {a.confidential && (
-                              <ConfidentialityMarker
-                                label={i18n.confidentiality.marked}
-                                note={i18n.confidentiality.reasonPublic}
-                              />
-                            )}
-                          </span>
-                        </td>
-                        <td className="py-3 pr-4">{a.employerOrg.name}</td>
-                        <td className="py-3 pr-4">{a.employeeOrg.name}</td>
-                        <td className="py-3 tabular-nums">
-                          {a.confidential ? (
-                            <span className="text-muted-foreground">
-                              {i18n.confidentiality.maskedValue}
-                            </span>
-                          ) : (
-                            validityLabel(a, lang)
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
+              <DataTable columns={columns} rows={rows} lang={lang} caption={t.result.title} />
               <StatusLegend text={STATUS_LEGEND[lang]} />
 
               <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-                <button
-                  type="button"
-                  className="min-h-12 rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-                >
-                  {t.result.download}
-                </button>
+                <Button variant="secondary">{t.result.download}</Button>
                 <span className="text-label text-muted-foreground">{t.result.downloadNote}</span>
-                <ReqTag id="FR-011" />
-                <ReqTag id="NFÅ-004" />
+                <ReqTags ids={["FR-011", "NFÅ-004"]} />
               </div>
             </>
           )}
@@ -222,6 +200,7 @@ export default async function AllmanhetenPage() {
               <li key={item}>{item}</li>
             ))}
           </ul>
+          <Rationale>{i18n.confidentiality.setBy}</Rationale>
         </Panel>
       </div>
     </PublicShell>

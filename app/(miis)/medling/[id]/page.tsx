@@ -1,8 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import Link from "next/link";
+
 import { AppShell } from "@/components/miis/AppShell";
-import { Button, Field, Panel, ReqTag, StatusDot } from "@/components/miis/primitives";
+import {
+  Badge,
+  Button,
+  Callout,
+  Field,
+  PageHeading,
+  Panel,
+  Rationale,
+  ReqTag,
+  StatusDot,
+} from "@/components/miis/primitives";
 import { getCurrentBenchmark } from "@/lib/data/benchmark";
 import { getMediationCase } from "@/lib/data/mediation";
 import { t } from "@/lib/domain/lang";
@@ -30,14 +42,14 @@ export async function generateMetadata({
     MEDIATION_TYPE_LABEL[lang][detail.mediationCase.type],
   );
   const description = i18n.medling.subtitle;
-  return { title: `${i18n.common.appName} – ${title}`, description, openGraph: { title, description } };
+  return {
+    title: `${i18n.common.appName} – ${title}`,
+    description,
+    openGraph: { title, description },
+  };
 }
 
-export default async function MediationCasePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function MediationCasePage({ params }: { params: Promise<{ id: string }> }) {
   const [{ id }, session] = await Promise.all([params, getSession()]);
   const { i18n, lang } = session;
   const detail = await getMediationCase(id, lang);
@@ -51,9 +63,20 @@ export default async function MediationCasePage({
 
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
-      <h1 className="mb-6 font-display text-page-title font-semibold text-[var(--mi-slate-900)]">
-        {c.heading(caseNumber(mediationCase.id), MEDIATION_TYPE_LABEL[lang][mediationCase.type])}
-      </h1>
+      <PageHeading
+        title={c.heading(
+          caseNumber(mediationCase.id),
+          MEDIATION_TYPE_LABEL[lang][mediationCase.type],
+        )}
+        back={
+          <Link
+            href="/medling"
+            className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
+          >
+            <span aria-hidden>←</span> {i18n.common.backTo(i18n.medling.title)}
+          </Link>
+        }
+      />
 
       <div className="grid gap-5 @3xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <div className="space-y-5">
@@ -72,7 +95,7 @@ export default async function MediationCasePage({
           <Panel
             title={c.linkedAgreements(linkedAgreements.length)}
             tags={["FF-008"]}
-            action={<Button variant="outline">{c.linkAgreement}</Button>}
+            action={<Button variant="secondary">{c.linkAgreement}</Button>}
           >
             <ul className="space-y-3">
               {linkedAgreements.map((a) => (
@@ -84,13 +107,13 @@ export default async function MediationCasePage({
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-label text-muted-foreground">{c.linkedNote}</p>
+            <Rationale>{c.linkedNote}</Rationale>
           </Panel>
 
           <Panel
             title={c.mediators}
             tags={["FF-009"]}
-            action={<Button variant="outline">{c.addMediator}</Button>}
+            action={<Button variant="secondary">{c.addMediator}</Button>}
           >
             {mediationCase.mediators.length === 0 ? (
               <p className="text-table text-muted-foreground">{c.noMediators}</p>
@@ -105,7 +128,7 @@ export default async function MediationCasePage({
                 ))}
               </ul>
             )}
-            <p className="mt-3 text-label text-muted-foreground">{c.mediatorStatsNote}</p>
+            <Rationale>{c.mediatorStatsNote}</Rationale>
           </Panel>
         </div>
 
@@ -115,7 +138,7 @@ export default async function MediationCasePage({
             <p className="mt-3 font-semibold text-primary">
               {miAppoints ? c.miAppoints : c.partiesMediate}
             </p>
-            <p className="mt-3 text-label text-primary">{c.procedureNote}</p>
+            <Rationale>{c.procedureNote}</Rationale>
           </Panel>
 
           {/*
@@ -129,9 +152,7 @@ export default async function MediationCasePage({
           {mediationCase.decisionSupport && (
             <Panel title={ds.title} tags={["§4.1", "FAI-002"]}>
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold tracking-wide text-ai-foreground">
-                  {i18n.common.aiProposal}
-                </span>
+                <Badge tone="ai">{i18n.common.aiProposal}</Badge>
                 <span className="text-label text-muted-foreground">{ds.subtitle}</span>
               </div>
 
@@ -156,9 +177,9 @@ export default async function MediationCasePage({
                 </div>
               </dl>
 
-              <p className="mt-4 rounded-md border border-border bg-secondary px-4 py-3 text-label text-muted-foreground">
-                {ds.scopeNote} {ds.reviewNote}
-              </p>
+              <div className="mt-4">
+                <Callout tone="ai">{ds.scopeNote}</Callout>
+              </div>
             </Panel>
           )}
 
@@ -187,13 +208,13 @@ export default async function MediationCasePage({
               : mediationCase.dgDecision.document}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Button variant="outline">{c.createWithNotice}</Button>
-            <Button variant="outline">{c.createWithoutNotice}</Button>
+            <Button variant="secondary">{c.createWithNotice}</Button>
+            <Button variant="secondary">{c.createWithoutNotice}</Button>
             <Button>{c.finalise}</Button>
             <ReqTag id="FE-001" />
             <span className="text-label text-muted-foreground">{c.finaliseNote}</span>
           </div>
-          <p className="mt-3 text-label text-muted-foreground">{c.templateNote}</p>
+          <Rationale>{c.templateNote}</Rationale>
         </Panel>
 
         {mediationCase.outcome && (
@@ -228,9 +249,9 @@ export default async function MediationCasePage({
                 }
               />
             </div>
-            <p className="mt-3 text-label text-muted-foreground">{c.outcomeNote}</p>
+            <Rationale>{c.outcomeNote}</Rationale>
             <div className="mt-4">
-              <Button variant="outline">{c.registerStanding}</Button>
+              <Button variant="secondary">{c.registerStanding}</Button>
             </div>
           </Panel>
         )}
@@ -246,7 +267,7 @@ export default async function MediationCasePage({
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-label text-muted-foreground">{c.eventLogNote}</p>
+            <Rationale>{c.eventLogNote}</Rationale>
           </Panel>
         )}
       </div>

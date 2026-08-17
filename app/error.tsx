@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 import { DEFAULT_LANG, isLang, type Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
+import { Button } from "@/components/miis/primitives";
 
 /**
  * An error boundary is a client component, so it cannot read the language
@@ -38,13 +39,7 @@ export default function Error({
         </h1>
         <p className="mt-2 text-table text-muted-foreground">{i18n.error.body}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
-            {i18n.error.retry}
-          </button>
+          <Button onClick={reset}>{i18n.error.retry}</Button>
           <Link
             href="/"
             className="inline-flex min-h-12 items-center justify-center rounded-md border-2 border-primary bg-background px-5 py-3 text-table font-bold text-foreground transition-colors hover:bg-secondary"

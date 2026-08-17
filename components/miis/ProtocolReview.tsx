@@ -11,7 +11,7 @@ import type {
 import { approvedCount, reviewedCount } from "@/lib/domain/extraction";
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary, type Dictionary } from "@/lib/i18n";
-import { Panel, ReqTag } from "./primitives";
+import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
  * US-01 — the protocol and its AI proposals, side by side and linked.
@@ -89,6 +89,11 @@ function SourceLine({
           : "px-3 py-1.5"
       }
     >
+      {/*
+        Not a <Badge>: this sits on top of an already sand-tinted line, so it
+        needs the card background to stay legible. A Badge here would be sand on
+        sand.
+      */}
       {active && (
         <span className="mr-2 rounded-sm border border-ai-border bg-card px-1.5 py-0.5 text-meta font-bold tracking-wide">
           {marker}
@@ -118,13 +123,10 @@ function ProposalCard({
 
   const badge =
     state === "approved"
-      ? { text: t.review.approved, cls: "border-mint-border bg-mint text-primary" }
+      ? { text: t.review.approved, tone: "ok" as const }
       : state === "rejected"
-        ? {
-            text: t.review.rejected,
-            cls: "border-[var(--status-red)] bg-card text-[var(--status-red)]",
-          }
-        : { text: t.review.pending, cls: "border-input bg-card text-muted-foreground" };
+        ? { text: t.review.rejected, tone: "error" as const }
+        : { text: t.review.pending, tone: "neutral" as const };
 
   return (
     <div
@@ -132,16 +134,8 @@ function ProposalCard({
     >
       <div className="mb-2 flex flex-wrap items-center gap-2">
         <span className="text-label font-bold">{label(d, proposal.id)}</span>
-        <span
-          className={`rounded-sm border px-2 py-0.5 text-meta font-bold tracking-wide ${badge.cls}`}
-        >
-          {badge.text}
-        </span>
-        {proposal.confidence === "low" && (
-          <span className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold tracking-wide text-ai-foreground">
-            {t.review.confidenceLow}
-          </span>
-        )}
+        <Badge tone={badge.tone}>{badge.text}</Badge>
+        {proposal.confidence === "low" && <Badge tone="ai">{t.review.confidenceLow}</Badge>}
       </div>
 
       <p
@@ -161,39 +155,27 @@ function ProposalCard({
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          size="sm"
+          pressed={selected}
           onClick={() => onShowSource(proposal)}
-          aria-pressed={selected}
-          className="min-h-11 rounded-sm border-2 border-primary px-3 py-2 text-label font-bold text-primary transition-colors hover:bg-secondary"
         >
           {t.document.showSource}
-        </button>
+        </Button>
         {state === "pending" ? (
           <>
-            <button
-              type="button"
-              onClick={() => onDecide(proposal.id, "approved")}
-              className="min-h-11 rounded-sm border-2 border-transparent bg-primary px-3 py-2 text-label font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-            >
+            <Button size="sm" onClick={() => onDecide(proposal.id, "approved")}>
               {t.review.approveAction}
-            </button>
-            <button
-              type="button"
-              onClick={() => onDecide(proposal.id, "rejected")}
-              className="min-h-11 rounded-sm border-2 border-[var(--status-red)] px-3 py-2 text-label font-bold text-[var(--status-red)] transition-colors hover:bg-secondary"
-            >
+            </Button>
+            <Button variant="danger" size="sm" onClick={() => onDecide(proposal.id, "rejected")}>
               {t.review.rejectAction}
-            </button>
+            </Button>
           </>
         ) : (
-          <button
-            type="button"
-            onClick={() => onDecide(proposal.id, "pending")}
-            className="min-h-11 rounded-sm border-2 border-input px-3 py-2 text-label font-bold text-foreground transition-colors hover:bg-secondary"
-          >
+          <Button variant="ghost" size="sm" onClick={() => onDecide(proposal.id, "pending")}>
             {t.review.undoAction}
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -203,9 +185,17 @@ function ProposalCard({
 export function ProtocolReview({
   proposals,
   lang,
+  children,
 }: {
   proposals: ExtractionProposal[];
   lang: Lang;
+  /**
+   * The rest of the registration form. It lives in the right-hand column so the
+   * protocol on the left can stay put while the case officer works down it —
+   * the task is read-source then fill-field, and a source that scrolls away
+   * turns every check into a round trip.
+   */
+  children?: ReactNode;
 }) {
   const d = dictionary(lang);
   const t = d.registrera;
@@ -284,84 +274,82 @@ export function ProtocolReview({
   ];
 
   return (
-    <div className="grid gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-      <Panel>
-        <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
-          <h2 className="font-display text-section font-semibold text-primary">
-            {t.document.fileName}
-          </h2>
-          <span className="rounded-md border border-mint-border bg-mint px-3 py-1 text-meta font-bold text-primary">
-            {t.document.ocr}
-          </span>
-          <ReqTag id="FAI-003" />
-        </div>
+    <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+      <div className="@3xl:sticky @3xl:top-4">
+        <Panel>
+          <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
+            <h2 className="font-display text-section font-semibold text-primary">
+              {t.document.fileName}
+            </h2>
+            <Badge tone="ok">{t.document.ocr}</Badge>
+            <ReqTag id="FAI-003" />
+          </div>
 
-        <p aria-live="polite" className="mb-3 text-label text-muted-foreground">
-          {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
-        </p>
+          <p aria-live="polite" className="mb-3 text-label text-muted-foreground">
+            {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
+          </p>
 
-        {/*
+          {/*
           The protocol stays Swedish in the English translation. It is a scanned
           Swedish document; rendering it in English would describe a system that
           reads something it will never be given.
         */}
-        {/*
+          {/*
           Focusable and named: the pane scrolls, and a scrollable region whose
           content is not itself focusable is unreachable by keyboard (WCAG 2.1.1).
         */}
-        <div
-          tabIndex={0}
-          role="region"
-          aria-label={t.document.fileName}
-          className="max-h-[30rem] space-y-1 overflow-y-auto text-table leading-relaxed"
-          lang="sv"
-        >
-          {lines.map((line) => (
-            <SourceLine
-              key={line.anchor}
-              anchor={line.anchor}
-              active={activeSource === line.anchor}
-              marker={t.document.sourceMarker}
-              register={register}
-            >
-              {line.content}
-            </SourceLine>
-          ))}
-        </div>
+          <div
+            tabIndex={0}
+            role="region"
+            aria-label={t.document.fileName}
+            className="max-h-[30rem] space-y-1 overflow-y-auto text-table leading-relaxed"
+            lang="sv"
+          >
+            {lines.map((line) => (
+              <SourceLine
+                key={line.anchor}
+                anchor={line.anchor}
+                active={activeSource === line.anchor}
+                marker={t.document.sourceMarker}
+                register={register}
+              >
+                {line.content}
+              </SourceLine>
+            ))}
+          </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3 rounded-md border border-sand-border bg-sand px-4 py-3 text-label text-sand-foreground">
-          {t.document.watchwordHits(4)}
-          <ReqTag id="FAI-004" />
-        </div>
-      </Panel>
+          <div className="mt-6">
+            <Callout tone="attention" tags={["FAI-004"]}>
+              {t.document.watchwordHits(4)}
+            </Callout>
+          </div>
+        </Panel>
+      </div>
 
       <div className="space-y-5">
         <Panel title={t.review.heading} tags={["FAI-001", "FAI-002"]}>
           <p className="mb-4 text-table">{t.review.counts(approved, proposals.length)}</p>
 
           <h3 className="mb-2 font-display text-body font-semibold">{t.analysis1.title}</h3>
-          <div className="grid gap-3 @xl:grid-cols-2">{cards(ORDER_1)}</div>
+          <div className="grid items-start gap-3 @xl:grid-cols-2">{cards(ORDER_1)}</div>
 
           <p className="mt-3 rounded-md border border-mint-border bg-mint px-4 py-3 text-label text-primary">
             {t.analysis1.validation}
           </p>
 
           <h3 className="mb-2 mt-5 font-display text-body font-semibold">{t.analysis2.title}</h3>
-          <div className="grid gap-3 @xl:grid-cols-3">{cards(ORDER_2)}</div>
+          <div className="grid items-start gap-3 @xl:grid-cols-3">{cards(ORDER_2)}</div>
 
-          <p
-            aria-live="polite"
-            className={`mt-4 rounded-md border-2 px-4 py-3 text-label ${
-              pending > 0
-                ? "border-[var(--status-red)] bg-card text-[var(--status-red)]"
-                : "border-mint-border bg-mint text-primary"
-            }`}
-          >
-            {pending > 0 ? t.review.blockedNote(pending) : t.review.readyNote}
-          </p>
+          <div className="mt-4">
+            <Callout tone={pending > 0 ? "error" : "ok"} live>
+              {pending > 0 ? t.review.blockedNote(pending) : t.review.readyNote}
+            </Callout>
+          </div>
 
-          <p className="mt-2 text-label text-muted-foreground">{t.analysis2.nothingAutomatic}</p>
+          <Rationale>{t.analysis2.nothingAutomatic}</Rationale>
         </Panel>
+
+        {children}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { datasetOptions, type DatasetName } from "@/lib/domain/dataset";
 import { LANGS, type Lang } from "@/lib/domain/lang";
 import { roleOptions, type Role } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
+import { Button } from "./primitives";
 
 /**
  * Reviewer controls — deliberately outside the product chrome.
@@ -150,13 +151,9 @@ export function DemoBar({
         </div>
 
         {onShowSessionWarning && (
-          <button
-            type="button"
-            onClick={onShowSessionWarning}
-            className="min-h-11 rounded-sm border-2 border-demo-border bg-card px-4 py-2 text-label font-bold text-foreground transition-colors hover:bg-secondary"
-          >
+          <Button variant="secondary" size="sm" onClick={onShowSessionWarning}>
             {t.sessionWarning}
-          </button>
+          </Button>
         )}
 
         <p className="basis-full text-meta text-demo-foreground">{t.explain}</p>

@@ -22,6 +22,22 @@ export interface PanelAction {
   reqTag?: string;
 }
 
+/**
+ * Two kinds of prose, deliberately separated at the model rather than guessed
+ * at in the view:
+ *
+ * - `note` is **operational** — a user needs it to do the task correctly, so it
+ *   is always on screen.
+ * - `rationale` **explains or justifies** the design to an evaluator. It rides
+ *   the requirement-tag toggle and is absent from the product view.
+ *
+ * If you cannot decide which one a sentence is, it is a rationale.
+ */
+export interface PanelProse {
+  note?: string;
+  rationale?: string;
+}
+
 /** A reminder or event line, already rendered into one language. */
 export interface LogLine {
   id: string;
@@ -37,25 +53,23 @@ export type DashboardPanel =
       reqTags?: string[];
       items: { text: string; badge?: string }[];
       emptyText?: string;
-      footnote?: string;
       action?: PanelAction;
-    }
+    } & PanelProse
   | {
       kind: "log";
       title: string;
       reqTags?: string[];
       items: LogLine[];
       emptyText?: string;
-      footnote?: string;
       action?: PanelAction;
-    }
+    } & PanelProse
   | {
       kind: "agreement-table";
       title: string;
       reqTags?: string[];
       rows: AgreementRow[];
       emptyText?: string;
-    };
+    } & PanelProse;
 
 export interface Dashboard {
   role: RoleInfo;

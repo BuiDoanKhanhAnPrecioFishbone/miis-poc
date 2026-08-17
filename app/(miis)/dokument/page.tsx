@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import {
   Button,
   ConfidentialityMarker,
   EmptyState,
   PageHeading,
   Panel,
-  ReqTag,
+  Rationale,
+  ReqTags,
 } from "@/components/miis/primitives";
 import { listDocuments } from "@/lib/data/documents";
 import { getSession } from "@/lib/session";
@@ -21,81 +23,71 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DokumentPage() {
   const session = await getSession();
-  const { i18n } = session;
+  const { i18n, lang } = session;
   const documents = await listDocuments();
   const t = i18n.dokument;
 
+  const columns: Column[] = [
+    { key: "file", header: t.table.fileName, sortable: true },
+    { key: "type", header: t.table.type, sortable: true },
+    { key: "uploaded", header: t.table.uploaded, sortable: true },
+    { key: "linked", header: t.table.linkedTo, sortable: true },
+    { key: "conf", header: t.table.confidential, sortable: true },
+  ];
+
+  const rows: Row[] = documents.map((d) => ({
+    key: d.id,
+    cells: [
+      <a key="f" href="#" className="font-semibold text-primary underline underline-offset-2">
+        {d.fileName}
+      </a>,
+      t.types[d.type],
+      <span key="u" className="tabular-nums">
+        {d.uploadedDate}
+      </span>,
+      d.linkedTo,
+      d.confidential ? (
+        <ConfidentialityMarker
+          key="c"
+          compact
+          label={i18n.confidentiality.marked}
+          note={i18n.confidentiality.setBy}
+        />
+      ) : (
+        <span key="c" className="text-muted-foreground">
+          {i18n.common.none}
+        </span>
+      ),
+    ],
+    sort: [
+      d.fileName,
+      t.types[d.type],
+      d.uploadedDate,
+      d.linkedTo,
+      d.confidential ? i18n.confidentiality.marked : "",
+    ],
+  }));
+
   return (
-    <AppShell
-      role={session.role}
-      dataset={session.dataset}
-      lang={session.lang}
-      reqTags={session.reqTags}
-    >
+    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}
         tags={["FD-001"]}
-        action={<Button variant="outline">{t.upload}</Button>}
+        action={<Button variant="secondary">{t.upload}</Button>}
       />
 
       <Panel title={t.title} tags={["FD-001", "FAI-003"]}>
         {documents.length === 0 ? (
           <EmptyState text={t.empty} />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[52rem] text-table">
-              <thead>
-                <tr className="border-b border-border text-left text-label text-muted-foreground">
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.table.fileName}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.table.type}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.table.uploaded}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.table.linkedTo}
-                  </th>
-                  <th scope="col" className="py-2 font-semibold">
-                    {t.table.confidential}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {documents.map((d) => (
-                  <tr key={d.id} className="border-b border-border/60 last:border-0">
-                    <td className="py-3 pr-4">
-                      <a href="#" className="font-semibold text-primary underline underline-offset-2">
-                        {d.fileName}
-                      </a>
-                    </td>
-                    <td className="py-3 pr-4">{t.types[d.type]}</td>
-                    <td className="py-3 pr-4 tabular-nums">{d.uploadedDate}</td>
-                    <td className="py-3 pr-4">{d.linkedTo}</td>
-                    <td className="py-3">
-                      {d.confidential ? (
-                        <ConfidentialityMarker label={i18n.confidentiality.marked} />
-                      ) : (
-                        <span className="text-muted-foreground">{i18n.common.none}</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable columns={columns} rows={rows} lang={lang} caption={t.title} />
         )}
 
-        <p className="mt-4 text-label text-muted-foreground">{t.ocrNote}</p>
-        <p className="mt-2 flex flex-wrap items-center gap-2 text-label text-muted-foreground">
-          {t.confidentialNote}
-          <ReqTag id="D-001" />
-          <ReqTag id="D-002" />
-          <ReqTag id="NFÅ-004" />
-        </p>
+        <Rationale>{t.ocrNote}</Rationale>
+        <Rationale>
+          {t.confidentialNote} <ReqTags ids={["D-001", "D-002", "NFÅ-004"]} />
+        </Rationale>
       </Panel>
     </AppShell>
   );

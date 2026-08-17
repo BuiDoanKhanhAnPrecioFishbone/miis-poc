@@ -58,6 +58,15 @@
   --color-public: var(--public);
   --color-public-foreground: var(--public-foreground);
   --color-public-border: var(--public-border);
+  --color-ok: var(--ok);
+  --color-ok-foreground: var(--ok-foreground);
+  --color-ok-border: var(--ok-border);
+  --color-attention: var(--attention);
+  --color-attention-foreground: var(--attention-foreground);
+  --color-attention-border: var(--attention-border);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-error-border: var(--error-border);
   --color-status-green: var(--status-green);
   --color-status-red: var(--status-red);
   --color-status-blue: var(--status-blue);
@@ -173,9 +182,40 @@
   --public-foreground: #4A3A1C;
   --public-border: var(--mi-sand-600);
 
+  /*
+   * FR-012 agreement status — RESERVED. These three belong to the agreement's
+   * status and to nothing else.
+   *
+   * In MIIS red is not "bad": it means "tecknat efter medling", a neutral fact
+   * about how an agreement came about. If red also meant "error" and green
+   * "success", a red row in an agreement table would be unreadable — the user
+   * could not tell a domain fact from a system complaint. System feedback
+   * therefore has its own tokens below, and its own shape.
+   *
+   * Never use --status-* for validation, for a trend, or for a percentage.
+   */
   --status-green: #2E6B57;
   --status-red: #A33B35;
   --status-blue: #1D5F7A;
+
+  /*
+   * System feedback. Distinguished by form as much as by colour: a Callout has
+   * a left rule, an icon and a bold label word, so it can never be confused
+   * with an agreement's status marker.
+   *
+   * There are no "up" and "down" tokens on purpose. Medlingsinstitutet mediates
+   * between employers and unions; colouring a 3,2 % settlement green because it
+   * is high states a position the authority does not have.
+   */
+  --ok: var(--mint);
+  --ok-foreground: #1F4A3B;
+  --ok-border: var(--mint-border);
+  --attention: var(--mi-sand-100);
+  --attention-foreground: #4A3A1C;
+  --attention-border: var(--mi-sand-600);
+  --error: #FBF0EF;
+  --error-foreground: #7E2B26;
+  --error-border: var(--destructive);
 
   --chart-1: var(--mi-slate-800);
   --chart-2: var(--mi-slate-600);
@@ -228,6 +268,15 @@
   --public: #2E4048;
   --public-foreground: #F3ECDD;
   --public-border: var(--mi-sand-600);
+  --ok: #233A33;
+  --ok-foreground: #CFE6DB;
+  --ok-border: #4C8A73;
+  --attention: #3A3325;
+  --attention-foreground: #EBDCC0;
+  --attention-border: var(--mi-sand-600);
+  --error: #3A2523;
+  --error-foreground: #F2C9C5;
+  --error-border: #C4564F;
 }
 
 @layer base {
@@ -319,6 +368,26 @@
 /* A tooltip must never be what makes the page scroll sideways. */
 .req-tip {
   overflow-wrap: anywhere;
+}
+
+/*
+ * The annotation layer (§4 of docs/08-design-system-and-interaction-plan.md).
+ *
+ * Prose that justifies a design or restates a requirement is addressed to the
+ * evaluator, not to the case officer registering their fortieth protocol. It
+ * hangs off the same switch as the requirement tags, so the two views are:
+ *
+ *   tags off — the product MI evaluates as a system
+ *   tags on  — the traceability document: IDs, their sentences, and the why
+ *
+ * `display: none` rather than the tags' reserved space, deliberately. Holding
+ * room for a removed paragraph would leave the product view full of gaps, which
+ * is the opposite of the point. Pixel-stable comparison matters for the inline
+ * tags, where the two views sit on top of each other; it does not matter for
+ * prose, which is read in one view or the other.
+ */
+:root[data-reqtags="off"] .rationale {
+  display: none;
 }
 
 @utility card-panel {
