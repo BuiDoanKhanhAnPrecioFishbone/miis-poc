@@ -35,6 +35,10 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —
    the green/red/blue agreement status coding (FR-012) must always have a text label too.
+   **That label goes on the row, not in a legend under the table.** `StatusDot` carries
+   colour, shape and label together, so a legend would repeat what every row already
+   says; the only place `STATUS_LEGEND` still earns its keep is `/registrera`, where a
+   single status is shown and the other two need explaining.
 4. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off

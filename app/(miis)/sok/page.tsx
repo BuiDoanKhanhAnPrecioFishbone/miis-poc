@@ -11,11 +11,10 @@ import {
   ReqTag,
   ReqTags,
   StatusDot,
-  StatusLegend,
 } from "@/components/miis/primitives";
 import { countAgreements, listRecentAgreements } from "@/lib/data/agreements";
 import { AGREEMENT_CONSTRUCTIONS } from "@/lib/domain/agreement";
-import { statusInfo, STATUS_LEGEND } from "@/lib/domain/status";
+import { statusInfo } from "@/lib/domain/status";
 import { decimal } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
@@ -110,8 +109,6 @@ export default async function SokPage() {
           lang={lang}
           caption={t.results.title(total, decimal(RESPONSE_SECONDS, lang), SNAPSHOT_DATE)}
         />
-
-        <StatusLegend text={STATUS_LEGEND[lang]} />
 
         <p className="mt-3 text-label text-muted-foreground">
           {i18n.common.andMoreRows(Math.max(total - rows.length, 0))}

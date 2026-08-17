@@ -12,13 +12,12 @@ import {
   Rationale,
   ReqTag,
   StatusDot,
-  StatusLegend,
 } from "@/components/miis/primitives";
 import { getDashboard } from "@/lib/data/dashboard";
 import { registrationStatusLabel } from "@/lib/domain/agreement";
 import { isHalfWidth, type DashboardPanel } from "@/lib/domain/dashboard";
 import type { Lang } from "@/lib/domain/lang";
-import { statusInfo, STATUS_LEGEND } from "@/lib/domain/status";
+import { statusInfo } from "@/lib/domain/status";
 import type { Dictionary } from "@/lib/i18n";
 import { percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
@@ -124,7 +123,6 @@ function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Diction
             caption={panel.title}
             minWidth="44rem"
           />
-          <StatusLegend text={STATUS_LEGEND[lang]} />
         </>
       );
     }

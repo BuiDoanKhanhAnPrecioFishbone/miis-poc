@@ -407,6 +407,11 @@ export function Field({
  * a remaining one a hollow ring — legible with no colour at all.
  *
  * 16px, because a 12px mark is too small for the shape to be readable.
+ *
+ * **Keep `showLabel` on in tables.** With the label beside the mark, the row
+ * explains itself and a legend underneath is pure repetition — which is what a
+ * legend under every status table used to be. If a future view ever has to show
+ * the mark alone, that view needs `STATUS_LEGEND` back; nothing else does.
  */
 export function StatusDot({
   status,
@@ -439,11 +444,6 @@ export function StatusDot({
       <span className={showLabel ? "text-table" : "sr-only"}>{status.label}</span>
     </span>
   );
-}
-
-/** The legend under a status-coded table. Names the shape, not only the colour. */
-export function StatusLegend({ text }: { text: string }) {
-  return <p className="mt-3 text-label text-muted-foreground">{text}</p>;
 }
 
 /**

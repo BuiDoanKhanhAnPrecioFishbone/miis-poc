@@ -11,12 +11,11 @@ import {
   Rationale,
   ReqTags,
   StatusDot,
-  StatusLegend,
 } from "@/components/miis/primitives";
 import { listAgreements } from "@/lib/data/agreements";
 import { listEmployeeOrgs, listEmployerOrgs } from "@/lib/data/parties";
 import { validityLabel } from "@/lib/domain/agreement";
-import { agreementStatus, STATUS_LEGEND } from "@/lib/domain/status";
+import { agreementStatus } from "@/lib/domain/status";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -181,7 +180,6 @@ export default async function AllmanhetenPage() {
           ) : (
             <>
               <DataTable columns={columns} rows={rows} lang={lang} caption={t.result.title} />
-              <StatusLegend text={STATUS_LEGEND[lang]} />
 
               <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
                 <Button variant="secondary">{t.result.download}</Button>
