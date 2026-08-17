@@ -69,6 +69,7 @@ export const en: Dictionary = {
     partstraffar: "Party meetings",
     medlare: "Mediators",
     dokument: "Documents",
+    sokRapporter: "Search & Reports",
     rapporter: "Reports",
     sok: "Search",
     market: "Märket",

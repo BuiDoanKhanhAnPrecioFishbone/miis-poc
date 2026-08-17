@@ -67,6 +67,7 @@ export const sv = {
     partstraffar: "Partsträffar",
     medlare: "Medlare",
     dokument: "Dokument",
+    sokRapporter: "Sök & Rapporter",
     rapporter: "Rapporter",
     sok: "Sök",
     market: "Märket",

@@ -6,8 +6,20 @@ interface"* — worth **SEK 1,000,000** of a **SEK 2,500,000** total added value
 of everything that can be scored. Tender deadline **2026-08-25**; 15-minute oral
 presentation at MI in week 35.
 
-Read `docs/00-START-HERE.md` before doing design work. Requirements live in
-`docs/requirements/requirements-v2.5-EN.txt` (searchable plain text of the .docx).
+Read `docs/00-START-HERE.md` before doing design work.
+
+**Three source documents, all in `docs/requirements/` with a searchable `.txt` beside
+the authoritative `.docx`. Check work against all three, not just the first:**
+
+| | |
+|---|---|
+| `requirements-v2.5-EN.txt` | The Epics and Features (FA-*, FR-*, NFÅ-* …), the 20 US scenarios in chapter 8, and our UI sketches in chapter 9 |
+| `bargaining-process-EN.txt` | How the Swedish bargaining round actually works, phase by phase, and which MIIS menu and scenarios serve each phase (chapter 5) |
+| `information-model-EN.txt` | The 34-entity logical model and the SQL Server schema it becomes — the shape `lib/domain/` is meant to converge on |
+
+`docs/12-source-documents.md` records what they confirm, what they corrected, and the
+places our domain model still diverges. When our shape differs from the information
+model, the model wins.
 
 ## Hard rules
 

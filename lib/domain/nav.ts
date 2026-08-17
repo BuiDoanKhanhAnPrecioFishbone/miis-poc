@@ -14,6 +14,10 @@
  *   button on the start page; `/registrera` has no menu entry.
  * - Mediators and party meetings sit **under Mediation**, because MI groups them
  *   as one module ("mediation management (mediators and party meetings)").
+ * - Search and Reports sit **under one heading** for the same reason. §4.3 lists
+ *   "Search & Reports" as a single module, and the domain guide's prescribed menu
+ *   (chapter 5) repeats it as one item. Splitting them into two top-level entries
+ *   was an over-reading of the module list.
  *
  * Labels are not here — they are interface copy and live in `lib/i18n/`, keyed
  * by `NavId`. This file only knows structure and routes.
@@ -30,6 +34,7 @@ export type NavId =
   | "partstraffar"
   | "medlare"
   | "dokument"
+  | "sokRapporter"
   | "rapporter"
   | "sok"
   | "market"
@@ -46,6 +51,8 @@ export const NAV_HREF: Record<NavId, string> = {
   partstraffar: "/partstraffar",
   medlare: "/medlare",
   dokument: "/dokument",
+  // A grouping heading only — no role lists it, so it never renders as a link.
+  sokRapporter: "/sok",
   rapporter: "/rapporter",
   sok: "/sok",
   market: "/market",
@@ -66,8 +73,7 @@ export const NAV_TREE: readonly NavNode[] = [
   { id: "forhandlingar" },
   { id: "medling", children: ["partstraffar", "medlare"] },
   { id: "dokument" },
-  { id: "rapporter" },
-  { id: "sok" },
+  { id: "sokRapporter", children: ["rapporter", "sok"] },
   { id: "market" },
   { id: "administration", children: ["anvandare"] },
 ] as const;

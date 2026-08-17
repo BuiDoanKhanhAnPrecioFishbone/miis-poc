@@ -1,0 +1,287 @@
+﻿Information Model and Database Schema
+MIIS – The Swedish National Mediation Office’s Information System
+Build foundation – logical model and physical SQL Server schema
+Basis
+	Appendix 1 Requirements Specification (ref. 2026/0059): §4.2 Key concepts, §4.5 Data model, Appendix A Complete data model, and the requirement tables
+
+Related documents
+	MIIS Requirements Specification v2.5-EN (Epics/Features, scenarios US-01–20) · MIIS_databasschema.sql (T-SQL DDL)
+
+Target platform
+	Microsoft SQL Server 2019+ · on-prem in Försäkringskassan’s vDC environment
+
+Document version
+	1.0-EN – English working translation of v1.0, for the delivery team
+
+Date
+	2026-08-13
+
+Note on this translation: The Swedish version (v1.0) is authoritative towards MI. Entity names in this document and the model figure use the English terminology from the Requirements Specification v2.5-EN, while the physical table and column names in the database schema (MIIS_databasschema.sql) remain Swedish, matching MI’s own data model in Appendix A. Each entity below therefore lists its physical table name in parentheses.
+
+Contents
+TOC \h \o "1-2"
+
+1. Modelling principles
+The information model is strictly based on the Mediation Office’s own data model (Appendix A) and the concept definitions in Appendix 1 §4.2. Appendix A explicitly states that the fields are "examples and not exhaustive" and that fields will be added – the model is therefore built for extensibility. Where the requirements force structures that Appendix A does not show, entities have been added; these are marked with an asterisk (*) in the diagram and motivated in the entity catalogue. Six principles govern the design:
+One agreement per party pair (§4.2): each row in Agreement represents an agreement between one employer organisation (AGO) and one employee organisation (ATO). The Agreement area groups agreements with different parties.
+Separate validity periods: Wage agreements and General terms are separate entities with their own signing dates and validity periods (FA-004), with Wage revision and Minimum wage as subgroups of the Wage agreement (§4.2).
+System versioning for snapshots: the central entities (Agreement, WageAgreement, GeneralTerms, Party) are temporal tables, which provides the snapshot function (FH-003) and complete version history without a separate archive solution – a query with FOR SYSTEM_TIME AS OF reconstructs the state as of any date.
+Business history separated from technical history: party name changes (FP-004) are handled in PartyNameHistory with business validity dates, so that current agreements show the current name while historical agreements resolve the name against the agreement’s time period. System versioning is a separate, technical layer.
+Polymorphic support entities: Document and EventLog are linked via entity type + entity id to all relevant entities, exactly as Appendix A specifies ("linked to all agreement tables, Negotiation, Party meeting, Mediation").
+Append-only traceability: the ChangeLog (old/new value, FH-001/NFL-002) is protected against modification and deletion even for the system administrator (NFL-003) via permissions and triggers, and is retained for at least 24 months.
+2. Information model (logical level)
+The model comprises 34 entities in five domains: Parties and organisation, Reference data and shared, the Agreement domain, Negotiation/party meeting/mediation, and Documents/AI/traceability. Stage 2 entities (grey, dashed) are part of the model from the start so that the data model accommodates them – but they go live in Stage 2. Physical table names are Swedish; the key columns (*_id) shown in the figure map directly to the DDL script.
+
+3. Entity catalogue
+3.1 Parties and organisation
+Entity (physical table)
+	Description and key relationships
+	Requirements
+	Stage
+
+Party (Part)
+	Employer/employee organisations (AGO/ATO) with type and organisation number. Temporal. 1:M to Agreement (as AGO and ATO respectively), ContactPerson, PartyClassification.
+	FP-001, FP-002
+	Stage 1
+
+PartyNameHistory * (PartNamnHistorik)
+	The business name history with validity dates. Required so that name changes propagate to current but not historical agreements.
+	FP-004
+	Stage 1
+
+PartyClassification (PartKlassning)
+	Time-bound classification of AGOs: sector, employer group, industry code (Svenskt Näringsliv), central organisation.
+	FP-001
+	Stage 1
+
+ContactPerson (Kontaktperson)
+	Contact persons per party. Personal data – covered by retention/deletion rules.
+	FP-006, D-004
+	Stage 1
+
+CooperationBody (Samverkansorgan)
+	Type Umbrella organisation/Cooperation, side employer/employee, Negotiating body Y/N.
+	FP-003, §4.2
+	Stage 1
+
+CooperationBodyMember * (SamverkansorganMedlem)
+	M:N Party–CooperationBody with time period, so organisational changes preserve history.
+	FP-003
+	Stage 1
+
+3.2 Reference data and shared
+Entity (physical table)
+	Description and key relationships
+	Requirements
+	Stage
+
+AgreementArea (Avtalsomrade)
+	Groups agreements with different parties. 1:M to Agreement.
+	§4.2, FA-001
+	Stage 1
+
+BargainingRound * (Avtalsrorelse)
+	The bargaining round as a period (year/designation). Referenced by Agreement and Mediation per Appendix A (avtalsrorelse_id).
+	Appendix A
+	Stage 1
+
+PeriodisedSetting (PeriodiseradInstallning)
+	Periodised settings – primarily "Märket" (the industry benchmark) with free text for cost frame, periodisation and supplements.
+	FM-001–003
+	Stage 1
+
+Watchword (Bevakningsord)
+	The predefined, customisable watchword table.
+	FAI-004
+	Stage 1
+
+User / UserRole * (Anvandare / AnvandareRoll)
+	Local mirror of the IdP identity (EFOS/SSID) with role assignment per the eight roles in §3.1. Administered by MI’s own permission administrators.
+	NFÅ-003, NFÅ-005
+	Stage 1
+
+SavedSearch * (SparadSokning)
+	Saved searches from the query builder (definition as JSON: information type, criteria, columns).
+	FR-002
+	Stage 1
+
+3.3 Agreement domain
+Entity (physical table)
+	Description and key relationships
+	Requirements
+	Stage
+
+Agreement (Avtal)
+	The core entity: name, alternative name, type, parties (AGO+ATO), registration status Incomplete/Complete, confidentiality, gender equality and industry benchmark flags, expiry and early termination. Temporal.
+	FA-001, FA-011/012, FA-015/016, FA-021, D-001
+	Stage 1
+
+WageAgreement (Loneavtal)
+	One row per bargaining round/period with its own validity period and cost frame. Temporal.
+	FA-002, FA-004, FA-008
+	Stage 1
+
+WageRevision (Lonerevision)
+	Subgroup of the wage agreement: revision date, agreement construction 1–7, wage increase scope, individual guarantee, working time reduction.
+	FA-007–010, §4.2
+	Stage 1
+
+MinimumWage (Lagstalon)
+	Minimum wages per occupational group with amount and revision date.
+	FA-013
+	Stage 1
+
+GeneralTerms (AllmannaVillkor)
+	General terms and conditions with their own signing date and validity period. Temporal.
+	FA-003, FA-004
+	Stage 1
+
+TermsChange (Villkorsandring)
+	Changes to terms with type, signing date and validity (support table in Appendix A).
+	Appendix A
+	Stage 1
+
+WorkingGroup (Arbetsgrupp)
+	Joint party working groups with their subject areas.
+	FA-014
+	Stage 1
+
+ReportSelection (Rapporturval)
+	The agreement’s report participation (Eurofound, Minimum Wage, Website, Short-Term Wage Report) incl. tracking of exports to the Short-Term Wage Report.
+	§4.2, FR-008–010
+	Stage 1
+
+Reminder * (Paminnelse)
+	Reminders with date and recipient; sent via the e-mail service.
+	FA-022, FE-001
+	Stage 1
+
+InsuranceInformation (Forsakringsinformation)
+	Basic form (type) in Stage 1; source and categories (illness, work injury, parenthood, death, transition, other) in Stage 2.
+	FA-005 / FA-024
+	Stage 1+2
+
+PensionAgreement (Pensionsavtal)
+	Up to three pension systems per agreement with wage thresholds, premiums, central/local.
+	FA-023
+	Stage 2
+
+OtherAgreement (OvrigaAvtal)
+	Other agreements, e.g. negotiation procedure agreements.
+	FA-006, FA-017
+	Stage 2
+
+AgreementLink tables (AvtalPensionsavtal / AvtalOvrigaAvtal)
+	M:N link tables Agreement–PensionAgreement and Agreement–OtherAgreement respectively.
+	§4.5
+	Stage 2
+
+SignedBy (TecknasAv)
+	Indicates whether a pension/other agreement was signed by a Party or a Cooperation body (exclusive via CHECK constraint).
+	§4.5
+	Stage 2
+
+3.4 Negotiation, party meeting and mediation
+Entity (physical table)
+	Description and key relationships
+	Requirements
+	Stage
+
+Negotiation (Forhandling)
+	Type Bargaining round/Other; linked to an agreement or standalone with direct party links; closing status.
+	FF-001–003, §4.2
+	Stage 1
+
+PartyMeeting (Partstraff)
+	Meeting MI–one party with notes before/during/after (interactive view).
+	FF-004, FSD-002
+	Stage 1
+
+CoordinatedDemands + DemandUnion * (SamordnadeAvtalskrav + KravForbund)
+	Demands with a coordinated/own-union flag and M:N to the unions backing them.
+	FF-005
+	Stage 1
+
+Mediation (Medling)
+	Special mediation: registry number, GD decision number, the outcome fields (industrial action, type, lost working days, affected employees), finalisation.
+	FF-006/007/010, FE-001
+	Stage 1
+
+MediationAgreement * (MedlingAvtal)
+	M:N Mediation–Agreement: one mediation case can be linked to several agreements. Basis for the red colour coding.
+	FF-008, FR-012
+	Stage 1
+
+LocalMediation (MedlingLokal)
+	Standing mediation (local dispute) in simplified form with company and outcome fields.
+	FF-006, FF-010
+	Stage 1
+
+Mediator (Medlare)
+	The mediator register with contact details, mediation type and active flag. Personal data – retention rules apply.
+	FF-009, D-004
+	Stage 1
+
+MediationMediator * (MedlingMedlare)
+	Mediator engagements per mediation with position (first/second chair) – provides history and statistics per mediator.
+	FF-009
+	Stage 1
+
+3.5 Documents, AI and traceability
+Entity (physical table)
+	Description and key relationships
+	Requirements
+	Stage
+
+Document (Dokument)
+	Polymorphic link (entity type + id) to the agreement tables, Negotiation, PartyMeeting and Mediation. Extracted text (OCR) in dokument_text with a Swedish full-text index; confidentiality flag per document.
+	FD-001, FAI-003, FR-003, D-001
+	Stage 1
+
+WatchwordHit * (BevakningsordTraff)
+	Watchword hits in documents with position and text excerpt – the basis for highlighting in the UI.
+	FAI-004
+	Stage 1
+
+EventLog (Handelselogg)
+	High-level events per entity ("agreement signed", "mediation starts", e-mail sendings).
+	FH-002, FE-003
+	Stage 1
+
+ChangeLog (Andringslogg)
+	Field-level changes with old/new value, who and when. Append-only, retained at least 24 months, protected against modification/deletion.
+	FH-001, NFL-002/003/004
+	Stage 1
+
+LoginLog * (Inloggningslogg)
+	Logins and logouts with timestamp and user ID.
+	NFL-001
+	Stage 1
+
+EmailLog * (Epostlogg)
+	Sent e-mails with recipient, subject and link; mirrored in the EventLog.
+	FE-001–003
+	Stage 1
+
+4. Key design decisions and trade-offs
+4.1 Snapshots via temporal tables
+Requirement FH-003 ("reconstruct how the data looked on a specific date") is realised with SQL Server’s system-versioned tables on Avtal, Loneavtal, AllmannaVillkor and Part. A report as of 31 December runs as an ordinary query with FOR SYSTEM_TIME AS OF – no separate archive database, no snapshot jobs, and the version history is produced automatically on every change. This complements the change log: temporal tables give the row’s full state per point in time, while the change log gives the field-level who/when/what traceability (NFL-002).
+4.2 Party names and organisational changes
+FP-004 requires that name changes propagate to current agreements but not historical ones. The solution: Agreement references part_id (a stable identity); the current name is taken from Party; for historical views and snapshots the name is resolved via PartyNameHistory against the requested time period. Mergers (Sveriges Lärare, Fremia) are handled as new parties with relationships to their predecessors via CooperationBodyMember/PartyNameHistory, preserving statistical continuity.
+4.3 Confidentiality in the data model
+Confidentiality (D-001) exists on both Agreement and Document, since the requirement states that the marking applies "primarily" to attached documents while agreement details must also be hidden (D-002). Public views and the mediator role’s views filter on the flag; statistics views aggregate including confidentiality-marked agreements. Filtering happens in the database view layer plus the application’s RBAC (NFÅ-003/004) – dual protection.
+4.4 Polymorphic links for Document and EventLog
+Appendix A explicitly states that Document and EventLog are linked "to all agreement tables, Negotiation, Party meeting, Mediation". The alternative – one FK column per target table – yields a sparse and hard-to-extend structure. We follow Appendix A’s intent with entity type + entity id and secure integrity in the application layer plus the IX_Dokument_Entitet index. The trade-off (no declarative FK) is documented deliberately.
+4.5 Stage 2 in the schema from day one
+PensionAgreement, OtherAgreement, the link tables and SignedBy are created already in the Stage 1 schema but without UI. The reason is the migration strategy: the data model must accommodate the historical Access information from the start (NFM-002), and the relationships to Agreement/Party/CooperationBody must not require schema rebuilds in Stage 2 (cf. question 3.2 in the question list to MI). OtherAgreement in basic form is moreover used already in Stage 1 for the negotiation procedure agreements (FA-006/FA-017), which drive the mediation flow (FF-006).
+4.6 Derived colour coding
+The colour coding (FR-012) is never stored but derived: red when a MediationAgreement link exists or the agreement was signed after mediation, green for newly signed without mediation, blue for remaining agreements. This guarantees consistency – the status can never be "forgotten" when a mediation link is created.
+5. Physical database schema
+The complete T-SQL script is delivered separately as MIIS_databasschema.sql and comprises five schemas (Swedish names, matching MI’s domain language):
+gemensam (shared) – parties, cooperation bodies, reference data, users/roles, saved searches
+avtal (agreement) – the agreement domain including the Stage 2 tables
+medling (mediation) – negotiation, party meeting, coordinated demands, mediation (special/standing), mediators
+dok (documents) – documents with full-text index (Swedish, LCID 1053) and watchword hits
+logg (log) – event, change, login and e-mail logs (append-only)
+The script contains requirement references in the comments per table, CHECK constraints for controlled value sets (agreement construction 1–7, the eight roles, report selection types, SignedBy exclusivity), a starting index set for the search patterns, and implementation notes for snapshots, confidentiality views, colour coding, retention jobs and migration staging (an etl schema).
+Open points that depend on MI’s answers to the question list: the exact fields for "Märket" (question 4.6), data volumes for sizing (3.4), and the SQL Server version and licensing model in Försäkringskassan’s vDC (1.4) – temporal tables require SQL Server 2016+ and full-text search requires the Full-Text Search component to be installed in the operating environment.

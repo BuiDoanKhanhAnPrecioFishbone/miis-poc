@@ -1,0 +1,97 @@
+The Swedish Collective Bargaining Process
+and the Role of the Mediation Office (Medlingsinstitutet)
+Domain guide for the MIIS delivery team – from process understanding to menus and workflows
+Purpose
+	Give the delivery team a shared, end-to-end understanding of the bargaining round (avtalsrörelse) and MI’s role, so that MIIS menus, workflows and views mirror the real process
+
+Sources
+	Tender documentation (Appendix 1, ref. 2026/0059) · mi.se (Avtalsrörelse – så går det till; Medling & konflikt; Lagar & regler; Den svenska modellen) · trade union perspectives (Unionen, Sveriges Lärare, Sveriges Ingenjörer) · employer perspectives (Svenskt Näringsliv, Almega, TMF, SKR) · MBL (1976:580)
+
+Related documents
+	MIIS Requirements Specification v2.5-EN · Information Model and Database Schema v1.0-EN
+
+Version
+	1.0-EN · 2026-08-13
+
+Contents
+TOC \h \o "1-2"
+
+1. The Swedish model in brief
+In Sweden, wages and employment conditions are not set by law or government. They are agreed between the labour market parties – employer organisations (arbetsgivarorganisationer, AGO) and trade unions (arbetstagarorganisationer, ATO) – in collective agreements (kollektivavtal). This is "the Swedish model": legislation only provides a floor (e.g. holidays, working time), and the parties themselves regulate wages, pensions, insurance and detailed conditions, sector by sector. There is no statutory minimum wage; minimum wages exist only in collective agreements.
+The scale matters for MIIS: there are more than 100 central parties – roughly 50 employer organisations and as many unions – which together sign around 650 collective agreements. Agreements normally run for one to three years, and they are not synchronised: some years around 500 agreements expire (major bargaining rounds like 2017, 2020, 2023), other years only a handful. A "bargaining round" (avtalsrörelse) is therefore not a fixed calendar event but the rolling process by which expiring agreements are renegotiated – which is exactly why MI needs continuous, reliable data on expiry dates to forecast each round’s scope (cf. Appendix 1 §2.4).
+Three structural features shape everything else:
+The peace obligation (fredsplikt): while a collective agreement is in force, strikes and lockouts are prohibited. Industrial action only becomes lawful when an agreement has expired ("agreement-less state").
+The Industry Agreement and "Märket": the internationally competing industry negotiates first, and the cost level of its settlement – Märket, "the mark" – becomes the norm that all other sectors are expected to respect. Within industry, negotiations are chaired by impartial chairs (opartiska ordförande, "opo") appointed under the Industry Agreement itself – not by MI, although the same individuals often also serve as MI mediators.
+Hierarchy of levels: umbrella organisations (LO, PTK, Svenskt Näringsliv) coordinate and sign certain agreements (e.g. pensions and insurance); sector-level federations sign the central collective agreements MIIS tracks; local parties then apply them in workplace-level wage revisions. MIIS covers the central level only – local and company-only agreements are out of scope.
+2. The Mediation Office’s mission
+Medlingsinstitutet is the state authority for mediation in labour disputes, established under the Co-Determination Act (MBL 1976:580). It has three statutory tasks, all of which MIIS must support with data:
+Mediate in labour disputes – appointing mediators when conflicts threaten (see chapter 4).
+Promote a well-functioning wage formation process – analysing the economy, meeting the parties, publishing reports, and safeguarding the norm-setting role of the industry settlement.
+Be responsible for official wage statistics – produced with Statistics Sweden (SCB), including the Short-Term Wage Report (Konjunkturlönerapporten).
+MI is a small agency (15 employees) but with an outsized information role: parties, media, researchers and the public turn to MI for facts about agreements, expiry dates, mediations and conflict statistics. MI also registers negotiation procedure agreements (förhandlingsordningsavtal, "FO-avtal") – agreements in which parties have set up their own mediation procedure. This registration has a legal effect that directly shapes MIIS logic: MI may not appoint mediators against the will of parties covered by a registered FO-avtal (currently nine such agreements). Around 30 mediators are available to MI; they are not employees but engaged per assignment, typically senior former party representatives or judges. In addition, regional standing mediators (fasta medlare) handle local disputes, typically where a union seeks a first collective agreement with a single company.
+3. The bargaining round, phase by phase
+The figure below summarises the process in three swimlanes: what the parties do, what MI does, and which MIIS modules support each phase. The rest of this chapter walks through the phases.
+
+3.1 Phase 1 – Agreement in force
+Most of the time, agreements simply run. The peace obligation applies, local wage revisions are carried out annually at workplaces according to the central wage agreement, and MI monitors the landscape: which agreements expire when, which parties are involved, and how wages develop statistically. Good knowledge of expiry dates is what lets MI anticipate the scope of the next round (Appendix 1 §2.4). Organisational changes among parties happen continuously – unions merge (Sveriges Lärare from Lärarförbundet + Lärarnas Riksförbund), employer organisations fuse (Fremia from KFO + Idea), negotiation rights move between unions – and each change must propagate to current agreements while history stays intact.
+3.2 Phase 2 – Preparation (roughly a year to six months before expiry)
+Both sides prepare internally. On the union side (as Unionen and Sveriges Lärare describe it): member input is gathered, a direction decision (inriktningsbeslut) is taken by the union’s representative body, sector delegations translate it into concrete demands per agreement area, and demands are finally fixed by the union board. Coordination is central: the LO federation coordinates its member unions’ demands ("samordnade avtalskrav"), and the five industry unions coordinate within Facken inom industrin. Employer organisations run the mirror process, anchoring mandates with member companies and coordinating within Svenskt Näringsliv.
+MI’s instrument in this phase is the party meeting (partsträff): MI meets one party at a time – never both together – to gauge the negotiation climate, identify conflict risks and assess where mediation may be needed. A party meeting is explicitly not a negotiation (Appendix 1 §4.2). Demands and phrases picked up here feed MI’s watchword table, so that when protocols later arrive, those topics are highlighted automatically.
+3.3 Phase 3 – Exchange of demands and negotiations
+Roughly three months before expiry, the parties exchange written demands (kravväxling) – each side hands over its list, receives the counterpart’s, and negotiation rounds begin. Industry goes first: its settlement sets Märket, expressed as a total cost frame in per cent over the agreement period (e.g. 6.4% over 24 months, possibly with supplements such as extra pension provisions). Once Märket is set, negotiations cascade through the other sectors, which are expected to land on the same cost level – this is the norm MI is tasked to defend. Many negotiations settle here without any conflict: the parties sign a new agreement protocol and the process jumps to phase 5.
+3.4 Phase 4 – Deadlock, notice and mediation
+If no settlement is reached before expiry, the agreement-less state begins and the peace obligation falls away. The formal choreography is precisely regulated in MBL and is core MIIS domain logic:
+Notice (varsel): a party intending industrial action must give written notice to the counterpart AND to MI at least seven working days in advance, counted as seven 24-hour periods from the planned start time. The notice must state the reason and scope of the action. Failing to notify MI can trigger a notice fee (varselavgift) of SEK 30,000–100,000.
+Mediation appointment: when a notice arrives (or MI otherwise sees conflict risk), MI’s Director-General decides on mediation ("Special mediation" in MIIS terms) and appoints one or two mediators from the register. With the parties’ consent MI can appoint mediators at any time; if industrial action threatens or has begun, MI may appoint them even without consent ("compulsory mediation" – rare in practice, as parties virtually always accept). Exception: if the parties are covered by a registered FO-avtal, they mediate under their own procedure and MI stays out – which is why the FO-avtal indicator is decision-critical in the mediation view (US-07).
+The mediators’ work: mediators summon the parties (attendance is mandatory), analyse positions, and construct a settlement proposal (bud) anchored in Märket and comparable settlements. To buy time, MI may – at the mediators’ request – order a party to postpone notified industrial action by up to 14 days, once per mediation assignment; violating such an order can cost SEK 300,000–1,000,000.
+Outcome: either the parties accept a proposal (→ new agreement, often "signed after mediation" – red colour coding in MIIS), or mediation fails and the industrial action proceeds (strike, lockout, blockade, overtime ban; sympathy actions also require notice), with negotiations and mediation typically resuming under conflict until settlement. Local disputes follow the simplified track: standing mediators and the Standing mediation form.
+3.5 Phase 5 – Agreement and follow-up
+A settlement produces an agreement protocol: the umbrella document recording the new wage agreement (construction, scope, revision dates), general terms changes, minimum wages per occupational group, working groups set up by the parties, and validity periods – wage agreement and general terms often with different periods. Peace obligation resumes. The protocol reaches MI, and this is where MIIS’s heaviest flow begins: AI-assisted registration (US-01), supplementary information (US-18), mediation outcome statistics – type of action, lost working days, affected employees (US-09) – and the mediator’s report filed as a document. MI then reports outward: the Bargaining Round Report, the Agreement Constructions report, the annual report, the Short-Term Wage Report with SCB, and answers to parties, media and the public (the public computer, US-14). Locally, workplaces implement the new agreement through wage revisions, and the cycle returns to phase 1.
+4. The two sides’ perspectives – and what they mean for MIIS
+Understanding how each side experiences the process helps the team judge what MI’s case officers care about in the data:
+Union side: the round is a membership-democratic process (input → direction decision → demands) aiming at real wage increases and improved conditions; coordination (LO, Facken inom industrin) is a source of strength. For MIIS this means: coordinated demands with union backing must be first-class data (US-08/FF-005), and demand topics become watchwords.
+Employer side: predictability and international competitiveness dominate; Märket is the anchor and the agreement’s total cost (including working time reduction and pension supplements – hence FA-008/009) is what counts. Increasingly common "dialogue agreements" with local, figure-less wage setting explain why the seven agreement constructions (FA-007) range from local wage formation without central figures to general increases.
+Both sides and MI share one interest MIIS embodies: correct, current facts – who has which agreement, when it expires, what it costs, and what happened in every mediation. That neutrality is MI’s capital, and data quality in MIIS protects it.
+5. From process to menus and workflows
+The table below maps each process phase to the MIIS navigation (as sketched in chapter 9 of the requirements specification) and to the user scenarios that specify the workflows in detail. This is the recommended backbone for the UI: the left-hand menu mirrors the domain objects (Avtal, Parter, Förhandlingar, Medling, Partsträffar, Medlare, Sök & Rapporter, Märket, Administration), while the dashboards and flows mirror the phases.
+Process phase
+	What happens / MI’s role
+	MIIS menu / workflow
+	Scenarios & key requirements
+
+1. Agreement in force
+	MI monitors expiry dates, party changes, statistics
+	Startsida dashboard: expiring agreements, reminders · Avtal · Parter · Sök & Rapporter
+	US-19 (expiry/termination), US-03 (party changes), US-11 (search+snapshot), US-04 (reminders), FR-006
+
+2. Preparation
+	Party meetings, coordinated demands, watchwords; forecast round scope
+	Partsträffar: before/during/after flow with template document · Administration: watchword table
+	US-08 (party meeting + demands), US-13 (watchwords), FF-004/005, FSD-002, FAI-004
+
+3. Demands & negotiation
+	Follow negotiations; register Märket when industry settles; alert on Industry Agreement protocols
+	Förhandlingar: register linked/standalone, close with status · Märket: periodised setting
+	US-16 (negotiations), US-06 (Märket), FF-001–003, FM-001–003
+
+4. Conflict & mediation
+	Notice intake → GD decision → mediation case; appoint mediators; FO-avtal check; postponement; standing mediation for local disputes
+	Medling: case from GD decision with AI decision support, linked agreements, red coding · Medlare: register with history/statistics
+	US-07 (case creation), US-10 (mediator register), US-09 (standing/outcome), FF-006–010, FSD-001, FR-012
+
+5. Agreement & follow-up
+	Protocol registration with AI; outcome statistics; reports to parties, media, public; official statistics with SCB
+	Avtal: AI-assisted registration flow (5 steps per §4.4) · Sök & Rapporter: generator, exports, snapshot · Public view /allmanheten
+	US-01/02 (registration), US-18 (supplementary), US-09 (outcome), US-17 (reports), US-11 (exports), US-14 (public), FAI-001–004, FR-005–013, FH-003
+
+Three workflow-design implications deserve emphasis:
+The dashboard is phase-aware: what a case officer needs in March of a heavy round (incoming protocols, Märket banner, red mediation markers) differs from October of a quiet year (expiry monitoring, party maintenance, report season). The role-adapted start page (FS-001) should surface the current phase’s objects – MIIS already has the data to infer it from expiry dates and open cases.
+The mediation flow is event-driven and time-critical: a notice starts a legal seven-working-day clock, and the GD decision, mediator appointment and possible 14-day postponement all hang on it. The mediation case view (US-07) should therefore present dates and the FO-avtal indicator before anything else, and the notification chain (FE-001–003) must be reliable.
+Everything converges on the protocol: nearly every phase ends by producing or consuming an agreement protocol. The AI-assisted registration flow (US-01, mirroring MI’s own five-step flow in Appendix 1 §4.4) is the system’s heart, and its data quality feeds every report downstream – which is why manual approval of every AI proposal (FAI-002) is non-negotiable.
+6. Sources
+Tender documentation: Avropsförfrågan and Appendix 1 Requirements Specification, MI ref. 2026/0059 (esp. §2 Background, §4.2 Key concepts, §4.4 User flow).
+Medlingsinstitutet, mi.se: "Avtalsrörelse – så går det till" (publication); "Medling & konflikt"; "Lagar & regler"; "Detta gäller vid varsel om strejk" (2023); "Den svenska modellen och Medlingsinstitutet" (PDF).
+Union perspectives: Unionen, "Avtalsrörelse – så här går det till"; Sveriges Lärare, "Så funkar avtalsrörelsen"; Sveriges Ingenjörer, "Så funkar avtalsrörelsen"; Journalistförbundet on notice rules.
+Employer perspectives: Svenskt Näringsliv, "Så fungerar avtalsrörelsen"; Almega, "Så fungerar avtalsrörelsen"; TMF, "Avtalsrörelsens ABC"; SKR, "Begrepp och förklaringar avtalsrörelsen".
+Legal framework: Co-Determination Act (MBL 1976:580) – notice §45, mediation §§46–53; Prop. 1999/2000:32 (creation of MI, notice fees, 14-day postponement).
+Note: figures such as the number of agreements (~650), central parties (>100) and mediators (~30) are from MI’s own publications and may vary slightly over time; they are indicative for design purposes.
