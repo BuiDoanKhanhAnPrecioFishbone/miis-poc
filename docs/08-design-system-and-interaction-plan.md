@@ -118,7 +118,16 @@ Small, and all in `app/globals.css`:
 3. Leave `--destructive` as is; it is already correct and already only used for genuine
    destructive meaning.
 
-No new hues are introduced. The whole change is naming and discipline.
+One new hue is introduced, and only one: **violet for AI**, restored from the CEO's
+US-01 sketch (`--mi-ai-100/500/800`). Folding AI into sand had left a single hue
+carrying seven meanings — Märket, AI, attention, requirement tags, the public view,
+watchword hits and accent — several of them on screen together in `/registrera`. That is
+the same failure the FR-012 colours are protected from, and §0.2 missed it by applying
+the test to red but not to sand.
+
+Stepping outside the MI identity is the *point* here: an AI proposal is machine-generated
+and awaiting approval, which is categorically different from MI's own registered facts.
+Contrast verified at 8.47:1 for text and 4.78:1 for the border.
 
 ---
 

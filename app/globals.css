@@ -133,6 +133,26 @@
   /* Deliberately outside the MI palette: the demo bar must not read as MIIS. */
   --mi-demo-grey: #DDDFDD;
 
+  /*
+   * AI — the one place where stepping outside the MI identity is the point.
+   *
+   * These are the violets from the CEO's US-01 sketch, restored. An AI proposal
+   * is machine-generated and unverified, which is categorically different from
+   * Märket (a registered fact) or a sekretessmarkering (a legal status). Those
+   * are MI's own information and wear MI's own sand; a proposal awaiting a case
+   * officer's approval should not.
+   *
+   * The implementation had folded AI into sand, which left one hue carrying
+   * seven meanings — Märket, AI, attention, requirement tags, the public view,
+   * watchword hits and accent — all of them on screen together in /registrera.
+   * That is the same failure the FR-012 status colours are protected from.
+   *
+   * Contrast: 8.47:1 text on badge, 4.78:1 border against paper.
+   */
+  --mi-ai-100: #EDE7F6;
+  --mi-ai-500: #7E57C2;
+  --mi-ai-800: #4527A0;
+
   --radius: 8px;
   --background: var(--mi-paper);
   --foreground: var(--mi-ink);
@@ -160,9 +180,9 @@
   --sand-foreground: #4A3A1C;
   --mint: #E9F0EC;
   --mint-border: #2E6B57;
-  --ai: var(--mi-sand-100);
-  --ai-foreground: #6B4E14;
-  --ai-border: var(--mi-sand-600);
+  --ai: var(--mi-ai-100);
+  --ai-foreground: var(--mi-ai-800);
+  --ai-border: var(--mi-ai-500);
   /*
    * Requirement tags are annotation, not interface. Sand on ink reads as a
    * margin note pencilled onto the screen; the slate chip they used to be read
@@ -262,6 +282,9 @@
   --req: var(--mi-sand-300);
   --req-foreground: #17252C;
   --req-border: var(--mi-sand-600);
+  --ai: #2E2545;
+  --ai-foreground: #D8CCF0;
+  --ai-border: #8A6FD0;
   --demo: #2A3A42;
   --demo-foreground: #F7F5F0;
   --demo-border: #6C818A;

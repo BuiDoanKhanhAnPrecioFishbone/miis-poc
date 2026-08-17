@@ -26,6 +26,11 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
    an icon and a label word — never a coloured sentence. There are **no trend colours**:
    MI mediates between the parties and does not shade a settlement good or bad.
    Never soften text with an opacity modifier; that is how contrast failures get in.
+   **AI is violet, and it is the one deliberate step outside the MI palette.** An AI
+   proposal is machine-generated and unverified; *Märket* and a sekretessmarkering are
+   MI's own information. They must not share a hue. Sand already carries Märket,
+   attention, requirement tags, the public view and watchword hits — do not add a sixth
+   meaning to it.
 3. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —

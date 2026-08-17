@@ -29,6 +29,17 @@ import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
  * The registration cannot be marked complete while any proposal is unreviewed.
  * That is the requirement's "nothing shall be done automatically", enforced
  * rather than stated in a footnote.
+ *
+ * **The proposals are a list, not a grid of cards.** Nine bordered boxes in two
+ * columns made the eye zig-zag, gave every box a different height, and scattered
+ * the approve/reject controls across the panel. One row per proposal puts the
+ * whole review in a single top-to-bottom pass: the status column reads as one
+ * strip, the action is always in the same place, and the order can mirror the
+ * protocol so "check it line by line" actually works.
+ *
+ * It does not use `DataTable`, deliberately. Sorting would destroy the point —
+ * the order is meaningful because it follows the document — and the review needs
+ * grouped sections and a row that highlights when its source is on screen.
  */
 
 const ORDER_1: ProposalField[] = [
@@ -90,9 +101,8 @@ function SourceLine({
       }
     >
       {/*
-        Not a <Badge>: this sits on top of an already sand-tinted line, so it
-        needs the card background to stay legible. A Badge here would be sand on
-        sand.
+        Not a <Badge>: this sits on top of an already tinted line, so it needs
+        the card background to stay legible.
       */}
       {active && (
         <span className="mr-2 rounded-sm border border-ai-border bg-card px-1.5 py-0.5 text-meta font-bold tracking-wide">
@@ -104,7 +114,22 @@ function SourceLine({
   );
 }
 
-function ProposalCard({
+/** Groups the rows by AI analysis step without breaking the status column. */
+function GroupHeading({ text }: { text: string }) {
+  return (
+    <tr>
+      <th
+        scope="colgroup"
+        colSpan={4}
+        className="border-b border-border pb-1 pt-5 text-left font-display text-body font-semibold text-[var(--mi-slate-900)]"
+      >
+        {text}
+      </th>
+    </tr>
+  );
+}
+
+function ProposalRow({
   proposal,
   d,
   state,
@@ -129,56 +154,79 @@ function ProposalCard({
         : { text: t.review.pending, tone: "neutral" as const };
 
   return (
-    <div
-      className={`rounded-md border-2 p-3 ${selected ? "border-ai-border bg-ai/40" : "border-border bg-card"}`}
+    <tr
+      className={`border-b border-border/60 align-top last:border-0 ${
+        selected ? "bg-ai" : "transition-colors hover:bg-secondary/50"
+      }`}
     >
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <span className="text-label font-bold">{label(d, proposal.id)}</span>
-        <Badge tone={badge.tone}>{badge.text}</Badge>
-        {proposal.confidence === "low" && <Badge tone="ai">{t.review.confidenceLow}</Badge>}
-      </div>
-
-      <p
-        className={`field-input ${
-          state === "rejected" ? "text-muted-foreground line-through decoration-2" : ""
-        }`}
-      >
-        {proposal.value}
-      </p>
-
-      {state === "rejected" && proposal.correction && (
-        <div className="mt-2">
-          <span className="text-label font-bold">{t.review.correctionLabel}</span>
-          <p className="field-input mt-1 border-[var(--status-green)]">{proposal.correction}</p>
-          <p className="mt-1 text-label text-muted-foreground">{t.review.rejectedNote}</p>
-        </div>
-      )}
-
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <Button
-          variant="secondary"
-          size="sm"
-          pressed={selected}
+      {/*
+        The field name is the source trigger. Checking a proposal means finding
+        the words it came from, so the noun you want to verify is the control —
+        and it keeps the action column to the two decisions, which is what lets
+        a row stay one line high.
+      */}
+      <th scope="row" className="py-2 pr-4 text-left font-bold">
+        <button
+          type="button"
           onClick={() => onShowSource(proposal)}
+          aria-pressed={selected}
+          aria-label={t.document.showSourceFor(label(d, proposal.id))}
+          className="inline-flex min-h-11 items-center gap-1.5 text-left font-bold text-primary underline decoration-dotted underline-offset-4 hyphens-auto [overflow-wrap:break-word] hover:decoration-solid"
         >
-          {t.document.showSource}
-        </Button>
-        {state === "pending" ? (
-          <>
-            <Button size="sm" onClick={() => onDecide(proposal.id, "approved")}>
-              {t.review.approveAction}
-            </Button>
-            <Button variant="danger" size="sm" onClick={() => onDecide(proposal.id, "rejected")}>
-              {t.review.rejectAction}
-            </Button>
-          </>
-        ) : (
-          <Button variant="ghost" size="sm" onClick={() => onDecide(proposal.id, "pending")}>
-            {t.review.undoAction}
-          </Button>
+          {label(d, proposal.id)}
+          <span aria-hidden className="text-meta opacity-70">
+            ⤵
+          </span>
+        </button>
+        {selected && (
+          <span className="block pb-1">
+            <Badge tone="ai">{t.review.sourceShown}</Badge>
+          </span>
         )}
-      </div>
-    </div>
+      </th>
+
+      <td className="py-2 pr-4 [overflow-wrap:anywhere]">
+        <span
+          className={state === "rejected" ? "text-muted-foreground line-through decoration-2" : ""}
+        >
+          {proposal.value}
+        </span>
+        {state === "rejected" && proposal.correction && (
+          <span className="mt-1 block">
+            <span className="text-meta font-bold uppercase tracking-wide text-muted-foreground">
+              {t.review.correctionLabel}
+            </span>
+            <span className="block font-semibold">{proposal.correction}</span>
+          </span>
+        )}
+      </td>
+
+      <td className="py-2 pr-4">
+        <span className="flex flex-wrap items-center gap-1.5">
+          <Badge tone={badge.tone}>{badge.text}</Badge>
+          {proposal.confidence === "low" && <Badge tone="ai">{t.review.confidenceLow}</Badge>}
+        </span>
+      </td>
+
+      <td className="py-2">
+        <span className="flex flex-wrap items-center gap-2">
+          {state === "pending" ? (
+            <>
+              <Button size="sm" onClick={() => onDecide(proposal.id, "approved")}>
+                {t.review.approveAction}
+              </Button>
+              <Button variant="danger" size="sm" onClick={() => onDecide(proposal.id, "rejected")}>
+                {t.review.rejectAction}
+              </Button>
+            </>
+          ) : (
+            <Button variant="ghost" size="sm" onClick={() => onDecide(proposal.id, "pending")}>
+              {t.review.undoAction}
+            </Button>
+          )}
+        </span>
+      </td>
+    </tr>
   );
 }
 
@@ -209,6 +257,7 @@ export function ProtocolReview({
   const stateList = proposals.map((p) => states[p.id] ?? "pending");
   const pending = proposals.length - reviewedCount(stateList);
   const approved = approvedCount(stateList);
+  const anyRejected = stateList.includes("rejected");
 
   function register(anchor: SourceAnchor, el: HTMLParagraphElement | null) {
     lineRefs.current[anchor] = el;
@@ -226,12 +275,12 @@ export function ProtocolReview({
 
   const byId = new Map(proposals.map((p) => [p.id, p]));
 
-  function cards(order: ProposalField[]) {
+  function rows(order: ProposalField[]) {
     return order.map((id) => {
       const p = byId.get(id);
       if (!p) return null;
       return (
-        <ProposalCard
+        <ProposalRow
           key={id}
           proposal={p}
           d={d}
@@ -274,7 +323,7 @@ export function ProtocolReview({
   ];
 
   return (
-    <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+    <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
       <div className="@3xl:sticky @3xl:top-4">
         <Panel>
           <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
@@ -290,19 +339,18 @@ export function ProtocolReview({
           </p>
 
           {/*
-          The protocol stays Swedish in the English translation. It is a scanned
-          Swedish document; rendering it in English would describe a system that
-          reads something it will never be given.
-        */}
-          {/*
-          Focusable and named: the pane scrolls, and a scrollable region whose
-          content is not itself focusable is unreachable by keyboard (WCAG 2.1.1).
-        */}
+            The protocol stays Swedish in the English translation. It is a
+            scanned Swedish document; rendering it in English would describe a
+            system that reads something it will never be given.
+
+            Focusable and named: the pane scrolls, and a scrollable region whose
+            content is not itself focusable is unreachable by keyboard (2.1.1).
+          */}
           <div
             tabIndex={0}
             role="region"
             aria-label={t.document.fileName}
-            className="max-h-[30rem] space-y-1 overflow-y-auto text-table leading-relaxed"
+            className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
             lang="sv"
           >
             {lines.map((line) => (
@@ -328,22 +376,56 @@ export function ProtocolReview({
 
       <div className="space-y-5">
         <Panel title={t.review.heading} tags={["FAI-001", "FAI-002"]}>
-          <p className="mb-4 text-table">{t.review.counts(approved, proposals.length)}</p>
+          <p className="mb-2 text-table">{t.review.counts(approved, proposals.length)}</p>
 
-          <h3 className="mb-2 font-display text-body font-semibold">{t.analysis1.title}</h3>
-          <div className="grid items-start gap-3 @xl:grid-cols-2">{cards(ORDER_1)}</div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[34rem] table-fixed text-table">
+              <caption className="sr-only">{t.review.heading}</caption>
+              <colgroup>
+                <col className="w-[25%]" />
+                <col className="w-[32%]" />
+                <col className="w-[20%]" />
+                <col className="w-[23%]" />
+              </colgroup>
+              <thead>
+                <tr className="border-b-2 border-border text-left text-label text-muted-foreground">
+                  <th scope="col" className="py-2 pr-4 font-semibold">
+                    {t.review.table.field}
+                  </th>
+                  <th scope="col" className="py-2 pr-4 font-semibold">
+                    {t.review.table.proposal}
+                  </th>
+                  <th scope="col" className="py-2 pr-4 font-semibold">
+                    {t.review.table.status}
+                  </th>
+                  <th scope="col" className="py-2 font-semibold">
+                    {t.review.table.action}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <GroupHeading text={t.analysis1.title} />
+                {rows(ORDER_1)}
+              </tbody>
+              <tbody>
+                <GroupHeading text={t.analysis2.title} />
+                {rows(ORDER_2)}
+              </tbody>
+            </table>
+          </div>
 
-          <p className="mt-3 rounded-md border border-mint-border bg-mint px-4 py-3 text-label text-primary">
-            {t.analysis1.validation}
-          </p>
-
-          <h3 className="mb-2 mt-5 font-display text-body font-semibold">{t.analysis2.title}</h3>
-          <div className="grid items-start gap-3 @xl:grid-cols-3">{cards(ORDER_2)}</div>
+          {anyRejected && (
+            <p className="mt-3 text-label text-muted-foreground">{t.review.rejectedNote}</p>
+          )}
 
           <div className="mt-4">
             <Callout tone={pending > 0 ? "error" : "ok"} live>
               {pending > 0 ? t.review.blockedNote(pending) : t.review.readyNote}
             </Callout>
+          </div>
+
+          <div className="mt-3">
+            <Callout tone="ok">{t.analysis1.validation}</Callout>
           </div>
 
           <Rationale>{t.analysis2.nothingAutomatic}</Rationale>

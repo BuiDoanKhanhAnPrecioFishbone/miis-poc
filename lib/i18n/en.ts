@@ -277,6 +277,7 @@ export const en: Dictionary = {
         "Select an AI proposal on the right and the passage it was read from is marked here in the protocol.",
       sourceActive: (field: string) => `Showing the source for: ${field}`,
       showSource: "Show the source in the protocol",
+      showSourceFor: (field: string) => `Show the source for ${field} in the protocol`,
       sourceMarker: "SOURCE",
       lines: {
         heading: "ÖVERENSKOMMELSE",
@@ -316,6 +317,13 @@ export const en: Dictionary = {
     review: {
       heading: "Review of AI proposals",
       counts: (approved: number, total: number) => `${approved} of ${total} proposals approved`,
+      table: {
+        field: "Field",
+        proposal: "AI's proposal",
+        status: "Status",
+        action: "Action",
+      },
+      sourceShown: "SOURCE SHOWN",
       approved: "APPROVED",
       rejected: "REJECTED",
       pending: "NOT REVIEWED",
@@ -325,7 +333,7 @@ export const en: Dictionary = {
       correctionLabel: "Corrected value",
       rejectedNote:
         "A rejected proposal is not saved. The case officer's correction is what gets registered, and both the proposal and the correction are recorded in the change log.",
-      confidenceLow: "Low confidence – review with particular care",
+      confidenceLow: "Low confidence",
       blockedNote: (n: number) =>
         `${n} proposals have not been reviewed. The registration cannot be marked complete until every proposal is approved or rejected.`,
       readyNote: "Every proposal has been reviewed. The registration can be marked complete.",

@@ -270,6 +270,7 @@ export const sv = {
         "Välj ett AI-förslag till höger så markeras stycket det lästes ur här i protokollet.",
       sourceActive: (field: string) => `Visar källa för: ${field}`,
       showSource: "Visa källa i protokollet",
+      showSourceFor: (field: string) => `Visa källan till ${field} i protokollet`,
       sourceMarker: "KÄLLA",
       lines: {
         heading: "ÖVERENSKOMMELSE",
@@ -309,6 +310,13 @@ export const sv = {
     review: {
       heading: "Granskning av AI-förslag",
       counts: (approved: number, total: number) => `${approved} av ${total} förslag godkända`,
+      table: {
+        field: "Uppgift",
+        proposal: "AI:ns förslag",
+        status: "Status",
+        action: "Åtgärd",
+      },
+      sourceShown: "KÄLLA VISAS",
       approved: "GODKÄND",
       rejected: "AVVISAD",
       pending: "EJ GRANSKAD",
@@ -318,7 +326,7 @@ export const sv = {
       correctionLabel: "Korrigerat värde",
       rejectedNote:
         "Avvisat förslag sparas inte. Handläggarens korrigering är den uppgift som registreras, och både förslaget och korrigeringen loggas i ändringsloggen.",
-      confidenceLow: "Låg träffsäkerhet – granska särskilt noga",
+      confidenceLow: "Låg träffsäkerhet",
       blockedNote: (n: number) =>
         `${n} förslag är ännu inte granskade. Registreringen kan inte klarmarkeras förrän varje förslag är godkänt eller avvisat.`,
       readyNote: "Alla förslag är granskade. Registreringen kan klarmarkeras.",
