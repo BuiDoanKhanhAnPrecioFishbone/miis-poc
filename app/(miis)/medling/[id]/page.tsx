@@ -24,7 +24,6 @@ import {
   MEDIATOR_POSITION_LABEL,
   miAppointsMediators,
 } from "@/lib/domain/mediation";
-import { statusInfo } from "@/lib/domain/status";
 import { amount, percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
@@ -100,7 +99,7 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
             <ul className="space-y-3">
               {linkedAgreements.map((a) => (
                 <li key={a.id} className="flex flex-wrap items-center gap-3 text-table">
-                  <StatusDot status={statusInfo("after-mediation", lang)} showLabel />
+                  <StatusDot status={a.status} showLabel />
                   <span>
                     {a.name} · {a.validity}
                   </span>
@@ -256,12 +255,16 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           </Panel>
         )}
 
+        {/*
+          No status marker here. These are events, not agreements, and the log
+          has no FR-012 status of its own to show — the previous version asserted
+          "tecknat efter medling" on every row regardless.
+        */}
         {events.length > 0 && (
-          <Panel title={c.eventLog} tags={["FH-002", "FR-012"]}>
+          <Panel title={c.eventLog} tags={["FH-002"]}>
             <ul className="divide-y divide-border text-table">
               {events.map((e) => (
                 <li key={e.id} className="flex flex-wrap items-center gap-3 py-2.5">
-                  <StatusDot status={statusInfo("after-mediation", lang)} showLabel />
                   <span className="tabular-nums text-muted-foreground">{e.timestamp}</span>
                   <span>{e.detail}</span>
                 </li>

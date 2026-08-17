@@ -6,6 +6,7 @@
  */
 
 import { agreementTitle, validityLabel, type Agreement } from "@/lib/domain/agreement";
+import { agreementStatus, type StatusInfo } from "@/lib/domain/status";
 import type { AuditEvent } from "@/lib/domain/event";
 import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import type { MediationCase, Mediator } from "@/lib/domain/mediation";
@@ -18,6 +19,14 @@ export interface LinkedAgreement {
   name: string;
   /** "Kvarstående, utlöper 2027-04-30" */
   validity: string;
+  /**
+   * FR-012, derived from the agreement rather than assumed from the case.
+   * A case being open does not make its agreements *signed* — an unsigned one
+   * linked to mediation is "kvarstående, kopplat till medling", still red. The
+   * view used to hardcode "tecknat efter medling", which labelled the same
+   * agreement differently here than in every agreement table.
+   */
+  status: StatusInfo;
 }
 
 export interface MediationCaseDetail {
@@ -56,11 +65,14 @@ export async function getMediationCase(
               id: agreement.id,
               name: agreementTitle(agreement),
               validity: validityLabel(agreement, lang),
+              status: agreementStatus(agreement, lang),
             },
           ]
         : [];
     }),
-    events: data.mediationEvents.filter((e) => mediationCase.agreementIds.includes(e.agreementId ?? "")),
+    events: data.mediationEvents.filter((e) =>
+      mediationCase.agreementIds.includes(e.agreementId ?? ""),
+    ),
   };
 }
 

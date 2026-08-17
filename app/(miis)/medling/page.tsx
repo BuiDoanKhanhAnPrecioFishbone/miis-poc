@@ -24,22 +24,19 @@ export default async function MediationListPage() {
   const m = i18n.medling;
 
   const columns: Column[] = [
-    { key: "status", header: m.table.status, sortable: true },
     { key: "case", header: m.table.caseNumber, sortable: true },
     { key: "name", header: m.table.name, sortable: true },
     { key: "type", header: m.table.type, sortable: true },
     { key: "dg", header: m.table.dgDecision, sortable: true },
     { key: "agreements", header: m.table.agreements, numeric: true, sortable: true },
     { key: "mediators", header: m.table.mediators },
-    { key: "state", header: m.table.status, sortable: true },
+    { key: "status", header: m.table.status, sortable: true },
   ];
 
   const rows: Row[] = cases.map((c) => {
-    const status = statusInfo(c.ongoing ? "after-mediation" : "remaining", lang);
     return {
       key: c.id,
       cells: [
-        <StatusDot key="s" status={status} showLabel />,
         <Link
           key="c"
           href={`/medling/${c.id}`}
@@ -59,7 +56,6 @@ export default async function MediationListPage() {
         </Badge>,
       ],
       sort: [
-        status.label,
         c.id,
         c.name,
         MEDIATION_TYPE_LABEL[lang][c.type],

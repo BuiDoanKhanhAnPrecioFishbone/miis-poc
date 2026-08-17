@@ -175,8 +175,19 @@ const BADGE_TONE: Record<Tone, string> = {
 };
 
 /**
- * A short state word. Always a word — a badge is never a bare colour, and never
- * borrows the FR-012 status hues (see the token comments in globals.css).
+ * A short state word — registration status, case lifecycle, active/inactive.
+ *
+ * **`Badge` for everything except FR-012; `StatusDot` for FR-012 and nothing
+ * else.** They look different because they are different: FR-012 is the only
+ * status whose colours the customer specified, and it is drawn as a small mark
+ * with the label beside it rather than as a filled pill precisely so a red
+ * agreement can never be mistaken for a red error. A badge uses our own tones
+ * and never the status hues.
+ *
+ * A row carries one status, of its own kind. A mediation case is not an
+ * agreement and has no FR-012 colour; its status is whether it is open.
+ *
+ * Always a word — a badge is never a bare colour.
  *
  * **Casing lives here, not in the dictionary.** MI's design system defines this
  * exact treatment — `.mi-kicker { text-transform: uppercase; letter-spacing:

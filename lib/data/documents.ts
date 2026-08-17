@@ -20,7 +20,8 @@ export async function listDocuments(): Promise<StoredDocument[]> {
   return data.documents
     .map((d) => ({
       ...d,
-      confidential: d.confidential || (d.agreementId ? confidentialAgreements.has(d.agreementId) : false),
+      confidential:
+        d.confidential || (d.agreementId ? confidentialAgreements.has(d.agreementId) : false),
     }))
     .sort((a, b) => b.uploadedDate.localeCompare(a.uploadedDate));
 }
