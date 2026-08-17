@@ -99,7 +99,7 @@ function SourceLine({
         the card background to stay legible.
       */}
       {active && (
-        <span className="mr-2 rounded-sm border border-ai-border bg-card px-1.5 py-0.5 text-meta font-bold tracking-wide">
+        <span className="mr-2 rounded-sm border border-ai-border bg-card px-1.5 py-0.5 text-meta font-bold uppercase tracking-[0.12em]">
           {marker}
         </span>
       )}
@@ -154,7 +154,7 @@ function PreFilledField({
           onClick={() => onShowSource(proposal)}
           aria-pressed={selected}
           aria-label={d.registrera.document.showSourceFor(name)}
-          className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold tracking-wide text-ai-foreground transition-colors hover:bg-card"
+          className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold uppercase tracking-[0.12em] text-ai-foreground transition-colors hover:bg-card"
         >
           {adjusted ? t.adjusted : t.aiFilled}
           <span aria-hidden className="ml-1 opacity-70">

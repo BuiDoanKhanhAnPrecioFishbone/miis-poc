@@ -76,7 +76,7 @@ someone does repeatedly. Ranked by time saved per use in §3.
 
 | Primitive | Replaces | Notes |
 |---|---|---|
-| `Badge` | 10 inline pill spans | Variants: `neutral`, `ok`, `attention`, `error`, `ai`. Never a bare colour — always a word. |
+| `Badge` | 10 inline pill spans | Variants: `neutral`, `ok`, `attention`, `error`, `ai`. Never a bare colour — always a word. **Owns its casing**: MI's `.mi-kicker` treatment in CSS, sentence case in the dictionary. Extracting the component was not enough — casing stayed in the content and the chips drifted anyway. |
 | `DataTable` | 7 hand-built tables | Owns `<thead>` styling, sticky header, row hover, zebra, the `overflow-x-auto` wrapper and the `min-w` guard. Column defs carry `align` and `numeric` so `tabular-nums` stops being copy-pasted. |
 | `Toggle` | 3 fake switches in `/registrera` | A real `<button role="switch" aria-checked>`. Currently they are two nested `<span>`s that cannot be operated at all. |
 | `Tabs` | `/sok` (4), `/rapporter` (4) | Roving tabindex, `aria-selected`, arrow-key navigation. |

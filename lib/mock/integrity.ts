@@ -24,9 +24,18 @@ export function findIntegrityProblems(name: string, data: Dataset): string[] {
     }
   };
 
-  duplicate("agreements", data.agreements.map((a) => a.id));
-  duplicate("mediationCases", data.mediationCases.map((c) => c.id));
-  duplicate("mediators", data.mediators.map((m) => m.id));
+  duplicate(
+    "agreements",
+    data.agreements.map((a) => a.id),
+  );
+  duplicate(
+    "mediationCases",
+    data.mediationCases.map((c) => c.id),
+  );
+  duplicate(
+    "mediators",
+    data.mediators.map((m) => m.id),
+  );
 
   for (const c of data.mediationCases) {
     for (const id of c.agreementIds) {
@@ -41,8 +50,14 @@ export function findIntegrityProblems(name: string, data: Dataset): string[] {
     }
   }
 
-  duplicate("wageAgreements", data.wageAgreements.map((w) => w.id));
-  duplicate("documents", data.documents.map((d) => d.id));
+  duplicate(
+    "wageAgreements",
+    data.wageAgreements.map((w) => w.id),
+  );
+  duplicate(
+    "documents",
+    data.documents.map((d) => d.id),
+  );
 
   for (const w of data.wageAgreements) {
     if (!agreementIds.has(w.agreementId)) {

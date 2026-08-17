@@ -29,13 +29,7 @@ const AREAS = [
   "Lantbruk",
 ];
 
-const QUALIFIERS = [
-  "",
-  " – tjänstemän",
-  " – arbetare",
-  " – riksavtal",
-  " – storstadsregioner",
-];
+const QUALIFIERS = ["", " – tjänstemän", " – arbetare", " – riksavtal", " – storstadsregioner"];
 
 const REPORTS: ReportSelection = {
   eurofound: false,

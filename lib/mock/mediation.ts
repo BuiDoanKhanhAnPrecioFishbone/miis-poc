@@ -69,7 +69,7 @@ export const MEDIATION_CASES: MediationCase[] = [
       { id: "ME-03", name: "Anders Lindström", position: "first-chair", previousAssignments: 21 },
     ],
     coveredByProcedureAgreement: false,
-    status: { sv: "Avslutad – avtal tecknat", en: "Closed – agreement signed" },
+    status: { sv: "Avslutad", en: "Closed" },
     ongoing: false,
     outcome: {
       mediationType: "special",

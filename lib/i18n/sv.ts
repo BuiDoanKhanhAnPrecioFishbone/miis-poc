@@ -21,8 +21,7 @@ export const sv = {
     mainMenu: "Huvudmeny",
     loggedInVia: "miis.mi.se · Inloggad via EFOS",
     benchmarkTerm: "Märket",
-    aiProposal: "AI-FÖRSLAG",
-    aiProposalRejected: "AVVISAT AI-FÖRSLAG",
+    aiProposal: "AI-förslag",
     empty: "Inget att visa.",
     none: "–",
     yes: "Ja",
@@ -128,7 +127,7 @@ export const sv = {
     incomplete: {
       title: "Ofullständiga registreringar",
       empty: "Alla registreringar är kompletta.",
-      badge: "OFULLSTÄNDIG",
+      badge: "Ofullständig",
       footnote:
         "Visas i Konjunkturlönerapportens vy med statuskolumn, protokollslänk och vilka avtal som redan exporterats",
       action: "Öppna Konjunkturlönerapporten",
@@ -145,14 +144,14 @@ export const sv = {
     ongoingMediations: {
       title: "Pågående medlingar",
       empty: "Inga pågående medlingar.",
-      badge: "PÅGÅENDE",
+      badge: "Pågående",
       footnote: "Medlingsärenden skapas automatiskt när ett GD-beslut laddas upp",
       action: "Öppna medlingsärenden",
     },
     dgDecisions: {
       title: "GD-beslut att slutföra",
       empty: "Inga beslut väntar på klarmarkering.",
-      badge: "EJ KLARMARKERAT",
+      badge: "Ej klarmarkerat",
       footnote:
         "Vid klarmarkering skickas notifierings-epost med länk till medlaradministratören och sändningen loggas",
     },
@@ -170,8 +169,8 @@ export const sv = {
       title: "Medlarregister",
       empty: "Inga medlare registrerade ännu.",
       assignments: (n: number) => `${n} uppdrag`,
-      active: "AKTIV",
-      inactive: "INAKTIV",
+      active: "Aktiv",
+      inactive: "Inaktiv",
       footnote:
         "Statistik per medlare (år och avtalsområde) visas som beslutsstöd inför tillsättning",
       action: "Öppna medlarregistret",
@@ -179,8 +178,8 @@ export const sv = {
     casesNeedingMediators: {
       title: "Ärenden att komplettera med medlare",
       empty: "Inga ärenden att komplettera.",
-      assigned: "MEDLARE TILLSATTA",
-      missing: "MEDLARE SAKNAS",
+      assigned: "Medlare tillsatta",
+      missing: "Medlare saknas",
       footnote: "Notifiering kommer via e-post när ett medlingsbeslut klarmarkeras",
     },
     savedSearches: {
@@ -193,7 +192,7 @@ export const sv = {
       title: "Bokslut och uttag",
       footnote:
         "Bokslut återskapar hur data såg ut vid en viss tidpunkt. Standardsökningar svarar inom 3 sekunder",
-      latest: "SENAST",
+      latest: "Senast",
       items: [
         "Bokslut per 2026-12-31 · 143 träffar",
         "Export till Excel · 2026-12-31",
@@ -214,7 +213,7 @@ export const sv = {
     watchwords: {
       title: "Bevakningsord",
       footnote: "Tabellen uppdateras inför kommande avtalsrörelse",
-      active: "AKTIVT",
+      active: "Aktivt",
       items: ["arbetstidsförkortning", "deltidspension", "jämställdhetspott"],
     },
     users: {
@@ -222,7 +221,7 @@ export const sv = {
       footnote:
         "Behörigheter administreras av MI:s egna behörighetsadministratörer utan leverantörens medverkan",
       action: "Öppna användaradministrationen",
-      active: "AKTIV",
+      active: "Aktiv",
       items: [
         "Anna Andersson · Avtalsadministratör",
         "Per Persson · Medlingsadministratör",
@@ -231,14 +230,14 @@ export const sv = {
     },
     userTasks: {
       title: "Att hantera",
-      badge: "ÅTGÄRD",
+      badge: "Åtgärd",
       item: "Ny medarbetare finns i Enterprise IAM/SSID – roll ej tilldelad",
       footnote: "Användare autentiseras med EFOS-kort via Försäkringskassans IdP (SAML 2.0)",
     },
     mediatorAssignments: {
       title: "Mina medlingsuppdrag",
       empty: "Inga aktiva uppdrag.",
-      badge: "PÅGÅENDE",
+      badge: "Pågående",
       item: "M-2027/12 · Spårtrafik – Tågföretagen / Seko · Ettan",
       footnote:
         "Extern åtkomst via Bank-ID genom Försäkringskassans identifieringslösning (option, steg 2)",
@@ -271,7 +270,7 @@ export const sv = {
       sourceActive: (field: string) => `Visar källa för: ${field}`,
       showSource: "Visa källa i protokollet",
       showSourceFor: (field: string) => `Visa källan till ${field} i protokollet`,
-      sourceMarker: "KÄLLA",
+      sourceMarker: "Källa",
       lines: {
         heading: "ÖVERENSKOMMELSE",
         parties: "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
@@ -309,8 +308,8 @@ export const sv = {
     review: {
       /* The sketch's title: it states the AI's claim and the obligation in one line. */
       heading: "Matchat avtal – AI-förslag kräver ditt godkännande",
-      aiFilled: "AI-FÖRSLAG",
-      adjusted: "JUSTERAD",
+      aiFilled: "AI-förslag",
+      adjusted: "Justerad",
       aiProposed: (value: string) => `AI föreslog: ${value}`,
       reset: "Återställ AI-förslaget",
       resetFor: (field: string) => `Återställ AI-förslaget för ${field}`,
@@ -469,8 +468,6 @@ export const sv = {
     title: "Medling",
     subtitle: "Medlingsärenden från GD-beslut, med kopplade avtal och tillsatta medlare",
     empty: "Inga medlingsärenden registrerade i denna datamängd.",
-    ongoing: "PÅGÅENDE",
-    closed: "AVSLUTAD",
     table: {
       caseNumber: "Ärende",
       name: "Avtalsområde",
@@ -619,8 +616,8 @@ export const sv = {
         lastRun: "Senast kört",
         status: "Status",
       },
-      active: "AKTIVT",
-      paused: "PAUSAT",
+      active: "Aktivt",
+      paused: "Pausat",
       add: "+ Nytt schemalagt uttag",
       logNote: "Skickad e-post loggas i händelseloggen med tidpunkt, mottagare och bilaga.",
       items: [

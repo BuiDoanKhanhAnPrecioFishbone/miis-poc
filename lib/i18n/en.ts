@@ -23,8 +23,7 @@ export const en: Dictionary = {
     mainMenu: "Main menu",
     loggedInVia: "miis.mi.se · Signed in with EFOS",
     benchmarkTerm: "Märket (industry benchmark)",
-    aiProposal: "AI PROPOSAL",
-    aiProposalRejected: "REJECTED AI PROPOSAL",
+    aiProposal: "AI proposal",
     empty: "Nothing to show.",
     none: "–",
     yes: "Yes",
@@ -132,7 +131,7 @@ export const en: Dictionary = {
     incomplete: {
       title: "Incomplete registrations",
       empty: "All registrations are complete.",
-      badge: "INCOMPLETE",
+      badge: "Incomplete",
       footnote:
         "Shown in the Short-Term Wage Report view with a status column, a protocol link and which agreements have already been exported",
       action: "Open the Short-Term Wage Report",
@@ -149,7 +148,7 @@ export const en: Dictionary = {
     ongoingMediations: {
       title: "Ongoing mediations",
       empty: "No ongoing mediations.",
-      badge: "ONGOING",
+      badge: "Ongoing",
       footnote:
         "Mediation cases are created automatically when a Director-General decision is uploaded",
       action: "Open mediation cases",
@@ -157,7 +156,7 @@ export const en: Dictionary = {
     dgDecisions: {
       title: "Decisions to finalise",
       empty: "No decisions awaiting finalisation.",
-      badge: "NOT FINALISED",
+      badge: "Not finalised",
       footnote:
         "On finalisation a notification e-mail with a link is sent to the mediator administrator and the send is logged",
     },
@@ -175,8 +174,8 @@ export const en: Dictionary = {
       title: "Mediator register",
       empty: "No mediators registered yet.",
       assignments: (n: number) => `${n} assignments`,
-      active: "ACTIVE",
-      inactive: "INACTIVE",
+      active: "Active",
+      inactive: "Inactive",
       footnote:
         "Statistics per mediator (year and agreement area) are shown as decision support before appointment",
       action: "Open the mediator register",
@@ -184,8 +183,8 @@ export const en: Dictionary = {
     casesNeedingMediators: {
       title: "Cases awaiting a mediator",
       empty: "No cases to complete.",
-      assigned: "MEDIATORS APPOINTED",
-      missing: "NO MEDIATOR",
+      assigned: "Mediators appointed",
+      missing: "No mediator",
       footnote: "Notification arrives by e-mail when a mediation decision is finalised",
     },
     savedSearches: {
@@ -202,7 +201,7 @@ export const en: Dictionary = {
       title: "Snapshots and extracts",
       footnote:
         "A snapshot (bokslut) reconstructs the data as it stood on a given date. Standard searches respond within 3 seconds",
-      latest: "LATEST",
+      latest: "Latest",
       items: [
         "Snapshot as at 2026-12-31 · 143 hits",
         "Export to Excel · 2026-12-31",
@@ -223,7 +222,7 @@ export const en: Dictionary = {
     watchwords: {
       title: "Watchwords",
       footnote: "The table is updated ahead of the coming bargaining round",
-      active: "ACTIVE",
+      active: "Active",
       items: ["arbetstidsförkortning", "deltidspension", "jämställdhetspott"],
     },
     users: {
@@ -231,7 +230,7 @@ export const en: Dictionary = {
       footnote:
         "Permissions are administered by MI's own authorisation administrators without supplier involvement",
       action: "Open user administration",
-      active: "ACTIVE",
+      active: "Active",
       items: [
         "Anna Andersson · Agreement administrator",
         "Per Persson · Mediation administrator",
@@ -240,14 +239,14 @@ export const en: Dictionary = {
     },
     userTasks: {
       title: "To handle",
-      badge: "ACTION",
+      badge: "Action",
       item: "A new colleague exists in Enterprise IAM/SSID – no role assigned",
       footnote: "Users authenticate with an EFOS card via Försäkringskassan's IdP (SAML 2.0)",
     },
     mediatorAssignments: {
       title: "My mediation assignments",
       empty: "No active assignments.",
-      badge: "ONGOING",
+      badge: "Ongoing",
       item: "M-2027/12 · Rail traffic – Tågföretagen / Seko · Ettan (lead)",
       footnote:
         "External access via Bank-ID through Försäkringskassan's identification solution (option, stage 2)",
@@ -281,7 +280,7 @@ export const en: Dictionary = {
       sourceActive: (field: string) => `Showing the source for: ${field}`,
       showSource: "Show the source in the protocol",
       showSourceFor: (field: string) => `Show the source for ${field} in the protocol`,
-      sourceMarker: "SOURCE",
+      sourceMarker: "Source",
       lines: {
         heading: "ÖVERENSKOMMELSE",
         parties: "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
@@ -318,8 +317,8 @@ export const en: Dictionary = {
     },
     review: {
       heading: "Matched agreement – the AI proposal needs your approval",
-      aiFilled: "AI PROPOSAL",
-      adjusted: "ADJUSTED",
+      aiFilled: "AI proposal",
+      adjusted: "Adjusted",
       aiProposed: (value: string) => `AI proposed: ${value}`,
       reset: "Restore the AI proposal",
       resetFor: (field: string) => `Restore the AI proposal for ${field}`,
@@ -484,8 +483,6 @@ export const en: Dictionary = {
     subtitle:
       "Mediation cases from Director-General decisions, with linked agreements and appointed mediators",
     empty: "No mediation cases registered in this data set.",
-    ongoing: "ONGOING",
-    closed: "CLOSED",
     table: {
       caseNumber: "Case",
       name: "Agreement area",
@@ -636,8 +633,8 @@ export const en: Dictionary = {
         lastRun: "Last run",
         status: "Status",
       },
-      active: "ACTIVE",
-      paused: "PAUSED",
+      active: "Active",
+      paused: "Paused",
       add: "+ New scheduled extract",
       logNote: "Sent e-mail is recorded in the event log with time, recipients and attachment.",
       items: [

@@ -177,11 +177,20 @@ const BADGE_TONE: Record<Tone, string> = {
 /**
  * A short state word. Always a word — a badge is never a bare colour, and never
  * borrows the FR-012 status hues (see the token comments in globals.css).
+ *
+ * **Casing lives here, not in the dictionary.** MI's design system defines this
+ * exact treatment — `.mi-kicker { text-transform: uppercase; letter-spacing:
+ * .12em; font-size: .78rem; font-weight: 700 }` — and doing it in CSS rather
+ * than typing capitals into the copy has two payoffs: chips cannot drift out of
+ * step with each other, and a screen reader announces the natural casing rather
+ * than being handed a shouted string it may try to spell out.
+ *
+ * So write `Ofullständig` in `lib/i18n/`, never `OFULLSTÄNDIG`.
  */
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: Tone }) {
   return (
     <span
-      className={`inline-block shrink-0 rounded-sm border px-2 py-0.5 text-meta font-bold tracking-wide ${BADGE_TONE[tone]}`}
+      className={`inline-block shrink-0 rounded-sm border px-2 py-0.5 text-meta font-bold uppercase tracking-[0.12em] ${BADGE_TONE[tone]}`}
     >
       {children}
     </span>

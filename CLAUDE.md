@@ -123,6 +123,14 @@ because the system only holds if it is cheaper to use than to bypass — it prev
 not. `DataTable` takes server-rendered cells plus plain sort values, so ordering happens
 in the browser while rendering stays on the server.
 
+**Casing is presentation, not content.** Write `Ofullständig` in `lib/i18n/`, never
+`OFULLSTÄNDIG` — `Badge` applies MI's own small-label treatment
+(`.mi-kicker`: uppercase, `0.12em` tracking, 13px, bold). Capitals typed into the
+dictionary are how the chips drifted out of step in the first place, and they hand a
+screen reader a shouted string it may try to spell out. The exceptions are acronyms
+(`MIIS`, `OCR`), the scanned protocol's own wording, and the `OCH`/`ELLER` operators,
+which render in buttons rather than badges.
+
 **Two kinds of prose.** A sentence the user needs to do the task correctly is a plain
 paragraph. A sentence that justifies the design or restates a requirement is
 `<Rationale>`, which rides the `miis_reqtags` switch and is absent from the product
