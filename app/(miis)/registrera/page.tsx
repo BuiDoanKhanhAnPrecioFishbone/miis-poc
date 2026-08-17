@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { ProtocolReview } from "@/components/miis/ProtocolReview";
+import { Select } from "@/components/miis/Select";
+import { Toggle } from "@/components/miis/Toggle";
 import {
   Badge,
   Button,
@@ -13,7 +15,7 @@ import {
   ReqTag,
 } from "@/components/miis/primitives";
 import { listExtractionProposals } from "@/lib/data/extraction";
-import { AGREEMENT_CONSTRUCTIONS } from "@/lib/domain/agreement";
+import { AGREEMENT_CONSTRUCTIONS, registrationStatusLabel } from "@/lib/domain/agreement";
 import { statusInfo, STATUS_LEGEND } from "@/lib/domain/status";
 import { percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
@@ -54,10 +56,15 @@ export default async function RegistreraPage() {
       <ProtocolReview proposals={proposals} lang={lang}>
         <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
           <div className="space-y-4">
-            <Field
+            <Select
+              id="wage-construction"
               label={t.wage.construction}
-              value={`2. ${AGREEMENT_CONSTRUCTIONS[lang][2]}`}
+              defaultValue="2"
               hint={t.wage.constructionHint}
+              options={([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+                id: String(n),
+                label: `${n}. ${AGREEMENT_CONSTRUCTIONS[lang][n]}`,
+              }))}
             />
 
             <div className="grid gap-4 @xl:grid-cols-4">
@@ -89,29 +96,13 @@ export default async function RegistreraPage() {
             </div>
 
             <div className="grid gap-4 @xl:grid-cols-2">
-              <div>
-                <div className="mb-1 flex flex-wrap items-center gap-2">
-                  <span className="text-label font-bold">{t.wage.equalityFlag}</span>
-                  <ReqTag id="FA-011" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="flex h-8 w-14 items-center rounded-full bg-status-green px-1">
-                    <span className="ml-auto size-6 rounded-full bg-card" />
-                  </span>
-                  <span className="text-table font-semibold">{i18n.common.yes}</span>
-                </div>
+              <div className="flex flex-wrap items-start gap-2">
+                <Toggle id="flag-equality" label={t.wage.equalityFlag} lang={lang} defaultOn />
+                <ReqTag id="FA-011" />
               </div>
-              <div>
-                <div className="mb-1 flex flex-wrap items-center gap-2">
-                  <span className="text-label font-bold">{t.wage.benchmarkFlag}</span>
-                  <ReqTag id="FA-012" />
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="flex h-8 w-14 items-center rounded-full bg-secondary px-1">
-                    <span className="mr-auto size-6 rounded-full bg-card" />
-                  </span>
-                  <span className="text-table text-muted-foreground">{i18n.common.no}</span>
-                </div>
+              <div className="flex flex-wrap items-start gap-2">
+                <Toggle id="flag-benchmark" label={t.wage.benchmarkFlag} lang={lang} />
+                <ReqTag id="FA-012" />
               </div>
             </div>
           </div>
@@ -136,9 +127,14 @@ export default async function RegistreraPage() {
 
         <Panel title={t.save.title} tags={["FA-021", "D-001"]}>
           <div className="grid gap-4 @xl:grid-cols-2">
-            <Field
+            <Select
+              id="registration-status"
               label={t.save.registrationStatus}
-              value={`${i18n.rapporter.shortTerm.partiallyRegistered} ▾`}
+              defaultValue="incomplete"
+              options={[
+                { id: "incomplete", label: registrationStatusLabel("incomplete", lang) },
+                { id: "complete", label: registrationStatusLabel("complete", lang) },
+              ]}
             />
             {/*
               FR-012 in words. The registration decides the colour the agreement
@@ -152,22 +148,16 @@ export default async function RegistreraPage() {
             />
           </div>
 
-          <div className="mt-4">
-            <div className="mb-1 flex flex-wrap items-center gap-2">
-              <span className="text-label font-bold">{t.save.confidentialityLabel}</span>
-              <ReqTag id="D-001" />
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="flex h-8 w-14 items-center rounded-full bg-secondary px-1">
-                <span className="mr-auto size-6 rounded-full bg-card" />
-              </span>
+          <div className="mt-4 flex flex-wrap items-start gap-2">
+            <Toggle id="flag-confidential" label={t.save.confidentialityLabel} lang={lang}>
               <ConfidentialityMarker
                 label={i18n.confidentiality.marked}
                 note={i18n.confidentiality.inStatistics}
               />
-            </div>
-            <Rationale>{t.save.confidentialityHint}</Rationale>
+            </Toggle>
+            <ReqTag id="D-001" />
           </div>
+          <Rationale>{t.save.confidentialityHint}</Rationale>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Button>{t.save.approveAndLink}</Button>

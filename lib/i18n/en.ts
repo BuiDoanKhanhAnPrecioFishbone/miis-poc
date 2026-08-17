@@ -383,9 +383,9 @@ export const en: Dictionary = {
   sok: {
     title: "Search",
     subtitle: "Composite search across several document types, with snapshots and export",
-    tabs: ["Agreement information", "Mediation information", "Negotiations", "Parties"],
     criteria: {
       title: "Selection criteria",
+      infoTypeLabel: "Information type",
       groupLabel: (n: number) => `Group ${n}`,
       groupJoinAll: "AND",
       groupJoinAny: "OR",
@@ -396,45 +396,17 @@ export const en: Dictionary = {
       addGroup: "+ Add group",
       removeCondition: (label: string) => `Remove the condition ${label}`,
       removeGroup: (n: number) => `Remove group ${n}`,
+      fieldAria: (group: number, row: number) => `Field, condition ${row} in group ${group}`,
+      operatorAria: (group: number, row: number) => `Operator, condition ${row} in group ${group}`,
+      valueAria: (group: number, row: number) => `Value, condition ${row} in group ${group}`,
       freeText: "Free text in uploaded documents and selections",
-      documentTypes: "Document types in the search (more than two at once)",
+      freeTextValue: "arbetstidsförkortning",
+      documentTypes: "Document types in the search",
+      documentTypesSelected: (n: number, total: number) =>
+        `${n} of ${total} document types selected – today's query builder manages at most two at once`,
       documentTypesNote:
         "Full support without the technical helper variables today's query builder requires",
       snapshot: "Snapshot – reconstruct data as at",
-      snapshotMode: "Snapshot mode",
-      snapshotEnabled: "Enabled",
-      documentTypeItems: [
-        "Wage agreement",
-        "General terms",
-        "Pension agreement",
-        "Other agreements",
-      ],
-      freeTextValue: "“arbetstidsförkortning”",
-      seedGroups: [
-        {
-          join: "any",
-          conditions: [
-            {
-              field: "Agreement construction",
-              operator: "is",
-              value: "1. Local wage formation – agreements without figures",
-            },
-            {
-              field: "Agreement construction",
-              operator: "is",
-              value: "2. Local wage formation with a fallback figure",
-            },
-          ],
-        },
-        {
-          join: "all",
-          conditions: [
-            { field: "Sector", operator: "is", value: "Private" },
-            { field: "Valid at", operator: "as at", value: "2026-12-31" },
-          ],
-        },
-      ],
-      newCondition: { field: "Agreement area", operator: "is", value: "Choose a value" },
     },
     columns: {
       title: "Presentation columns",

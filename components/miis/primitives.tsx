@@ -261,23 +261,49 @@ export function Callout({
   );
 }
 
-/** A selection, shown where its effect is — removable when the user chose it. */
+/**
+ * A selection, shown where its effect is.
+ *
+ * Three modes: static, removable (`onRemove`) and toggleable (`onToggle`).
+ * Selected state is never colour alone — the border weight changes and, in
+ * toggle mode, `aria-pressed` carries it.
+ */
 export function Chip({
   children,
   selected,
   onRemove,
   removeLabel,
+  onToggle,
+  pressed,
 }: {
   children: ReactNode;
   selected?: boolean;
   onRemove?: () => void;
   removeLabel?: string;
+  onToggle?: () => void;
+  pressed?: boolean;
 }) {
   const base =
     "inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-label font-semibold";
   const tone = selected
     ? "border-primary bg-accent text-accent-foreground"
     : "border-border bg-secondary text-secondary-foreground";
+
+  if (onToggle) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={pressed}
+        className={`${base} ${tone} min-h-11 transition-colors hover:bg-accent`}
+      >
+        <span aria-hidden className="font-bold">
+          {pressed ? "✓" : "+"}
+        </span>
+        <span>{children}</span>
+      </button>
+    );
+  }
 
   if (!onRemove) {
     return <span className={`${base} ${tone}`}>{children}</span>;

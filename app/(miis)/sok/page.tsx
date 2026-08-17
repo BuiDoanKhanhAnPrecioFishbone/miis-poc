@@ -13,9 +13,10 @@ import {
   StatusDot,
 } from "@/components/miis/primitives";
 import { countAgreements, listRecentAgreements } from "@/lib/data/agreements";
+import { listWageAgreements } from "@/lib/data/reports";
 import { AGREEMENT_CONSTRUCTIONS } from "@/lib/domain/agreement";
 import { statusInfo } from "@/lib/domain/status";
-import { decimal } from "@/lib/format";
+import { decimal, percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
 const SNAPSHOT_DATE = "2026-12-31";
@@ -37,8 +38,18 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SokPage() {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [rows, total] = await Promise.all([listRecentAgreements(lang, 6), countAgreements()]);
+  const [rows, total, wageAgreements] = await Promise.all([
+    listRecentAgreements(lang, 6),
+    countAgreements(),
+    listWageAgreements(),
+  ]);
   const t = i18n.sok;
+
+  // The construction and wage scope come from the wage agreement (FA-002, one
+  // row per bargaining round), not from the agreement. Both columns used to be
+  // hardcoded, which read as a contradiction once the criteria became real —
+  // the filter said "construction 1 or 2" and every row answered "1".
+  const wageByAgreement = new Map(wageAgreements.map((w) => [w.agreementId, w]));
 
   const columns: Column[] = [
     { key: "status", header: t.results.status, sortable: true },
@@ -51,6 +62,7 @@ export default async function SokPage() {
 
   const tableRows: Row[] = rows.map((row) => {
     const status = statusInfo(row.status, lang);
+    const wage = wageByAgreement.get(row.id);
     return {
       key: row.id,
       cells: [
@@ -65,37 +77,30 @@ export default async function SokPage() {
             />
           )}
         </span>,
-        row.parties,
-        AGREEMENT_CONSTRUCTIONS[lang][1],
-        i18n.common.none,
+        wage
+          ? `${wage.construction}. ${AGREEMENT_CONSTRUCTIONS[lang][wage.construction]}`
+          : i18n.common.none,
+        wage?.wageScopePercent === undefined
+          ? i18n.common.none
+          : percent(wage.wageScopePercent, lang),
         <span key="o" className="font-semibold text-primary underline underline-offset-2">
           {t.results.openAt(SNAPSHOT_DATE)}
         </span>,
       ],
-      sort: [status.label, row.name, row.parties, AGREEMENT_CONSTRUCTIONS[lang][1], 0, ""],
+      sort: [
+        status.label,
+        row.name,
+        row.parties,
+        wage?.construction ?? 99,
+        wage?.wageScopePercent ?? -1,
+        "",
+      ],
     };
   });
 
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FR-001", "FR-002"]} />
-
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        {t.tabs.map((tab, i) => (
-          <span
-            key={tab}
-            aria-current={i === 0 ? "true" : undefined}
-            className={`rounded-md px-5 py-2.5 text-label font-semibold ${
-              i === 0
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground"
-            }`}
-          >
-            {tab}
-          </span>
-        ))}
-        <ReqTag id="FR-002" />
-      </div>
 
       <SearchBuilder
         lang={lang}

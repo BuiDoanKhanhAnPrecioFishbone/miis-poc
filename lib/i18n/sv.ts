@@ -375,9 +375,9 @@ export const sv = {
   sok: {
     title: "Sök",
     subtitle: "Sammansatt sökning över flera handlingstyper, med bokslut och export",
-    tabs: ["Avtalsinformation", "Medlingsinformation", "Förhandlingar", "Parter"],
     criteria: {
       title: "Urvalskriterier",
+      infoTypeLabel: "Informationstyp",
       groupLabel: (n: number) => `Grupp ${n}`,
       groupJoinAll: "OCH",
       groupJoinAny: "ELLER",
@@ -388,40 +388,17 @@ export const sv = {
       addGroup: "+ Lägg till grupp",
       removeCondition: (label: string) => `Ta bort villkoret ${label}`,
       removeGroup: (n: number) => `Ta bort grupp ${n}`,
+      fieldAria: (group: number, row: number) => `Fält, villkor ${row} i grupp ${group}`,
+      operatorAria: (group: number, row: number) => `Operator, villkor ${row} i grupp ${group}`,
+      valueAria: (group: number, row: number) => `Värde, villkor ${row} i grupp ${group}`,
       freeText: "Fritext i uppladdade dokument och urval",
-      documentTypes: "Handlingstyper i sökningen (fler än två samtidigt)",
-      documentTypesNote: "Fullt stöd utan de tekniska hjälpvariabler som dagens sökbyggare kräver",
+      freeTextValue: "arbetstidsförkortning",
+      documentTypes: "Handlingstyper i sökningen",
+      documentTypesSelected: (n: number, total: number) =>
+        `${n} av ${total} handlingstyper valda – dagens sökbyggare klarar högst två samtidigt`,
+      documentTypesNote:
+        "Fullt stöd utan de tekniska hjälpvariabler som dagens sökbyggare kräver",
       snapshot: "Bokslut – återskapa data per",
-      snapshotMode: "Bokslutsläge",
-      snapshotEnabled: "Aktiverat",
-      documentTypeItems: ["Löneavtal", "Allmänna villkor", "Pensionsavtal", "Övriga avtal"],
-      freeTextValue: "”arbetstidsförkortning”",
-      /** The selection the screen opens with: (A ELLER B) OCH C OCH D. */
-      seedGroups: [
-        {
-          join: "any",
-          conditions: [
-            {
-              field: "Avtalskonstruktion",
-              operator: "är",
-              value: "1. Lokal lönebildning – sifferlösa avtal",
-            },
-            {
-              field: "Avtalskonstruktion",
-              operator: "är",
-              value: "2. Lokal lönebildning med stupstock",
-            },
-          ],
-        },
-        {
-          join: "all",
-          conditions: [
-            { field: "Sektor", operator: "är", value: "Privat" },
-            { field: "Giltig vid tidpunkt", operator: "per", value: "2026-12-31" },
-          ],
-        },
-      ],
-      newCondition: { field: "Avtalsområde", operator: "är", value: "Välj värde" },
     },
     columns: {
       title: "Presentationskolumner",

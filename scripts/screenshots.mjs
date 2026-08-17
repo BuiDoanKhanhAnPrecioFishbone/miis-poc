@@ -75,7 +75,13 @@ const cookie = (name, value) => ({
 async function main() {
   await mkdir(OUT, { recursive: true });
 
-  const browser = await chromium.launch();
+  // `--lang` sets the browser UI locale, which is what native <input type="date">
+  // formats against. The context `locale` below only sets Accept-Language and
+  // navigator.language, so without this the date fields render as MM/DD/YYYY in
+  // a Swedish screenshot — every other date in the app is ISO.
+  const browser = await chromium.launch({
+    args: [`--lang=${LANG === "en" ? "en-GB" : "sv-SE"}`],
+  });
   const context = await browser.newContext({
     viewport: { width: WIDTH, height: 1200 },
     deviceScaleFactor: 2,
