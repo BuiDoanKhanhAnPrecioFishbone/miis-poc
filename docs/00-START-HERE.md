@@ -74,6 +74,7 @@ docs/
   05-claude-design-setup.md  what to upload, creating the project, syncing back
   06-migration-plan.md    the architecture, and the week-2 backend plan
   07-designer-setup.md    installing everything on a new laptop
+  08-project-brief.md     the customer, the procurement, the domain vocabulary
   requirements/           the requirement spec (.docx + searchable .txt)
   design-system/          MI tokens, CSS, Tailwind theme, the PDF spec
   sketches/               the CEO's four v1 UI sketches (PNG)
