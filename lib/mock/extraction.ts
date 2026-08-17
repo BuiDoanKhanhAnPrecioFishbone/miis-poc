@@ -5,10 +5,12 @@
  * plausibly returns, and each one names the passage it came from so the screen
  * can show the source rather than claim it.
  *
- * `employeeOrg` is seeded as rejected on purpose. The protocol names *Seko –
+ * `employeeOrg` carries a correction on purpose. The protocol names *Seko –
  * Service- och kommunikationsfacket*; the extraction picked up the parent
  * confederation instead, which is exactly the kind of near-miss a real model
- * makes on Swedish party names and exactly the case FAI-002 exists for.
+ * makes on Swedish party names and exactly the case FAI-002 exists for. The
+ * field opens on the officer's corrected value with the AI's original kept
+ * beside it — US-01's "the officer corrects freely before approval".
  *
  * Week 2: becomes supabase/seed.sql. Nothing outside lib/data/ imports it.
  */
@@ -20,64 +22,46 @@ export const EXTRACTION_PROPOSALS: ExtractionProposal[] = [
     id: "area",
     value: "Kommunikation",
     source: "heading",
-    confidence: "high",
-    initialState: "approved",
   },
   {
     id: "matched",
     value: "Kommunikation – Almega Tjänsteförbunden / Seko",
     source: "parties",
-    confidence: "high",
-    initialState: "approved",
   },
   {
     id: "alternativeName",
     value: "Kommunikationsavtalet",
     source: "heading",
-    confidence: "low",
-    initialState: "pending",
   },
   {
     id: "agreementType",
     value: "Löneavtal + Allmänna villkor",
     source: "wageAppendix",
-    confidence: "high",
-    initialState: "approved",
   },
   {
     id: "employerOrg",
     value: "Almega Tjänsteförbunden",
     source: "parties",
-    confidence: "high",
-    initialState: "approved",
   },
   {
     id: "employeeOrg",
     value: "LO – Landsorganisationen i Sverige",
     source: "parties",
-    confidence: "low",
-    initialState: "rejected",
     correction: "Seko – Service- och kommunikationsfacket",
   },
   {
     id: "signedDate",
     value: "2027-05-28",
     source: "negotiation",
-    confidence: "high",
-    initialState: "approved",
   },
   {
     id: "validity",
     value: "2027-06-01 – 2029-05-31",
     source: "period",
-    confidence: "high",
-    initialState: "approved",
   },
   {
     id: "termination",
     value: "Ja, senast 2028-11-30",
     source: "terminationLead",
-    confidence: "high",
-    initialState: "pending",
   },
 ];

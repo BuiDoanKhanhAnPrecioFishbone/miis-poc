@@ -2,47 +2,39 @@
 
 import { useRef, useState, type ReactNode } from "react";
 
-import type {
-  ExtractionProposal,
-  ProposalField,
-  ReviewState,
-  SourceAnchor,
-} from "@/lib/domain/extraction";
-import { approvedCount, reviewedCount } from "@/lib/domain/extraction";
+import type { ExtractionProposal, ProposalField, SourceAnchor } from "@/lib/domain/extraction";
+import { initialValue, isAdjusted, isEmpty } from "@/lib/domain/extraction";
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
- * US-01 — the protocol and its AI proposals, side by side and linked.
+ * US-01 — the protocol and the form it pre-fills, side by side and linked.
  *
- * Two things the previous version only claimed:
+ * Every restructure here is logged against the sketch and the requirement in
+ * `docs/09-us01-form-decisions.md`. The short version:
  *
- * 1. **Source linking (FAI-001, FAI-004).** Selecting a proposal marks and
- *    scrolls to the passage it was read from. Review stops being "read the whole
- *    protocol and hope" and becomes "check this line".
- * 2. **The rejected path (FAI-002).** One proposal arrives wrong. Rejecting it
- *    keeps the wrong value visible with the correction beside it, because that
- *    pair is what the change log records — and because a demo of only the happy
- *    path asserts human review rather than demonstrating it.
+ * - **It is a form, not a review queue.** US-01 says "the system shows the
+ *   pre-filled form … the officer adjusts as needed and approves manually", and
+ *   §4.1 calls the flow *Quick registration*. An earlier version made nine
+ *   per-field approve/reject decisions out of it, which is the opposite of
+ *   quick and frames the officer as a rubber stamp — ironic, given FAI-002.
+ * - **Approval is per form, not per field.** FAI-002 requires approval "before
+ *   being saved", which scopes it to the save.
+ * - **Fields are editable from the start.** "The officer corrects freely before
+ *   approval" reads against a read-only preview that has to be unlocked, so the
+ *   sketch's `Justera` button is not a button — it is what happens, and the
+ *   field then says `JUSTERAD`.
+ * - **There is no reject.** No requirement contains one, and in a registration
+ *   form it means nothing: the field still needs a value.
  *
- * The registration cannot be marked complete while any proposal is unreviewed.
- * That is the requirement's "nothing shall be done automatically", enforced
- * rather than stated in a footnote.
- *
- * **The proposals are a list, not a grid of cards.** Nine bordered boxes in two
- * columns made the eye zig-zag, gave every box a different height, and scattered
- * the approve/reject controls across the panel. One row per proposal puts the
- * whole review in a single top-to-bottom pass: the status column reads as one
- * strip, the action is always in the same place, and the order can mirror the
- * protocol so "check it line by line" actually works.
- *
- * It does not use `DataTable`, deliberately. Sorting would destroy the point —
- * the order is meaningful because it follows the document — and the review needs
- * grouped sections and a row that highlights when its source is on screen.
+ * Kept from our own work because the requirements support it and the sketch has
+ * no equivalent: selecting a field marks and scrolls to the passage in the
+ * protocol it was read from (FAI-001, FAI-004, FR-003).
  */
 
-const ORDER_1: ProposalField[] = [
+/** FA-001 — agreement area, name, alternative name, parties and agreement type. */
+const IDENTIFICATION: ProposalField[] = [
   "area",
   "matched",
   "alternativeName",
@@ -50,7 +42,9 @@ const ORDER_1: ProposalField[] = [
   "employerOrg",
   "employeeOrg",
 ];
-const ORDER_2: ProposalField[] = ["signedDate", "validity", "termination"];
+
+/** US-01 — AI analysis 2: signing date, validity period, termination option. */
+const VALIDITY: ProposalField[] = ["signedDate", "validity", "termination"];
 
 function label(d: Dictionary, id: ProposalField): string {
   const a1 = d.registrera.analysis1;
@@ -114,119 +108,89 @@ function SourceLine({
   );
 }
 
-/** Groups the rows by AI analysis step without breaking the status column. */
-function GroupHeading({ text }: { text: string }) {
-  return (
-    <tr>
-      <th
-        scope="colgroup"
-        colSpan={4}
-        className="border-b border-border pb-1 pt-5 text-left font-display text-body font-semibold text-[var(--mi-slate-900)]"
-      >
-        {text}
-      </th>
-    </tr>
-  );
-}
-
-function ProposalRow({
+/**
+ * One pre-filled field.
+ *
+ * The `AI-FÖRSLAG` pill is FAI-002's labelling obligation, and it is on *every*
+ * AI-filled field — the sketch left the three date fields bare although US-01
+ * says AI analysis 2 produced them.
+ *
+ * The pill is also the source control. Checking a proposal means finding the
+ * words it came from, so the label that says where a value came from is the
+ * thing you press to see it.
+ */
+function PreFilledField({
   proposal,
   d,
-  state,
+  value,
+  locked,
   selected,
+  onChange,
+  onReset,
   onShowSource,
-  onDecide,
 }: {
   proposal: ExtractionProposal;
   d: Dictionary;
-  state: ReviewState;
+  value: string;
+  locked: boolean;
   selected: boolean;
+  onChange: (id: ProposalField, value: string) => void;
+  onReset: (id: ProposalField) => void;
   onShowSource: (p: ExtractionProposal) => void;
-  onDecide: (id: ProposalField, state: ReviewState) => void;
 }) {
-  const t = d.registrera;
-
-  const badge =
-    state === "approved"
-      ? { text: t.review.approved, tone: "ok" as const }
-      : state === "rejected"
-        ? { text: t.review.rejected, tone: "error" as const }
-        : { text: t.review.pending, tone: "neutral" as const };
+  const t = d.registrera.review;
+  const name = label(d, proposal.id);
+  const adjusted = isAdjusted(proposal, value);
+  const inputId = `prop-${proposal.id}`;
 
   return (
-    <tr
-      className={`border-b border-border/60 align-top last:border-0 ${
-        selected ? "bg-ai" : "transition-colors hover:bg-secondary/50"
-      }`}
-    >
-      {/*
-        The field name is the source trigger. Checking a proposal means finding
-        the words it came from, so the noun you want to verify is the control —
-        and it keeps the action column to the two decisions, which is what lets
-        a row stay one line high.
-      */}
-      <th scope="row" className="py-2 pr-4 text-left font-bold">
+    <div className={selected ? "-m-2 rounded-md bg-ai/50 p-2" : ""}>
+      <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2">
+        <label htmlFor={inputId} className="text-label font-bold text-foreground">
+          {name}
+        </label>
         <button
           type="button"
           onClick={() => onShowSource(proposal)}
           aria-pressed={selected}
-          aria-label={t.document.showSourceFor(label(d, proposal.id))}
-          className="inline-flex min-h-11 items-center gap-1.5 text-left font-bold text-primary underline decoration-dotted underline-offset-4 hyphens-auto [overflow-wrap:break-word] hover:decoration-solid"
+          aria-label={d.registrera.document.showSourceFor(name)}
+          className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold tracking-wide text-ai-foreground transition-colors hover:bg-card"
         >
-          {label(d, proposal.id)}
-          <span aria-hidden className="text-meta opacity-70">
+          {adjusted ? t.adjusted : t.aiFilled}
+          <span aria-hidden className="ml-1 opacity-70">
             ⤵
           </span>
         </button>
-        {selected && (
-          <span className="block pb-1">
-            <Badge tone="ai">{t.review.sourceShown}</Badge>
-          </span>
-        )}
-      </th>
+      </div>
 
-      <td className="py-2 pr-4 [overflow-wrap:anywhere]">
-        <span
-          className={state === "rejected" ? "text-muted-foreground line-through decoration-2" : ""}
-        >
-          {proposal.value}
-        </span>
-        {state === "rejected" && proposal.correction && (
-          <span className="mt-1 block">
-            <span className="text-meta font-bold uppercase tracking-wide text-muted-foreground">
-              {t.review.correctionLabel}
-            </span>
-            <span className="block font-semibold">{proposal.correction}</span>
-          </span>
-        )}
-      </td>
+      <input
+        id={inputId}
+        type="text"
+        value={value}
+        readOnly={locked}
+        onChange={(e) => onChange(proposal.id, e.target.value)}
+        className={`field-input ${locked ? "bg-secondary" : ""} ${
+          isEmpty(value) ? "border-error-border" : ""
+        }`}
+      />
 
-      <td className="py-2 pr-4">
-        <span className="flex flex-wrap items-center gap-1.5">
-          <Badge tone={badge.tone}>{badge.text}</Badge>
-          {proposal.confidence === "low" && <Badge tone="ai">{t.review.confidenceLow}</Badge>}
-        </span>
-      </td>
-
-      <td className="py-2">
-        <span className="flex flex-wrap items-center gap-2">
-          {state === "pending" ? (
-            <>
-              <Button size="sm" onClick={() => onDecide(proposal.id, "approved")}>
-                {t.review.approveAction}
-              </Button>
-              <Button variant="danger" size="sm" onClick={() => onDecide(proposal.id, "rejected")}>
-                {t.review.rejectAction}
-              </Button>
-            </>
-          ) : (
-            <Button variant="ghost" size="sm" onClick={() => onDecide(proposal.id, "pending")}>
-              {t.review.undoAction}
-            </Button>
+      {/* FH-001 records the old and the new value, so both stay visible. */}
+      {adjusted && (
+        <p className="mt-1 flex flex-wrap items-center gap-2 text-label text-muted-foreground">
+          <span className="line-through decoration-2">{t.aiProposed(proposal.value)}</span>
+          {!locked && (
+            <button
+              type="button"
+              onClick={() => onReset(proposal.id)}
+              aria-label={t.resetFor(name)}
+              className="font-semibold text-primary underline underline-offset-2"
+            >
+              {t.reset}
+            </button>
           )}
-        </span>
-      </td>
-    </tr>
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -247,17 +211,18 @@ export function ProtocolReview({
 }) {
   const d = dictionary(lang);
   const t = d.registrera;
-  const [states, setStates] = useState<Record<string, ReviewState>>(() =>
-    Object.fromEntries(proposals.map((p) => [p.id, p.initialState])),
+  const byId = new Map(proposals.map((p) => [p.id, p]));
+
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])),
   );
+  const [approved, setApproved] = useState(false);
   const [activeSource, setActiveSource] = useState<SourceAnchor | null>(null);
   const [activeField, setActiveField] = useState<ProposalField | null>(null);
   const lineRefs = useRef<Partial<Record<SourceAnchor, HTMLElement | null>>>({});
 
-  const stateList = proposals.map((p) => states[p.id] ?? "pending");
-  const pending = proposals.length - reviewedCount(stateList);
-  const approved = approvedCount(stateList);
-  const anyRejected = stateList.includes("rejected");
+  const adjustedCount = proposals.filter((p) => isAdjusted(p, values[p.id] ?? "")).length;
+  const emptyCount = proposals.filter((p) => isEmpty(values[p.id] ?? "")).length;
 
   function register(anchor: SourceAnchor, el: HTMLParagraphElement | null) {
     lineRefs.current[anchor] = el;
@@ -269,25 +234,30 @@ export function ProtocolReview({
     lineRefs.current[p.source]?.scrollIntoView({ block: "center", behavior: "smooth" });
   }
 
-  function decide(id: ProposalField, state: ReviewState) {
-    setStates((s) => ({ ...s, [id]: state }));
+  function change(id: ProposalField, value: string) {
+    setValues((v) => ({ ...v, [id]: value }));
   }
 
-  const byId = new Map(proposals.map((p) => [p.id, p]));
+  function reset(id: ProposalField) {
+    const p = byId.get(id);
+    if (p) setValues((v) => ({ ...v, [id]: p.value }));
+  }
 
-  function rows(order: ProposalField[]) {
+  function group(order: ProposalField[]) {
     return order.map((id) => {
       const p = byId.get(id);
       if (!p) return null;
       return (
-        <ProposalRow
+        <PreFilledField
           key={id}
           proposal={p}
           d={d}
-          state={states[id] ?? "pending"}
+          value={values[id] ?? ""}
+          locked={approved}
           selected={activeField === id}
+          onChange={change}
+          onReset={reset}
           onShowSource={showSource}
-          onDecide={decide}
         />
       );
     });
@@ -299,10 +269,7 @@ export function ProtocolReview({
       content: <span className="font-semibold tracking-wide">{t.document.lines.heading}</span>,
     },
     { anchor: "parties", content: t.document.lines.parties },
-    {
-      anchor: "period",
-      content: <mark className="bg-sand px-1">{t.document.lines.period}</mark>,
-    },
+    { anchor: "period", content: <mark className="bg-sand px-1">{t.document.lines.period}</mark> },
     { anchor: "prolonged", content: t.document.lines.prolonged },
     {
       anchor: "workingTime",
@@ -323,7 +290,7 @@ export function ProtocolReview({
   ];
 
   return (
-    <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
+    <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
       <div className="@3xl:sticky @3xl:top-4">
         <Panel>
           <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
@@ -374,61 +341,52 @@ export function ProtocolReview({
         </Panel>
       </div>
 
-      <div className="space-y-5">
-        <Panel title={t.review.heading} tags={["FAI-001", "FAI-002"]}>
-          <p className="mb-2 text-table">{t.review.counts(approved, proposals.length)}</p>
-
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[34rem] table-fixed text-table">
-              <caption className="sr-only">{t.review.heading}</caption>
-              <colgroup>
-                <col className="w-[25%]" />
-                <col className="w-[32%]" />
-                <col className="w-[20%]" />
-                <col className="w-[23%]" />
-              </colgroup>
-              <thead>
-                <tr className="border-b-2 border-border text-left text-label text-muted-foreground">
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.review.table.field}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.review.table.proposal}
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    {t.review.table.status}
-                  </th>
-                  <th scope="col" className="py-2 font-semibold">
-                    {t.review.table.action}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <GroupHeading text={t.analysis1.title} />
-                {rows(ORDER_1)}
-              </tbody>
-              <tbody>
-                <GroupHeading text={t.analysis2.title} />
-                {rows(ORDER_2)}
-              </tbody>
-            </table>
-          </div>
-
-          {anyRejected && (
-            <p className="mt-3 text-label text-muted-foreground">{t.review.rejectedNote}</p>
-          )}
+      <div className="@container space-y-5">
+        <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
+          <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
+          <div className="grid gap-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
 
           <div className="mt-4">
-            <Callout tone={pending > 0 ? "error" : "ok"} live>
-              {pending > 0 ? t.review.blockedNote(pending) : t.review.readyNote}
-            </Callout>
-          </div>
-
-          <div className="mt-3">
             <Callout tone="ok">{t.analysis1.validation}</Callout>
           </div>
 
-          <Rationale>{t.analysis2.nothingAutomatic}</Rationale>
+          <h3 className="mb-3 mt-5 font-display text-body font-semibold">{t.analysis2.title}</h3>
+          <div className="grid gap-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
+
+          <p aria-live="polite" className="mt-4 text-table">
+            {adjustedCount > 0 ? t.review.adjustedCount(adjustedCount) : t.review.noneAdjusted}
+          </p>
+
+          {emptyCount > 0 && (
+            <div className="mt-2">
+              <Callout tone="attention" live tags={["FA-021"]}>
+                {t.review.emptyBlocks(emptyCount)}
+              </Callout>
+            </div>
+          )}
+
+          {/*
+            FAI-002: one approval, for the form, with the guarantee stated next
+            to the control it describes — the sketch's own wording.
+          */}
+          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+            {approved ? (
+              <>
+                <Badge tone="ok">{t.review.approved}</Badge>
+                <Button variant="secondary" onClick={() => setApproved(false)}>
+                  {t.review.reopen}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => setApproved(true)}>{t.review.approve}</Button>
+                <span className="text-label text-muted-foreground">{t.review.nothingSaved}</span>
+              </>
+            )}
+            <ReqTag id="FAI-002" />
+          </div>
+
+          <Rationale>{t.review.changeLogNote}</Rationale>
         </Panel>
 
         {children}

@@ -192,7 +192,11 @@ export const en: Dictionary = {
       title: "Saved searches",
       footnote: "Composite searches across several document types – without helper variables",
       action: "Open the query builder",
-      items: ["Annual report 2026", "Eurofound selection", "Agreements without figures, private sector"],
+      items: [
+        "Annual report 2026",
+        "Eurofound selection",
+        "Agreements without figures, private sector",
+      ],
     },
     snapshots: {
       title: "Snapshots and extracts",
@@ -271,8 +275,7 @@ export const en: Dictionary = {
     document: {
       fileName: "Avtalsprotokoll_Kommunikation_2027.pdf",
       ocr: "OCR",
-      watchwordHits: (n: number) =>
-        `Highlighted text = hit in the watchword table (${n} hits)`,
+      watchwordHits: (n: number) => `Highlighted text = hit in the watchword table (${n} hits)`,
       sourceHint:
         "Select an AI proposal on the right and the passage it was read from is marked here in the protocol.",
       sourceActive: (field: string) => `Showing the source for: ${field}`,
@@ -281,8 +284,7 @@ export const en: Dictionary = {
       sourceMarker: "SOURCE",
       lines: {
         heading: "ÖVERENSKOMMELSE",
-        parties:
-          "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
+        parties: "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
         period: "avtalsperioden 2027-06-01 – 2029-05-31",
         prolonged:
           "Parterna är överens om att avtalet om allmänna anställningsvillkor prolongeras med ändringar…",
@@ -315,28 +317,27 @@ export const en: Dictionary = {
         "Nothing is saved automatically – incorrect AI proposals are corrected freely before approval",
     },
     review: {
-      heading: "Review of AI proposals",
-      counts: (approved: number, total: number) => `${approved} of ${total} proposals approved`,
-      table: {
-        field: "Field",
-        proposal: "AI's proposal",
-        status: "Status",
-        action: "Action",
-      },
-      sourceShown: "SOURCE SHOWN",
-      approved: "APPROVED",
-      rejected: "REJECTED",
-      pending: "NOT REVIEWED",
-      approveAction: "Approve",
-      rejectAction: "Reject",
-      undoAction: "Undo",
-      correctionLabel: "Corrected value",
-      rejectedNote:
-        "A rejected proposal is not saved. The case officer's correction is what gets registered, and both the proposal and the correction are recorded in the change log.",
-      confidenceLow: "Low confidence",
-      blockedNote: (n: number) =>
-        `${n} proposals have not been reviewed. The registration cannot be marked complete until every proposal is approved or rejected.`,
-      readyNote: "Every proposal has been reviewed. The registration can be marked complete.",
+      heading: "Matched agreement – the AI proposal needs your approval",
+      aiFilled: "AI PROPOSAL",
+      adjusted: "ADJUSTED",
+      aiProposed: (value: string) => `AI proposed: ${value}`,
+      reset: "Restore the AI proposal",
+      resetFor: (field: string) => `Restore the AI proposal for ${field}`,
+      nothingSaved: "Nothing is saved without manual approval",
+      approve: "Approve the AI proposals",
+      approved: "The AI proposals are approved",
+      reopen: "Change",
+      adjustedCount: (n: number) =>
+        n === 1
+          ? "1 field was adjusted by the case officer"
+          : `${n} fields were adjusted by the case officer`,
+      noneAdjusted: "No field has changed since the AI analysis",
+      emptyBlocks: (n: number) =>
+        n === 1
+          ? "1 required field is empty. The registration can be saved as incomplete and completed later."
+          : `${n} required fields are empty. The registration can be saved as incomplete and completed later.`,
+      changeLogNote:
+        "Both the AI proposal and the officer's change are recorded in the change log with time and user.",
     },
     wage: {
       title: "Wage agreement 2027 – new row for the bargaining round",
@@ -403,7 +404,12 @@ export const en: Dictionary = {
       snapshot: "Snapshot – reconstruct data as at",
       snapshotMode: "Snapshot mode",
       snapshotEnabled: "Enabled",
-      documentTypeItems: ["Wage agreement", "General terms", "Pension agreement", "Other agreements"],
+      documentTypeItems: [
+        "Wage agreement",
+        "General terms",
+        "Pension agreement",
+        "Other agreements",
+      ],
       freeTextValue: "“arbetstidsförkortning”",
       seedGroups: [
         {

@@ -274,8 +274,7 @@ export const sv = {
       sourceMarker: "KÄLLA",
       lines: {
         heading: "ÖVERENSKOMMELSE",
-        parties:
-          "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
+        parties: "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
         period: "avtalsperioden 2027-06-01 – 2029-05-31",
         prolonged:
           "Parterna är överens om att avtalet om allmänna anställningsvillkor prolongeras med ändringar…",
@@ -308,28 +307,29 @@ export const sv = {
         "Inget sparas automatiskt – felaktiga AI-förslag korrigeras fritt före godkännande",
     },
     review: {
-      heading: "Granskning av AI-förslag",
-      counts: (approved: number, total: number) => `${approved} av ${total} förslag godkända`,
-      table: {
-        field: "Uppgift",
-        proposal: "AI:ns förslag",
-        status: "Status",
-        action: "Åtgärd",
-      },
-      sourceShown: "KÄLLA VISAS",
-      approved: "GODKÄND",
-      rejected: "AVVISAD",
-      pending: "EJ GRANSKAD",
-      approveAction: "Godkänn",
-      rejectAction: "Avvisa",
-      undoAction: "Ångra",
-      correctionLabel: "Korrigerat värde",
-      rejectedNote:
-        "Avvisat förslag sparas inte. Handläggarens korrigering är den uppgift som registreras, och både förslaget och korrigeringen loggas i ändringsloggen.",
-      confidenceLow: "Låg träffsäkerhet",
-      blockedNote: (n: number) =>
-        `${n} förslag är ännu inte granskade. Registreringen kan inte klarmarkeras förrän varje förslag är godkänt eller avvisat.`,
-      readyNote: "Alla förslag är granskade. Registreringen kan klarmarkeras.",
+      /* The sketch's title: it states the AI's claim and the obligation in one line. */
+      heading: "Matchat avtal – AI-förslag kräver ditt godkännande",
+      aiFilled: "AI-FÖRSLAG",
+      adjusted: "JUSTERAD",
+      aiProposed: (value: string) => `AI föreslog: ${value}`,
+      reset: "Återställ AI-förslaget",
+      resetFor: (field: string) => `Återställ AI-förslaget för ${field}`,
+      /* FAI-002, on screen next to the control it describes. */
+      nothingSaved: "Inget sparas utan manuellt godkännande",
+      approve: "Godkänn AI-förslagen",
+      approved: "AI-förslagen är godkända",
+      reopen: "Ändra",
+      adjustedCount: (n: number) =>
+        n === 1
+          ? "1 uppgift är justerad av handläggaren"
+          : `${n} uppgifter är justerade av handläggaren`,
+      noneAdjusted: "Alla uppgifter är oförändrade sedan AI-analysen",
+      emptyBlocks: (n: number) =>
+        n === 1
+          ? "1 obligatorisk uppgift är tom. Registreringen kan sparas som ofullständig och kompletteras senare."
+          : `${n} obligatoriska uppgifter är tomma. Registreringen kan sparas som ofullständig och kompletteras senare.`,
+      changeLogNote:
+        "Både AI:ns förslag och handläggarens ändring registreras i ändringsloggen med tidpunkt och användare.",
     },
     wage: {
       title: "Löneavtal 2027 – ny rad för avtalsrörelsen",
@@ -391,8 +391,7 @@ export const sv = {
       removeGroup: (n: number) => `Ta bort grupp ${n}`,
       freeText: "Fritext i uppladdade dokument och urval",
       documentTypes: "Handlingstyper i sökningen (fler än två samtidigt)",
-      documentTypesNote:
-        "Fullt stöd utan de tekniska hjälpvariabler som dagens sökbyggare kräver",
+      documentTypesNote: "Fullt stöd utan de tekniska hjälpvariabler som dagens sökbyggare kräver",
       snapshot: "Bokslut – återskapa data per",
       snapshotMode: "Bokslutsläge",
       snapshotEnabled: "Aktiverat",
