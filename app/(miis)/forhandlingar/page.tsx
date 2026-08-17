@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Förhandlingar och avtalsrörelser",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ForhandlingarPage() {
+export default async function ForhandlingarPage() {
+  const dataset = await activeDataset();
   return (
     <PlaceholderPage
       title="Förhandlingar"
       epic="Epic F9 – Förhandlings- och medlingshantering"
       subtitle="Avtalsrörelse och övrig förhandling (US-16)"
-      roll={rollInfo("avtalsadministrator")}
+      role={roleInfo("agreement-admin")}
+      dataset={dataset}
       features={[
         {
           id: "FF-001",

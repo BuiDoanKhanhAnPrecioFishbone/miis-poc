@@ -79,7 +79,7 @@ docs/
   sketches/               the CEO's four v1 UI sketches (PNG)
   source-zips/            original attachments, untouched, for reference
 design/                   design-system bundle synced with Claude Design
-.claude/commands/         slash commands: /skiss, /skiss-test, /granska, /krav
+.claude/commands/         slash commands: /screen, /flow-test, /audit, /spec
 ```
 
 **You only ever need to touch the first three.** The `lib/` folders exist so that when
@@ -92,13 +92,13 @@ sample data into a page. `npm run lint` will stop you anyway.
 
 Typed in Claude Code. They are just saved prompts — read them in `.claude/commands/`.
 
-- `/krav US-08` — pull everything the spec says about a scenario or feature ID, and
+- `/spec US-08` — pull everything the spec says about a scenario or feature ID, and
   what it implies for the interface. **Always start a screen with this.**
-- `/skiss partstraffar` — design and implement a view end to end: requirements → layout
+- `/screen partstraffar` — design and implement a view end to end: requirements → layout
   → Swedish copy → code → screenshot.
-- `/skiss-test US-01` — walk a scenario in a real browser, screenshot each step, report
+- `/flow-test US-01` — walk a scenario in a real browser, screenshot each step, report
   what breaks in the flow.
-- `/granska` — audit the changed screens against WCAG 2.1 AA, the MI tokens, Swedish
+- `/audit` — audit the changed screens against WCAG 2.1 AA, the MI tokens, Swedish
   copy and requirement traceability.
 
 ## 6. Rules that are not negotiable
@@ -130,7 +130,7 @@ git commit -m "US-08: partsträffar med interaktiv mötesvy"
 
 - Commit after each finished screen, with the scenario in the message.
 - Push and the deployment updates; send her the link.
-- Screenshots from `/skiss-test` are the fastest way to show progress in a message —
+- Screenshots from `/flow-test` are the fastest way to show progress in a message —
   she can react to pictures without opening anything.
 
 > Do not force-push, rebase or amend pushed commits. Others review from this history and
@@ -141,12 +141,32 @@ git commit -m "US-08: partsträffar med interaktiv mötesvy"
 There is no database yet — one arrives next week if the CEO says go. Until then the app
 runs on Swedish sample data in `lib/mock/`, read through `lib/data/`.
 
-What that means for you day to day:
+### Three demo modes
 
-- **Need different sample data on a screen?** Ask Claude Code to change `lib/mock/`. It
-  is one place, plainly written, no database knowledge needed.
-- **Relations are by id and nothing enforces them.** A mediation case lists
-  `avtalIds: ["A-002"]`, and if no agreement `A-002` exists, nothing complains — the
-  screen just shows less than you expected. When you add records, check the ids match.
-- **Everything is fake, including the AI.** The AI panel returns a canned answer. That
-  is fine for demonstrating the *interaction*, which is what is being scored.
+The **"Demo: läge"** dropdown in the header switches the whole app between three
+datasets, so you can design the same screen in three states without editing anything:
+
+| Läge | What it is | Use it for |
+|---|---|---|
+| **Tomt läge** | Almost nothing registered | Designing empty states — the thing most prototypes skip |
+| **Normalläge** | Everyday load. The default. | Normal design work |
+| **Högtryck** | A bargaining round in full swing, ~60 agreements | Table density, scrolling, "does this still work when busy" |
+
+### Adding your own data
+
+Ask Claude Code, e.g. *"add four agreements in the municipal sector, two signed after
+mediation, one confidentiality-marked."* It edits `lib/mock/agreements.ts`.
+
+Three things worth knowing:
+
+- **One place only.** Tables derive their rows from the records, so an agreement added
+  once shows up everywhere it belongs. There is no second list to update.
+- **Ids are checked.** A mediation case points at agreements by id
+  (`agreementIds: ["A-002"]`). If an id doesn't exist, `npm run build` fails and names
+  the exact record — it will not silently show you less than you expected.
+- **Volume is generated.** "Högtryck" builds its extra agreements from
+  `lib/mock/generate.ts` rather than by hand. If you need 200 rows to test something,
+  ask — it's a one-number change.
+
+**Everything is fake, including the AI.** The AI panel returns a canned answer. That is
+fine for demonstrating the *interaction*, which is what is being scored.

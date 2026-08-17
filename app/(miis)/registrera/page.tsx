@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { Button, Field, Panel, ReqTag } from "@/components/miis/primitives";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Registrera avtalsprotokoll med AI-stöd",
@@ -23,13 +24,14 @@ const steps = [
   "5. Koppla protokoll",
 ];
 
-export default function RegistreraPage() {
+export default async function RegistreraPage() {
   // US-01 is performed by the agreement administrator regardless of the demo
   // role selected in the header.
-  const roll = rollInfo("avtalsadministrator");
+  const role = roleInfo("agreement-admin");
+  const dataset = await activeDataset();
 
   return (
-    <AppShell roll={roll}>
+    <AppShell role={role} dataset={dataset}>
       <div className="mb-6 flex flex-wrap gap-3">
         {steps.map((s, i) => (
           <span

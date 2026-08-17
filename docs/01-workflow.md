@@ -11,7 +11,7 @@ more consistent mockup.
 
 ```
    ┌─ 1. UNDERSTAND ──────────────────────────────────────────┐
-   │  Claude Code:  /krav US-08                               │
+   │  Claude Code:  /spec US-08                               │
    │  → what the requirement actually demands of the screen   │
    └──────────────────────────┬───────────────────────────────┘
                               ▼
@@ -21,17 +21,17 @@ more consistent mockup.
    └──────────────────────────┬───────────────────────────────┘
                               ▼
    ┌─ 3. IMPLEMENT ───────────────────────────────────────────┐
-   │  Claude Code:  /skiss partstraffar                       │
+   │  Claude Code:  /screen partstraffar                       │
    │  Real route, real Swedish copy, MI tokens, ReqTags.      │
    └──────────────────────────┬───────────────────────────────┘
                               ▼
    ┌─ 4. TEST THE FLOW ───────────────────────────────────────┐
-   │  Claude Code:  /skiss-test US-08                         │
+   │  Claude Code:  /flow-test US-08                         │
    │  Clicks through it in a browser, screenshots every step. │
    └──────────────────────────┬───────────────────────────────┘
                               ▼
    ┌─ 5. AUDIT ───────────────────────────────────────────────┐
-   │  Claude Code:  /granska    → WCAG, tokens, Swedish, IDs  │
+   │  Claude Code:  /audit    → WCAG, tokens, Swedish, IDs  │
    └──────────────────────────┬───────────────────────────────┘
                               ▼
                     commit · next screen
@@ -44,7 +44,7 @@ One screen per loop. Roughly 45–90 minutes each once you're warm.
 ## Step 1 — Understand (Claude Code, ~5 min)
 
 ```
-/krav US-08
+/spec US-08
 ```
 
 Claude reads the requirement spec and comes back with: the role, the goal, the main
@@ -62,7 +62,7 @@ actually see on one screen, and which belong behind a step?"` is a good second q
 
 Open **claude.ai/design**. Two ways to use it, both useful:
 
-**a) Layout exploration.** Paste the output of `/krav` and ask for two or three
+**a) Layout exploration.** Paste the output of `/spec` and ask for two or three
 *different* structural approaches, not variations of one. For example, for a party
 meeting: a timeline (before/during/after), a three-column live-notes view, a
 form-with-agenda-sidebar. Look at them next to each other and pick.
@@ -80,7 +80,7 @@ maturity for the "user interface" criterion.
 > ways to bring work back. Do that once before your first screen.
 
 **Bringing it back into the repo.** Most of the time you don't need to sync anything —
-you made a *decision*, and you just tell `/skiss` what you decided. When you did build
+you made a *decision*, and you just tell `/screen` what you decided. When you did build
 components, in Claude Code:
 
 ```
@@ -100,7 +100,7 @@ mockup.
 ## Step 3 — Implement (Claude Code, ~30 min)
 
 ```
-/skiss partstraffar
+/screen partstraffar
 ```
 
 This does the whole screen: reads the requirements, builds the route, writes realistic
@@ -119,7 +119,7 @@ text** Swedish.
 ## Step 4 — Test the flow (Claude Code, ~10 min)
 
 ```
-/skiss-test US-08
+/flow-test US-08
 ```
 
 Claude opens a real browser, walks the scenario from the start page as that role,
@@ -133,7 +133,7 @@ doesn't. In week 35 someone will click through this in front of the customer.
 ## Step 5 — Audit (Claude Code, ~5 min)
 
 ```
-/granska
+/audit
 ```
 
 WCAG 2.1 AA, MI tokens, Swedish copy, requirement traceability. Fix what it finds
@@ -147,7 +147,7 @@ before moving on — accessibility debt across 12 screens is much worse than acr
   `git commit -m "US-08: partsträffar med interaktiv mötesvy"`
 - Push the `design` branch — the Vercel deployment rebuilds and she reviews there.
   The repo no longer opens in Lovable; the URL replaces it.
-- Screenshots from `/skiss-test` are the fastest way to show progress in a message —
+- Screenshots from `/flow-test` are the fastest way to show progress in a message —
   she can react to pictures without opening anything.
 
 ## When something goes wrong
@@ -158,5 +158,5 @@ before moving on — accessibility debt across 12 screens is much worse than acr
 | A change didn't show up | Hard-reload the browser (Ctrl+F5). Vite occasionally holds a stale module. |
 | Claude edited the wrong file | `git diff` to see everything, `git checkout -- <file>` to undo one file. Commit often so undo is cheap. |
 | Claude wrote English UI text | `"UI-texten ska vara på svenska — rätta till det."` It's in `CLAUDE.md`, but say it again. |
-| Design drifted from the tokens | `/granska`, then `"fix every hard-coded colour to use the MI tokens."` |
+| Design drifted from the tokens | `/audit`, then `"fix every hard-coded colour to use the MI tokens."` |
 | You want to try something risky | Branch: `git checkout -b experiment`. Throw it away with `git checkout design` if it doesn't work. |

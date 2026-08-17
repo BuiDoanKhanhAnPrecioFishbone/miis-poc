@@ -37,7 +37,7 @@ Do **not** upload `MIIS_Requirements_Specification_v2_EN.docx`. It is 3.9 MB, in
 and mostly commercial/technical requirements that have nothing to do with visual design.
 It will dilute the context.
 
-Instead, when you start a screen, paste in the output of `/krav US-08` from Claude Code.
+Instead, when you start a screen, paste in the output of `/spec US-08` from Claude Code.
 That is the relevant 40 lines: role, flow, fields, Feature IDs, Swedish terminology.
 
 ### What never to upload
@@ -125,7 +125,7 @@ Three levels, depending on what you made. **Most of the time you want level 1.**
 You explored three layouts and picked one. Nothing needs to sync. Just say it:
 
 ```
-/skiss partstraffar
+/screen partstraffar
 
 Use a three-mode layout: "Före mötet", "Under mötet", "Efter mötet" as tabs, with
 "Under mötet" as the default — a wide notes area on the left, the party's coordinated

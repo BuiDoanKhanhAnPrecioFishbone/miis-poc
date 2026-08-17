@@ -1,32 +1,35 @@
-import type { RollInfo } from "@/lib/domain/roll";
+import type { RoleInfo } from "@/lib/domain/role";
+import type { DatasetName } from "@/lib/domain/dataset";
 import { AppShell } from "./AppShell";
 import { PageHeading, Panel, ReqTag } from "./primitives";
 
 /**
  * Stub view for screens that show their requirement content but are not yet
- * designed. Replace with a real screen via /skiss — see docs/03-screen-backlog.md.
+ * designed. Replace with a real screen via /screen — see docs/03-screen-backlog.md.
  */
 export function PlaceholderPage({
   title,
   epic,
   subtitle,
   features,
-  roll,
+  role,
+  dataset,
 }: {
   title: string;
   epic: string;
   subtitle: string;
   features: { id: string; text: string }[];
-  roll: RollInfo;
+  role: RoleInfo;
+  dataset: DatasetName;
 }) {
   return (
-    <AppShell roll={roll}>
+    <AppShell role={role} dataset={dataset}>
       <PageHeading title={title} subtitle={subtitle} />
       <div className="grid gap-5 @3xl:grid-cols-2">
         <Panel title={epic}>
           <ul className="divide-y divide-border">
             {features.map((f) => (
-              <li key={f.id} className="flex items-start gap-3 py-2.5">
+              <li key={`${f.id}-${f.text}`} className="flex items-start gap-3 py-2.5">
                 <ReqTag id={f.id} />
                 <span className="text-sm text-foreground">{f.text}</span>
               </li>

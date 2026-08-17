@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Administration, behörigheter och loggar",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdministrationPage() {
+export default async function AdministrationPage() {
+  const dataset = await activeDataset();
   return (
     <PlaceholderPage
       title="Administration"
       epic="Epic F5 och NF2 – Loggar, behörighet och konfiguration"
       subtitle="Användare, roller, stödtabeller och spårbarhet (US-12, US-13)"
-      roll={rollInfo("systemadministrator")}
+      role={roleInfo("system-admin")}
+      dataset={dataset}
       features={[
         { id: "NFÅ-001", text: "Autentisering med EFOS-kort via Försäkringskassans IdP (SAML2)." },
         { id: "NFÅ-003", text: "Rollbaserad behörighetsstyrning enligt de åtta användarrollerna." },

@@ -118,19 +118,34 @@ export function Button({
  * rendered without its label — the label is visually hidden in dense tables but
  * always present for assistive technology (WCAG 2.1 AA, 1.4.1).
  */
-export function StatusDot({ status, visaEtikett = false }: { status: StatusInfo; visaEtikett?: boolean }) {
+export function StatusDot({
+  status,
+  showLabel = false,
+}: {
+  status: StatusInfo;
+  showLabel?: boolean;
+}) {
   const bg =
-    status.farg === "green"
+    status.color === "green"
       ? "bg-status-green"
-      : status.farg === "red"
+      : status.color === "red"
         ? "bg-status-red"
         : "bg-status-blue";
 
   return (
     <span className="inline-flex items-center gap-2">
       <span aria-hidden className={`inline-block size-3 rounded-full ${bg}`} />
-      <span className={visaEtikett ? "text-sm" : "sr-only"}>{status.etikett}</span>
+      <span className={showLabel ? "text-sm" : "sr-only"}>{status.label}</span>
     </span>
+  );
+}
+
+/** Shown when a panel or table has nothing in it. */
+export function EmptyState({ text }: { text: string }) {
+  return (
+    <p className="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+      {text}
+    </p>
   );
 }
 

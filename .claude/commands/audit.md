@@ -40,7 +40,10 @@ what an evaluator or an accessibility test would actually catch first.
 - Pages are server components that `await` data; nothing fetches inside a component
 - `"use client"` appears only where state or event handlers genuinely require it
 - No sample data inlined in a page that should live in `lib/mock/`
-- Ids referenced across mock records resolve to records that exist
+- Ids referenced across mock records resolve (npm run build enforces this)
+- No hand-written read model that duplicates a derived one — table rows come from
+  lib/data/ helpers, not from a second array in lib/mock/
+- Identifiers are English; only user-facing strings are Swedish
 - `npm run lint` and `npm run build` both pass
 
 ## 4. Swedish copy

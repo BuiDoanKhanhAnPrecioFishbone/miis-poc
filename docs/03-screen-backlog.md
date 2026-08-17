@@ -28,13 +28,19 @@ the strongest part of the bid.
   *and* label, so FR-012 can't be rendered as colour alone. The label is `sr-only` in
   dense tables; pass `visaEtikett` to show it.
 
+- ~~Mock data friction~~ — table rows are now derived from the records, ids are checked
+  at build time, and three demo datasets (tomt / normal / högtryck) let a screen be
+  designed empty, normal and under load without editing data.
+
 **Still the top improvement:**
 
 1. **The AI-got-it-wrong state** in `/registrera`. FAI-002 says nothing is saved
    automatically and every proposal needs manual approval. Showing a *rejected* AI
    proposal and the correction path proves we understood that requirement, not just
    the happy path. No other bidder will demo this.
-2. **Consider showing the status label visibly** in the start page table, not just to
+2. **Design the empty states.** "Tomt läge" in the header now shows every screen with
+   almost no data. Most prototypes skip this; MI will see it on day one of go-live.
+3. **Consider showing the status label visibly** in the start page table, not just to
    screen readers. It was kept hidden to preserve visual parity during the migration —
    that was a migration decision, not a design one, and it is yours to overrule.
 

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Märket, industrins kostnadsnorm",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function MarketPage() {
+export default async function MarketPage() {
+  const dataset = await activeDataset();
   return (
     <PlaceholderPage
       title="Märket"
       epic="Epic F10 – Registrering av Märket"
       subtitle="Industrins kostnadsnorm som referens i avtals- och medlarvyer (US-06)"
-      roll={rollInfo("avtalsadministrator")}
+      role={roleInfo("agreement-admin")}
+      dataset={dataset}
       features={[
         {
           id: "FM-001",

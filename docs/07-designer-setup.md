@@ -17,7 +17,7 @@ cd miis_poc
 npm install
 
 # Claude Code plugins
-claude plugin install playwright@claude-plugins-official     # required for /skiss-test
+claude plugin install playwright@claude-plugins-official     # required for /flow-test
 claude plugin install context7@claude-plugins-official       # recommended
 
 # check
@@ -87,7 +87,7 @@ One plugin is required. Run these from any directory.
 
 ### Required — Playwright
 
-`/skiss-test` does not work without it. That is the command that walks a scenario in a
+`/flow-test` does not work without it. That is the command that walks a scenario in a
 real browser and screenshots each step.
 
 ```powershell
@@ -100,7 +100,7 @@ If the marketplace isn't configured yet, add it first and re-run the install:
 claude plugin marketplace add anthropics/claude-plugins-official
 ```
 
-The first `/skiss-test` run downloads a browser — that takes a minute and only happens
+The first `/flow-test` run downloads a browser — that takes a minute and only happens
 once.
 
 ### Recommended — Context7
@@ -138,7 +138,7 @@ not marketplace plugins, so the reliable way to install them is to copy the fold
 | Skill | What it does |
 |---|---|
 | `ui-ux-pro-max` | Design intelligence — styles, palettes, font pairings, layout and accessibility guidance across React/Next/Tailwind/shadcn |
-| `web-design-guidelines` | Reviews UI code against the Web Interface Guidelines. Pairs well with `/granska`. |
+| `web-design-guidelines` | Reviews UI code against the Web Interface Guidelines. Pairs well with `/audit`. |
 
 **Copy from the current machine** (run on the machine that already has them, pointing at
 a shared folder or USB drive):
@@ -177,10 +177,10 @@ These come with the repository. Cloning is the whole installation:
 | Comes with the repo | What it is |
 |---|---|
 | `CLAUDE.md` | The project rules. Claude Code loads it automatically every session. |
-| `.claude/commands/krav.md` | `/krav US-08` — research a scenario in the requirement spec |
-| `.claude/commands/skiss.md` | `/skiss partstraffar` — design and build a screen end to end |
-| `.claude/commands/skiss-test.md` | `/skiss-test US-01` — walk a flow in a browser, screenshot each step |
-| `.claude/commands/granska.md` | `/granska` — audit WCAG, tokens, Swedish copy, architecture |
+| `.claude/commands/spec.md` | `/spec US-08` — research a scenario in the requirement spec |
+| `.claude/commands/screen.md` | `/screen partstraffar` — design and build a screen end to end |
+| `.claude/commands/flow-test.md` | `/flow-test US-01` — walk a flow in a browser, screenshot each step |
+| `.claude/commands/audit.md` | `/audit` — audit WCAG, tokens, Swedish copy, architecture |
 | `.claude/settings.json` | Permission allowlist, so routine commands don't prompt |
 
 **Claude Design needs no installation either.** It is claude.ai/design in a browser, on
@@ -210,11 +210,11 @@ and try each command:
 
 | Try | Expect |
 |---|---|
-| `/krav US-08` | A structured summary of the party-meeting scenario, its fields and Feature IDs |
-| `/granska` | An audit of the current screens, no crash |
-| `/skiss-test US-01` | A browser opens and screenshots land in `screenshots/` — **this is the one that proves Playwright installed correctly** |
+| `/spec US-08` | A structured summary of the party-meeting scenario, its fields and Feature IDs |
+| `/audit` | An audit of the current screens, no crash |
+| `/flow-test US-01` | A browser opens and screenshots land in `screenshots/` — **this is the one that proves Playwright installed correctly** |
 
-If `/skiss-test` fails, Playwright is missing or its browser hasn't downloaded. Re-run
+If `/flow-test` fails, Playwright is missing or its browser hasn't downloaded. Re-run
 step 3 and try again.
 
 Health check for the whole installation:
@@ -231,7 +231,7 @@ claude doctor
 |---|---|
 | `claude` / `node` not found | Reopen the terminal. Installers update PATH; open terminals keep the old one. |
 | Port 8080 already in use | Something else is on it. Stop that, or change the port in `package.json` (`next dev -p 8080`). |
-| `/skiss-test` does nothing | Playwright plugin missing — see step 3. `claude plugin list` to confirm. |
+| `/flow-test` does nothing | Playwright plugin missing — see step 3. `claude plugin list` to confirm. |
 | Slash commands missing | Claude Code must be started **from the project folder** — `.claude/commands/` is project-scoped. |
 | Skills not appearing | They load at session start. Restart Claude Code after copying them in. |
 | Build fails after pulling | `npm install` again — dependencies may have changed. |

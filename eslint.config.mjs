@@ -32,7 +32,7 @@ const config = [
         {
           patterns: [
             {
-              group: ["@supabase/*", "**/lib/mock/*"],
+              group: ["@supabase/*", "@/lib/mock", "@/lib/mock/*"],
               message:
                 "Database clients and mock data belong in lib/data/ only. Import a lib/data/ function instead.",
             },

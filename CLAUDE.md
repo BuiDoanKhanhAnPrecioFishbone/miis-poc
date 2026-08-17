@@ -42,11 +42,21 @@ app/(miis)/**/page.tsx      the screens ← you work here
 components/miis/            product components ← and here
 components/ui/              vendored shadcn — restyle via tokens, don't edit
 app/globals.css             all design tokens — change design here first
-lib/domain/                 types + pure rules (status, roles, agreements)
+lib/domain/                 types + pure rules (agreement, mediation, party,
+                            benchmark, event, role, status, dashboard, dataset)
 lib/data/                   THE SEAM — every data read goes through here
-lib/mock/                   the Swedish sample data
-lib/session.ts              which role the current request is
+lib/mock/                   the Swedish sample data, in three demo datasets
+lib/session.ts              the request's role and dataset
 ```
+
+**Identifiers are English, content is Swedish.** Types, functions, files, props and
+variables use English names (`Agreement`, `listMediationCases`, `roleInfo`). Everything
+a user reads is Swedish — labels, headings, button text, empty states, sample data.
+Where a Swedish domain term has no clean English equivalent, keep the concept English
+and the label Swedish: `Benchmark` / `"Märket"`.
+
+Route paths stay Swedish (`/registrera`, `/medling`, `/sok`) — they are user-facing URLs
+in a Swedish authority's system.
 
 ### Four structural rules
 
@@ -75,13 +85,20 @@ FR-012 status can never be rendered as colour alone. Get one from `statusInfo()`
   **realistic**: real Swedish party names (Teknikföretagen, IF Metall, Almega, Unionen,
   Kommunal, Sveriges Lärare, Fremia), plausible agreement names, dates in the
   2026–2027 bargaining round. Fake-looking data reads as an unfinished prototype.
-  Relations are id strings (`Medlingsarende.avtalIds` → `Avtal.id`) with nothing
-  enforcing them — when you add a record, check the ids it points at actually exist.
+- **Add a record in one place only.** Table rows are derived from the records — there is
+  no second list to keep in step. Add an `Agreement` to `lib/mock/agreements.ts` and it
+  appears everywhere it belongs.
+- Relations are id strings (`MediationCase.agreementIds` → `Agreement.id`) with no
+  database enforcing them, so `lib/mock/integrity.ts` checks them at module load and
+  **fails `npm run build`** on a dangling reference.
+- Three demo datasets — `quiet`, `normal`, `peak` — switchable from the header. Sample
+  data added to `lib/mock/agreements.ts` lands in `normal` and `peak`; `quiet` is
+  deliberately near-empty so empty states can be designed.
 - A page that needs data adds a function to `lib/data/`; it does not reach into
   `lib/mock/` itself. Lint enforces this.
 - Prefer editing an existing view over adding a new route. The nav in `AppShell.tsx`
   is fixed at 11 items and mirrors the requirement Epics.
-- After a UI change, verify it in the browser (`/skiss-test`), don't just assume.
+- After a UI change, verify it in the browser (`/flow-test`), don't just assume.
 - Keep the branch working — the Vercel deployment builds from it and the CEO reviews
   there.
 

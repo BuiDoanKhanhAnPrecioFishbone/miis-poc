@@ -29,7 +29,7 @@ components/ui/           vendored shadcn/ui — restyle via tokens, don't edit
 app/globals.css          design tokens
 lib/domain/              types + pure rules — imports nothing
 lib/data/                the seam: every data read goes through here
-lib/mock/                Swedish sample data
+lib/mock/                Swedish sample data, in three demo datasets
 docs/                    requirements, workflow, backlog, design system
 ```
 
@@ -46,11 +46,24 @@ Next.js 16 App Router · React 19 · TypeScript · Tailwind v4 · shadcn/ui.
 - [`docs/06-migration-plan.md`](docs/06-migration-plan.md) — architecture and the
   week-2 Supabase plan
 
-## Two rules that are enforced, not just documented
+## Conventions
 
-`npm run lint` fails if either is broken:
+**Identifiers are English, content is Swedish.** Types, functions and variables use
+English names; everything a user reads — labels, headings, sample data — is Swedish.
+Route paths stay Swedish, since they are user-facing URLs in a Swedish authority's
+system.
+
+## Three rules that are enforced, not just documented
+
+`npm run lint` fails if either of the first two is broken:
 
 1. `lib/domain/` imports nothing — no React, no Next, no data access.
 2. Only `lib/data/` may import a database client or `lib/mock/`.
 
-That is what keeps the swap from mock data to a real backend from reaching any screen.
+and `npm run build` fails if the third is:
+
+3. Mock data is referentially consistent — a mediation case cannot point at an
+   agreement that does not exist (`lib/mock/integrity.ts`).
+
+The first two keep the swap from mock data to a real backend from reaching any screen.
+The third replaces the foreign keys a database would have given us.

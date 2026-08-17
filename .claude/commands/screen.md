@@ -1,5 +1,5 @@
 ---
-description: Design and implement a MIIS view end to end — requirements, layout, Swedish copy, code, screenshot
+description: Design and build a MIIS screen end to end — requirements, layout, Swedish copy, code, screenshot
 argument-hint: "partstraffar | medlare | avtal"
 ---
 
@@ -35,7 +35,9 @@ proceed.
 - Realistic Swedish sample data: real party names (Teknikföretagen, IF Metall, Almega,
   Unionen, Kommunal, Sveriges Lärare, Fremia, Svenskt Näringsliv), plausible agreement
   names, dates in the 2026–2027 bargaining round. No `Lorem ipsum`, no "Example AB".
-  Check that ids you reference (`avtalIds`, party ids) point at records that exist.
+  Check that ids you reference (`agreementIds`, party ids) resolve — the build fails
+  otherwise. Verify the screen in all three demo datasets (tomt / normal / högtryck),
+  including its empty state.
 - `<ReqTag id="…" />` on the page heading and on each panel that realises a requirement.
 - `export const metadata` with a Swedish title and description, matching the pattern in
   the existing pages. For a dynamic route use `generateMetadata`.
@@ -43,7 +45,10 @@ proceed.
   coding — never a bare colour string.
 - Design the states, not just the happy path: empty, incomplete registration, error,
   and — where AI is involved — the proposal-rejected state.
-- Set the scenario's role via `rollInfo("…")` on `<AppShell roll={…}>`.
+- Set the scenario's role via `roleInfo("…")` and pass `dataset={await activeDataset()}`
+  to `<AppShell>`.
+- **Identifiers in English, content in Swedish** — types, functions and variables use
+  English names; everything the user reads is Swedish.
 
 ## 4. Verify
 

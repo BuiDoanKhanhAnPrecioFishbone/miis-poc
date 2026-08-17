@@ -40,7 +40,7 @@ Attach: `docs/design-system/design-tokens.json`, `mi-design-system.css`,
 
 ### A2 · Explore layouts for one screen
 
-> Here is the requirement for scenario **US-08** in MIIS [paste the `/krav` output].
+> Here is the requirement for scenario **US-08** in MIIS [paste the `/spec` output].
 >
 > Give me **three structurally different** layouts for this screen — not three
 > variations of the same idea. For each: a one-line rationale, and what the user sees
@@ -83,7 +83,7 @@ weakest as a bid asset, and what would you fix first?
 ```
 
 ```
-/krav US-08
+/spec US-08
 ```
 
 ```
@@ -93,11 +93,11 @@ Show me every requirement in the spec that has no visible home in the current UI
 ### B2 · Build a screen
 
 ```
-/skiss partstraffar
+/screen partstraffar
 ```
 
 ```
-/skiss medlare
+/screen medlare
 ```
 
 Then refine conversationally:
@@ -119,7 +119,7 @@ Show this at 1280px and 1440px and tell me what breaks.
 ### B3 · Test a flow
 
 ```
-/skiss-test US-01
+/flow-test US-01
 ```
 
 ```
@@ -130,7 +130,7 @@ flow dead-end or require a step the UI doesn't offer?
 ### B4 · Quality passes
 
 ```
-/granska
+/audit
 ```
 
 ```

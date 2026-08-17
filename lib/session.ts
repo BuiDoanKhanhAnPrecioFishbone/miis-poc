@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 
-import { arRoll, rollInfo, STANDARDROLL, type Roll, type RollInfo } from "@/lib/domain/roll";
+import { DEFAULT_ROLE, isRole, roleInfo, type Role, type RoleInfo } from "@/lib/domain/role";
+import { DEFAULT_DATASET, isDatasetName, type DatasetName } from "@/lib/domain/dataset";
+
+export const ROLE_COOKIE = "miis_role";
+export const DATASET_COOKIE = "miis_dataset";
 
 /**
  * The active role for the current request.
@@ -11,11 +15,20 @@ import { arRoll, rollInfo, STANDARDROLL, type Roll, type RollInfo } from "@/lib/
  * permissions. Screens only ever see the resolved role, so that swap does not
  * reach them.
  */
-export async function aktivRoll(): Promise<Roll> {
-  const varde = (await cookies()).get("miis_roll")?.value;
-  return arRoll(varde) ? varde : STANDARDROLL;
+export async function activeRole(): Promise<Role> {
+  const value = (await cookies()).get(ROLE_COOKIE)?.value;
+  return isRole(value) ? value : DEFAULT_ROLE;
 }
 
-export async function aktivRollInfo(): Promise<RollInfo> {
-  return rollInfo(await aktivRoll());
+export async function activeRoleInfo(): Promise<RoleInfo> {
+  return roleInfo(await activeRole());
+}
+
+/**
+ * Which mock dataset this request sees — quiet, normal or peak.
+ * Demo-only; it disappears when a real database arrives.
+ */
+export async function activeDataset(): Promise<DatasetName> {
+  const value = (await cookies()).get(DATASET_COOKIE)?.value;
+  return isDatasetName(value) ? value : DEFAULT_DATASET;
 }

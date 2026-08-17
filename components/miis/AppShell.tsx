@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
-import type { RollInfo } from "@/lib/domain/roll";
+import type { RoleInfo } from "@/lib/domain/role";
+import type { DatasetName } from "@/lib/domain/dataset";
 import { AiPanel, AiPanelTrigger } from "./AiPanel";
-import { RollVaxlare } from "./RollVaxlare";
+import { DemoControls } from "./DemoControls";
 
 const nav = [
   { to: "/", label: "Start" },
@@ -23,14 +24,16 @@ const nav = [
 ] as const;
 
 export function AppShell({
-  roll,
+  role,
+  dataset,
   children,
   aiTitle,
   aiIntro,
   aiSuggestions,
   aiReqTag,
 }: {
-  roll: RollInfo;
+  role: RoleInfo;
+  dataset: DatasetName;
   children: ReactNode;
   aiTitle?: string;
   aiIntro?: string;
@@ -66,14 +69,14 @@ export function AppShell({
               </span>
             </span>
           </Link>
-          <div className="flex items-center gap-5">
-            <div className="text-right text-sm leading-tight opacity-90">
+          <div className="flex items-end gap-5">
+            <div className="pb-1 text-right text-sm leading-tight opacity-90">
               <div>miis.mi.se · Inloggad via EFOS</div>
               <div>
-                {roll.person} · {roll.etikett}
+                {role.person} · {role.label}
               </div>
             </div>
-            <RollVaxlare aktiv={roll.id} />
+            <DemoControls role={role.id} dataset={dataset} />
           </div>
         </div>
       </header>

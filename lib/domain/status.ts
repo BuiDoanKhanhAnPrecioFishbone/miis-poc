@@ -4,60 +4,62 @@
  * Newly signed without mediation = green, signed after mediation = red,
  * remaining = blue, but red when linked to mediation.
  *
- * The return type deliberately carries the label together with the colour, so
- * that no view can render the colour on its own. Colour is never the only
- * carrier of meaning (WCAG 2.1 AA, 1.4.1).
+ * The return type carries the label together with the colour, so no view can
+ * render the colour on its own. Colour is never the only carrier of meaning
+ * (WCAG 2.1 AA, 1.4.1).
+ *
+ * Pure domain — no imports, no I/O.
  */
 
-export type AvtalStatusKod = "nytecknat" | "efter-medling" | "kvarstaende";
+export type StatusCode = "newly-signed" | "after-mediation" | "remaining";
 
-export type StatusFarg = "green" | "red" | "blue";
+export type StatusColor = "green" | "red" | "blue";
 
 export interface StatusInfo {
-  kod: AvtalStatusKod;
-  farg: StatusFarg;
-  /** Always rendered next to the colour. */
-  etikett: string;
+  code: StatusCode;
+  color: StatusColor;
+  /** Swedish label, always rendered alongside the colour. */
+  label: string;
 }
 
-const STATUS: Record<AvtalStatusKod, StatusInfo> = {
-  nytecknat: {
-    kod: "nytecknat",
-    farg: "green",
-    etikett: "Nytecknat utan medling",
+const STATUS: Record<StatusCode, StatusInfo> = {
+  "newly-signed": {
+    code: "newly-signed",
+    color: "green",
+    label: "Nytecknat utan medling",
   },
-  "efter-medling": {
-    kod: "efter-medling",
-    farg: "red",
-    etikett: "Tecknat efter medling",
+  "after-mediation": {
+    code: "after-mediation",
+    color: "red",
+    label: "Tecknat efter medling",
   },
-  kvarstaende: {
-    kod: "kvarstaende",
-    farg: "blue",
-    etikett: "Kvarstående",
+  remaining: {
+    code: "remaining",
+    color: "blue",
+    label: "Kvarstående",
   },
 };
 
-export function statusInfo(kod: AvtalStatusKod): StatusInfo {
-  return STATUS[kod];
+export function statusInfo(code: StatusCode): StatusInfo {
+  return STATUS[code];
 }
 
 /**
  * Derives the status of an agreement. An agreement linked to a mediation is
  * always red, whether it has been signed yet or not (FR-012).
  */
-export function avtalStatus(avtal: {
-  teckningsdatum?: string | undefined;
-  medlingskoppling?: boolean | undefined;
+export function agreementStatus(agreement: {
+  signedDate?: string | undefined;
+  mediationLinked?: boolean | undefined;
 }): StatusInfo {
-  if (avtal.medlingskoppling) {
-    return avtal.teckningsdatum
-      ? STATUS["efter-medling"]
-      : { kod: "kvarstaende", farg: "red", etikett: "Kvarstående – kopplat till medling" };
+  if (agreement.mediationLinked) {
+    return agreement.signedDate
+      ? STATUS["after-mediation"]
+      : { code: "remaining", color: "red", label: "Kvarstående – kopplat till medling" };
   }
-  return avtal.teckningsdatum ? STATUS.nytecknat : STATUS.kvarstaende;
+  return agreement.signedDate ? STATUS["newly-signed"] : STATUS.remaining;
 }
 
 /** The legend shown under status-coded tables. */
-export const STATUSFORKLARING =
+export const STATUS_LEGEND =
   "Grön = nytecknat utan medling · Röd = tecknat efter medling / medlingskoppling · Blå = kvarstående";

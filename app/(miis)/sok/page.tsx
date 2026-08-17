@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { Button, Field, Panel, ReqTag, StatusDot } from "@/components/miis/primitives";
-import { rollInfo } from "@/lib/domain/roll";
-import { statusInfo, type AvtalStatusKod } from "@/lib/domain/status";
+import { roleInfo } from "@/lib/domain/role";
+import { statusInfo, type StatusCode } from "@/lib/domain/status";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Sökbyggaren med bokslut och export",
@@ -27,33 +28,35 @@ const kolumner = [
   { label: "Branschkod", on: false },
 ];
 
-const rader: { status: AvtalStatusKod; avtal: string; parter: string }[] = [
+const rows: { status: StatusCode; agreement: string; parties: string }[] = [
   {
-    status: "kvarstaende",
-    avtal: "Apotek",
-    parter: "Almega Tjänsteförbunden / Sveriges Ingenjörer",
+    status: "remaining",
+    agreement: "Apotek",
+    parties: "Almega Tjänsteförbunden / Sveriges Ingenjörer",
   },
-  { status: "nytecknat", avtal: "Fastigheter", parter: "Almega Tjänsteförbunden / Ledarna" },
-  { status: "kvarstaende", avtal: "Kommunikation", parter: "Almega Tjänsteförbunden / Ledarna" },
+  { status: "newly-signed", agreement: "Fastigheter", parties: "Almega Tjänsteförbunden / Ledarna" },
+  { status: "remaining", agreement: "Kommunikation", parties: "Almega Tjänsteförbunden / Ledarna" },
   {
-    status: "efter-medling",
-    avtal: "Hemserviceföretag",
-    parter: "Almega Tjänsteförbunden / Kommunal",
+    status: "after-mediation",
+    agreement: "Hemserviceföretag",
+    parties: "Almega Tjänsteförbunden / Kommunal",
   },
   {
-    status: "kvarstaende",
-    avtal: "Utveckling och tjänster",
-    parter: "Almega Tjänsteförbunden / Ledarna",
+    status: "remaining",
+    agreement: "Utveckling och tjänster",
+    parties: "Almega Tjänsteförbunden / Ledarna",
   },
 ];
 
-export default function SokPage() {
+export default async function SokPage() {
   // US-11 is performed by the statistics user.
-  const roll = rollInfo("statistikanvandare");
+  const role = roleInfo("statistics-user");
+  const dataset = await activeDataset();
 
   return (
     <AppShell
-      roll={roll}
+      role={role}
+      dataset={dataset}
       aiTitle="AI-sökassistent"
       aiIntro="Beskriv ditt urval i naturligt språk så föreslår AI villkor, presentationskolumner och export – som alternativ till sökbyggaren."
       aiReqTag="FR-002"
@@ -210,13 +213,13 @@ export default function SokPage() {
                 </tr>
               </thead>
               <tbody>
-                {rader.map((r) => (
-                  <tr key={r.avtal} className="border-b border-border/60">
+                {rows.map((r) => (
+                  <tr key={r.agreement} className="border-b border-border/60">
                     <td className="py-3 pr-4">
                       <StatusDot status={statusInfo(r.status)} />
                     </td>
-                    <td className="py-3 pr-4">{r.avtal}</td>
-                    <td className="py-3 pr-4">{r.parter}</td>
+                    <td className="py-3 pr-4">{r.agreement}</td>
+                    <td className="py-3 pr-4">{r.parties}</td>
                     <td className="py-3 pr-4">1. Lokal lönebildning</td>
                     <td className="py-3 pr-4">–</td>
                     <td className="py-3">

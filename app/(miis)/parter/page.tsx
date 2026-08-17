@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Parter, samverkansorgan och historik",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ParterPage() {
+export default async function ParterPage() {
+  const dataset = await activeDataset();
   return (
     <PlaceholderPage
       title="Parter"
       epic="Epic F3 – Partshantering"
       subtitle="AGO, ATO, samverkansorgan och partshistorik"
-      roll={rollInfo("avtalsadministrator")}
+      role={roleInfo("agreement-admin")}
+      dataset={dataset}
       features={[
         { id: "FP-001", text: "Registrering av part med typ AGO eller ATO." },
         { id: "FP-002", text: "Historik vid namnbyte och organisationsförändring hos part." },

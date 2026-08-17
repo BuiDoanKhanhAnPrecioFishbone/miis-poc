@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Avtal och avtalsområden",
@@ -14,13 +15,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AvtalPage() {
+export default async function AvtalPage() {
+  const dataset = await activeDataset();
   return (
     <PlaceholderPage
       title="Avtal"
       epic="Epic F2 – Avtalsregistrering och -hantering"
       subtitle="Avtal, avtalsområden, löneavtal och allmänna villkor"
-      roll={rollInfo("avtalsadministrator")}
+      role={roleInfo("agreement-admin")}
+      dataset={dataset}
       features={[
         {
           id: "FA-001",

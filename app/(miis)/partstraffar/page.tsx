@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { rollInfo } from "@/lib/domain/roll";
+import { roleInfo } from "@/lib/domain/role";
+import { activeDataset } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "MIIS – Partsträffar och samordnade avtalskrav",
@@ -14,14 +15,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PartstraffarPage() {
+export default async function PartstraffarPage() {
   // US-08 is performed by the mediation administrator (Appendix 1 §8, US-08).
+  const dataset = await activeDataset();
   return (
     <PlaceholderPage
       title="Partsträffar"
       epic="Epic F9 – Partsträffar (US-08)"
       subtitle="Möten mellan MI och enskild part inför avtalsrörelsen"
-      roll={rollInfo("medlingsadministrator")}
+      role={roleInfo("mediation-admin")}
+      dataset={dataset}
       features={[
         { id: "FF-004", text: "Registrering av partsträff före, under och efter mötet." },
         {
