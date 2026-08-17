@@ -265,6 +265,8 @@ export const en: Dictionary = {
     title: "Register an agreement protocol",
     subtitle:
       "An incoming protocol is read with AI support and reviewed by a case officer before anything is saved",
+    stepsLabel: "Registration steps",
+    stepState: { done: "Done", current: "In progress", upcoming: "Remaining" },
     steps: [
       "1. Upload",
       "2. AI analysis",

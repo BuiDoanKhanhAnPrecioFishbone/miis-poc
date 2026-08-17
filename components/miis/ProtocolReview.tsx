@@ -71,6 +71,71 @@ function label(d: Dictionary, id: ProposalField): string {
   }
 }
 
+/**
+ * MI's own five-step user flow (Appendix 1 §4.4), which US-01 and the tender's
+ * chapter 9 both say this view mirrors. It is an argument, not decoration — the
+ * claim that MIIS follows the customer's process in the customer's order — so it
+ * has to tell the truth about where the officer actually is.
+ *
+ * The previous version hardcoded step 2 as current, so approving every proposal
+ * left the stepper contradicting the screen beside it, and told assistive
+ * technology the wrong position via `aria-current`.
+ *
+ * Steps 2 and 3 point at the same panel. That is not a mismatch to fix: a step
+ * is a step in MI's process, not a panel on our screen, and the sketch merges
+ * the two AI analyses into one panel as well.
+ *
+ * Not a wizard, deliberately. §4.1 calls the flow *Quick registration*; the
+ * protocol pane exists so the officer can cross-reference throughout; and
+ * US-01's alternative flows are non-linear — "save as incomplete and complete
+ * later", "the officer corrects freely". Five page loads would serve none of it.
+ */
+type StepState = "done" | "current" | "upcoming";
+
+const STEP_TARGETS = ["#steg-protokoll", "#steg-ai", "#steg-ai", "#steg-loneavtal", "#steg-spara"];
+
+function RegistrationSteps({ d, approved }: { d: Dictionary; approved: boolean }) {
+  const t = d.registrera;
+
+  // Steps 1 and 2 are done as soon as the screen has a protocol and an
+  // extraction. Step 3 is the approval; 4 opens once it is given.
+  const states: StepState[] = [
+    "done",
+    "done",
+    approved ? "done" : "current",
+    approved ? "current" : "upcoming",
+    "upcoming",
+  ];
+
+  const style: Record<StepState, string> = {
+    done: "border-ok-border bg-ok text-ok-foreground",
+    current: "border-transparent bg-primary font-bold text-primary-foreground",
+    upcoming: "border-border bg-secondary text-muted-foreground",
+  };
+
+  return (
+    <ol aria-label={t.stepsLabel} className="mb-6 flex flex-wrap gap-3">
+      {t.steps.map((label, i) => {
+        const state = states[i]!;
+        return (
+          <li key={label}>
+            <a
+              href={STEP_TARGETS[i]}
+              aria-current={state === "current" ? "step" : undefined}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-5 py-2 text-label font-semibold transition-colors hover:brightness-95 ${style[state]}`}
+            >
+              {state === "done" && <span aria-hidden>✓</span>}
+              {label}
+              {/* The state is never carried by colour alone. */}
+              <span className="sr-only">— {t.stepState[state]}</span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 /** One line of the protocol, highlighted when it is the source being shown. */
 function SourceLine({
   anchor,
@@ -290,22 +355,25 @@ export function ProtocolReview({
   ];
 
   return (
-    <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-      <div className="@3xl:sticky @3xl:top-4">
-        <Panel>
-          <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
-            <h2 className="font-display text-section font-semibold text-primary">
-              {t.document.fileName}
-            </h2>
-            <Badge tone="ok">{t.document.ocr}</Badge>
-            <ReqTag id="FAI-003" />
-          </div>
+    <>
+      <RegistrationSteps d={d} approved={approved} />
 
-          <p aria-live="polite" className="mb-3 text-label text-muted-foreground">
-            {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
-          </p>
+      <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div id="steg-protokoll" className="scroll-mt-4 @3xl:sticky @3xl:top-4">
+          <Panel>
+            <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
+              <h2 className="font-display text-section font-semibold text-primary">
+                {t.document.fileName}
+              </h2>
+              <Badge tone="ok">{t.document.ocr}</Badge>
+              <ReqTag id="FAI-003" />
+            </div>
 
-          {/*
+            <p aria-live="polite" className="mb-3 text-label text-muted-foreground">
+              {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
+            </p>
+
+            {/*
             The protocol stays Swedish in the English translation. It is a
             scanned Swedish document; rendering it in English would describe a
             system that reads something it will never be given.
@@ -313,84 +381,91 @@ export function ProtocolReview({
             Focusable and named: the pane scrolls, and a scrollable region whose
             content is not itself focusable is unreachable by keyboard (2.1.1).
           */}
-          <div
-            tabIndex={0}
-            role="region"
-            aria-label={t.document.fileName}
-            className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
-            lang="sv"
-          >
-            {lines.map((line) => (
-              <SourceLine
-                key={line.anchor}
-                anchor={line.anchor}
-                active={activeSource === line.anchor}
-                marker={t.document.sourceMarker}
-                register={register}
-              >
-                {line.content}
-              </SourceLine>
-            ))}
-          </div>
+            <div
+              tabIndex={0}
+              role="region"
+              aria-label={t.document.fileName}
+              className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
+              lang="sv"
+            >
+              {lines.map((line) => (
+                <SourceLine
+                  key={line.anchor}
+                  anchor={line.anchor}
+                  active={activeSource === line.anchor}
+                  marker={t.document.sourceMarker}
+                  register={register}
+                >
+                  {line.content}
+                </SourceLine>
+              ))}
+            </div>
 
-          <div className="mt-6">
-            <Callout tone="attention" tags={["FAI-004"]}>
-              {t.document.watchwordHits(4)}
-            </Callout>
-          </div>
-        </Panel>
-      </div>
-
-      <div className="@container space-y-5">
-        <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
-          <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
-          <div className="grid gap-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
-
-          <div className="mt-4">
-            <Callout tone="ok">{t.analysis1.validation}</Callout>
-          </div>
-
-          <h3 className="mb-3 mt-5 font-display text-body font-semibold">{t.analysis2.title}</h3>
-          <div className="grid gap-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
-
-          <p aria-live="polite" className="mt-4 text-table">
-            {adjustedCount > 0 ? t.review.adjustedCount(adjustedCount) : t.review.noneAdjusted}
-          </p>
-
-          {emptyCount > 0 && (
-            <div className="mt-2">
-              <Callout tone="attention" live tags={["FA-021"]}>
-                {t.review.emptyBlocks(emptyCount)}
+            <div className="mt-6">
+              <Callout tone="attention" tags={["FAI-004"]}>
+                {t.document.watchwordHits(4)}
               </Callout>
             </div>
-          )}
+          </Panel>
+        </div>
 
-          {/*
+        <div className="@container space-y-5">
+          <div id="steg-ai" className="scroll-mt-4">
+            <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
+              <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
+              <div className="grid gap-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
+
+              <div className="mt-4">
+                <Callout tone="ok">{t.analysis1.validation}</Callout>
+              </div>
+
+              <h3 className="mb-3 mt-5 font-display text-body font-semibold">
+                {t.analysis2.title}
+              </h3>
+              <div className="grid gap-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
+
+              <p aria-live="polite" className="mt-4 text-table">
+                {adjustedCount > 0 ? t.review.adjustedCount(adjustedCount) : t.review.noneAdjusted}
+              </p>
+
+              {emptyCount > 0 && (
+                <div className="mt-2">
+                  <Callout tone="attention" live tags={["FA-021"]}>
+                    {t.review.emptyBlocks(emptyCount)}
+                  </Callout>
+                </div>
+              )}
+
+              {/*
             FAI-002: one approval, for the form, with the guarantee stated next
             to the control it describes — the sketch's own wording.
           */}
-          <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-            {approved ? (
-              <>
-                <Badge tone="ok">{t.review.approved}</Badge>
-                <Button variant="secondary" onClick={() => setApproved(false)}>
-                  {t.review.reopen}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onClick={() => setApproved(true)}>{t.review.approve}</Button>
-                <span className="text-label text-muted-foreground">{t.review.nothingSaved}</span>
-              </>
-            )}
-            <ReqTag id="FAI-002" />
+              <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+                {approved ? (
+                  <>
+                    <Badge tone="ok">{t.review.approved}</Badge>
+                    <Button variant="secondary" onClick={() => setApproved(false)}>
+                      {t.review.reopen}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button onClick={() => setApproved(true)}>{t.review.approve}</Button>
+                    <span className="text-label text-muted-foreground">
+                      {t.review.nothingSaved}
+                    </span>
+                  </>
+                )}
+                <ReqTag id="FAI-002" />
+              </div>
+
+              <Rationale>{t.review.changeLogNote}</Rationale>
+            </Panel>
           </div>
 
-          <Rationale>{t.review.changeLogNote}</Rationale>
-        </Panel>
-
-        {children}
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

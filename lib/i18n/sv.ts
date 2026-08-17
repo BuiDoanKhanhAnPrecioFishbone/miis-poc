@@ -255,6 +255,8 @@ export const sv = {
   registrera: {
     title: "Registrera avtalsprotokoll",
     subtitle: "Inkommet protokoll tolkas med AI-stöd och granskas av handläggare innan sparande",
+    stepsLabel: "Registreringens steg",
+    stepState: { done: "Klart", current: "Pågår", upcoming: "Återstår" },
     steps: [
       "1. Ladda upp",
       "2. AI-analys",
