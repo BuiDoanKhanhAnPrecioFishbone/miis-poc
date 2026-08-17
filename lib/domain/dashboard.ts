@@ -4,20 +4,30 @@
  * One rendering path, different content per role. Adding a role means adding
  * panels in lib/data/dashboard.ts, not writing a new screen.
  *
- * Identifiers are English; every user-facing string is Swedish.
+ * Everything here is already resolved into the active language: the data layer
+ * reads the dictionary once and the screen renders strings. That keeps the page
+ * a plain server component with no translation logic in it.
+ *
+ * Identifiers are English; user-facing strings exist in both languages.
  * Pure domain — no imports beyond sibling types, no I/O.
  */
 
 import type { AgreementRow } from "./agreement";
-import type { AuditEvent, Reminder } from "./event";
 import type { Benchmark } from "./benchmark";
 import type { RoleInfo } from "./role";
 
 export interface PanelAction {
-  /** Swedish button text. */
   text: string;
   href?: string;
   reqTag?: string;
+}
+
+/** A reminder or event line, already rendered into one language. */
+export interface LogLine {
+  id: string;
+  /** Date or timestamp — ISO in both languages. */
+  when: string;
+  text: string;
 }
 
 export type DashboardPanel =
@@ -26,16 +36,15 @@ export type DashboardPanel =
       title: string;
       reqTags?: string[];
       items: { text: string; badge?: string }[];
-      /** Swedish message when items is empty. */
       emptyText?: string;
       footnote?: string;
       action?: PanelAction;
     }
   | {
-      kind: "reminders";
+      kind: "log";
       title: string;
       reqTags?: string[];
-      items: Reminder[];
+      items: LogLine[];
       emptyText?: string;
       footnote?: string;
       action?: PanelAction;
@@ -46,30 +55,19 @@ export type DashboardPanel =
       reqTags?: string[];
       rows: AgreementRow[];
       emptyText?: string;
-    }
-  | {
-      kind: "events";
-      title: string;
-      reqTags?: string[];
-      items: AuditEvent[];
-      emptyText?: string;
-      footnote?: string;
     };
 
 export interface Dashboard {
   role: RoleInfo;
-  /** Swedish page heading. */
   heading: string;
   subheading: string;
   primaryAction?: { text: string; href: string };
   /** FM-003 – benchmark shown wherever relevant. */
   benchmark?: Benchmark;
   panels: DashboardPanel[];
-  aiIntro: string;
-  aiSuggestions: string[];
 }
 
 /** Panels laid out two-up above the full-width ones. */
 export function isHalfWidth(panel: DashboardPanel): boolean {
-  return panel.kind === "list" || panel.kind === "reminders";
+  return panel.kind !== "agreement-table";
 }

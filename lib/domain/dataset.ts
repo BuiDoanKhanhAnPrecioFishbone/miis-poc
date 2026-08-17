@@ -8,36 +8,51 @@
  *
  * Delete this file when a real database arrives.
  *
- * Identifiers are English; every user-facing string is Swedish.
- * Pure domain — no imports, no I/O.
+ * Identifiers are English; user-facing strings exist in both languages.
+ * Pure domain — no imports beyond sibling types, no I/O.
  */
+
+import { DEFAULT_LANG, type Lang, type Text } from "./lang";
 
 export type DatasetName = "quiet" | "normal" | "peak";
 
 export interface DatasetInfo {
   id: DatasetName;
-  /** Swedish label for the demo switcher. */
-  label: string;
-  description: string;
+  label: Text;
+  description: Text;
 }
 
 export const DATASET_INFO: readonly DatasetInfo[] = [
   {
     id: "quiet",
-    label: "Tomt läge",
-    description: "Nytt system, nästan inget registrerat ännu",
+    label: { sv: "Tomt läge", en: "Empty state" },
+    description: {
+      sv: "Nytt system, nästan inget registrerat ännu",
+      en: "New system, almost nothing registered yet",
+    },
   },
   {
     id: "normal",
-    label: "Normalläge",
-    description: "Vardagsläge mellan avtalsrörelser",
+    label: { sv: "Normalläge", en: "Everyday state" },
+    description: {
+      sv: "Vardagsläge mellan avtalsrörelser",
+      en: "Everyday state between bargaining rounds",
+    },
   },
   {
     id: "peak",
-    label: "Högtryck",
-    description: "Avtalsrörelse med full belastning",
+    label: { sv: "Högtryck", en: "Peak load" },
+    description: {
+      sv: "Avtalsrörelse med full belastning",
+      en: "Bargaining round at full load",
+    },
   },
 ] as const;
+
+/** Options for the demo dataset switcher, in one language. */
+export function datasetOptions(lang: Lang = DEFAULT_LANG): { id: DatasetName; label: string }[] {
+  return DATASET_INFO.map((d) => ({ id: d.id, label: d.label[lang] }));
+}
 
 export const DEFAULT_DATASET: DatasetName = "normal";
 

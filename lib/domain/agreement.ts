@@ -1,10 +1,11 @@
 /**
  * Agreements and their parts — Appendix 1 §4.2 and §4.5, Epic F2.
  *
- * Identifiers are English; every user-facing string is Swedish.
+ * Identifiers are English; user-facing strings exist in both languages.
  * Pure domain — no imports beyond sibling types, no I/O.
  */
 
+import { DEFAULT_LANG, type Lang } from "./lang";
 import type { StatusCode } from "./status";
 
 export type RegistrationStatus = "incomplete" | "complete";
@@ -12,22 +13,40 @@ export type RegistrationStatus = "incomplete" | "complete";
 /** The seven MI-defined agreement constructions (FA-007, §4.2). */
 export type AgreementConstruction = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
-export const AGREEMENT_CONSTRUCTIONS: Record<AgreementConstruction, string> = {
-  1: "Lokal lönebildning – sifferlösa avtal",
-  2: "Lokal lönebildning med stupstock om utrymmets storlek",
-  3: "Lönepott utan individgaranti",
-  4: "Lönepott med individgaranti",
-  5: "Generell höjning",
-  6: "Generell höjning och lönepott",
-  7: "Individuell förhandling",
+export const AGREEMENT_CONSTRUCTIONS: Record<Lang, Record<AgreementConstruction, string>> = {
+  sv: {
+    1: "Lokal lönebildning – sifferlösa avtal",
+    2: "Lokal lönebildning med stupstock om utrymmets storlek",
+    3: "Lönepott utan individgaranti",
+    4: "Lönepott med individgaranti",
+    5: "Generell höjning",
+    6: "Generell höjning och lönepott",
+    7: "Individuell förhandling",
+  },
+  en: {
+    1: "Local wage formation – agreements without figures",
+    2: "Local wage formation with a fallback figure for the wage scope",
+    3: "Wage pot without individual guarantee",
+    4: "Wage pot with individual guarantee",
+    5: "General increase",
+    6: "General increase and wage pot",
+    7: "Individual negotiation",
+  },
 };
 
 export type Sector = "private" | "state" | "municipal";
 
-export const SECTOR_LABEL: Record<Sector, string> = {
-  private: "Privat",
-  state: "Stat",
-  municipal: "Kommuner och regioner",
+export const SECTOR_LABEL: Record<Lang, Record<Sector, string>> = {
+  sv: {
+    private: "Privat",
+    state: "Stat",
+    municipal: "Kommuner och regioner",
+  },
+  en: {
+    private: "Private",
+    state: "Central government",
+    municipal: "Municipalities and regions",
+  },
 };
 
 /** Report selections that govern report inclusion (§4.2). */
@@ -114,10 +133,20 @@ export interface AgreementRow {
   validity: string;
   registrationStatus: RegistrationStatus;
   status: StatusCode;
+  /** D-001 — carried into every table so the marker is never lost in a read model. */
+  confidential?: boolean;
 }
 
-export function registrationStatusLabel(s: RegistrationStatus): string {
-  return s === "complete" ? "Klar" : "Ofullständig";
+const REGISTRATION_STATUS_LABEL: Record<Lang, Record<RegistrationStatus, string>> = {
+  sv: { complete: "Klar", incomplete: "Ofullständig" },
+  en: { complete: "Complete", incomplete: "Incomplete" },
+};
+
+export function registrationStatusLabel(
+  s: RegistrationStatus,
+  lang: Lang = DEFAULT_LANG,
+): string {
+  return REGISTRATION_STATUS_LABEL[lang][s];
 }
 
 /** "Almega Tjänsteförbunden / Unionen" */
@@ -137,9 +166,23 @@ export function agreementTitle(a: Agreement): string {
   return `${a.name} – ${a.employerOrg.name}/${a.employeeOrg.name}`;
 }
 
-/** Swedish display string for the validity period, matching the sketches. */
-export function validityLabel(a: Agreement): string {
+const VALIDITY: Record<Lang, { remaining: (to: string) => string; unregistered: string }> = {
+  sv: {
+    remaining: (to) => `Kvarstående, utlöper ${to}`,
+    unregistered: "Löptid ej registrerad",
+  },
+  en: {
+    remaining: (to) => `Remaining, expires ${to}`,
+    unregistered: "Validity period not registered",
+  },
+};
+
+/**
+ * Display string for the validity period, matching the sketches. Dates stay ISO
+ * in both languages — that is what MI writes today.
+ */
+export function validityLabel(a: Agreement, lang: Lang = DEFAULT_LANG): string {
   if (a.validFrom && a.validTo) return `${a.validFrom}–${a.validTo}`;
-  if (a.validTo) return `Kvarstående, utlöper ${a.validTo}`;
-  return "Löptid ej registrerad";
+  if (a.validTo) return VALIDITY[lang].remaining(a.validTo);
+  return VALIDITY[lang].unregistered;
 }

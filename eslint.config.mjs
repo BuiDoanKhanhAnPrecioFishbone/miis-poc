@@ -25,7 +25,13 @@ const config = [
     // difference between rewriting a layer and rewriting the app.
     //
     // See docs/06-migration-plan.md §6.
-    files: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "lib/domain/**/*.ts", "lib/mock/**/*.ts"],
+    files: [
+      "app/**/*.{ts,tsx}",
+      "components/**/*.{ts,tsx}",
+      "lib/domain/**/*.ts",
+      "lib/i18n/**/*.ts",
+      "lib/mock/**/*.ts",
+    ],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -50,9 +56,29 @@ const config = [
         {
           patterns: [
             {
-              group: ["next/*", "react", "@/lib/data/*", "@/lib/mock/*", "@supabase/*"],
+              group: ["next/*", "react", "@/lib/data/*", "@/lib/i18n", "@/lib/i18n/*", "@/lib/mock/*", "@supabase/*"],
               message:
-                "lib/domain/ must stay pure — types and rules only, no framework and no I/O.",
+                "lib/domain/ must stay pure — types and rules only, no framework, no I/O and no interface copy.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // lib/i18n/ is interface copy and nothing else. It may name a domain type
+    // (Lang, DocumentType) so the dictionary stays in step with the model, but
+    // it must not reach a framework or the data layer — otherwise a translation
+    // becomes a place where behaviour can hide.
+    files: ["lib/i18n/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["next/*", "react", "@/lib/data/*", "@/lib/mock/*", "@supabase/*"],
+              message: "lib/i18n/ holds interface copy only — no framework and no I/O.",
             },
           ],
         },

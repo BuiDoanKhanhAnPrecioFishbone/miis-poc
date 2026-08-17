@@ -1,17 +1,24 @@
 /**
  * Parties and cooperation bodies — Epic F3, Appendix 1 §4.2.
  *
- * Identifiers are English; every user-facing string is Swedish.
+ * Identifiers are English; user-facing strings exist in both languages.
  * Pure domain — no imports beyond sibling types, no I/O.
  */
 
 import type { Sector } from "./agreement";
+import type { Lang } from "./lang";
 
 export type PartyType = "employer" | "employee";
 
-export const PARTY_TYPE_LABEL: Record<PartyType, string> = {
-  employer: "Arbetsgivarorganisation",
-  employee: "Arbetstagarorganisation",
+export const PARTY_TYPE_LABEL: Record<Lang, Record<PartyType, string>> = {
+  sv: {
+    employer: "Arbetsgivarorganisation",
+    employee: "Arbetstagarorganisation",
+  },
+  en: {
+    employer: "Employer organisation",
+    employee: "Employee organisation",
+  },
 };
 
 /** Swedish abbreviations used throughout the requirement spec. */
@@ -55,9 +62,15 @@ export interface Party {
 
 export type CooperationBodyType = "umbrella" | "cooperation";
 
-export const COOPERATION_BODY_TYPE_LABEL: Record<CooperationBodyType, string> = {
-  umbrella: "Huvudorganisation",
-  cooperation: "Samverkan",
+export const COOPERATION_BODY_TYPE_LABEL: Record<Lang, Record<CooperationBodyType, string>> = {
+  sv: {
+    umbrella: "Huvudorganisation",
+    cooperation: "Samverkan",
+  },
+  en: {
+    umbrella: "Umbrella organisation",
+    cooperation: "Cooperation body",
+  },
 };
 
 /** FP-003 – cooperation body between unions, with time period. */

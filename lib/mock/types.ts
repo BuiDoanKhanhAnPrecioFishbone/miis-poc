@@ -5,13 +5,15 @@
  * control needs them and UI may not import from lib/mock/.
  */
 
-import type { Agreement } from "@/lib/domain/agreement";
+import type { Agreement, WageAgreement } from "@/lib/domain/agreement";
 import type { Benchmark } from "@/lib/domain/benchmark";
-import type { AuditEvent, Reminder } from "@/lib/domain/event";
+import type { AuditEvent, Reminder, StoredDocument } from "@/lib/domain/event";
 import type { MediationCase, Mediator } from "@/lib/domain/mediation";
 
 export interface Dataset {
   agreements: Agreement[];
+  wageAgreements: WageAgreement[];
+  documents: StoredDocument[];
   mediationCases: MediationCase[];
   mediators: Mediator[];
   benchmarks: Benchmark[];

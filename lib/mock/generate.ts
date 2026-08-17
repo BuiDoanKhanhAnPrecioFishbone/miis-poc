@@ -102,7 +102,10 @@ export function generateReminders(count: number, agreements: Agreement[]): Remin
     return {
       id: `PM-G${i}`,
       date: `2027-${pad((i % 12) + 1)}-${pad((i % 27) + 1)}`,
-      text: `Komplettera ${agreement.name}`,
+      text: {
+        sv: `Komplettera ${agreement.name}`,
+        en: `Complete ${agreement.name}`,
+      },
       agreementId: agreement.id,
     };
   });
@@ -116,9 +119,7 @@ export function generateEvents(count: number, agreements: Agreement[]): AuditEve
       id: `H-G${i}`,
       timestamp: `2027-${pad((i % 12) + 1)}-${pad((i % 27) + 1)} ${pad(8 + (i % 9))}:${pad((i * 7) % 60)}`,
       type: signed ? "agreement-signed" : "mediation-started",
-      text: signed
-        ? `Avtal tecknat – ${agreement.name}`
-        : `Medling startar – ${agreement.name}`,
+      detail: agreement.name,
       agreementId: agreement.id,
       color: signed ? "green" : "red",
     };

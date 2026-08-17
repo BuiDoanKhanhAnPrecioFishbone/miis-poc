@@ -1,22 +1,37 @@
 /**
  * Mediation, mediators and negotiations — Epic F9, Appendix 1 §4.2.
  *
- * Identifiers are English; every user-facing string is Swedish.
- * Pure domain — no imports, no I/O.
+ * Identifiers are English; user-facing strings exist in both languages.
+ * Pure domain — no imports beyond sibling types, no I/O.
  */
+
+import type { Lang, Text } from "./lang";
 
 export type MediationType = "special" | "standing";
 
-export const MEDIATION_TYPE_LABEL: Record<MediationType, string> = {
-  special: "Särskild medling",
-  standing: "Fast medling (lokal tvist)",
+export const MEDIATION_TYPE_LABEL: Record<Lang, Record<MediationType, string>> = {
+  sv: {
+    special: "Särskild medling",
+    standing: "Fast medling (lokal tvist)",
+  },
+  en: {
+    special: "Special mediation",
+    standing: "Standing mediation (local dispute)",
+  },
 };
 
 export type MediatorPosition = "first-chair" | "second-chair";
 
-export const MEDIATOR_POSITION_LABEL: Record<MediatorPosition, string> = {
-  "first-chair": "Ettan",
-  "second-chair": "Tvåan",
+/** MI's own terms for the two mediator seats — kept in Swedish, glossed in English. */
+export const MEDIATOR_POSITION_LABEL: Record<Lang, Record<MediatorPosition, string>> = {
+  sv: {
+    "first-chair": "Ettan",
+    "second-chair": "Tvåan",
+  },
+  en: {
+    "first-chair": "Ettan (lead mediator)",
+    "second-chair": "Tvåan (second mediator)",
+  },
 };
 
 export interface MediatorRef {
@@ -48,8 +63,10 @@ export interface MediationOutcome {
 
 /** AI decision support shown on the case view (§4.1). */
 export interface MediationDecisionSupport {
-  otherParties: string;
-  previousMediations: string;
+  otherParties: Text;
+  previousMediations: Text;
+  /** §4.1 — the risk that a conflict spreads to adjacent agreement areas. */
+  contagionRisk: Text;
 }
 
 export interface MediationCase {
@@ -64,20 +81,26 @@ export interface MediationCase {
   mediators: MediatorRef[];
   /** FF-006 / FA-017 – decides whether MI appoints mediators at all. */
   coveredByProcedureAgreement: boolean;
-  /** Swedish status label shown in the case list. */
-  status: string;
+  /** Status label shown in the case list, in both languages. */
+  status: Text;
   ongoing: boolean;
   outcome?: MediationOutcome;
   decisionSupport?: MediationDecisionSupport;
   /** Documents attached to the case, as a display string. */
-  documents?: string;
+  documents?: Text;
 }
 
 export type NegotiationType = "bargaining-round" | "other";
 
-export const NEGOTIATION_TYPE_LABEL: Record<NegotiationType, string> = {
-  "bargaining-round": "Avtalsrörelse",
-  other: "Övrig förhandling",
+export const NEGOTIATION_TYPE_LABEL: Record<Lang, Record<NegotiationType, string>> = {
+  sv: {
+    "bargaining-round": "Avtalsrörelse",
+    other: "Övrig förhandling",
+  },
+  en: {
+    "bargaining-round": "Bargaining round",
+    other: "Other negotiation",
+  },
 };
 
 /** FF-001–003 */

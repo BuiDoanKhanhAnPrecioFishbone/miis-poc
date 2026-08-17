@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "screenshots": "node scripts/screenshots.mjs",
+    "a11y:stage": "node -e \"require('fs').copyFileSync('node_modules/axe-core/axe.min.js','public/_axe.min.js')\"",
+    "a11y:clean": "node -e \"require('fs').rmSync('public/_axe.min.js',{force:true})\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -61,8 +64,10 @@
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "axe-core": "^4.13.0",
     "eslint": "^9.32.0",
     "eslint-config-next": "^16.3.1",
+    "playwright": "^1.62.1",
     "prettier": "^3.7.3",
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.3.4",

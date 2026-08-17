@@ -1,40 +1,34 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { roleInfo } from "@/lib/domain/role";
-import { activeDataset } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Administration, behörigheter och loggar",
-  description:
-    "Användare och roller, systemkonfiguration, bevakningsord samt händelse- och ändringslogg.",
-  openGraph: {
-    title: "MIIS – Administration, behörigheter och loggar",
-    description:
-      "Användare och roller, systemkonfiguration, bevakningsord samt händelse- och ändringslogg.",
-  },
-};
+/** Requirement IDs are structure, so they stay here; the sentences are copy. */
+const FEATURE_IDS = ["FH-001", "FH-002", "NFL-003", "FAI-004", "NFL-004"];
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.administration.title}`;
+  const description = i18n.administration.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function AdministrationPage() {
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const t = session.i18n.administration;
+
   return (
     <PlaceholderPage
-      title="Administration"
-      epic="Epic F5 och NF2 – Loggar, behörighet och konfiguration"
-      subtitle="Användare, roller, stödtabeller och spårbarhet (US-12, US-13)"
-      role={roleInfo("system-admin")}
-      dataset={dataset}
-      features={[
-        { id: "NFÅ-001", text: "Autentisering med EFOS-kort via Försäkringskassans IdP (SAML2)." },
-        { id: "NFÅ-003", text: "Rollbaserad behörighetsstyrning enligt de åtta användarrollerna." },
-        {
-          id: "FH-001",
-          text: "Ändringslogg med vem, vad och när – inklusive gammalt och nytt värde.",
-        },
-        { id: "FH-002", text: "Händelselogg över systemhändelser och utskickade e-postmeddelanden." },
-        { id: "NFL-003", text: "Loggar bevaras i minst 24 månader och kan inte ändras eller raderas." },
-        { id: "FAI-004", text: "Underhåll av bevakningsordstabellen inför avtalsrörelsen." },
-      ]}
+      title={t.title}
+      epic={t.epic}
+      subtitle={t.subtitle}
+      features={t.features}
+      featureIds={FEATURE_IDS}
+      role={session.role}
+      dataset={session.dataset}
+      lang={session.lang}
+      reqTags={session.reqTags}
+      i18n={session.i18n}
     />
   );
 }

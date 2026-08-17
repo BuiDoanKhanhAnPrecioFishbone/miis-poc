@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
     // Type errors still show in the editor and in `npm run build` logs.
     ignoreBuildErrors: false,
   },
+  // The dev overlay sits in the bottom-left corner and lands in every
+  // screenshot taken with `npm run screenshots`. Compile and runtime errors are
+  // still surfaced in the terminal.
+  devIndicators: false,
 };
 
 export default nextConfig;

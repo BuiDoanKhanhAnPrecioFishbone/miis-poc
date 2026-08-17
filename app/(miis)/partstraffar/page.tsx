@@ -1,39 +1,34 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { roleInfo } from "@/lib/domain/role";
-import { activeDataset } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Partsträffar och samordnade avtalskrav",
-  description:
-    "Registrering av partsträffar inför avtalsrörelse samt samordnade avtalskrav per part.",
-  openGraph: {
-    title: "MIIS – Partsträffar och samordnade avtalskrav",
-    description:
-      "Registrering av partsträffar inför avtalsrörelse samt samordnade avtalskrav per part.",
-  },
-};
+/** Requirement IDs are structure, so they stay here; the sentences are copy. */
+const FEATURE_IDS = ["FF-004", "FF-005", "FSD-002", "FAI-004"];
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.partstraffar.title}`;
+  const description = i18n.partstraffar.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function PartstraffarPage() {
-  // US-08 is performed by the mediation administrator (Appendix 1 §8, US-08).
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const t = session.i18n.partstraffar;
+
   return (
     <PlaceholderPage
-      title="Partsträffar"
-      epic="Epic F9 – Partsträffar (US-08)"
-      subtitle="Möten mellan MI och enskild part inför avtalsrörelsen"
-      role={roleInfo("mediation-admin")}
-      dataset={dataset}
-      features={[
-        { id: "FF-004", text: "Registrering av partsträff före, under och efter mötet." },
-        {
-          id: "FF-005",
-          text: "Samordnade avtalskrav med flagga samordnat/eget förbund och kopplade fackförbund.",
-        },
-        { id: "FSD-002", text: "Partsträffsdokument skapas från mall förifylld med MIIS-information." },
-        { id: "FAI-004", text: "Krav från mötet kan läggas till i bevakningsordstabellen." },
-      ]}
+      title={t.title}
+      epic={t.epic}
+      subtitle={t.subtitle}
+      features={t.features}
+      featureIds={FEATURE_IDS}
+      role={session.role}
+      dataset={session.dataset}
+      lang={session.lang}
+      reqTags={session.reqTags}
+      i18n={session.i18n}
     />
   );
 }

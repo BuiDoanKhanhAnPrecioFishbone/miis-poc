@@ -1,243 +1,197 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
-import { Button, Field, Panel, ReqTag } from "@/components/miis/primitives";
-import { roleInfo } from "@/lib/domain/role";
-import { activeDataset } from "@/lib/session";
+import { ProtocolReview } from "@/components/miis/ProtocolReview";
+import {
+  Button,
+  ConfidentialityMarker,
+  Field,
+  PageHeading,
+  Panel,
+  ReqTag,
+} from "@/components/miis/primitives";
+import { listExtractionProposals } from "@/lib/data/extraction";
+import { AGREEMENT_CONSTRUCTIONS } from "@/lib/domain/agreement";
+import { statusInfo, STATUS_LEGEND } from "@/lib/domain/status";
+import { percent } from "@/lib/format";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Registrera avtalsprotokoll med AI-stöd",
-  description:
-    "US-01: ladda upp avtalsprotokoll, låt AI föreslå matchat avtal och löneavtalsvärden, granska och godkänn manuellt.",
-  openGraph: {
-    title: "MIIS – Registrera avtalsprotokoll med AI-stöd",
-    description:
-      "Guidat flöde i fem steg för registrering av inkommet avtalsprotokoll med AI-förslag och manuellt godkännande.",
-  },
-};
-
-const steps = [
-  "1. Ladda upp",
-  "2. AI-analys",
-  "3. Avtal (matchat)",
-  "4. Löneavtal / Allmänna villkor",
-  "5. Koppla protokoll",
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.registrera.title}`;
+  const description = i18n.registrera.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function RegistreraPage() {
-  // US-01 is performed by the agreement administrator regardless of the demo
-  // role selected in the header.
-  const role = roleInfo("agreement-admin");
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const { i18n, lang } = session;
+  const proposals = await listExtractionProposals();
+  const t = i18n.registrera;
 
   return (
-    <AppShell role={role} dataset={dataset}>
-      <div className="mb-6 flex flex-wrap gap-3">
-        {steps.map((s, i) => (
-          <span
+    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FAI-001", "FAI-002", "FAI-003"]}
+      />
+
+      <ol className="mb-6 flex flex-wrap gap-3">
+        {t.steps.map((s, i) => (
+          <li
             key={s}
-            className={`rounded-full px-5 py-2.5 text-sm font-semibold ${
-              i < 4 ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
+            aria-current={i === 1 ? "step" : undefined}
+            className={`rounded-full px-5 py-2.5 text-label font-semibold ${
+              i <= 1
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground"
             }`}
           >
             {s}
-          </span>
+          </li>
         ))}
-      </div>
+      </ol>
 
-      <div className="grid gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-        <Panel>
-          <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
-            <h2 className="font-display text-lg font-semibold text-primary">
-              Avtalsprotokoll_Kommunikation_2027.pdf
-            </h2>
-            <span className="rounded-md border border-mint-border bg-mint px-3 py-1 text-[0.7rem] font-bold text-primary">
-              OCR
-            </span>
-            <ReqTag id="FAI-003" />
-          </div>
+      <ProtocolReview proposals={proposals} lang={lang} />
 
-          <div className="space-y-3 text-[0.95rem] leading-relaxed">
-            <p className="font-semibold tracking-wide">ÖVERENSKOMMELSE</p>
-            <p>mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket</p>
-            <p>
-              <mark className="bg-sand px-1">avtalsperioden 2027-06-01 – 2029-05-31</mark>
-            </p>
-            <p>
-              Parterna är överens om att avtalet om allmänna anställningsvillkor prolongeras
-              med ändringar…
-            </p>
-            <p>
-              <mark className="bg-sand px-1">arbetstidsförkortning om 0,2 %</mark>
-            </p>
-            <p>Löneavtal, Bilaga B. Lönerevision per den</p>
-            <p>
-              <mark className="bg-sand px-1">1 juni 2027, 3,2 %</mark>
-            </p>
-            <p>Part äger rätt att senast den 30 november 2028</p>
-            <p className="flex flex-wrap items-center gap-3">
-              <mark className="bg-sand px-1">säga upp avtalet till upphörande…</mark>
-              <ReqTag id="FAI-004" />
-            </p>
-          </div>
+      <div className="mt-5 space-y-5">
+        <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
+          <div className="space-y-4">
+            <Field
+              label={t.wage.construction}
+              value={`2. ${AGREEMENT_CONSTRUCTIONS[lang][2]}`}
+              hint={t.wage.constructionHint}
+            />
 
-          <div className="mt-8 rounded-md border border-sand-border bg-sand px-4 py-3 text-sm text-sand-foreground">
-            Markerad text = träff i bevakningsordstabellen (3 träffar)
+            <div className="grid gap-4 @xl:grid-cols-4">
+              <Field label={t.wage.scope} value={percent(3.2, lang)} />
+              <Field label={t.wage.costFrame} value={percent(6.4, lang)} />
+              <Field label={t.wage.individualGuarantee} value={i18n.common.no} />
+              <Field
+                label={t.wage.workingTime}
+                value={`${i18n.common.yes} · ${percent(0.2, lang)}`}
+              />
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <ReqTag id="FA-008" />
+              <ReqTag id="FA-009" />
+              <ReqTag id="FA-010" />
+            </div>
+
+            <div className="grid gap-4 @xl:grid-cols-2">
+              <Field
+                label={t.wage.revision}
+                value={`2027-06-01 · ${percent(3.2, lang)}`}
+                hint={t.wage.revisionHint}
+              />
+              <Field
+                label={t.wage.minimumWage}
+                value="25 480 kr/mån 2027-06-01"
+                hint={t.wage.minimumWageHint}
+              />
+            </div>
+
+            <div className="grid gap-4 @xl:grid-cols-2">
+              <div>
+                <div className="mb-1 flex flex-wrap items-center gap-2">
+                  <span className="text-label font-bold">{t.wage.equalityFlag}</span>
+                  <ReqTag id="FA-011" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-14 items-center rounded-full bg-status-green px-1">
+                    <span className="ml-auto size-6 rounded-full bg-card" />
+                  </span>
+                  <span className="text-table font-semibold">{i18n.common.yes}</span>
+                </div>
+              </div>
+              <div>
+                <div className="mb-1 flex flex-wrap items-center gap-2">
+                  <span className="text-label font-bold">{t.wage.benchmarkFlag}</span>
+                  <ReqTag id="FA-012" />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-8 w-14 items-center rounded-full bg-secondary px-1">
+                    <span className="mr-auto size-6 rounded-full bg-card" />
+                  </span>
+                  <span className="text-table text-muted-foreground">{i18n.common.no}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </Panel>
 
-        <div className="space-y-5">
-          <Panel title="AI-analys 1 – identifiering av avtal" tags={["FA-001", "FAI-001"]}>
-            <div className="space-y-4">
-              <div className="grid gap-4 @xl:grid-cols-2">
-                <Field label="Avtalsområde" value="Kommunikation" ai />
-                <Field
-                  label="Avtal (befintligt i MIIS)"
-                  value="Kommunikation – Almega Tjänsteförbunden / Seko"
-                  ai
-                />
-                <Field label="Alternativt avtalsnamn" value="Kommunikationsavtalet" ai />
-                <Field label="Avtalstyp" value="Löneavtal + Allmänna villkor" ai />
-                <Field label="Avtalspart AGO" value="Almega Tjänsteförbunden" ai />
-                <Field label="Avtalspart ATO" value="Seko – Service- och kommunikationsfacket" ai />
-              </div>
-              <p className="rounded-md border border-mint-border bg-mint px-4 py-3 text-sm text-primary">
-                Validering och logiska kontroller: inga avvikelser. Framgår inte avtalsnamnet av
-                protokollet används filnamnet eller parternas gemensamma avtal som underlag
-                (FA-018).
-              </p>
-            </div>
-          </Panel>
-
-          <Panel title="AI-analys 2 – löptid och uppsägning" tags={["FAI-001"]}>
-            <div className="space-y-4">
-              <div className="grid gap-4 @xl:grid-cols-3">
-                <Field label="Teckningsdatum" value="2027-05-28" ai />
-                <Field label="Löptid" value="2027-06-01 – 2029-05-31" ai />
-                <Field label="Uppsägningsmöjlighet" value="Ja, senast 2028-11-30" ai />
-              </div>
-              <div className="flex flex-wrap items-center gap-4">
-                <Button>Godkänn</Button>
-                <Button variant="outline">Justera</Button>
-                <span className="text-sm text-muted-foreground">
-                  Inget sparas automatiskt – felaktiga AI-förslag korrigeras fritt före
-                  godkännande
-                </span>
-                <ReqTag id="FAI-002" />
-              </div>
-            </div>
-          </Panel>
-
-          <Panel title="Löneavtal 2027 – ny rad för avtalsrörelsen" tags={["FA-002"]}>
-            <div className="space-y-4">
-              <Field
-                label="Avtalskonstruktion (1–7)"
-                value="2. Lokal lönebildning med stupstock om utrymmets storlek"
-                hint="Sju MI-definierade konstruktioner (FA-007)"
-              />
-
-              <div className="grid gap-4 @xl:grid-cols-4">
-                <Field label="Löneutrymme (%)" value="3,2" />
-                <Field label="Kostnadsram (%)" value="6,4" />
-                <Field label="Individgaranti" value="Nej" />
-                <Field label="Arb.tidsförk. / kostnad" value="Ja · 0,2 %" />
-              </div>
-              <div className="flex items-center justify-end">
-                <ReqTag id="FA-008–10" />
-              </div>
-
-              <div className="grid gap-4 @xl:grid-cols-2">
-                <Field
-                  label="Undergrupp: Lönerevision"
-                  value="2027-06-01 · 3,2 %"
-                  hint="Kopplad till löneavtalet (§4.2)"
-                />
-                <Field
-                  label="Undergrupp: Lägstalön"
-                  value="25 480 kr/mån fr.o.m. 2027-06-01"
-                  hint="Kopplad till löneavtalet (§4.2)"
-                />
-              </div>
-
-              <div className="grid gap-4 @xl:grid-cols-2">
-                <div>
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="text-[0.95rem] font-bold">
-                      Jämställdhetsflagga – skrivning identifierad
-                    </span>
-                    <ReqTag id="FA-011" />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-14 items-center rounded-full bg-status-green px-1">
-                      <span className="ml-auto size-6 rounded-full bg-card" />
-                    </span>
-                    <span className="rounded-full border border-ai-border bg-ai px-2 py-0.5 text-[0.65rem] font-bold text-ai-foreground">
-                      AI-FÖRSLAG
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="text-[0.95rem] font-bold">
-                      Industrimärke (märkessättande avtal)
-                    </span>
-                    <ReqTag id="FA-012" />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-14 items-center rounded-full bg-secondary px-1">
-                      <span className="mr-auto size-6 rounded-full bg-card" />
-                    </span>
-                    <span className="text-sm text-muted-foreground">Nej</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Panel>
-
-          <Panel title="Allmänna villkor – egen giltighetsperiod" tags={["FA-003", "FA-004"]}>
+        <div className="grid gap-5 @3xl:grid-cols-2">
+          <Panel title={t.terms.title} tags={["FA-003", "FA-004"]}>
             <div className="grid gap-4 @xl:grid-cols-2">
-              <Field label="Eget teckningsdatum" value="2027-05-28" />
-              <Field label="Egen giltighetsperiod" value="2027-06-01 – 2030-05-31" />
+              <Field label={t.terms.ownSignedDate} value="2027-05-28" />
+              <Field label={t.terms.ownValidity} value="2027-06-01 – 2030-05-31" />
             </div>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Löptiderna för löneavtal och allmänna villkor behöver inte följas åt
-            </p>
+            <p className="mt-3 text-label text-muted-foreground">{t.terms.note}</p>
           </Panel>
 
-          <Panel title="Koppla förhandling och protokoll" tags={["FF-002", "FD-001"]}>
+          <Panel title={t.link.title} tags={["FF-002", "FD-001"]}>
             <div className="grid gap-4 @xl:grid-cols-2">
               <Field
-                label="Registrerad förhandling"
-                value="FÖ-2027/218 – Kommunikation, avslutad 2027-05-28"
-                ai
+                label={t.link.negotiation}
+                value="FÖ-2027/218 – Kommunikation, 2027-05-28"
               />
-              <Field label="Dokument kopplas till" value="Avtal + löneavtal + förhandling" />
+              <Field label={t.link.documentLinkedTo} value={t.link.documentLinkedToValue} />
             </div>
-          </Panel>
-
-          <Panel title="Spara registrering" tags={["FA-021"]}>
-            <div className="grid gap-4 @xl:grid-cols-2">
-              <Field label="Registreringsstatus" value="Klar ▾" />
-              <Field
-                label="Färgkodning i vyerna"
-                value="Grön – nytecknat utan medling"
-                hint="FR-012"
-              />
-            </div>
-            <div className="mt-4 flex flex-wrap items-center gap-4">
-              <Button>Godkänn och koppla protokoll</Button>
-              <Button variant="outline">Spara som ofullständig</Button>
-              <span className="text-sm text-muted-foreground">
-                Ofullständig registrering följs upp med påminnelse (US-04)
-              </span>
-            </div>
-            <p className="mt-4 rounded-md border border-border bg-secondary px-4 py-3 text-sm text-muted-foreground">
-              Vid sparande: ändringsloggen registrerar vad som ändrats, av vem och när (FH-001)
-              och händelsen ”avtal tecknat” läggs i händelseloggen (FH-002). Tecknas avtalet
-              efter medling färgkodas det rött i stället för grönt (FR-012, US-09).
-            </p>
           </Panel>
         </div>
+
+        <Panel title={t.save.title} tags={["FA-021", "D-001"]}>
+          <div className="grid gap-4 @xl:grid-cols-2">
+            <Field
+              label={t.save.registrationStatus}
+              value={`${i18n.rapporter.shortTerm.partiallyRegistered} ▾`}
+            />
+            {/*
+              FR-012 in words. The registration decides the colour the agreement
+              will carry in every list, so the form says which one — the reader
+              should not have to deduce it from a legend elsewhere.
+            */}
+            <Field
+              label={t.save.colourCoding}
+              value={statusInfo("newly-signed", lang).label}
+              hint={STATUS_LEGEND[lang]}
+            />
+          </div>
+
+          <div className="mt-4">
+            <div className="mb-1 flex flex-wrap items-center gap-2">
+              <span className="text-label font-bold">{t.save.confidentialityLabel}</span>
+              <ReqTag id="D-001" />
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="flex h-8 w-14 items-center rounded-full bg-secondary px-1">
+                <span className="mr-auto size-6 rounded-full bg-card" />
+              </span>
+              <ConfidentialityMarker
+                label={i18n.confidentiality.marked}
+                note={i18n.confidentiality.inStatistics}
+              />
+            </div>
+            <p className="mt-1 text-label text-muted-foreground">{t.save.confidentialityHint}</p>
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-4">
+            <Button>{t.save.approveAndLink}</Button>
+            <Button variant="outline">{t.save.saveIncomplete}</Button>
+            <span className="text-label text-muted-foreground">{t.save.incompleteNote}</span>
+            <ReqTag id="FA-022" />
+          </div>
+
+          <p className="mt-4 rounded-md border border-border bg-secondary px-4 py-3 text-label text-muted-foreground">
+            {t.save.auditNote}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <ReqTag id="FH-001" />
+            <ReqTag id="FH-002" />
+            <ReqTag id="FR-012" />
+          </div>
+        </Panel>
       </div>
     </AppShell>
   );

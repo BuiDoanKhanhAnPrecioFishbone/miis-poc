@@ -7,6 +7,7 @@
 
 import { agreementTitle, validityLabel, type Agreement } from "@/lib/domain/agreement";
 import type { AuditEvent } from "@/lib/domain/event";
+import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import type { MediationCase, Mediator } from "@/lib/domain/mediation";
 import { getDataset } from "@/lib/mock";
 import { activeDataset } from "@/lib/session";
@@ -33,7 +34,10 @@ export async function listOngoingMediationCases(): Promise<MediationCase[]> {
   return (await listMediationCases()).filter((c) => c.ongoing);
 }
 
-export async function getMediationCase(id: string): Promise<MediationCaseDetail | null> {
+export async function getMediationCase(
+  id: string,
+  lang: Lang = DEFAULT_LANG,
+): Promise<MediationCaseDetail | null> {
   const data = getDataset(await activeDataset());
   const mediationCase = data.mediationCases.find((c) => c.id === id);
   if (!mediationCase) return null;
@@ -47,7 +51,13 @@ export async function getMediationCase(id: string): Promise<MediationCaseDetail 
       // Integrity is asserted at build time, so this cannot be missing —
       // flatMap keeps the type honest without a non-null assertion.
       return agreement
-        ? [{ id: agreement.id, name: agreementTitle(agreement), validity: validityLabel(agreement) }]
+        ? [
+            {
+              id: agreement.id,
+              name: agreementTitle(agreement),
+              validity: validityLabel(agreement, lang),
+            },
+          ]
         : [];
     }),
     events: data.mediationEvents.filter((e) => mediationCase.agreementIds.includes(e.agreementId ?? "")),

@@ -11,9 +11,12 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
 
 ## Hard rules
 
-1. **All UI text is in Swedish.** The requirements are an English working translation;
-   the target system, the tender and the sketches are Swedish. Never write English
-   labels, buttons, headings, placeholders or empty states into the app.
+1. **Swedish is the default UI language.** Every screenshot and the live demo open in
+   Swedish. English is a complete second translation reachable from the demo bar — it
+   exists so the internal team and non-Swedish reviewers can read the mockup, and is not
+   a product feature. No user-facing string is hard-coded in a component; all text comes
+   from `lib/i18n/sv.ts` and `lib/i18n/en.ts`. Identifiers stay English; route paths stay
+   Swedish.
 2. **No hard-coded colours.** Use the tokens in `app/globals.css` (`bg-primary`,
    `text-muted-foreground`, `var(--mi-sand-500)`, …). The palette is derived from
    Medlingsinstitutet's identity — see `docs/design-system/`.
@@ -23,9 +26,17 @@ Read `docs/00-START-HERE.md` before doing design work. Requirements live in
    the green/red/blue agreement status coding (FR-012) must always have a text label too.
 4. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
-   large part of why this mockup scores.
+   large part of why this mockup scores. The tags render **behind a toggle that is off
+   by default** (`miis_reqtags`), so the plain product view exists too — every new ID
+   also needs its sentence in `lib/domain/requirements.ts`, which is what the hover
+   tooltip reads.
 5. **AI proposals are never applied automatically (FAI-002).** Anything AI-suggested is
-   labelled `AI-FÖRSLAG` and needs an explicit human approve/reject control.
+   labelled `AI-FÖRSLAG` and needs an explicit human approve/reject control. Every
+   proposal is **source-linked**: selecting it highlights the passage in the protocol it
+   was read from (FAI-001, FAI-004). Show the rejected path too — a demo of only the
+   happy path asserts human review instead of demonstrating it.
+   AI belongs where a requirement puts it. There is no general assistant: the only
+   free-standing AI surface is the §4.1 decision-support panel on a mediation case.
 6. **Do not touch the logo.** The MI logo contains a protected Swedish state emblem.
    The `MI` square in the header is a placeholder until MI supplies the official asset.
    Never generate, redraw or "improve" it.
@@ -43,11 +54,30 @@ components/miis/            product components ← and here
 components/ui/              vendored shadcn — restyle via tokens, don't edit
 app/globals.css             all design tokens — change design here first
 lib/domain/                 types + pure rules (agreement, mediation, party,
-                            benchmark, event, role, status, dashboard, dataset)
+                            benchmark, event, role, status, dashboard, dataset,
+                            lang, requirements)
+lib/i18n/                   ALL interface copy — sv.ts is the source, en.ts must match
 lib/data/                   THE SEAM — every data read goes through here
 lib/mock/                   the Swedish sample data, in three demo datasets
-lib/session.ts              the request's role and dataset
+lib/session.ts              the request's role, dataset, language and req-tag setting
 ```
+
+### Where a string lives
+
+`lib/i18n/sv.ts` holds **interface copy** — headings, labels, buttons, empty states,
+helper text — keyed by screen. `en.ts` is typed `Dictionary = typeof sv`, so a missing
+or misspelt key **fails `npm run build`**; that is what keeps the English complete.
+
+**Domain vocabulary** stays in `lib/domain/` but is keyed by language:
+`STATUS_LABEL[lang][code]`, `roleInfo(role, lang)`, `AGREEMENT_CONSTRUCTIONS[lang]`.
+Free-text sample content in `lib/mock/` uses `Text = Record<Lang, string>` and is read
+with `t(text, lang)`.
+
+Terms with no English equivalent are **not translated**. *Märket* stays *Märket*; in
+English it is rendered "Märket (industry benchmark)" on first use per screen, via
+`i18n.common.benchmarkTerm`. Dates are `YYYY-MM-DD` in both languages; numbers use a
+decimal comma in Swedish and a decimal point in English — `decimal(n, lang)` in
+`lib/format.ts`.
 
 **Identifiers are English, content is Swedish.** Types, functions, files, props and
 variables use English names (`Agreement`, `listMediationCases`, `roleInfo`). Everything
@@ -70,10 +100,16 @@ in a Swedish authority's system.
 4. **Anything interactive is `"use client"` under `components/miis/`,** fed by props.
    `components/miis/primitives.tsx` stays server-side — no hooks in it.
 
-Key files: `AppShell.tsx` (shell + nav, client) · `primitives.tsx` (`Panel`, `Field`,
-`Button`, `PageHeading`, `ReqTag`, `StatusDot`, server) · `AiPanel.tsx` (client) ·
-`RollVaxlare.tsx` (the demo role switcher) · `Placeholder.tsx` (stub for undesigned
-views).
+Key files: `AppShell.tsx` (shell + role-filtered nav, client) · `primitives.tsx`
+(`Panel`, `Field`, `Button`, `PageHeading`, `ReqTag`, `StatusDot`,
+`ConfidentialityMarker`, server) · `DemoBar.tsx` (the reviewer controls, above the
+product chrome) · `DecisionSupportPanel.tsx` (§4.1 AI decision support, mediation only)
+· `SessionTimeoutWarning.tsx` (NFÅ-002) · `Placeholder.tsx` (stub for undesigned views).
+
+**The demo bar is not part of MIIS.** Role, dataset, language and requirement-ID
+switches are reviewer tools. They live in a visually distinct strip *above* the header,
+labelled as demo settings, so an evaluator cannot mistake them for proposed
+functionality. Never move one into the product chrome.
 
 `StatusDot` takes a whole `StatusInfo` (`{kod, farg, etikett}`) rather than a colour, so
 FR-012 status can never be rendered as colour alone. Get one from `statusInfo()` or
@@ -96,8 +132,10 @@ FR-012 status can never be rendered as colour alone. Get one from `statusInfo()`
   deliberately near-empty so empty states can be designed.
 - A page that needs data adds a function to `lib/data/`; it does not reach into
   `lib/mock/` itself. Lint enforces this.
-- Prefer editing an existing view over adding a new route. The nav in `AppShell.tsx`
-  is fixed at 11 items and mirrors the requirement Epics.
+- Prefer editing an existing view over adding a new route. The nav mirrors **MI's own
+  functional modules** (Appendix 1 §4.3, quoted in spec §5.1) — not the requirement
+  Epics — and each role sees only its own items (`RoleInfo.nav`). Registration is an
+  action, not a place: `/registrera` is reached from a primary button, never the menu.
 - After a UI change, verify it in the browser (`/flow-test`), don't just assume.
 - Keep the branch working — the Vercel deployment builds from it and the CEO reviews
   there.

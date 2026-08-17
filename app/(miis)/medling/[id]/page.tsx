@@ -5,37 +5,32 @@ import { AppShell } from "@/components/miis/AppShell";
 import { Button, Field, Panel, ReqTag, StatusDot } from "@/components/miis/primitives";
 import { getCurrentBenchmark } from "@/lib/data/benchmark";
 import { getMediationCase } from "@/lib/data/mediation";
+import { t } from "@/lib/domain/lang";
 import {
   caseNumber,
   MEDIATION_TYPE_LABEL,
   MEDIATOR_POSITION_LABEL,
   miAppointsMediators,
 } from "@/lib/domain/mediation";
-import { roleInfo } from "@/lib/domain/role";
 import { statusInfo } from "@/lib/domain/status";
 import { amount, percent } from "@/lib/format";
-import { activeDataset } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
-  const detail = await getMediationCase(id);
-  if (!detail) return { title: "MIIS – Medlingsärende" };
+  const [{ id }, { i18n, lang }] = await Promise.all([params, getSession()]);
+  const detail = await getMediationCase(id, lang);
+  if (!detail) return { title: `${i18n.common.appName} – ${i18n.medling.title}` };
 
-  const number = caseNumber(detail.mediationCase.id);
-  return {
-    title: `MIIS – Medlingsärende ${number}, ${MEDIATION_TYPE_LABEL[detail.mediationCase.type].toLowerCase()}`,
-    description:
-      "US-07: medlingsärende skapat automatiskt från GD-beslut med kopplade avtal, medlare, beslutsstöd och medlingsresultat.",
-    openGraph: {
-      title: `MIIS – Medlingsärende ${number}`,
-      description:
-        "Medlingsärende från GD-beslut med kopplade avtal, tillsatta medlare, AI-beslutsstöd och registrerat medlingsresultat.",
-    },
-  };
+  const title = i18n.mediationCase.heading(
+    caseNumber(detail.mediationCase.id),
+    MEDIATION_TYPE_LABEL[lang][detail.mediationCase.type],
+  );
+  const description = i18n.medling.subtitle;
+  return { title: `${i18n.common.appName} – ${title}`, description, openGraph: { title, description } };
 }
 
 export default async function MediationCasePage({
@@ -43,124 +38,141 @@ export default async function MediationCasePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const detail = await getMediationCase(id);
+  const [{ id }, session] = await Promise.all([params, getSession()]);
+  const { i18n, lang } = session;
+  const detail = await getMediationCase(id, lang);
   if (!detail) notFound();
 
   const { mediationCase, linkedAgreements, events } = detail;
-  const [benchmark, dataset] = await Promise.all([getCurrentBenchmark(), activeDataset()]);
-  const role = roleInfo("mediation-admin");
+  const benchmark = await getCurrentBenchmark();
   const miAppoints = miAppointsMediators(mediationCase);
+  const c = i18n.mediationCase;
+  const ds = i18n.decisionSupport;
 
   return (
-    <AppShell role={role} dataset={dataset}>
-      <h1 className="mb-6 font-display text-4xl font-medium tracking-tight text-[var(--mi-slate-900)]">
-        Medlingsärende {caseNumber(mediationCase.id)} – {MEDIATION_TYPE_LABEL[mediationCase.type]}
+    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <h1 className="mb-6 font-display text-page-title font-semibold text-[var(--mi-slate-900)]">
+        {c.heading(caseNumber(mediationCase.id), MEDIATION_TYPE_LABEL[lang][mediationCase.type])}
       </h1>
 
       <div className="grid gap-5 @3xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <div className="space-y-5">
-          <Panel
-            title={`${mediationCase.dgDecision.number} – uppladdat, ärende skapat automatiskt`}
-            tags={["FF-007"]}
-          >
+          <Panel title={c.uploaded(mediationCase.dgDecision.number)} tags={["FF-007"]}>
             <div className="grid gap-4 @xl:grid-cols-2 @3xl:grid-cols-4">
               <Field
-                label="Diarienummer (diariesystemet)"
-                value={mediationCase.registryNumber ?? "–"}
+                label={c.registryNumber}
+                value={mediationCase.registryNumber ?? i18n.common.none}
               />
-              <Field label="Beslutsdatum" value={mediationCase.dgDecision.date} />
-              <Field label="Typ" value={MEDIATION_TYPE_LABEL[mediationCase.type]} />
-              <Field label="GD-beslut (dokument)" value={mediationCase.dgDecision.document} />
+              <Field label={c.decisionDate} value={mediationCase.dgDecision.date} />
+              <Field label={c.type} value={MEDIATION_TYPE_LABEL[lang][mediationCase.type]} />
+              <Field label={c.dgDecisionDocument} value={mediationCase.dgDecision.document} />
             </div>
           </Panel>
 
           <Panel
-            title={`Kopplade avtal (${linkedAgreements.length})`}
+            title={c.linkedAgreements(linkedAgreements.length)}
             tags={["FF-008"]}
-            action={<Button variant="outline">+ Koppla avtal</Button>}
+            action={<Button variant="outline">{c.linkAgreement}</Button>}
           >
             <ul className="space-y-3">
               {linkedAgreements.map((a) => (
-                <li key={a.id} className="flex items-center gap-3 text-[0.95rem]">
-                  <StatusDot status={statusInfo("after-mediation")} />
-                  {a.name} · {a.validity}
+                <li key={a.id} className="flex flex-wrap items-center gap-3 text-table">
+                  <StatusDot status={statusInfo("after-mediation", lang)} showLabel />
+                  <span>
+                    {a.name} · {a.validity}
+                  </span>
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Röd markering = koppling till medling. Ett medlingsärende kan kopplas till flera
-              avtal.
-            </p>
+            <p className="mt-3 text-label text-muted-foreground">{c.linkedNote}</p>
           </Panel>
 
           <Panel
-            title="Medlare (ur medlarregistret)"
+            title={c.mediators}
             tags={["FF-009"]}
-            action={<Button variant="outline">+ Lägg till medlare</Button>}
+            action={<Button variant="outline">{c.addMediator}</Button>}
           >
             {mediationCase.mediators.length === 0 ? (
-              <p className="text-[0.95rem] text-muted-foreground">
-                Inga medlare tillsatta – parterna medlar i egen regi enligt
-                förhandlingsordningsavtal.
-              </p>
+              <p className="text-table text-muted-foreground">{c.noMediators}</p>
             ) : (
-              <ul className="space-y-2 text-[0.95rem]">
+              <ul className="space-y-2 text-table">
                 {mediationCase.mediators.map((m) => (
                   <li key={m.id}>
-                    {m.name} · {MEDIATION_TYPE_LABEL[mediationCase.type]} · Position:{" "}
-                    {MEDIATOR_POSITION_LABEL[m.position].toLowerCase()} · {m.previousAssignments}{" "}
-                    tidigare uppdrag
+                    {m.name} · {MEDIATION_TYPE_LABEL[lang][mediationCase.type]} ·{" "}
+                    {c.position(MEDIATOR_POSITION_LABEL[lang][m.position])} ·{" "}
+                    {c.previousAssignments(m.previousAssignments)}
                   </li>
                 ))}
               </ul>
             )}
-            <p className="mt-3 text-sm text-muted-foreground">
-              Statistik per medlare (år/avtalsområde) visas i medlarregistret
-            </p>
+            <p className="mt-3 text-label text-muted-foreground">{c.mediatorStatsNote}</p>
           </Panel>
         </div>
 
         <div className="space-y-5">
-          <Panel title="Förhandlingsordningsavtal" tags={["FF-006", "FA-017"]} tone="mint">
-            <p className="text-[0.95rem]">
-              Avtalsområdet täcks {miAppoints ? "INTE " : ""}av förhandlingsordningsavtal.
-            </p>
+          <Panel title={c.procedureAgreement} tags={["FF-006", "FA-017"]} tone="mint">
+            <p className="text-table">{miAppoints ? c.coveredNot : c.covered}</p>
             <p className="mt-3 font-semibold text-primary">
-              {miAppoints
-                ? "→ Medlingsinstitutet tillsätter medlare."
-                : "→ Parterna medlar i egen regi. MI tillsätter ingen medlare."}
+              {miAppoints ? c.miAppoints : c.partiesMediate}
             </p>
-            <p className="mt-3 text-sm text-primary/80">
-              Om avtalet omfattas av förhandlingsordningsavtal medlar parterna i egen regi och MI
-              tillsätter ingen medlare (§4.2).
-            </p>
+            <p className="mt-3 text-label text-primary">{c.procedureNote}</p>
           </Panel>
 
+          {/*
+            §4.1 decision support — the only free-standing AI surface in MIIS.
+            It answers the three questions the requirement names for a mediation
+            case (other parties in the agreement area, previous mediations,
+            contagion risk) out of information MIIS already holds. It is not a
+            general assistant: nothing in the requirements asks for one, and an
+            unrequested feature reads as requirements that were not read closely.
+          */}
           {mediationCase.decisionSupport && (
-            <Panel title="Beslutsstöd" tags={["§4.1 AI"]}>
-              <div className="mb-3">
-                <span className="rounded-full border border-ai-border bg-ai px-2.5 py-0.5 text-[0.65rem] font-bold text-ai-foreground">
-                  AI-FÖRSLAG
+            <Panel title={ds.title} tags={["§4.1", "FAI-002"]}>
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold tracking-wide text-ai-foreground">
+                  {i18n.common.aiProposal}
                 </span>
+                <span className="text-label text-muted-foreground">{ds.subtitle}</span>
               </div>
-              <p className="font-semibold">Övriga parter på avtalsområdet:</p>
-              <p className="mb-3 text-[0.95rem]">{mediationCase.decisionSupport.otherParties}</p>
-              <p className="font-semibold">Tidigare medlingar:</p>
-              <p className="text-[0.95rem]">{mediationCase.decisionSupport.previousMediations}</p>
+
+              <dl className="space-y-3">
+                <div>
+                  <dt className="text-label font-bold">{ds.otherParties}</dt>
+                  <dd className="text-table">
+                    {t(mediationCase.decisionSupport.otherParties, lang)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-label font-bold">{ds.previousMediations}</dt>
+                  <dd className="text-table">
+                    {t(mediationCase.decisionSupport.previousMediations, lang)}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-label font-bold">{ds.contagionRisk}</dt>
+                  <dd className="text-table">
+                    {t(mediationCase.decisionSupport.contagionRisk, lang)}
+                  </dd>
+                </div>
+              </dl>
+
+              <p className="mt-4 rounded-md border border-border bg-secondary px-4 py-3 text-label text-muted-foreground">
+                {ds.scopeNote} {ds.reviewNote}
+              </p>
             </Panel>
           )}
 
           {benchmark && (
-            <Panel title="Märket (referens i medlarvyn)" tags={["FM-003"]} tone="sand">
-              <p className="text-[0.95rem] text-sand-foreground">
-                Kostnadsram {percent(benchmark.costFramePercent)} · {benchmark.months} månader
+            <Panel title={c.benchmarkTitle} tags={["FM-003"]} tone="sand">
+              <p className="text-table text-sand-foreground">
+                {i18n.start.benchmarkCostFrame(percent(benchmark.costFramePercent, lang))} ·{" "}
+                {c.benchmarkMonths(benchmark.months)}
               </p>
-              <p className="text-[0.95rem] text-sand-foreground">
-                Periodisering {benchmark.periodisation}
+              <p className="text-table text-sand-foreground">
+                {i18n.start.benchmarkPeriodisation(benchmark.periodisation)}
               </p>
-              <p className="mt-2 text-sm text-sand-foreground/80">
-                Perioden {benchmark.validFrom} – {benchmark.validTo}
+              <p className="mt-2 text-label text-sand-foreground">
+                {c.benchmarkPeriod(benchmark.validFrom, benchmark.validTo)}
               </p>
             </Panel>
           )}
@@ -168,81 +180,73 @@ export default async function MediationCasePage({
       </div>
 
       <div className="mt-5 space-y-5">
-        <Panel title="Dokument och åtgärder" tags={["FSD-001"]}>
-          <p className="text-[0.95rem]">
-            {mediationCase.documents ?? mediationCase.dgDecision.document}
+        <Panel title={c.documents} tags={["FSD-001", "FD-001"]}>
+          <p className="text-table">
+            {mediationCase.documents
+              ? t(mediationCase.documents, lang)
+              : mediationCase.dgDecision.document}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Button variant="outline">Skapa GD-beslut – med varsel</Button>
-            <Button variant="outline">Skapa GD-beslut – utan varsel</Button>
-            <Button>Klarmarkera beslut</Button>
+            <Button variant="outline">{c.createWithNotice}</Button>
+            <Button variant="outline">{c.createWithoutNotice}</Button>
+            <Button>{c.finalise}</Button>
             <ReqTag id="FE-001" />
-            <span className="text-sm text-muted-foreground">
-              → Notifierings-epost med länk skickas till medlaradministratör och loggas
-            </span>
+            <span className="text-label text-muted-foreground">{c.finaliseNote}</span>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Dokumentmallarna förifylls med information från MIIS och kan redigeras före
-            färdigställande
-          </p>
+          <p className="mt-3 text-label text-muted-foreground">{c.templateNote}</p>
         </Panel>
 
         {mediationCase.outcome && (
-          <Panel title="Medlingsresultat" tags={["FF-010"]}>
+          <Panel title={c.outcome} tags={["FF-010"]}>
             <div className="grid gap-4 @xl:grid-cols-3 @3xl:grid-cols-5">
               <Field
-                label="Typ av medling"
-                value={mediationCase.outcome.mediationType === "special" ? "Särskild" : "Fast"}
+                label={c.outcomeType}
+                value={MEDIATION_TYPE_LABEL[lang][mediationCase.outcome.mediationType]}
               />
               <Field
-                label="Stridsåtgärder"
-                value={mediationCase.outcome.industrialAction ? "Ja" : "Nej"}
+                label={c.industrialAction}
+                value={mediationCase.outcome.industrialAction ? i18n.common.yes : i18n.common.no}
               />
               <Field
-                label="Typ av stridsåtgärd"
-                value={mediationCase.outcome.industrialActionType ?? "–"}
+                label={c.industrialActionType}
+                value={mediationCase.outcome.industrialActionType ?? i18n.common.none}
               />
               <Field
-                label="Förlorade arbetsdagar"
+                label={c.lostWorkingDays}
                 value={
                   mediationCase.outcome.lostWorkingDays
-                    ? amount(mediationCase.outcome.lostWorkingDays)
-                    : "–"
+                    ? amount(mediationCase.outcome.lostWorkingDays, lang)
+                    : i18n.common.none
                 }
               />
               <Field
-                label="Antal berörda anställda"
+                label={c.affectedEmployees}
                 value={
                   mediationCase.outcome.affectedEmployees
-                    ? amount(mediationCase.outcome.affectedEmployees)
-                    : "–"
+                    ? amount(mediationCase.outcome.affectedEmployees, lang)
+                    : i18n.common.none
                 }
               />
             </div>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Avslutas medlingen utan att avtal tecknas markeras förhandlingen som avslutad med
-              status (FF-003). Tecknas avtal efter medlingen färgkodas det rött (FR-012) och
-              kopplas via protokollsregistreringen (US-01).
-            </p>
+            <p className="mt-3 text-label text-muted-foreground">{c.outcomeNote}</p>
             <div className="mt-4">
-              <Button variant="outline">Registrera fast medling (förenklat formulär)</Button>
+              <Button variant="outline">{c.registerStanding}</Button>
             </div>
           </Panel>
         )}
 
         {events.length > 0 && (
-          <Panel title="Händelselogg på berörda avtal" tags={["FH-002", "FR-012"]}>
-            <ul className="divide-y divide-border text-[0.95rem]">
+          <Panel title={c.eventLog} tags={["FH-002", "FR-012"]}>
+            <ul className="divide-y divide-border text-table">
               {events.map((e) => (
-                <li key={e.id} className="flex items-center gap-3 py-2.5">
-                  <StatusDot status={statusInfo("after-mediation")} />
-                  {e.timestamp} · {e.text}
+                <li key={e.id} className="flex flex-wrap items-center gap-3 py-2.5">
+                  <StatusDot status={statusInfo("after-mediation", lang)} showLabel />
+                  <span className="tabular-nums text-muted-foreground">{e.timestamp}</span>
+                  <span>{e.detail}</span>
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Avtalen färgkodas röda i vyerna som avtal med koppling till medling
-            </p>
+            <p className="mt-3 text-label text-muted-foreground">{c.eventLogNote}</p>
           </Panel>
         )}
       </div>

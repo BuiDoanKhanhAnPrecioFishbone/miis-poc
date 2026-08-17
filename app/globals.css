@@ -51,6 +51,13 @@
   --color-ai-border: var(--ai-border);
   --color-req: var(--req);
   --color-req-foreground: var(--req-foreground);
+  --color-req-border: var(--req-border);
+  --color-demo: var(--demo);
+  --color-demo-foreground: var(--demo-foreground);
+  --color-demo-border: var(--demo-border);
+  --color-public: var(--public);
+  --color-public-foreground: var(--public-foreground);
+  --color-public-border: var(--public-border);
   --color-status-green: var(--status-green);
   --color-status-red: var(--status-red);
   --color-status-blue: var(--status-blue);
@@ -70,6 +77,32 @@
   --font-sans: Arial, Helvetica, sans-serif;
   --font-display: Arial, Helvetica, sans-serif;
   --shadow-card: 0 1px 2px rgba(23, 37, 44, 0.1);
+
+  /*
+   * The MIIS type scale — one brand, two expressions.
+   *
+   * mi.se is editorial: large headings, tight tracking, generous air. MIIS is a
+   * dense case tool where an administrator compares rows of agreements, so it
+   * takes the same tokens at a working density. The editorial scale is still
+   * the right expression for the public website; it is the wrong one here.
+   *
+   * 14px is the floor for anything a user must read. `--text-meta` at 13px is
+   * reserved for chrome annotations that are not content — requirement tags and
+   * the demo bar's own labels — never for information from the case.
+   */
+  --text-page-title: 1.75rem; /* 28px */
+  --text-page-title--line-height: 1.2;
+  --text-page-title--letter-spacing: -0.01em;
+  --text-section: 1.25rem; /* 20px */
+  --text-section--line-height: 1.3;
+  --text-body: 1rem; /* 16px */
+  --text-body--line-height: 1.6;
+  --text-table: 0.9375rem; /* 15px */
+  --text-table--line-height: 1.45;
+  --text-label: 0.875rem; /* 14px */
+  --text-label--line-height: 1.45;
+  --text-meta: 0.8125rem; /* 13px — annotation only */
+  --text-meta--line-height: 1.4;
 }
 
 :root {
@@ -88,6 +121,8 @@
   --mi-sand-100: #F3ECDD;
   --mi-paper: #F7F5F0;
   --mi-focus: #1D5F7A;
+  /* Deliberately outside the MI palette: the demo bar must not read as MIIS. */
+  --mi-demo-grey: #DDDFDD;
 
   --radius: 8px;
   --background: var(--mi-paper);
@@ -119,8 +154,24 @@
   --ai: var(--mi-sand-100);
   --ai-foreground: #6B4E14;
   --ai-border: var(--mi-sand-600);
-  --req: var(--mi-slate-700);
-  --req-foreground: #ffffff;
+  /*
+   * Requirement tags are annotation, not interface. Sand on ink reads as a
+   * margin note pencilled onto the screen; the slate chip they used to be read
+   * as a component of the product itself.
+   */
+  --req: var(--mi-sand-300);
+  --req-foreground: var(--mi-ink);
+  --req-border: var(--mi-sand-600);
+
+  /* The demo bar — reviewer tools, visibly not part of MIIS. */
+  --demo: var(--mi-demo-grey);
+  --demo-foreground: var(--mi-ink);
+  --demo-border: var(--mi-slate-600);
+
+  /* The public computer view (US-14) — a reduced, read-only entrance. */
+  --public: var(--mi-sand-100);
+  --public-foreground: #4A3A1C;
+  --public-border: var(--mi-sand-600);
 
   --status-green: #2E6B57;
   --status-red: #A33B35;
@@ -168,6 +219,15 @@
   --sidebar-accent-foreground: #F7F5F0;
   --sidebar-border: #405966;
   --sidebar-ring: #7FB6CE;
+  --req: var(--mi-sand-300);
+  --req-foreground: #17252C;
+  --req-border: var(--mi-sand-600);
+  --demo: #2A3A42;
+  --demo-foreground: #F7F5F0;
+  --demo-border: #6C818A;
+  --public: #2E4048;
+  --public-foreground: #F3ECDD;
+  --public-border: var(--mi-sand-600);
 }
 
 @layer base {
@@ -179,7 +239,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 1rem;
+    font-size: var(--text-body);
     line-height: 1.6;
   }
 
@@ -188,22 +248,77 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 600;
     color: var(--mi-slate-900);
-    line-height: 1.12;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.01em;
   }
 
-  h3,
+  h1 {
+    font-size: var(--text-page-title);
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: var(--text-section);
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: var(--text-body);
+    line-height: 1.4;
+  }
+
   h4 {
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-size: var(--text-label);
+    line-height: 1.4;
+    letter-spacing: 0;
   }
 
   :focus-visible {
     outline: 3px solid var(--mi-focus);
     outline-offset: 3px;
   }
+}
+
+/*
+ * Requirement tags (§2.2 of the update plan).
+ *
+ * Deliberately NOT inside `@layer base`. Tailwind's `utilities` layer would
+ * outrank it and a `block` utility on the tooltip text would defeat the
+ * language switch; unlayered rules beat every layered one, which is what these
+ * two toggles need in order to be reliable.
+ *
+ * `visibility` rather than `display`: the space stays reserved, so toggling the
+ * tags does not reflow a single row and the two views of a screen — the
+ * traceability document and the product — can be compared honestly. A hidden
+ * tag is also out of the accessibility tree and cannot be hovered, so its
+ * tooltip goes with it.
+ */
+:root[data-reqtags="off"] .req-tag {
+  visibility: hidden;
+}
+
+/*
+ * Both requirement sentences ship in the markup and CSS picks the active one.
+ * The alternative is threading the language through every one of the ~200 call
+ * sites for a tag that is off by default.
+ */
+.req-sv,
+.req-en {
+  display: block;
+}
+
+:root[data-lang="en"] .req-sv {
+  display: none;
+}
+
+:root:not([data-lang="en"]) .req-en {
+  display: none;
+}
+
+/* A tooltip must never be what makes the page scroll sideways. */
+.req-tip {
+  overflow-wrap: anywhere;
 }
 
 @utility card-panel {

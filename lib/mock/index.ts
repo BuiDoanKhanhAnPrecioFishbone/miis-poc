@@ -12,6 +12,8 @@
  */
 
 import { AGREEMENTS } from "./agreements";
+import { DOCUMENTS } from "./documents";
+import { WAGE_AGREEMENTS } from "./wageAgreements";
 import { generateAgreements, generateEvents, generateReminders } from "./generate";
 import { assertIntegrity } from "./integrity";
 import { MEDIATION_CASES, MEDIATORS } from "./mediation";
@@ -22,6 +24,8 @@ import type { Dataset } from "./types";
 /** Nothing registered yet — the first weeks after go-live. */
 const quiet: Dataset = {
   agreements: AGREEMENTS.slice(0, 2),
+  wageAgreements: WAGE_AGREEMENTS.slice(0, 1),
+  documents: DOCUMENTS.slice(0, 1),
   mediationCases: [],
   mediators: MEDIATORS.slice(0, 1),
   benchmarks: [],
@@ -34,6 +38,8 @@ const quiet: Dataset = {
 /** Everyday state between bargaining rounds. The default. */
 const normal: Dataset = {
   agreements: AGREEMENTS,
+  wageAgreements: WAGE_AGREEMENTS,
+  documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
   benchmarks: BENCHMARKS,
@@ -49,6 +55,8 @@ const peakAgreements = [...AGREEMENTS, ...generated];
 
 const peak: Dataset = {
   agreements: peakAgreements,
+  wageAgreements: WAGE_AGREEMENTS,
+  documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
   benchmarks: BENCHMARKS,

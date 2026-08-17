@@ -1,41 +1,34 @@
 import type { Metadata } from "next";
 
 import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { roleInfo } from "@/lib/domain/role";
-import { activeDataset } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Märket, industrins kostnadsnorm",
-  description:
-    "Registrering av Märket med kostnadsram, periodisering, tilläggsöverenskommelser och giltighetsperiod.",
-  openGraph: {
-    title: "MIIS – Märket, industrins kostnadsnorm",
-    description:
-      "Registrering av Märket med kostnadsram, periodisering, tilläggsöverenskommelser och giltighetsperiod.",
-  },
-};
+/** Requirement IDs are structure, so they stay here; the sentences are copy. */
+const FEATURE_IDS = ["FM-001", "FM-002", "FM-003", "FA-012"];
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.market.title}`;
+  const description = i18n.market.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function MarketPage() {
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const t = session.i18n.market;
+
   return (
     <PlaceholderPage
-      title="Märket"
-      epic="Epic F10 – Registrering av Märket"
-      subtitle="Industrins kostnadsnorm som referens i avtals- och medlarvyer (US-06)"
-      role={roleInfo("agreement-admin")}
-      dataset={dataset}
-      features={[
-        {
-          id: "FM-001",
-          text: "Registrering av Märket som periodiserad inställning med kostnadsram, periodisering och tilläggsöverenskommelser.",
-        },
-        {
-          id: "FM-002",
-          text: "Larm när nytt avtalsprotokoll för Industriavtalet registreras för period utan märkesdefinition.",
-        },
-        { id: "FM-003", text: "Märket visas som referens på startsidan och i medlarvyn." },
-        { id: "FA-012", text: "Industrimärke-flagga på märkessättande avtal." },
-      ]}
+      title={t.title}
+      epic={t.epic}
+      subtitle={t.subtitle}
+      features={t.features}
+      featureIds={FEATURE_IDS}
+      role={session.role}
+      dataset={session.dataset}
+      lang={session.lang}
+      reqTags={session.reqTags}
+      i18n={session.i18n}
     />
   );
 }

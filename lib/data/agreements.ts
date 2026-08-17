@@ -16,6 +16,7 @@ import {
   type AgreementRow,
   type RegistrationStatus,
 } from "@/lib/domain/agreement";
+import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import { agreementStatus } from "@/lib/domain/status";
 import { getDataset } from "@/lib/mock";
 import { activeDataset } from "@/lib/session";
@@ -32,14 +33,15 @@ async function agreements(): Promise<Agreement[]> {
 }
 
 /** The read model every agreement table uses. */
-export function toRow(a: Agreement): AgreementRow {
+export function toRow(a: Agreement, lang: Lang = DEFAULT_LANG): AgreementRow {
   const row: AgreementRow = {
     id: a.id,
     name: agreementTitle(a),
     parties: partiesLabel(a),
-    validity: validityLabel(a),
+    validity: validityLabel(a, lang),
     registrationStatus: a.registrationStatus,
-    status: agreementStatus(a).code,
+    status: agreementStatus(a, lang).code,
+    confidential: a.confidential,
   };
   if (a.signedDate) row.signedDate = a.signedDate;
   return row;
@@ -67,12 +69,15 @@ export async function getAgreement(id: string, at?: string): Promise<Agreement |
 }
 
 /** Most recently registered first — the start page table. */
-export async function listRecentAgreements(count = 4): Promise<AgreementRow[]> {
+export async function listRecentAgreements(
+  lang: Lang = DEFAULT_LANG,
+  count = 4,
+): Promise<AgreementRow[]> {
   return (await agreements())
     .slice()
     .sort((a, b) => (b.registeredAt ?? "").localeCompare(a.registeredAt ?? ""))
     .slice(0, count)
-    .map(toRow);
+    .map((a) => toRow(a, lang));
 }
 
 /** FA-021 – agreements saved with registration status Incomplete. */

@@ -34,3 +34,9 @@ next-env.d.ts
 .playwright/
 screenshots/
 .playwright-mcp/
+
+# staged only while running the accessibility check (npm run a11y:stage)
+public/_axe.min.js
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo

@@ -41,6 +41,21 @@ export function findIntegrityProblems(name: string, data: Dataset): string[] {
     }
   }
 
+  duplicate("wageAgreements", data.wageAgreements.map((w) => w.id));
+  duplicate("documents", data.documents.map((d) => d.id));
+
+  for (const w of data.wageAgreements) {
+    if (!agreementIds.has(w.agreementId)) {
+      problems.push(`wageAgreement ${w.id}: references missing agreement "${w.agreementId}"`);
+    }
+  }
+
+  for (const doc of data.documents) {
+    if (doc.agreementId && !agreementIds.has(doc.agreementId)) {
+      problems.push(`document ${doc.id}: references missing agreement "${doc.agreementId}"`);
+    }
+  }
+
   for (const r of data.reminders) {
     if (r.agreementId && !agreementIds.has(r.agreementId)) {
       problems.push(`reminder ${r.id}: references missing agreement "${r.agreementId}"`);
