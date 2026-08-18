@@ -5,12 +5,7 @@ import { useState } from "react";
 import type { Lang } from "@/lib/domain/lang";
 import { t as text } from "@/lib/domain/lang";
 import type { BargainingDemand, MeetingPhase, PartyMeeting } from "@/lib/domain/party-meeting";
-import {
-  CONFLICT_RISK_LABEL,
-  DEMAND_KIND_LABEL,
-  phaseState,
-  watchwordCount,
-} from "@/lib/domain/party-meeting";
+import { DEMAND_KIND_LABEL, phaseState, watchwordCount } from "@/lib/domain/party-meeting";
 import { dictionary } from "@/lib/i18n";
 import { Tabs } from "./Select";
 import { Badge, Button, Callout, Chip, Field, Panel, Rationale, ReqTag, ReqTags } from "./primitives";
@@ -252,13 +247,9 @@ export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lan
               <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
                 <Field label={t.after.summary} value={text(meeting.summary, lang)} />
                 <Field
-                  label={t.after.conflictRisk}
-                  value={
-                    meeting.conflictRisk
-                      ? CONFLICT_RISK_LABEL[lang][meeting.conflictRisk]
-                      : d.common.none
-                  }
-                  hint={t.after.conflictRiskHint}
+                  label={t.after.assessment}
+                  value={meeting.assessment ? text(meeting.assessment, lang) : d.common.none}
+                  hint={t.after.assessmentHint}
                 />
               </div>
             ) : (

@@ -95,7 +95,10 @@ export const PARTY_MEETINGS: PartyMeeting[] = [
         watchword: false,
       },
     ],
-    conflictRisk: "medium",
+    assessment: {
+      sv: "Medlingsbehov kan uppstå i arbetstidsfrågan om parterna står kvar vid sina positioner. Följs upp efter kravväxlingen.",
+      en: "Mediation may be needed on working time if the parties hold their positions. To be followed up after the exchange of demands.",
+    },
     summary: {
       sv: "Samordningen är stabil. Arbetstidsfrågan är den mest sannolika konfliktpunkten; låglönesatsningen beskrivs som icke förhandlingsbar.",
       en: "The coordination is stable. Working time is the most likely point of conflict; the low-wage initiative is described as non-negotiable.",
@@ -161,7 +164,10 @@ export const PARTY_MEETINGS: PartyMeeting[] = [
         watchword: true,
       },
     ],
-    conflictRisk: "low",
+    assessment: {
+      sv: "Inget medlingsbehov bedöms föreligga. Parterna når sannolikt avtal på egen hand.",
+      en: "No need for mediation is judged to exist. The parties are likely to reach agreement on their own.",
+    },
     summary: {
       sv: "Låg konfliktrisk. Parterna bedöms nå avtal utan medling.",
       en: "Low risk of conflict. The parties are judged likely to reach agreement without mediation.",

@@ -79,7 +79,38 @@ Note this is **not** a UI error: the CEO's US-01 sketch places the gender-equali
 in the *Löneavtal* panel, and US-01's flow sets both flags at that step. A panel is a step
 in a flow, not a table. Only the type needs moving.
 
-### 3. Entities we have no equivalent for
+### 3. The watchword table is an entity, not a flag
+
+The model has **two** entities where we have one boolean:
+
+> `Watchword (Bevakningsord)` — The predefined, customisable watchword table. FAI-004
+> `WatchwordHit (BevakningsordTraff)` — Watchword hits in documents with position and
+> text excerpt – the basis for highlighting in the UI.
+
+Our `BargainingDemand` carries `watchword: boolean` — "this demand is in the table". MI's
+shape is a table of watchwords that demands are promoted *into*, and a separate record of
+each hit inside a document, with its position. The UI is the same either way, which is why
+the shortcut survived; the difference shows the moment a watchword has to exist without a
+demand behind it, or a hit has to be located on a page.
+
+`/registrera`'s "4 träffar" is the other end of the same gap: it is a hardcoded number
+where the model wants `WatchwordHit` rows.
+
+### 4. Fields on the party meeting that no requirement defines
+
+`PartyMeeting` carries `purpose`, `agenda`, `participants`, `location` and a
+`planned/held/completed` state. FF-004 and the model both describe the meeting only as
+*"notes before/during/after (interactive view)"* — none of those five fields is specified
+anywhere. They are reasonable for a meeting record and they make the screen legible, but
+they are ours, and MI may name different ones.
+
+An earlier version also carried a graded `conflictRisk` of low/medium/high. That went:
+US-08 says MI meets a party to *"identify conflict risks and assess where mediation may be
+needed"*, so recording a judgement is MI's idea, but the three-level scale was a taxonomy
+nobody asked for — the same fault as the AI confidence score removed from `/registrera`.
+It is free text now, labelled *Bedömning av medlingsbehov*.
+
+### 5. Entities we have no equivalent for
 
 Not needed for the mockup, listed so the gap is known: `BargainingRound`,
 `PartyClassification` (time-bound), `CooperationBodyMember`, `WatchwordHit`,

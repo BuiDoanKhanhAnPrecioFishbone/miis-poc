@@ -923,8 +923,8 @@ export const en: Dictionary = {
     after: {
       heading: "After the meeting",
       summary: "Summary",
-      conflictRisk: "Assessed risk of conflict",
-      conflictRiskHint: "MI's own assessment, not the party's",
+      assessment: "Assessment of the need for mediation",
+      assessmentHint: "MI's own assessment, not the party's",
       notHeld: "The meeting has not been held yet. A summary is registered afterwards.",
       documents: "Documentation",
       print: "Print the party meeting information",

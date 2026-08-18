@@ -908,8 +908,8 @@ export const sv = {
     after: {
       heading: "Efter träffen",
       summary: "Sammanfattning",
-      conflictRisk: "Bedömd konfliktrisk",
-      conflictRiskHint: "MI:s egen bedömning, inte partens",
+      assessment: "Bedömning av medlingsbehov",
+      assessmentHint: "MI:s egen bedömning, inte partens",
       notHeld: "Träffen är ännu inte genomförd. Sammanfattning registreras efteråt.",
       documents: "Dokumentation",
       print: "Skriv ut partsträffsinformation",

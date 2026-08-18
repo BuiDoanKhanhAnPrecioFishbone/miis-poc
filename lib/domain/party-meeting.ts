@@ -72,8 +72,19 @@ export interface PartyMeeting {
   /** Under mötet: entered live. */
   notes: PartyMeetingNote[];
   demands: BargainingDemand[];
-  /** Efter: the assessment and what was filed. */
-  conflictRisk?: "low" | "medium" | "high";
+  /*
+    Efter: the assessment and what was filed.
+
+    Free text, not a graded scale. US-08 and the bargaining guide both say the
+    meeting exists to "identify conflict risks and assess where mediation may be
+    needed", so recording a judgement is MI's own idea — but no requirement
+    defines a conflict-risk field and none defines low/medium/high. An earlier
+    version asserted that taxonomy, which is the same mistake as the confidence
+    score removed from the AI panel: an unrequested classification reads as
+    requirements that were not read closely, and it invites an evaluator to ask
+    where the thresholds come from.
+  */
+  assessment?: Text;
   summary?: Text;
   documents: string[];
 }
@@ -106,9 +117,4 @@ export const MEETING_STATE_LABEL: Record<Lang, Record<MeetingState, string>> = {
 export const DEMAND_KIND_LABEL: Record<Lang, Record<DemandKind, string>> = {
   sv: { coordinated: "Samordnat krav", own: "Eget förbundskrav" },
   en: { coordinated: "Coordinated demand", own: "Own union demand" },
-};
-
-export const CONFLICT_RISK_LABEL: Record<Lang, Record<"low" | "medium" | "high", string>> = {
-  sv: { low: "Låg", medium: "Medel", high: "Hög" },
-  en: { low: "Low", medium: "Medium", high: "High" },
 };
