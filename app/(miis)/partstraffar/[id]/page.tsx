@@ -6,6 +6,7 @@ import { AppShell } from "@/components/miis/AppShell";
 import { PartyMeetingView } from "@/components/miis/PartyMeetingView";
 import { PageHeading } from "@/components/miis/primitives";
 import { getPartyMeeting } from "@/lib/data/party-meetings";
+import { listEmployeeOrgs } from "@/lib/data/parties";
 import type { PartyMeeting } from "@/lib/domain/party-meeting";
 import { getSession } from "@/lib/session";
 
@@ -51,7 +52,10 @@ export default async function PartyMeetingPage({ params }: { params: Promise<{ i
   const session = await getSession();
   const { i18n, lang } = session;
   const { id } = await params;
-  const meeting = id === "ny" ? EMPTY : await getPartyMeeting(id);
+  const [meeting, employeeOrgs] = await Promise.all([
+    id === "ny" ? Promise.resolve(EMPTY) : getPartyMeeting(id),
+    listEmployeeOrgs(),
+  ]);
   if (!meeting) notFound();
   const t = i18n.partstraffar;
   const isNew = meeting.id === "ny";
@@ -72,7 +76,11 @@ export default async function PartyMeetingPage({ params }: { params: Promise<{ i
         }
       />
 
-      <PartyMeetingView meeting={meeting} lang={lang} />
+      <PartyMeetingView
+        meeting={meeting}
+        lang={lang}
+        unions={employeeOrgs.map((p) => p.name)}
+      />
     </AppShell>
   );
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Lang } from "@/lib/domain/lang";
 import { t as text } from "@/lib/domain/lang";
 import type { BargainingDemand, MeetingPhase, PartyMeeting } from "@/lib/domain/party-meeting";
+import type { DemandKind } from "@/lib/domain/party-meeting";
 import { DEMAND_KIND_LABEL, phaseState, watchwordCount } from "@/lib/domain/party-meeting";
 import { dictionary } from "@/lib/i18n";
 import { Stepper, type StepState } from "./Stepper";
@@ -99,7 +100,20 @@ function DemandRow({
   );
 }
 
-export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lang: Lang }) {
+export function PartyMeetingView({
+  meeting,
+  lang,
+  unions,
+}: {
+  meeting: PartyMeeting;
+  lang: Lang;
+  /**
+   * FF-005: *"Samordnade avtalskrav ska kunna kopplas till de förbund som
+   * ställt sig bakom det."* The list comes from the party register rather than
+   * a hardcoded array, so a demand can only be backed by a union MIIS knows.
+   */
+  unions: string[];
+}) {
   const d = dictionary(lang);
   const t = d.partstraffar;
   const [phase, setPhase] = useState<MeetingPhase>(
@@ -108,6 +122,10 @@ export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lan
   const [notes, setNotes] = useState(meeting.notes);
   const [draft, setDraft] = useState("");
   const [demands, setDemands] = useState(meeting.demands);
+  const [adding, setAdding] = useState(false);
+  const [topic, setTopic] = useState("");
+  const [kind, setKind] = useState<DemandKind>("coordinated");
+  const [backing, setBacking] = useState<string[]>([]);
 
   function addNote() {
     const value = draft.trim();
@@ -119,6 +137,26 @@ export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lan
     const at = `10:${String(20 + notes.length * 7).padStart(2, "0")}`;
     setNotes((n) => [...n, { at, text: { sv: value, en: value } }]);
     setDraft("");
+  }
+
+  function addDemand() {
+    const value = topic.trim();
+    if (!value) return;
+    setDemands((list) => [
+      ...list,
+      {
+        id: `YRK-${String(list.length + 1).padStart(2, "0")}`,
+        topic: { sv: value, en: value },
+        kind,
+        /* FF-005 — backing only means anything on a coordinated demand. */
+        backedBy: kind === "coordinated" ? backing : [],
+        documents: [],
+        watchword: false,
+      },
+    ]);
+    setTopic("");
+    setBacking([]);
+    setAdding(false);
   }
 
   function promote(id: string) {
@@ -259,11 +297,98 @@ export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lan
                   ))}
                 </ul>
               )}
-              <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-                <Button variant="secondary">{t.demands.add}</Button>
-                <span aria-live="polite" className="text-label text-muted-foreground">
-                  {t.demands.watchwordCount(promoted, demands.length)}
-                </span>
+              <div className="mt-4 border-t border-border pt-4">
+                {adding ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="yrk-topic" className="mb-1 block text-label font-bold">
+                        {t.demands.topicLabel}
+                      </label>
+                      <input
+                        id="yrk-topic"
+                        type="text"
+                        value={topic}
+                        placeholder={t.demands.topicPlaceholder}
+                        onChange={(e) => setTopic(e.target.value)}
+                        className="field-input"
+                      />
+                    </div>
+
+                    {/*
+                      FF-005's flag, as a radio group rather than a toggle: the
+                      two are alternatives with names, not an on/off, and a
+                      fieldset is what tells a screen reader they belong to one
+                      question.
+                    */}
+                    <fieldset>
+                      <legend className="mb-1 text-label font-bold">{t.demands.kindLabel}</legend>
+                      <div className="flex flex-wrap gap-x-6 gap-y-2">
+                        {(["coordinated", "own"] as DemandKind[]).map((k) => (
+                          <label key={k} className="flex min-h-11 items-center gap-2 text-table">
+                            <input
+                              type="radio"
+                              name="yrk-kind"
+                              value={k}
+                              checked={kind === k}
+                              onChange={() => setKind(k)}
+                              className="size-5"
+                            />
+                            {DEMAND_KIND_LABEL[lang][k]}
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+
+                    {/*
+                      Only a coordinated demand has backing to record, so the
+                      picker appears with the flag rather than sitting there
+                      disabled — FF-005 ties the two together.
+                    */}
+                    {kind === "coordinated" && (
+                      <fieldset>
+                        <legend className="mb-1 text-label font-bold">
+                          {t.demands.backingLabel}
+                        </legend>
+                        <div className="flex flex-wrap gap-2">
+                          {unions.map((union) => (
+                            <Chip
+                              key={union}
+                              pressed={backing.includes(union)}
+                              onToggle={() =>
+                                setBacking((b) =>
+                                  b.includes(union) ? b.filter((x) => x !== union) : [...b, union],
+                                )
+                              }
+                            >
+                              {union}
+                            </Chip>
+                          ))}
+                        </div>
+                        <p aria-live="polite" className="mt-2 text-label text-muted-foreground">
+                          {t.demands.backingCount(backing.length)}
+                        </p>
+                      </fieldset>
+                    )}
+
+                    <div className="flex flex-wrap gap-3">
+                      <Button onClick={addDemand} disabled={topic.trim().length === 0}>
+                        {t.demands.save}
+                      </Button>
+                      <Button variant="secondary" onClick={() => setAdding(false)}>
+                        {t.demands.cancel}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button variant="secondary" onClick={() => setAdding(true)}>
+                      {t.demands.add}
+                    </Button>
+                    <span aria-live="polite" className="text-label text-muted-foreground">
+                      {t.demands.watchwordCount(promoted, demands.length)}
+                    </span>
+                  </div>
+                )}
               </div>
             </Panel>
           </>

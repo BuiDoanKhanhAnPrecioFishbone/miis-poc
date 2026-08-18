@@ -908,6 +908,13 @@ export const sv = {
         "Krav som förs fram vid träffen registreras med flagga för samordnat krav eller eget förbundskrav.",
       empty: "Inga krav registrerade för den här träffen ännu.",
       add: "Registrera krav",
+      topicLabel: "Vad avser kravet?",
+      topicPlaceholder: "T.ex. arbetstidsförkortning 0,2 %",
+      kindLabel: "Typ av krav",
+      backingLabel: "Förbund som står bakom kravet",
+      backingCount: (n: number) => (n === 1 ? "1 förbund valt" : `${n} förbund valda`),
+      save: "Spara kravet",
+      cancel: "Avbryt",
       watchwordCount: (n: number, total: number) =>
         `${n} av ${total} krav finns i bevakningsordstabellen`,
     },

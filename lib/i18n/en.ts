@@ -923,6 +923,13 @@ export const en: Dictionary = {
         "Demands raised at the meeting are registered with a flag for a coordinated demand or a single union's own.",
       empty: "No demands registered for this meeting yet.",
       add: "Register a demand",
+      topicLabel: "What does the demand concern?",
+      topicPlaceholder: "e.g. working time reduction of 0.2 %",
+      kindLabel: "Type of demand",
+      backingLabel: "Unions backing the demand",
+      backingCount: (n: number) => (n === 1 ? "1 union selected" : `${n} unions selected`),
+      save: "Save the demand",
+      cancel: "Cancel",
       watchwordCount: (n: number, total: number) =>
         `${n} of ${total} demands are in the watchword table`,
     },
