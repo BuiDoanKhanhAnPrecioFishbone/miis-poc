@@ -13,24 +13,32 @@ export type RegistrationStatus = "incomplete" | "complete";
 /** The seven MI-defined agreement constructions (FA-007, §4.2). */
 export type AgreementConstruction = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+/*
+  MI's own seven, transcribed from the legend of the Avtalskonstruktioner report
+  in Bilaga F. Five of the seven we had were wrong — 3, 4, 5 and 7 named
+  different constructions and 1 carried a qualifier MI does not use. They are
+  ordered along a scale MI labels "Förhandlingsnivå / utrymme", from wage
+  formation settled locally to a general increase settled centrally, which is
+  why the order itself carries meaning and must not be re-sorted.
+*/
 export const AGREEMENT_CONSTRUCTIONS: Record<Lang, Record<AgreementConstruction, string>> = {
   sv: {
-    1: "Lokal lönebildning – sifferlösa avtal",
+    1: "Lokal lönebildning",
     2: "Lokal lönebildning med stupstock om utrymmets storlek",
-    3: "Lönepott utan individgaranti",
-    4: "Lönepott med individgaranti",
-    5: "Generell höjning",
+    3: "Lokal lönebildning med stupstock om utrymmets storlek och någon form av individgaranti",
+    4: "Lönepott utan individgaranti",
+    5: "Lönepott med individgaranti alternativt stupstock om individgaranti",
     6: "Generell höjning och lönepott",
-    7: "Individuell förhandling",
+    7: "Generell höjning",
   },
   en: {
-    1: "Local wage formation – agreements without figures",
+    1: "Local wage formation",
     2: "Local wage formation with a fallback figure for the wage scope",
-    3: "Wage pot without individual guarantee",
-    4: "Wage pot with individual guarantee",
-    5: "General increase",
+    3: "Local wage formation with a fallback figure for the wage scope and some form of individual guarantee",
+    4: "Wage pot without individual guarantee",
+    5: "Wage pot with individual guarantee, or a fallback for the individual guarantee",
     6: "General increase and wage pot",
-    7: "Individual negotiation",
+    7: "General increase",
   },
 };
 

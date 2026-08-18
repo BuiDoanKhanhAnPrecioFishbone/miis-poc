@@ -49,6 +49,7 @@
   --color-ai: var(--ai);
   --color-ai-foreground: var(--ai-foreground);
   --color-ai-border: var(--ai-border);
+  --color-ai-ring: var(--ai-ring);
   --color-req: var(--req);
   --color-req-foreground: var(--req-foreground);
   --color-req-border: var(--req-border);
@@ -183,6 +184,13 @@
   --ai: var(--mi-ai-100);
   --ai-foreground: var(--mi-ai-800);
   --ai-border: var(--mi-ai-500);
+  /*
+    The ring on a traced field. A non-text indicator needs 3:1 against what it
+    sits on (WCAG 1.4.11); --mi-ai-500 on the panel's paper measures 4.78:1, so
+    it clears it with room and stays unmistakably the AI hue rather than a
+    second violet nobody can name.
+  */
+  --ai-ring: var(--mi-ai-500);
   /*
    * Requirement tags are annotation, not interface. Sand on ink reads as a
    * margin note pencilled onto the screen; the slate chip they used to be read

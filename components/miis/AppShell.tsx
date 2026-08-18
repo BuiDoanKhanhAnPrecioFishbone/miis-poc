@@ -157,7 +157,13 @@ export function AppShell({
         */}
         <nav
           aria-label={t.common.mainMenu}
-          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar md:w-44 md:border-b-0 md:border-r md:py-4 lg:w-60"
+          /*
+            Sticky from `md` up, so the menu stays put while a long screen
+            scrolls under it. `top-0` and its own scroll, because a nav taller
+            than the viewport that cannot scroll is worse than one that moves.
+            Below `md` it is the disclosure, which is already at the top.
+          */
+          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar md:sticky md:top-0 md:max-h-screen md:w-44 md:self-start md:overflow-y-auto md:border-b-0 md:border-r md:py-4 lg:w-60"
         >
           <button
             ref={toggleRef}

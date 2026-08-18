@@ -39,16 +39,17 @@ export type ProposalField =
 /** A passage in the protocol a proposal can point at. */
 export type SourceAnchor =
   | "heading"
-  | "parties"
-  | "period"
+  | "employerParty"
+  | "employeeParty"
+  | "area"
+  | "preamble"
   | "prolonged"
-  | "workingTime"
-  | "wageAppendix"
-  | "revision"
+  | "period"
   | "terminationLead"
   | "termination"
-  | "minimumWage"
   | "peace"
+  | "wageAppendix"
+  | "workingTime"
   | "negotiation";
 
 export interface ExtractionProposal {

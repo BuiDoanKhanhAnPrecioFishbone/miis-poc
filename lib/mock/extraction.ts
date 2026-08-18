@@ -1,16 +1,17 @@
 /**
  * Mock AI extraction for US-01.
  *
- * The values are what an extraction of `Avtalsprotokoll_Kommunikation_2027.pdf`
- * plausibly returns, and each one names the passage it came from so the screen
- * can show the source rather than claim it.
+ * The values are what an extraction of MI's own protocol — Bilaga D of
+ * `Bilaga_1_Kravspecifikation.pdf`, Föreningen Industriarbetsgivarna and
+ * Unionen, Stål- och metallindustrin — plausibly returns. Every one appears on
+ * the scanned page in `public/protokoll-sida-1.png`, and each names the line it
+ * came from, so the screen can show the source rather than claim it.
  *
- * `employeeOrg` carries a correction on purpose. The protocol names *Seko –
- * Service- och kommunikationsfacket*; the extraction picked up the parent
- * confederation instead, which is exactly the kind of near-miss a real model
- * makes on Swedish party names and exactly the case FAI-002 exists for. The
- * field opens on the officer's corrected value with the AI's original kept
- * beside it — US-01's "the officer corrects freely before approval".
+ * `employeeOrg` carries a correction on purpose. The page names *Unionen*; the
+ * extraction picked up a confederation instead, which is the kind of near-miss
+ * a real model makes on Swedish party names and exactly the case FAI-002 exists
+ * for. The field opens on the officer's corrected value with the AI's original
+ * kept beside it — US-01's "the officer corrects freely before approval".
  *
  * Week 2: becomes supabase/seed.sql. Nothing outside lib/data/ imports it.
  */
@@ -18,50 +19,33 @@
 import type { ExtractionProposal } from "@/lib/domain/extraction";
 
 export const EXTRACTION_PROPOSALS: ExtractionProposal[] = [
-  {
-    id: "area",
-    value: "Kommunikation",
-    source: "heading",
-  },
+  /*
+    Read out of MI's own protocol (Bilaga D): Föreningen Industriarbetsgivarna
+    and Unionen, Stål- och metallindustrin, 2020-11-01 – 2023-03-31. Every value
+    below appears on the page in `public/protokoll-sida-1.png`, and every
+    `source` names the line it appears on.
+  */
+  { id: "area", value: "Stål- och metallindustrin", source: "area" },
   {
     id: "matched",
-    value: "Kommunikation – Almega Tjänsteförbunden / Seko",
-    source: "parties",
-  },
-  {
-    id: "alternativeName",
-    value: "Kommunikationsavtalet",
+    value: "Stål- och metallindustrin – Industriarbetsgivarna / Unionen",
     source: "heading",
   },
-  {
-    id: "agreementType",
-    value: "Löneavtal + Allmänna villkor",
-    source: "wageAppendix",
-  },
-  {
-    id: "employerOrg",
-    value: "Almega Tjänsteförbunden",
-    source: "parties",
-  },
+  { id: "alternativeName", value: "Avtal 20", source: "negotiation" },
+  { id: "agreementType", value: "Löneavtal + Allmänna villkor", source: "wageAppendix" },
+  { id: "employerOrg", value: "Föreningen Industriarbetsgivarna", source: "employerParty" },
   {
     id: "employeeOrg",
-    value: "LO – Landsorganisationen i Sverige",
-    source: "parties",
-    correction: "Seko – Service- och kommunikationsfacket",
+    /*
+      Where the extraction got it wrong: the page names Unionen, and an
+      earlier pass proposed the confederation above it. US-01's alternative
+      flow — "the officer corrects freely before approval".
+    */
+    value: "PTK – Förhandlings- och samverkansrådet",
+    correction: "Unionen",
+    source: "employeeParty",
   },
-  {
-    id: "signedDate",
-    value: "2025-07-15",
-    source: "negotiation",
-  },
-  {
-    id: "validity",
-    value: "2025-08-01 – 2027-07-31",
-    source: "period",
-  },
-  {
-    id: "termination",
-    value: "Ja, senast 2027-04-30",
-    source: "terminationLead",
-  },
+  { id: "signedDate", value: "2020-10-31", source: "negotiation" },
+  { id: "validity", value: "2020-11-01 – 2023-03-31", source: "period" },
+  { id: "termination", value: "Ja, senast 2021-09-30", source: "terminationLead" },
 ];

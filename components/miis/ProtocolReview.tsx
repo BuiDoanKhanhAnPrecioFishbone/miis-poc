@@ -9,6 +9,7 @@ import type { UploadedFile } from "@/lib/domain/upload";
 import { UPLOAD_PIPELINE } from "@/lib/domain/upload";
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { ProtocolUpload } from "./ProtocolUpload";
+import { Tabs } from "./Select";
 import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
@@ -166,13 +167,11 @@ function RegistrationSteps({ d, states }: { d: Dictionary; states: StepState[] }
 function SourceLine({
   anchor,
   active,
-  marker,
   register,
   children,
 }: {
   anchor: SourceAnchor;
   active: boolean;
-  marker: string;
   register: (anchor: SourceAnchor, el: HTMLParagraphElement | null) => void;
   children: ReactNode;
 }) {
@@ -186,14 +185,10 @@ function SourceLine({
       }
     >
       {/*
-        Not a <Badge>: this sits on top of an already tinted line, so it needs
-        the card background to stay legible.
+        No badge on the line. The pane already names the traced field in words
+        directly above it, and a label repeated on the passage was saying the
+        same thing twice in the place with the least room for it.
       */}
-      {active && (
-        <span className="mr-2 rounded-sm border border-ai-border bg-card px-1.5 py-0.5 text-meta font-bold uppercase tracking-[0.12em]">
-          {marker}
-        </span>
-      )}
       {children}
     </p>
   );
@@ -258,42 +253,54 @@ function PreFilledField({
         pill used to sit here on all nine fields and was wider than most of the
         labels it followed, so the row it was meant to annotate wrapped.
       */}
+      {/*
+        The AI mark is the letters, not a pictogram. There is no conventional
+        symbol for "find this value in that document", so the last one had to be
+        pressed before it meant anything; `AI` is read, not decoded, and it is
+        the same word the panel sentence and FAI-002 already use.
+
+        It is the control as well as the mark — pressing it traces the source.
+        Focus no longer does, because tracing on every focus is what made the
+        view move while the officer was reading.
+      */}
       <div className="mb-1 flex min-h-7 flex-wrap items-baseline gap-2 self-end">
         <label htmlFor={inputId} className="min-w-0 break-words text-label font-bold">
           {name}
         </label>
+        <button
+          type="button"
+          onClick={() => onShowSource(proposal)}
+          aria-pressed={selected}
+          aria-label={t.sourceButton(name)}
+          title={t.sourceButton(name)}
+          className="inline-flex h-6 shrink-0 items-center rounded-sm border border-ai-border bg-ai px-1.5 text-meta font-bold tracking-[0.08em] text-ai-foreground transition-colors hover:bg-card"
+        >
+          AI
+        </button>
         {adjusted && <Badge tone="ai">{t.adjusted}</Badge>}
       </div>
 
       {/*
-        There is no button for "show me where this came from". Checking a
-        pre-filled value already means putting the cursor in it, so that is the
-        gesture: focusing a field marks the passage it was read from and brings
-        it into view. A dedicated control had to explain itself with an icon,
-        and an icon for "find this text in that document" is a symbol nobody
-        knows — so the control was learnable only by pressing it.
+        The field keeps the ordinary input border. Nine violet-outlined boxes
+        read as nine warnings, and the mark belongs on the label where it names
+        something, not around the value.
 
-        Focus is reachable by mouse, keyboard and touch alike, it costs no room
-        in the row, and it makes the link the officer's own action rather than a
-        separate errand. `aria-describedby` states the connection once per
-        field, and the protocol pane announces the change politely.
-
-        The violet border is the AI mark; the violet ground is the field being
-        traced right now. Neither is the only carrier — the panel says what the
-        colour means, the pane names the field in words, and an empty required
-        field still takes the error border and wins.
+        The traced field takes a light violet ring, drawn outside the box so it
+        shifts nothing, at 3:1 against the panel — WCAG 1.4.11, since a ring is
+        a non-text indicator. Not a fill: a tinted field looks disabled and
+        pushes the value's own contrast down. An empty required field keeps the
+        error border and wins.
       */}
       <input
         id={inputId}
         type="text"
         value={value}
         readOnly={locked}
-        onFocus={() => onShowSource(proposal)}
         onChange={(e) => onChange(proposal.id, e.target.value)}
         aria-describedby="ai-forklaring"
         className={`field-input ${locked ? "bg-secondary" : ""} ${
-          isEmpty(value) ? "border-error-border" : "border-ai-border"
-        } ${selected && !isEmpty(value) ? "bg-ai" : ""}`}
+          isEmpty(value) ? "border-error-border" : ""
+        } ${selected ? "outline-3 outline-offset-2 outline-ai-ring" : ""}`}
       />
 
       {/*
@@ -349,6 +356,8 @@ export function ProtocolReview({
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [completed, setCompleted] = useState(0);
   const [confirming, setConfirming] = useState(false);
+  const [view, setView] = useState<"text" | "original">("text");
+  const paneRef = useRef<HTMLDivElement>(null);
   const [activeSource, setActiveSource] = useState<SourceAnchor | null>(null);
   const [activeField, setActiveField] = useState<ProposalField | null>(null);
   const lineRefs = useRef<Partial<Record<SourceAnchor, HTMLElement | null>>>({});
@@ -406,10 +415,35 @@ export function ProtocolReview({
     lineRefs.current[anchor] = el;
   }
 
+  /*
+    `scrollIntoView` walks up the scroll chain, so tracing a field moved the
+    *page* — measured at up to 895px on a 1440×900 viewport while the pane's own
+    scrollTop stayed at 0. That is the jump: the form slides under the cursor
+    while the officer is reading a value.
+
+    So the pane is scrolled directly and nothing else is touched, and only when
+    the target actually sits outside the visible band. A source already on
+    screen causes no movement at all.
+  */
   function showSource(p: ExtractionProposal) {
     setActiveSource(p.source);
     setActiveField(p.id);
-    lineRefs.current[p.source]?.scrollIntoView({ block: "center", behavior: "smooth" });
+    setView("text");
+
+    const pane = paneRef.current;
+    const line = lineRefs.current[p.source];
+    if (!pane || !line) return;
+
+    const top = line.offsetTop - pane.offsetTop;
+    const bottom = top + line.offsetHeight;
+    const visibleTop = pane.scrollTop;
+    const visibleBottom = visibleTop + pane.clientHeight;
+    if (top >= visibleTop && bottom <= visibleBottom) return;
+
+    pane.scrollTo({
+      top: Math.max(0, top - (pane.clientHeight - line.offsetHeight) / 2),
+      behavior: "smooth",
+    });
   }
 
   function change(id: ProposalField, value: string) {
@@ -449,22 +483,67 @@ export function ProtocolReview({
     traced to do.
   */
   const l = t.document.lines;
+
+  /*
+    The page, line for line. Watchword hits (FAI-004) are marked with <mark>:
+    fredsplikt, avtalsperioden, uppsägning and arbetsgrupp are the kind of term
+    MI's watchword table carries — §4.1 describes it as demands picked up at
+    party meetings, and every one of these is a clause an officer is watching
+    for. A heading is not a source, so it registers no ref.
+  */
   const lines: { anchor: SourceAnchor | null; content: ReactNode }[] = [
-    { anchor: "heading", content: <span className="font-semibold tracking-wide">{l.heading}</span> },
-    { anchor: "parties", content: l.parties },
+    {
+      anchor: "heading",
+      content: <span className="block text-center font-semibold tracking-wide">{l.heading}</span>,
+    },
+    { anchor: null, content: <span className="block text-center">{l.betweenLabel}</span> },
+    {
+      anchor: "employerParty",
+      content: <span className="block text-center font-semibold">{l.employerParty}</span>,
+    },
+    { anchor: null, content: <span className="block text-center">{l.andLabel}</span> },
+    {
+      anchor: "employeeParty",
+      content: <span className="block text-center font-semibold">{l.employeeParty}</span>,
+    },
+    { anchor: "area", content: <span className="block text-center font-semibold">{l.area}</span> },
+    { anchor: "preamble", content: l.preamble },
     { anchor: null, content: l.validityHeading },
     { anchor: "prolonged", content: l.prolonged },
-    { anchor: "period", content: <mark className="bg-sand px-1">{l.period}</mark> },
+    {
+      anchor: "period",
+      content: (
+        <>
+          Överenskommelsen omfattar <mark className="bg-sand px-1">avtalsperioden 2020-2023</mark>{" "}
+          varmed avses avtalsåren 1 november 2020 – 31 mars 2022 och den 1 april 2022 – 31 mars
+          2023.
+        </>
+      ),
+    },
     { anchor: "terminationLead", content: l.terminationLead },
-    { anchor: "termination", content: <mark className="bg-sand px-1">{l.termination}</mark> },
+    {
+      anchor: "termination",
+      content: <mark className="bg-sand px-1">{l.termination}</mark>,
+    },
+    { anchor: null, content: l.renegotiation },
     { anchor: null, content: l.peaceHeading },
-    { anchor: "peace", content: l.peace },
+    { anchor: "peace", content: <mark className="bg-sand px-1">{l.peace}</mark> },
     { anchor: null, content: l.scopeHeading },
-    { anchor: "wageAppendix", content: l.wageAppendix },
-    { anchor: "revision", content: <mark className="bg-sand px-1">{l.revision}</mark> },
-    { anchor: "minimumWage", content: l.minimumWage },
-    { anchor: "workingTime", content: <mark className="bg-sand px-1">{l.workingTime}</mark> },
+    { anchor: null, content: `– ${l.scopeA}` },
+    { anchor: "wageAppendix", content: `– ${l.wageAppendix}` },
+    { anchor: null, content: `– ${l.scopeC}` },
+    {
+      anchor: "workingTime",
+      content: (
+        <>
+          – Direktiv <mark className="bg-sand px-1">arbetsgrupp</mark> löneavtal, Bilaga D
+        </>
+      ),
+    },
+    { anchor: null, content: `– ${l.scopeE}` },
     { anchor: "negotiation", content: l.negotiation },
+    { anchor: null, content: <span className="text-muted-foreground">{l.signatures}</span> },
+    { anchor: null, content: <span className="text-meta text-muted-foreground">{l.footer}</span> },
   ];
 
   /*
@@ -539,7 +618,25 @@ export function ProtocolReview({
 
             <Rationale>{t.upload.demoNote}</Rationale>
 
-            <p aria-live="polite" className="mb-3 text-label text-muted-foreground">
+            {/*
+              Two views of one document. Text is the OCR output — selectable,
+              highlightable, and the only form in which a watchword hit reaches
+              a screen reader, which NFUI-003 makes non-negotiable. Original is
+              the page as it arrived, so the screen never has to be taken on
+              trust. Tracing a field returns to Text, because that is where the
+              passage can actually be marked.
+            */}
+            <Tabs
+              label={t.document.viewLabel}
+              tabs={[
+                { id: "text", label: t.document.viewText },
+                { id: "original", label: t.document.viewOriginal },
+              ]}
+              value={view}
+              onChange={(id) => setView(id as "text" | "original")}
+            />
+
+            <p aria-live="polite" className="mt-3 mb-3 text-label text-muted-foreground">
               {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
             </p>
 
@@ -552,9 +649,11 @@ export function ProtocolReview({
             content is not itself focusable is unreachable by keyboard (2.1.1).
           */}
             <div
+              ref={paneRef}
               tabIndex={0}
               role="region"
               aria-label={file.name}
+              hidden={view !== "text"}
               className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
               lang="sv"
             >
@@ -568,7 +667,6 @@ export function ProtocolReview({
                     key={line.anchor}
                     anchor={line.anchor}
                     active={activeSource === line.anchor}
-                    marker={t.document.sourceMarker}
                     register={register}
                   >
                     {line.content}
@@ -576,6 +674,34 @@ export function ProtocolReview({
                 ),
               )}
             </div>
+
+            {/*
+              The page itself, fitted to the pane. Reading is what the Text view
+              is for, so this is sized to show the artefact rather than to be
+              read; the link opens it full size. The image is MI's own scan out
+              of Bilaga D, redactions and all.
+            */}
+            {view === "original" && (
+              <div className="space-y-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/protokoll-sida-1.png"
+                  alt={t.document.originalAlt}
+                  className="w-full rounded-sm border border-border"
+                />
+                <p className="text-label">
+                  <a
+                    href="/protokoll-sida-1.png"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-primary underline underline-offset-2"
+                  >
+                    {t.document.openFullSize}
+                  </a>
+                </p>
+                <Rationale>{t.document.originalNote}</Rationale>
+              </div>
+            )}
 
             <div className="mt-6">
               <Callout tone="attention" tags={["FAI-004"]}>

@@ -311,39 +311,55 @@ export const en: Dictionary = {
     },
     document: {
       ocr: "OCR",
+      viewLabel: "Protocol view",
+      viewText: "Text",
+      viewOriginal: "Original",
+      originalAlt: "Scanned page 1 of the agreement protocol between Föreningen Industriarbetsgivarna and Unionen",
+      openFullSize: "Open the page at full size",
+      originalNote: "The page is the Mediation Office's own example from Bilaga D of the requirement specification. The signatures are redacted in the original.",
       watchwordHits: (n: number) => `Highlighted text = hit in the watchword table (${n} hits)`,
       sourceHint:
-        "Select an AI proposal on the right and the passage it was read from is marked here in the protocol.",
+        "Choose the AI mark beside a field on the right and the passage it was read from is marked here in the protocol.",
       sourceActive: (field: string) => `Showing the source for: ${field}`,
-      showSource: "Show the source in the protocol",
-      showSourceFor: (field: string) => `Show the source for ${field} in the protocol`,
-      sourceMarker: "Source",
       /*
-        Structured after the real agreement protocol MI supplied as Bilaga D:
-        the numbered sections, the "sades upp den … ska gälla med angivna
-        ändringar och tillägg" wording, the appendix list and the place-and-date
-        line are MI's own. Parties, area and dates are ours, so the document
-        still describes the agreement this screen registers.
+        MI's own protocol, Bilaga D of Bilaga 1 — Föreningen Industriarbetsgivarna
+        and Unionen, Stål- och metallindustrin, signed in Stockholm on
+        2020-10-31. Transcribed from the scanned page in `public/protokoll-sida-1.png`,
+        which is the same page the Original view shows, so the text view is the
+        OCR of what the image contains and nothing else.
+
+        Not translated: it is a Swedish document, and rendering it in English
+        would describe a system reading something it will never be given.
       */
       lines: {
         heading: "ÖVERENSKOMMELSE",
-        parties:
-          "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket (Kommunikation)",
-        validityHeading: "1 Avtalets giltighetstid",
+        betweenLabel: "mellan",
+        employerParty: "Föreningen Industriarbetsgivarna",
+        andLabel: "och",
+        employeeParty: "Unionen",
+        area: "(Stål- och metallindustrin)",
+        preamble:
+          "Föreningen Industriarbetsgivarna och Unionen är överens om avtal avseende löner och allmänna anställningsvillkor samt övriga frågor enligt nedan.",
+        validityHeading: "1  Avtalets giltighetstid",
         prolonged:
-          "Parterna är överens om att avtalet om allmänna anställningsvillkor som sades upp den 20 december 2024 ska gälla med angivna ändringar och tillägg.",
-        period: "Överenskommelsen omfattar avtalsperioden 2025-08-01 – 2027-07-31.",
-        terminationLead: "Part äger rätt att senast den 30 april 2027",
-        termination: "säga upp avtalet att upphöra att gälla per den 31 juli 2027.",
-        peaceHeading: "2 Fredsplikt",
+          "Parterna är överens om att avtalet om Allmänna Anställningsvillkor som sades upp den 20 december 2019 ska gälla med angivna ändringar och tillägg från och med den 1 november 2020 till och med den 31 mars 2023.",
+        period:
+          "Överenskommelsen omfattar avtalsperioden 2020-2023 varmed avses avtalsåren 1 november 2020 – 31 mars 2022 och den 1 april 2022 – 31 mars 2023.",
+        terminationLead: "Part äger rätt att senast den 30 september 2021",
+        termination: "säga upp avtalet att upphöra att gälla per den 31 mars 2022.",
+        renegotiation:
+          "Tidsplan och procedur mm för omförhandling framgår av Industriavtalet.",
+        peaceHeading: "2  Fredsplikt",
         peace: "Fredsplikt gäller under avtalsperioden.",
-        scopeHeading: "3 Överenskommelsens omfattning",
-        wageAppendix: "Löneavtal, Bilaga B. Lönerevision per den",
-        revision: "1 augusti 2025, 3,4 %",
-        minimumWage: "Lägstalön för yrkesvana höjs till 25 480 kr per månad, Bilaga C",
-        workingTime: "Arbetstidsförkortning om 0,2 % avsätts, Bilaga D",
-        negotiation:
-          "Stockholm den 15 juli 2025. Förhandlingen avslutades och protokollet justerades samma dag.",
+        scopeHeading: "3  Överenskommelsens omfattning",
+        scopeA: "Protokoll med anteckningar, Bilaga A",
+        wageAppendix: "Löneavtal, Bilaga B",
+        scopeC: "Tekniska anvisningar till löneavtalet, Bilaga C",
+        workingTime: "Direktiv arbetsgrupp löneavtal, Bilaga D",
+        scopeE: "Direktiv industrigemensamma arbetsgrupper, Bilaga E",
+        negotiation: "Stockholm den 31 oktober 2020",
+        signatures: "[Namnteckningar maskerade i MI:s exempel]",
+        footer: "Avtal 20 Industriarbetsgivarna & Unionen (Stål- och metallindustrin)",
       },
     },
     analysis1: {
@@ -369,8 +385,9 @@ export const en: Dictionary = {
       heading: "Matched agreement – the AI proposal needs your approval",
       aiFilled: "AI proposal",
       adjusted: "Adjusted",
+      sourceButton: (field: string) => `AI proposal – show the source for ${field} in the protocol`,
       aiLegend:
-        "A violet border marks an AI proposal. Put the cursor in a field and the passage it was read from is shown in the protocol on the left.",
+        "Fields marked AI were pre-filled by the AI analysis. Choose the AI mark beside a field and the passage it was read from is marked in the protocol on the left.",
       aiProposed: (value: string) => `AI proposed: ${value}`,
       reset: "Restore the AI proposal",
       resetFor: (field: string) => `Restore the AI proposal for ${field}`,
@@ -640,6 +657,36 @@ export const en: Dictionary = {
       ],
     },
     constructions: {
+      selectionHeading: "Selection criteria",
+      employerOrg: "Employer org",
+      employeeOrg: "Employee org",
+      sector: "Sector",
+      centralOrg: "Central org",
+      cooperationGroup: "Cooperation grp",
+      employerGroup: "Employer grp",
+      industryCode: "Industry code",
+      printedAt: (when: string) => `Printed ${when}`,
+      figureAll: "Figure 1 – Wage formation: number (share) of agreements and employees, all agreements",
+      figureSelection:
+        "Figure 2 – Wage formation: number (share) of agreements and employees, the selection",
+      bandLocal: "Local wage formation",
+      agreementCount: (n: string, p: string) => `${n} agreements (${p} %)`,
+      employeeCount: (n: string, p: string) => `${n} employees (${p} %)`,
+      tableAll: "All agreements",
+      tableSelection: "The selection",
+      constructionColumn: "Agreement construction",
+      privat: "Private",
+      privatPercent: "Private %",
+      offentlig: "Public",
+      offentligPercent: "Public %",
+      alla: "All sectors",
+      allaPercent: "All sectors %",
+      arbetare: "Arbetare (blue collar)",
+      tjansteman: "Tjänstemän (white collar)",
+      total: "Total",
+      legendHeading: "Agreement construction",
+      sourceNote:
+        "The figures are the Mediation Office's own, taken from the report example in Bilaga F of the requirement specification. They count employees across the whole agreement register and are therefore not derived from the mockup's agreements.",
       heading: "Agreement Constructions",
       intro:
         "A prioritised existing report. The distribution of the seven MI-defined agreement constructions.",
