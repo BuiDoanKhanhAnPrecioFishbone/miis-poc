@@ -39,7 +39,7 @@ export function PlaceholderPage({
   return (
     <AppShell role={role} dataset={dataset} lang={lang} reqTags={reqTags}>
       <PageHeading title={title} subtitle={subtitle} />
-      <div className="grid gap-5 @3xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-2">
         <Panel title={epic}>
           <ul className="divide-y divide-border">
             {features.map((text, i) => (

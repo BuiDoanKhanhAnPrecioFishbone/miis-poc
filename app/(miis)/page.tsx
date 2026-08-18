@@ -187,7 +187,7 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <div className="grid gap-5 @3xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-2">
         {halfWidth.map((panel) => (
           <Panel key={panel.title} title={panel.title} tags={panel.reqTags}>
             <PanelBody panel={panel} i18n={i18n} lang={lang} />

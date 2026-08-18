@@ -286,6 +286,14 @@ export const sv = {
       progress: (done: number, total: number) => `${done} av ${total} steg klara`,
       ready: (name: string) => `${name} är inläst och tolkad.`,
       replace: "Byt protokoll",
+      replaceWarning: (n: number) =>
+        n === 1
+          ? "Byter du protokoll nollställs formuläret, inklusive 1 uppgift du har justerat."
+          : n === 0
+            ? "Byter du protokoll nollställs formuläret och godkännandet."
+            : `Byter du protokoll nollställs formuläret, inklusive ${n} uppgifter du har justerat.`,
+      replaceConfirm: "Ja, byt protokoll",
+      replaceCancel: "Behåll protokollet",
       size: (kb: string) => `${kb} kB`,
       identifiedAs: (name: string) => `Identifieringsunderlag från filnamnet: ${name}`,
       demoNote:
@@ -339,6 +347,9 @@ export const sv = {
       heading: "Matchat avtal – AI-förslag kräver ditt godkännande",
       aiFilled: "AI-förslag",
       adjusted: "Justerad",
+      aiLegend:
+        "Violett ram markerar ett AI-förslag. Välj knappen bredvid fältet för att se stycket det lästes ur.",
+      sourceButton: (field: string) => `AI-förslag – visa källan till ${field} i protokollet`,
       aiProposed: (value: string) => `AI föreslog: ${value}`,
       reset: "Återställ AI-förslaget",
       resetFor: (field: string) => `Återställ AI-förslaget för ${field}`,

@@ -111,7 +111,7 @@ export default async function RapporterPage() {
         />
       </div>
 
-      <div className="mt-5 grid gap-5 @3xl:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-5 @3xl:grid-cols-2">
         <div id="rapport-1" className="scroll-mt-4">
           <Panel title={t.bargainingRound.heading} tags={["FR-006", "FR-012"]}>
             <p className="text-table">{t.bargainingRound.intro}</p>

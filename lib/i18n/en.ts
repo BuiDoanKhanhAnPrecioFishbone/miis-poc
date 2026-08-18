@@ -296,6 +296,14 @@ export const en: Dictionary = {
       progress: (done: number, total: number) => `${done} of ${total} steps done`,
       ready: (name: string) => `${name} has been read and interpreted.`,
       replace: "Replace the protocol",
+      replaceWarning: (n: number) =>
+        n === 1
+          ? "Replacing the protocol clears the form, including 1 value you have adjusted."
+          : n === 0
+            ? "Replacing the protocol clears the form and the approval."
+            : `Replacing the protocol clears the form, including ${n} values you have adjusted.`,
+      replaceConfirm: "Yes, replace the protocol",
+      replaceCancel: "Keep the protocol",
       size: (kb: string) => `${kb} kB`,
       identifiedAs: (name: string) => `Identification input from the file name: ${name}`,
       demoNote:
@@ -348,6 +356,9 @@ export const en: Dictionary = {
       heading: "Matched agreement – the AI proposal needs your approval",
       aiFilled: "AI proposal",
       adjusted: "Adjusted",
+      aiLegend:
+        "A violet border marks an AI proposal. Choose the button beside a field to see the passage it was read from.",
+      sourceButton: (field: string) => `AI proposal – show the source for ${field} in the protocol`,
       aiProposed: (value: string) => `AI proposed: ${value}`,
       reset: "Restore the AI proposal",
       resetFor: (field: string) => `Restore the AI proposal for ${field}`,

@@ -39,7 +39,7 @@ function setCookie(name: string, value: string) {
 }
 
 const controlClass =
-  "min-h-11 min-w-0 rounded-sm border-2 border-demo-border bg-card px-3 py-1.5 text-label font-semibold text-foreground";
+  "demo-select min-h-11 min-w-0 rounded-sm border-2 border-demo-border bg-card px-3 py-1.5 text-label font-semibold text-foreground";
 
 const labelClass = "shrink-0 text-meta font-bold uppercase tracking-wide text-demo-foreground";
 

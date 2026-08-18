@@ -118,8 +118,19 @@ function RegistrationSteps({ d, states }: { d: Dictionary; states: StepState[] }
     upcoming: "border-border bg-secondary text-muted-foreground",
   };
 
+  /*
+    Sticky, because it is both things at once and needs to be for either.
+    MI's §4.4 is a flow, so the row reports where the officer is; our screen is
+    one page rather than five, so the row is also how they move between its
+    parts. Pinned to the top it can do both from anywhere on a long form —
+    unpinned it could only do either from the very top, which is the one place
+    the officer is not once they start working.
+  */
   return (
-    <ol aria-label={t.stepsLabel} className="mb-6 flex flex-wrap gap-3">
+    <ol
+      aria-label={t.stepsLabel}
+      className="sticky top-0 z-20 -mx-5 mb-6 flex flex-wrap gap-3 border-b border-border bg-background px-5 py-3 sm:-mx-8 sm:px-8 xl:-mx-10 xl:px-10"
+    >
       {t.steps.map((label, i) => {
         const state = states[i]!;
         return (
@@ -231,34 +242,51 @@ function PreFilledField({
         FULL_WIDTH.has(proposal.id) ? "@xl:col-span-2" : ""
       } ${selected ? "rounded-sm outline-2 outline-offset-4 outline-ai-border" : ""}`}
     >
-      <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2 self-end">
-        <label htmlFor={inputId} className="text-label font-bold text-foreground">
+      {/*
+        The label row carries the label, and — only when the officer has changed
+        something — the one word that is worth scanning for. The `AI-FÖRSLAG`
+        pill used to sit here on all nine fields and was wider than most of the
+        labels it followed, so the row it was meant to annotate wrapped.
+      */}
+      <div className="mb-1 flex min-h-7 flex-wrap items-baseline gap-2 self-end">
+        <label htmlFor={inputId} className="min-w-0 break-words text-label font-bold">
           {name}
         </label>
+        {adjusted && <Badge tone="ai">{t.adjusted}</Badge>}
+      </div>
+
+      <div className="flex items-stretch gap-2">
+        {/*
+          The violet border is the per-field AI mark. It is never the only
+          carrier: the button beside it is a second, non-colour signal, its
+          accessible name begins with "AI-förslag", and the panel says in words
+          what the colour means. Violet is AI's alone (CLAUDE.md rule 2), so it
+          cannot be confused with the FR-012 hues or with an error — an empty
+          required field still takes the error border and wins.
+        */}
+        <input
+          id={inputId}
+          type="text"
+          value={value}
+          readOnly={locked}
+          onChange={(e) => onChange(proposal.id, e.target.value)}
+          className={`field-input ${locked ? "bg-secondary" : ""} ${
+            isEmpty(value) ? "border-error-border" : "border-ai-border"
+          }`}
+        />
         <button
           type="button"
           onClick={() => onShowSource(proposal)}
           aria-pressed={selected}
-          aria-label={d.registrera.document.showSourceFor(name)}
-          className="rounded-sm border border-ai-border bg-ai px-2 py-0.5 text-meta font-bold uppercase tracking-[0.12em] text-ai-foreground transition-colors hover:bg-card"
+          aria-label={t.sourceButton(name)}
+          title={t.sourceButton(name)}
+          className={`flex min-h-12 w-12 shrink-0 items-center justify-center rounded-md border-2 border-ai-border text-lg transition-colors ${
+            selected ? "bg-ai-foreground text-card" : "bg-ai text-ai-foreground"
+          } hover:brightness-95`}
         >
-          {adjusted ? t.adjusted : t.aiFilled}
-          <span aria-hidden className="ml-1 opacity-70">
-            ⤵
-          </span>
+          <span aria-hidden>⤵</span>
         </button>
       </div>
-
-      <input
-        id={inputId}
-        type="text"
-        value={value}
-        readOnly={locked}
-        onChange={(e) => onChange(proposal.id, e.target.value)}
-        className={`field-input ${locked ? "bg-secondary" : ""} ${
-          isEmpty(value) ? "border-error-border" : ""
-        }`}
-      />
 
       {/*
         FH-001 records the old and the new value, so both stay visible. The row
@@ -312,6 +340,7 @@ export function ProtocolReview({
   const [approved, setApproved] = useState(false);
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [completed, setCompleted] = useState(0);
+  const [confirming, setConfirming] = useState(false);
   const [activeSource, setActiveSource] = useState<SourceAnchor | null>(null);
   const [activeField, setActiveField] = useState<ProposalField | null>(null);
   const lineRefs = useRef<Partial<Record<SourceAnchor, HTMLElement | null>>>({});
@@ -356,6 +385,7 @@ export function ProtocolReview({
         : ["done", "done", "current", "upcoming", "upcoming"];
 
   function pick(picked: UploadedFile | null) {
+    setConfirming(false);
     setFile(picked);
     setCompleted(0);
     setApproved(false);
@@ -439,7 +469,7 @@ export function ProtocolReview({
     return (
       <>
         <RegistrationSteps d={d} states={stepStates} />
-        <div id="steg-protokoll" className="scroll-mt-4">
+        <div id="steg-protokoll" className="scroll-mt-24">
           <ProtocolUpload d={d} lang={lang} file={file} completed={completed} onPick={pick} />
         </div>
       </>
@@ -450,19 +480,54 @@ export function ProtocolReview({
     <>
       <RegistrationSteps d={d} states={stepStates} />
 
-      <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-        <div id="steg-protokoll" className="scroll-mt-4 @3xl:sticky @3xl:top-4">
+      <div className="grid grid-cols-1 items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div id="steg-protokoll" className="scroll-mt-24 @3xl:sticky @3xl:top-24">
           <Panel>
             <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
-              <h2 className="font-display text-section font-semibold text-primary">{file.name}</h2>
+              <h2 className="min-w-0 break-all font-display text-section font-semibold text-primary">
+                {file.name}
+              </h2>
               <Badge tone="ok">{t.document.ocr}</Badge>
               <ReqTag id="FAI-003" />
+              {/*
+                Replacing the protocol resets every field, every correction and
+                the approval. It asks first — but only when there is something
+                to lose, because a confirmation on a no-op is the kind that
+                teaches people to dismiss confirmations without reading them.
+              */}
               <span className="ml-auto">
-                <Button variant="secondary" size="sm" onClick={() => pick(null)}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => (adjustedCount > 0 || approved ? setConfirming(true) : pick(null))}
+                >
                   {t.upload.replace}
                 </Button>
               </span>
             </div>
+
+            {confirming && (
+              <div className="mb-4">
+                <Callout tone="attention" live>
+                  <span className="basis-full">{t.upload.replaceWarning(adjustedCount)}</span>
+                  <span className="mt-2 flex flex-wrap gap-2">
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => {
+                        setConfirming(false);
+                        pick(null);
+                      }}
+                    >
+                      {t.upload.replaceConfirm}
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={() => setConfirming(false)}>
+                      {t.upload.replaceCancel}
+                    </Button>
+                  </span>
+                </Callout>
+              </div>
+            )}
 
             <Rationale>{t.upload.demoNote}</Rationale>
 
@@ -507,10 +572,16 @@ export function ProtocolReview({
         </div>
 
         <div className="@container space-y-5">
-          <div id="steg-ai" ref={reviewRef} tabIndex={-1} className="scroll-mt-4">
+          <div id="steg-ai" ref={reviewRef} tabIndex={-1} className="scroll-mt-24">
             <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
+              {/*
+                The colour is explained in words once, next to the fields it
+                applies to, so violet is never carrying meaning on its own.
+              */}
+              <p className="mb-3 text-label text-muted-foreground">{t.review.aiLegend}</p>
+
               <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
-              <div className="grid gap-x-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
+              <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
 
               <div className="mt-4">
                 <Callout tone="ok">{t.analysis1.validation}</Callout>
@@ -519,7 +590,7 @@ export function ProtocolReview({
               <h3 className="mb-3 mt-5 font-display text-body font-semibold">
                 {t.analysis2.title}
               </h3>
-              <div className="grid gap-x-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
+              <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
 
               <p aria-live="polite" className="mt-4 text-table">
                 {adjustedCount > 0 ? t.review.adjustedCount(adjustedCount) : t.review.noneAdjusted}

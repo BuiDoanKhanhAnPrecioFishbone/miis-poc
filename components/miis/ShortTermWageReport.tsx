@@ -140,7 +140,7 @@ export function ShortTermWageReport({
     <Panel title={t.heading} tags={["FR-008", "FA-021"]}>
       <p className="mb-4 max-w-4xl text-table">{t.intro}</p>
 
-      <div className="mb-5 grid gap-4 @xl:grid-cols-2">
+      <div className="mb-5 grid grid-cols-1 gap-4 @xl:grid-cols-2">
         <div>
           <span className="mb-1 block text-label font-bold">{t.period}</span>
           <span className="field-input tabular-nums">{periodValue}</span>

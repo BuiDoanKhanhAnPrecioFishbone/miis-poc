@@ -119,7 +119,7 @@ export function ProtocolUpload({
     return (
       <Panel title={t.title} tags={["FD-001", "FAI-003"]}>
         <div className="flex flex-wrap items-center gap-3 border-b border-border pb-3">
-          <span className="font-semibold text-foreground">{file.name}</span>
+          <span className="min-w-0 break-all font-semibold text-foreground">{file.name}</span>
           <span className="text-label tabular-nums text-muted-foreground">
             {t.size(decimal(fileSizeKb(file.bytes), lang))}
           </span>

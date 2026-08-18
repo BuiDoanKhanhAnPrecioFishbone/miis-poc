@@ -91,7 +91,16 @@ export function DataTable({
       tabIndex={0}
       role="region"
       aria-label={caption}
-      className={`overflow-auto ${scrolls ? "max-h-[34rem]" : ""}`}
+      /*
+        `relative` is load-bearing. `sr-only` positions absolutely, and an
+        absolutely positioned descendant is clipped by `overflow` only when its
+        containing block is inside the scroller. Without a positioned ancestor
+        here, the hidden sort descriptions and the caption resolved against the
+        page and sat at the table's full width — so a table wider than its
+        column silently gave the whole document a horizontal scrollbar, on
+        every route with a wide table, at every width below 1152px.
+      */
+      className={`relative overflow-auto ${scrolls ? "max-h-[34rem]" : ""}`}
     >
       <table className="w-full text-table" style={{ minWidth }}>
         <caption className="sr-only">{caption}</caption>

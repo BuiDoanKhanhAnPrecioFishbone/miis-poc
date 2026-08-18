@@ -358,7 +358,13 @@ export function Panel({
   const Heading = headingLevel === 3 ? "h3" : "h2";
 
   return (
-    <section id={id} className={`rounded-lg border p-5 ${toneClass}`}>
+    /*
+      `min-w-0` so a panel can shrink below the intrinsic width of what is
+      inside it. Without it a grid or flex parent sizes the panel to the widest
+      thing it contains — and `DataTable` sets a `minWidth` — so a table meant
+      to scroll inside its own region widened the page instead.
+    */
+    <section id={id} className={`min-w-0 rounded-lg border p-5 ${toneClass}`}>
       {(title || action || tags) && (
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -410,7 +416,15 @@ export function Field({
     <div>
       {(label || ai) && (
         <div className="mb-1 flex flex-wrap items-center gap-2">
-          {label && <span className="text-label font-bold text-foreground">{label}</span>}
+          {/* A label narrower than its longest word has to break it rather than
+              spill: "Diarienummer (diariesystemet)" is 107px in a 91px column
+              at 1152px. `min-w-0` lets the row shrink, `break-words` lets the
+              word wrap once it has to. */}
+          {label && (
+            <span className="min-w-0 break-words text-label font-bold text-foreground">
+              {label}
+            </span>
+          )}
           {ai && aiLabel && <Badge tone="ai">{aiLabel}</Badge>}
         </div>
       )}

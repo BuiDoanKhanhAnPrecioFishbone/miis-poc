@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { DatasetName } from "@/lib/domain/dataset";
 import type { Lang } from "@/lib/domain/lang";
@@ -41,6 +41,30 @@ export function AppShell({
 }) {
   const pathname = usePathname();
   const [sessionWarning, setSessionWarning] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  /*
+    Below `md` the menu was a permanently open list above the content, capped
+    at `max-h-56` and scrolled. That works for nine items and stops working for
+    twelve: a scrolling strip of links is not navigation, and the first thing a
+    phone user sees should be the page they asked for. It is a disclosure now.
+
+    Nothing changes at `md` and up — the rail is still one DOM, still no
+    JavaScript for its layout — so the desktop the evaluators will use is
+    untouched.
+  */
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        toggleRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
   const t = dictionary(lang);
   const nav = navFor(role.nav);
 
@@ -61,6 +85,7 @@ export function AppShell({
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
+        onClick={() => setMenuOpen(false)}
         className={itemClass(active, nested)}
       >
         {t.nav[id]}
@@ -132,9 +157,34 @@ export function AppShell({
         */}
         <nav
           aria-label={t.common.mainMenu}
-          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar py-2 md:w-44 md:border-b-0 md:border-r md:py-4 lg:w-60"
+          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar md:w-44 md:border-b-0 md:border-r md:py-4 lg:w-60"
         >
-          <ul className="max-h-56 space-y-0.5 overflow-y-auto md:max-h-none md:overflow-visible">
+          <button
+            ref={toggleRef}
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-controls="huvudmeny"
+            className="flex min-h-12 w-full items-center gap-3 px-5 py-3 text-left text-table font-bold text-sidebar-foreground md:hidden"
+          >
+            {/* Three bars, or a cross when open — the state is in `aria-expanded`
+                for assistive technology and in the shape for everyone else. */}
+            <span aria-hidden className="grid size-5 shrink-0 place-items-center">
+              <span
+                className={`relative block h-0.5 w-5 bg-current transition-all before:absolute before:left-0 before:block before:h-0.5 before:w-5 before:bg-current before:transition-all before:content-[''] after:absolute after:left-0 after:block after:h-0.5 after:w-5 after:bg-current after:transition-all after:content-[''] ${
+                  menuOpen
+                    ? "rotate-45 before:top-0 before:rotate-90 after:top-0 after:opacity-0"
+                    : "before:-top-1.5 after:top-1.5"
+                }`}
+              />
+            </span>
+            {t.common.mainMenu}
+          </button>
+
+          <ul
+            id="huvudmeny"
+            className={`space-y-0.5 pb-2 md:block md:pb-0 ${menuOpen ? "block" : "hidden"}`}
+          >
             {nav.map((node) => (
               <li key={node.id}>
                 {isHeadingOnly(node, role.nav) ? (

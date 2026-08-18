@@ -196,7 +196,7 @@ export function SearchBuilder({
         <ReqTag id="FR-002" />
       </div>
 
-      <div className="grid gap-5 @3xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
         <Panel title={c.title} tags={["FR-002"]}>
           <Rationale>{c.joinExplain}</Rationale>
 
@@ -233,7 +233,7 @@ export function SearchBuilder({
                             {joinWord(g.join)}
                           </p>
                         )}
-                        <div className="grid gap-2 @xl:grid-cols-[minmax(0,1fr)_8rem_minmax(0,1.3fr)_auto]">
+                        <div className="grid grid-cols-1 gap-2 @xl:grid-cols-[minmax(0,1fr)_8rem_minmax(0,1.3fr)_auto]">
                           <Select
                             id={`${cond.id}-field`}
                             srOnlyLabel

@@ -38,7 +38,7 @@ export default async function RegistreraPage() {
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FAI-001", "FAI-002", "FAI-003"]} />
 
       <ProtocolReview proposals={proposals} lang={lang}>
-        <div id="steg-loneavtal" className="scroll-mt-4">
+        <div id="steg-loneavtal" className="scroll-mt-24">
           <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
             <div className="space-y-4">
               <Select
@@ -52,7 +52,7 @@ export default async function RegistreraPage() {
                 }))}
               />
 
-              <div className="grid gap-4 @xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
                 <Field label={t.wage.scope} value={percent(3.2, lang)} />
                 <Field label={t.wage.costFrame} value={percent(6.4, lang)} />
                 <Field label={t.wage.individualGuarantee} value={i18n.common.no} />
@@ -67,7 +67,7 @@ export default async function RegistreraPage() {
                 <ReqTag id="FA-010" />
               </div>
 
-              <div className="grid gap-4 @xl:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
                 <Field
                   label={t.wage.revision}
                   value={`2027-06-01 · ${percent(3.2, lang)}`}
@@ -80,7 +80,7 @@ export default async function RegistreraPage() {
                 />
               </div>
 
-              <div className="grid gap-4 @xl:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
                 <div className="flex flex-wrap items-start gap-2">
                   <Toggle id="flag-equality" label={t.wage.equalityFlag} lang={lang} defaultOn />
                   <ReqTag id="FA-011" />
@@ -94,9 +94,9 @@ export default async function RegistreraPage() {
           </Panel>
         </div>
 
-        <div className="grid gap-5 @5xl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 @5xl:grid-cols-2">
           <Panel title={t.terms.title} tags={["FA-003", "FA-004"]}>
-            <div className="grid gap-4 @xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
               <Field label={t.terms.ownSignedDate} value="2027-05-28" />
               <Field label={t.terms.ownValidity} value="2027-06-01 – 2030-05-31" />
             </div>
@@ -104,16 +104,16 @@ export default async function RegistreraPage() {
           </Panel>
 
           <Panel title={t.link.title} tags={["FF-002", "FD-001"]}>
-            <div className="grid gap-4 @xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
               <Field label={t.link.negotiation} value="FÖ-2027/218 – Kommunikation, 2027-05-28" />
               <Field label={t.link.documentLinkedTo} value={t.link.documentLinkedToValue} />
             </div>
           </Panel>
         </div>
 
-        <div id="steg-spara" className="scroll-mt-4">
+        <div id="steg-spara" className="scroll-mt-24">
           <Panel title={t.save.title} tags={["FA-021", "D-001"]}>
-            <div className="grid gap-4 @xl:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
               <Select
                 id="registration-status"
                 label={t.save.registrationStatus}

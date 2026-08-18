@@ -109,7 +109,7 @@ export default async function AllmanhetenPage() {
           agreement, then a report — the shape the requirement describes. Not a
           kiosk: the real users need a usable selection, not big buttons.
         */}
-        <div className="grid gap-4 @xl:grid-cols-2 @3xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-4">
           <div>
             <label htmlFor="pub-ago" className="mb-1 block text-label font-bold">
               {t.selection.employerOrg}

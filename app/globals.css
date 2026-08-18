@@ -431,3 +431,14 @@
   font-size: 1rem;
   color: var(--color-foreground);
 }
+
+/*
+  A <select> draws its own chevron at the right padding edge, so with the same
+  0.8rem the field uses for text the mark sits almost on the border. Chrome and
+  Firefox both honour padding-inline-end for it, so the whole control breathes
+  rather than only the text moving. Unlayered so it wins over the utility.
+*/
+select.field-input,
+select.demo-select {
+  padding-inline-end: 1.5rem;
+}
