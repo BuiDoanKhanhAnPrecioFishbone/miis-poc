@@ -123,3 +123,53 @@ All material entries `accepted`. Every acceptance criterion verified in a browse
 
 axe: 50 runs across 10 routes × 5 configurations — 0 violations, 0 horizontal-scroll
 failures.
+
+---
+
+# Second grill — the build-and-test plan, 2026-08-18
+
+**D19 ACCEPTED — the plan is the tender response's *Arbetsprocesser och metoder*
+section.** Worth SEK 500 000 of the same 2 500 000 our UI criterion draws 1 000 000 from,
+and entirely unaddressed. It subsumes the two alternatives: a credible answer has to
+describe how we build, how we test against MI's T-001–T-008, and how each increment earns
+its place. Same 25 August deadline.
+
+### Homework done before asking
+
+- **No automated tests exist.** No runner, no `test` script. Verification is lint, types,
+  build, axe and screenshots, run by hand per change.
+- **MI's §9 carries eight requirements**, transcribed: T-001 unit/integration/system tests,
+  documented · T-002 anonymised or fictitious protocols representing variations in the
+  Swedish landscape · T-003 edge cases including entirely new agreements · T-004 regression
+  on system *or AI model* updates · T-005 a UAT environment · T-006 every Ska-krav verified
+  and approved by MI · T-007 migration verified for quality and completeness · T-008
+  production verification after go-live.
+- **T-002 and T-003 already describe `lib/mock/`** — fictitious Swedish data with real
+  party names, and US-02's brand-new-agreement edge case.
+- **`lib/domain/` imports nothing** by construction, so it is the one layer that is
+  trivially unit-testable today.
+- §16 judges this criterion on the same five qualities as ours, including
+  *konkretionsgrad*.
+
+**D20 OPEN — whether the repo demonstrates the process or the document only describes it.**
+
+**D20 ACCEPTED — the repo demonstrates the load-bearing part.** A small unit suite over
+`lib/domain/`, which imports nothing by construction and holds the actual business rules.
+Turns "we will write unit tests" into "the domain rules are tested, here they are", which
+is what *konkretionsgrad* asks for. Tests are not design, so this does not compete with
+Friday's freeze.
+
+### Defaults recorded, not asked
+
+- **D21** Vitest as the runner. Standard for a TypeScript project of this shape, runs the
+  same `@/` path aliases, and a devDependency cannot affect `next build` on Vercel.
+- **D22** The plan lives at `docs/16-arbetsprocesser-och-metoder.md` — repo material for
+  whoever writes the response, not a separate artefact. Offer to publish it after.
+- **D23** The document is both retrospective and prospective: the mockup is the evidence
+  for the method, the method is what we would apply to the delivery. Any other structure
+  throws away the strongest asset we have.
+- **D24** "Every build is reasonable" is expressed as a definition of done —
+  requirement → decision → evidence — because that is what the repo already does and can
+  be shown rather than claimed.
+
+**No remaining question passes the filter. Handoff.**

@@ -99,6 +99,10 @@ guides, plus the places our domain model still diverges from the information mod
 Next.js 16 App Router (React 19, Turbopack) · TypeScript · Tailwind v4 · shadcn/ui.
 `npm run dev` → http://localhost:8080.
 
+`npm test` runs the domain suite; `docs/16-verification.md` maps it to MI's chapter 9 and
+is the evidence for the response's *Arbetsprocesser och metoder* section. A rule in
+`lib/domain/` gets a test — that layer imports nothing, so there is no excuse.
+
 ```
 app/(miis)/**/page.tsx      the screens ← you work here
 components/miis/            product components ← and here
