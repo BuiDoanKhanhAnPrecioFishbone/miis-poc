@@ -9,6 +9,7 @@ import type { UploadedFile } from "@/lib/domain/upload";
 import { UPLOAD_PIPELINE } from "@/lib/domain/upload";
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { ProtocolUpload } from "./ProtocolUpload";
+import { Stepper, type StepState } from "./Stepper";
 import { Tabs } from "./Select";
 import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
@@ -106,62 +107,20 @@ function label(d: Dictionary, id: ProposalField): string {
  * US-01's alternative flows are non-linear — "save as incomplete and complete
  * later", "the officer corrects freely". Five page loads would serve none of it.
  */
-type StepState = "done" | "current" | "upcoming";
 
 /*
-  Steps 2 and 3 used to point at the same panel, which made them look like one
-  thing named twice. They are not. MI's §4.4 alternates between the two all the
-  way down — AI-analys, then Formulär + "Manuell justering/godkännande", then
-  AI-analys again, then another form and another approval — and keeping the
-  machine's reading apart from the officer's decision is the whole substance of
-  FAI-002. Step 2 is what the AI found; step 3 is the officer accepting it and
-  the agreement being registered, so it points at the approval, not at the
-  readings above it.
+  Steps 2 and 3 point at different places. They are not one thing named twice:
+  MI's §4.4 alternates between the machine's reading and the officer's decision
+  all the way down, and keeping those apart is the substance of FAI-002. Step 2
+  is what the AI found; step 3 is the approval.
 */
-const STEP_TARGETS = ["#steg-protokoll", "#steg-ai", "#steg-avtal", "#steg-loneavtal", "#steg-spara"];
-
-function RegistrationSteps({ d, states }: { d: Dictionary; states: StepState[] }) {
-  const t = d.registrera;
-
-  const style: Record<StepState, string> = {
-    done: "border-ok-border bg-ok text-ok-foreground",
-    current: "border-transparent bg-primary font-bold text-primary-foreground",
-    upcoming: "border-border bg-secondary text-muted-foreground",
-  };
-
-  /*
-    Sticky, because it is both things at once and needs to be for either.
-    MI's §4.4 is a flow, so the row reports where the officer is; our screen is
-    one page rather than five, so the row is also how they move between its
-    parts. Pinned to the top it can do both from anywhere on a long form —
-    unpinned it could only do either from the very top, which is the one place
-    the officer is not once they start working.
-  */
-  return (
-    <ol
-      aria-label={t.stepsLabel}
-      className="sticky top-0 z-20 -mx-5 mb-6 flex flex-wrap gap-3 border-b border-border bg-background px-5 py-3 sm:-mx-8 sm:px-8 xl:-mx-10 xl:px-10"
-    >
-      {t.steps.map((label, i) => {
-        const state = states[i]!;
-        return (
-          <li key={label}>
-            <a
-              href={STEP_TARGETS[i]}
-              aria-current={state === "current" ? "step" : undefined}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-5 py-2 text-label font-semibold transition-colors hover:brightness-95 ${style[state]}`}
-            >
-              {state === "done" && <span aria-hidden>✓</span>}
-              {label}
-              {/* The state is never carried by colour alone. */}
-              <span className="sr-only">— {t.stepState[state]}</span>
-            </a>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
+const STEP_TARGETS = [
+  "#steg-protokoll",
+  "#steg-ai",
+  "#steg-avtal",
+  "#steg-loneavtal",
+  "#steg-spara",
+];
 
 /** One line of the protocol, highlighted when it is the source being shown. */
 function SourceLine({
@@ -555,7 +514,12 @@ export function ProtocolReview({
   if (!ready) {
     return (
       <>
-        <RegistrationSteps d={d} states={stepStates} />
+        <Stepper
+          label={t.stepsLabel}
+          lang={lang}
+          states={stepStates}
+          steps={t.steps.map((label, i) => ({ label, href: STEP_TARGETS[i] }))}
+        />
         <div id="steg-protokoll" className="scroll-mt-24">
           <ProtocolUpload d={d} lang={lang} file={file} completed={completed} onPick={pick} />
         </div>
@@ -565,7 +529,12 @@ export function ProtocolReview({
 
   return (
     <>
-      <RegistrationSteps d={d} states={stepStates} />
+      <Stepper
+        label={t.stepsLabel}
+        lang={lang}
+        states={stepStates}
+        steps={t.steps.map((label, i) => ({ label, href: STEP_TARGETS[i] }))}
+      />
 
       <div className="grid grid-cols-1 items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div id="steg-protokoll" className="scroll-mt-24 @3xl:sticky @3xl:top-24">
@@ -723,7 +692,9 @@ export function ProtocolReview({
               </p>
 
               <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
-              <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
+              <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2">
+                {group(IDENTIFICATION)}
+              </div>
 
               <div className="mt-4">
                 <Callout tone="ok">{t.analysis1.validation}</Callout>
@@ -732,7 +703,9 @@ export function ProtocolReview({
               <h3 className="mb-3 mt-5 font-display text-body font-semibold">
                 {t.analysis2.title}
               </h3>
-              <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
+              <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2 @5xl:grid-cols-3">
+                {group(VALIDITY)}
+              </div>
 
               <p aria-live="polite" className="mt-4 text-table">
                 {adjustedCount > 0 ? t.review.adjustedCount(adjustedCount) : t.review.noneAdjusted}

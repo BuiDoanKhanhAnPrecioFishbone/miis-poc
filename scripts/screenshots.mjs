@@ -84,6 +84,8 @@ const SHOTS = [
   { name: "rapporter-konjunkturlonerapporten", path: "/rapporter", role: "agreement-admin" },
   { name: "sok-sokbyggaren", path: "/sok", role: "statistics-user" },
   { name: "partstraffar", path: "/partstraffar", role: "mediation-admin" },
+  { name: "partstraffar-ny", path: "/partstraffar/ny", role: "mediation-admin" },
+  { name: "partstraff", path: "/partstraffar/PT-2027-04", role: "mediation-admin" },
   { name: "medling-arendelista", path: "/medling", role: "mediation-admin" },
   { name: "medling-arende", path: "/medling/M-2027-12", role: "mediation-admin" },
   { name: "dokument", path: "/dokument", role: "agreement-admin" },

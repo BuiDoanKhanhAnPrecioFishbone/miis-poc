@@ -163,7 +163,7 @@ export function AppShell({
             than the viewport that cannot scroll is worse than one that moves.
             Below `md` it is the disclosure, which is already at the top.
           */
-          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar md:sticky md:top-0 md:max-h-screen md:w-44 md:self-start md:overflow-y-auto md:border-b-0 md:border-r md:py-4 lg:w-60"
+          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar md:sticky md:top-0 md:h-screen md:w-44 md:overflow-y-auto md:border-b-0 md:border-r md:py-4 lg:w-60"
         >
           <button
             ref={toggleRef}

@@ -862,19 +862,29 @@ export const sv = {
       heading: "Partsträffar",
       intro:
         "Medlingsinstitutet träffar en part i taget för att stämma av förhandlingsläget, identifiera konfliktrisker och bedöma behovet av medling.",
+      create: "+ Ny partsträff",
       onePartyNote:
         "Parterna möts aldrig varandra vid en partsträff, och en partsträff är inte en förhandling (Bilaga 1 §4.2). Det är förutsättningen för att parten ska kunna tala öppet.",
     },
     current: {
       heading: (party: string, date: string) => `${party} · ${date}`,
     },
+    newMeeting: {
+      title: "Ny partsträff",
+      subtitle: "Registrera en partsträff inför avtalsrörelsen – inget är ifyllt ännu",
+    },
+    notRegistered: "Ej registrerat",
     phaseLabel: "Skede i partsträffen",
     phase: { before: "Inför", during: "Under mötet", after: "Efter" },
     before: {
       heading: "Inför träffen",
+      party: "Part",
+      partyHint: "En part i taget – aldrig båda samtidigt",
+      date: "Datum",
       purpose: "Syfte",
       participants: "Deltagare",
       agenda: "Dagordning",
+      agendaEmpty: "Ingen dagordning registrerad ännu.",
       createDocument: "Skapa partsträffsdokument från mall",
       documentCreated: "Dokument skapat",
       templateNote:
@@ -887,6 +897,7 @@ export const sv = {
       noteLabel: "Ny anteckning",
       notePlaceholder: "Vad sades?",
       addNote: "Lägg till",
+      empty: "Inga anteckningar ännu. Skriv den första när mötet börjar.",
       noteCount: (n: number) => (n === 1 ? "1 anteckning" : `${n} anteckningar`),
       traceNote:
         "Anteckningar kan kompletteras både före och efter mötet. Ändringsloggen registrerar vad som ändrats, av vem och när.",

@@ -7,7 +7,7 @@ import { t as text } from "@/lib/domain/lang";
 import type { BargainingDemand, MeetingPhase, PartyMeeting } from "@/lib/domain/party-meeting";
 import { DEMAND_KIND_LABEL, phaseState, watchwordCount } from "@/lib/domain/party-meeting";
 import { dictionary } from "@/lib/i18n";
-import { Tabs } from "./Select";
+import { Stepper, type StepState } from "./Stepper";
 import { Badge, Button, Callout, Chip, Field, Panel, Rationale, ReqTag, ReqTags } from "./primitives";
 
 /**
@@ -129,30 +129,55 @@ export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lan
 
   return (
     <>
-      <Tabs
+      {/*
+        A stepper, not tabs. Inför · Under mötet · Efter are stages of one
+        process in order, with a position — prepared, held, completed — and
+        `phaseState` already derives done/current/upcoming from where the
+        meeting has got to. Tabs would say the three are interchangeable views
+        of the same thing, which is what the Text and Original views of a
+        protocol are and what these are not. Same component `/registrera` uses
+        for MI's five registration steps.
+      */}
+      <Stepper
         label={t.phaseLabel}
-        value={phase}
-        onChange={(id) => setPhase(id as MeetingPhase)}
-        tabs={PHASES.map((p) => ({
-          id: p,
-          label: `${t.phase[p]}${phaseState(meeting, p) === "done" ? " ✓" : ""}`,
-        }))}
+        lang={lang}
+        sticky={false}
+        states={PHASES.map((p) =>
+          p === phase ? "current" : phaseState(meeting, p) === "done" ? "done" : "upcoming",
+        )}
+        steps={PHASES.map((p) => ({ label: t.phase[p], onSelect: () => setPhase(p) }))}
       />
 
       <div className="mt-5 space-y-5">
         {phase === "before" && (
           <Panel title={t.before.heading} tags={["FF-004", "FSD-002"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field label={t.before.purpose} value={text(meeting.purpose, lang)} />
-              <Field label={t.before.participants} value={meeting.participants.join(" · ")} />
+              <Field
+                label={t.before.party}
+                value={meeting.party || t.notRegistered}
+                hint={t.before.partyHint}
+              />
+              <Field label={t.before.date} value={meeting.date || t.notRegistered} />
+              <Field
+                label={t.before.purpose}
+                value={text(meeting.purpose, lang) || t.notRegistered}
+              />
+              <Field
+                label={t.before.participants}
+                value={meeting.participants.join(" · ") || t.notRegistered}
+              />
             </div>
 
             <h3 className="mt-5 mb-2 font-display text-body font-semibold">{t.before.agenda}</h3>
-            <ol className="list-decimal space-y-1 pl-5 text-table">
-              {meeting.agenda.map((item, i) => (
-                <li key={i}>{text(item, lang)}</li>
-              ))}
-            </ol>
+            {meeting.agenda.length === 0 ? (
+              <p className="text-table text-muted-foreground">{t.before.agendaEmpty}</p>
+            ) : (
+              <ol className="list-decimal space-y-1 pl-5 text-table">
+                {meeting.agenda.map((item, i) => (
+                  <li key={i}>{text(item, lang)}</li>
+                ))}
+              </ol>
+            )}
 
             {/* FSD-002 — the party-meeting document comes from MI's template. */}
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
@@ -177,6 +202,9 @@ export function PartyMeetingView({ meeting, lang }: { meeting: PartyMeeting; lan
             <Panel title={t.during.heading} tags={["FF-004"]}>
               <p className="mb-4 text-table">{t.during.intro}</p>
 
+              {notes.length === 0 && (
+                <p className="mb-4 text-table text-muted-foreground">{t.during.empty}</p>
+              )}
               <ol className="mb-4 space-y-2 text-table">
                 {notes.map((note, i) => (
                   <li key={i} className="flex gap-3 border-l-2 border-border pl-3">

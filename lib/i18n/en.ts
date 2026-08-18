@@ -877,19 +877,29 @@ export const en: Dictionary = {
       heading: "Party meetings",
       intro:
         "The Mediation Office meets one party at a time to gauge the state of negotiations, identify risks of conflict and assess the need for mediation.",
+      create: "+ New party meeting",
       onePartyNote:
         "The parties never meet each other at a party meeting, and a party meeting is not a negotiation (Bilaga 1 §4.2). That is what allows the party to speak candidly.",
     },
     current: {
       heading: (party: string, date: string) => `${party} · ${date}`,
     },
+    newMeeting: {
+      title: "New party meeting",
+      subtitle: "Register a party meeting ahead of the bargaining round – nothing is filled in yet",
+    },
+    notRegistered: "Not registered",
     phaseLabel: "Stage of the party meeting",
     phase: { before: "Before", during: "During the meeting", after: "After" },
     before: {
       heading: "Before the meeting",
+      party: "Party",
+      partyHint: "One party at a time – never both together",
+      date: "Date",
       purpose: "Purpose",
       participants: "Participants",
       agenda: "Agenda",
+      agendaEmpty: "No agenda registered yet.",
       createDocument: "Create a party meeting document from the template",
       documentCreated: "Document created",
       templateNote:
@@ -902,6 +912,7 @@ export const en: Dictionary = {
       noteLabel: "New note",
       notePlaceholder: "What was said?",
       addNote: "Add",
+      empty: "No notes yet. Write the first one when the meeting starts.",
       noteCount: (n: number) => (n === 1 ? "1 note" : `${n} notes`),
       traceNote:
         "Notes can be added both before and after the meeting. The change log records what changed, by whom and when.",
