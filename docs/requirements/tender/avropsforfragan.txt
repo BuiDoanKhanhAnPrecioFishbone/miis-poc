@@ -1,0 +1,247 @@
+
+--- page 1 ---
+  
+  Datum: 2026-07-27 
+ 
+  Medlingsinstitutets diarienummer: 2026/0059 
+ 
+ 
+ 
+ 
+Avropsförfrågan inom Kammarkollegiets 
+ramavtal för systemutveckling 
+(ramavtalsnummer 23.3-2651-2022) 
+  
+--- page 2 ---
+2 INNEHÅLL 
+ 
+Innehåll 
+Innehåll .......................................................................................................................................................... 2 
+1 Avropande organisation .................................................................................................................. 3 
+2 Avrop ..................................................................................................................................................... 3 
+3 Syfte med avropet ............................................................................................................................. 3 
+4 Avropsdokument ............................................................................................................................... 3 
+5 Kontaktperson för avropet ............................................................................................................. 4 
+6 Kort om Medlingsinstitutet ............................................................................................................ 4 
+7 Beskrivning av nuvarande lösning ................................................................................................ 4 
+8 Förutsättningar för uppdraget ...................................................................................................... 5 
+9 Krav på redovisning i avropssvaret .............................................................................................. 5 
+10  Förnyad kontroll av leverantörskrav (ESPD) ............................................................................ 5 
+11  Uppgift om underleverantörer ...................................................................................................... 6 
+12  Priser ..................................................................................................................................................... 6 
+13  Tidsplan för detta avrop .................................................................................................................. 6 
+14  Leveransgodkännande ..................................................................................................................... 6 
+15  Optioner ............................................................................................................................................... 7 
+16  Kvalificering och utvärdering ........................................................................................................ 7 
+17  Fakturering .......................................................................................................................................... 9 
+18  Bilagor ................................................................................................................................................... 9 
+18.1  Bilaga 1 Kravspecifikation ............................................................................ ....................... 9 
+18.2  Bilaga 2 Leverantörskontroll .......................................................................... .................... 9 
+18.3  Bilaga 3, W3D3 Avtal - Användarmanual för kundanpassning vid 
+Medlingsinstitutet...................................................................................... ................................................... . 9 
+18.4  Bilaga 4, Prisformulär ................................................................................ ............................ 9 
+ 
+ 
+--- page 3 ---
+3 AVROPANDE ORGANISATION 
+1 Avropande organisation 
+Upphandlande myndighet är Medlingsinstitutet (MI), med organisationsnummer: 
+202100-5174. Myndighetens diarienummer för avropet är 2026/0059. 
+2 Avrop 
+Detta avrop genomförs med förnyad konkurrensutsättning från Statens inköpscentrals 
+ramavtal ”Systemutveckling” med ramavtalsnummer 23.3-2651-2022. 
+3 Syfte med avropet 
+Syftet med denna upphandling är att ta fram ett nytt informationssystem, 
+Medlingsinstitutets Informationssystem, (MIIS) som är skräddarsytt för Medlingsinstitutets 
+behov av att mata in, söka, analysera och rapportera kollektivavtalsdata. Det nya systemet 
+ska ägas fullt ut av Medlingsinstitutet med rätt att fritt använda och vidareutveckla det. 
+Myndigheten ska vidare ha rätt till: källkod, dokumentation, databasstruktur, 
+integrationer och konfigurationer. 
+4 Avropsdokument 
+Avropsdokumenten består utöver Avropsförfrågan (detta dokument) av följande bilagor: 
+ Bilaga 1, Kravspecifikation 
+ Bilaga 2, Leverantörskontroll 
+ Bilaga 3, W3D3 Avtal - Användarmanual för kundanpassning vid 
+Medlingsinstitutet 
+ Bilaga 4, Prisformulär 
+Kraven i bilaga 1 och bilaga 2 är obligatoriska att uppfylla för att avropssvaret ska anses 
+komplett. 
+Bilaga 3 bifogas för att ge en bild det nuvarande systemet som ska ersättas. 
+--- page 4 ---
+4 KONTAKTPERSON FÖR AVROPET 
+I bilaga 4 är det obligatoriskt att ange leverantörens prisuppgifter för att avropssvaret ska 
+anses komplett.  
+5 Kontaktperson för avropet 
+Kontaktperson för avropet är: 
+ Peter Lundström, IT-samordnare 
+ E-post: peter.lundstrom@mi.se 
+ Telefon: 076-342 70 30 
+6 Kort om Medlingsinstitutet 
+Medlingsinstitutet är en statlig myndighet under Arbetsmarknadsdepartementet, med tre 
+huvuduppgifter: verka för en väl fungerande lönebildning, medla i arbetstvister och 
+ansvara för lönestatistik. Vår verksamhet startade den 1 juni 2000 och vårt kontor ligger 
+på Drottninggatan 89 i Stockholm. Myndigheten har för närvarande 15 anställda. Inom 
+myndigheten finns inga särskilda resurser för systemutveckling eller programmering. En 
+mer utförlig beskrivning av vår verksamhet återfinns i bilaga 1 Kravspecifikation. 
+7 Beskrivning av nuvarande lösning 
+Medlingsinstitutet har sedan sitt grundande år 2000 haft olika typer av 
+informationssystem för hanteringen av kollektivavtal och övrig information rörande 
+kommande, pågående och avslutade medlingar. De första lösningarna var olika Excel 
+dokument som senare utmynnande i ett systemutvecklingsprojekt för det första 
+informationssystemet där MS Access valdes som plattform. Det nya systemet blev aldrig 
+särskilt lyckat utan led av diverse problem av olika slag.  
+För att komma tillrätta med problemen beslöts därför att göra ett omtag och istället 
+utveckla ett nytt informationssystem i myndighetens då nya ärendehanteringssystem 
+W3D3. Denna nya lösning fungerade till att börja med mycket bättre än den tidigare. 
+Sedan några år har det dykt upp allt fler problem med långsamma rapporter samt några 
+rapporter som ej fungerar alls. Ett grundproblem i vår nuvarande lösning är det faktum att 
+systemet är inpassat i vårt ärendehanteringssystem W3D3 som inte primärt är avsett för 
+denna typ av hantering. Mer information om vår nuvarande lösning och vilka behov och 
+krav som vi ställer på den nya lösningen återfinns i bilaga 1. Kravspecifikation. 
+--- page 5 ---
+5 FÖRUTSÄTTNINGAR FÖR UPPDRAGET 
+8 Förutsättningar för uppdraget 
+Samtliga projektmöten mellan leverantören och Medlingsinstitutet ska vara fysiska möten 
+och de ska genomföras i Medlingsinstitutets lokaler på Drottninggatan 89. Kompletterande 
+frågor och kortare avstämningar kan ske utanför de fysiska mötena. 
+Utvecklingen av MIIS kommer att ske i tre olika steg. I steg 1 kommer 
+grundfunktionaliteten utvecklas i enlighet med bilaga 1, Kravspecifikation. Under steg 2 
+utvecklas systemet vidare i enlighet med bilaga 1, Kravspecifikation. Det tredje steget är 
+en fortsatt vidareutveckling av systemet där Medlingsinstitutet vill ha en option på ett 
+avtal för vidareutveckling och förvaltning/support. Denna option ska ha en initial avtalstid 
+på 2 år men vara möjlig att förlänga med 2 år + 2 år med en total maximal avtalstid på 6 
+år. 
+En mer utförlig beskrivning återfinns i bilaga 1 Kravspecifikation. 
+9 Krav på redovisning i avropssvaret 
+Ett komplett avropssvar består av minst följande: 
+- Ifylld bilaga 2, Leverantörskontroll 
+- Ifylld bilaga 4, Prisformulär 
+10  Förnyad kontroll av leverantörskrav 
+(ESPD) 
+Enligt 15 kap. 4 § LOU krävs en ny leverantörskontroll, bland annat av 
+kvalificeringskraven, vid avrop genom förnyad konkurrensutsättning från ramavtal. Denna 
+kontrollskyldighet ansvarar Kammarkollegiet för genom att löpande genomföra 
+leverantörsprövning under hela ramavtalsperioden. 
+Av ramavtalsleverantörens avropssvar ska framgå att i ramavtalsupphandlingen lämnad 
+egenförsäkran fortfarande är korrekt samt att ingivna bevis fortfarande är aktuella. 
+Ramavtalsleverantören ska besvara frågorna i avsnitt 1.1 och 1.2 i bilaga 2, 
+Leverantörskontroll. 
+--- page 6 ---
+6 UPPGIFT OM UNDERLEVERANTÖRER 
+11  Uppgift om underleverantörer 
+Leverantören ska redovisa samtliga underleverantörer som avses att användas för 
+uppdraget. Ramavtalsleverantören ska besvara frågorna i avsnitt 1.3 i bilaga 2, 
+Leverantörskontroll. 
+12  Priser 
+Leverantören ska i sitt svar ange priser i enlighet med avsnitt 5 i bilaga 2 
+Leverantörskontroll. 
+13  Tidsplan för detta avrop 
+ Medlingsinstitutets avropsförfrågan skickas ut 2026-07-28. 
+ Sista tidpunkt för frågor är 2026-08-18. Frågor besvaras av Peter Lundström, IT-
+samordnare. Peter nås via peter.lundstrom@mi.se. Svar på inkomna frågor mailas 
+ut till alla leverantörer som svarat på avropsförfrågan. 
+ Sista datum för svar på avropsförfrågan (avropssvar) är 2026-08-25. Avropssvaret 
+ska vara giltigt i 90 dagar efter sista dag för avropssvar.  
+ 15 minuters muntlig presentation av leverantören hos Medlingsinstitutet under 
+vecka 35. 
+ Tilldelningsbeslut fattas 2026-09-08. Efter tilldelningsbeslut kommer avtalsspärr 
+enligt lagen om offentlig upphandling (LOU) att tillämpas innan kontrakt tecknas. 
+ Sista dag för överklagan 2026-09-22. 
+14  Leveransgodkännande 
+Leveransgodkännande ska ske skriftligen av Medlingsinstitutet efter genomförd 
+acceptanstestning i enlighet med avsnitt 9.2 Acceptanstestning i bilaga 1, 
+Kravspecifikation. 
+--- page 7 ---
+7 OPTIONER 
+15  Optioner 
+Medlingsinstitutet ska ha en ensidig option på att teckna ett 2 årigt avtal för support och 
+underhåll med leverantören med möjlighet till förlängning 2 år + 2 år, med en total 
+maximal avtalstid på 6 år. 
+Support och underhållsavtalet ska omfatta: 
+ felrättningar,  
+ mindre anpassningar,  
+ tekniskt stöd,  
+ säkerhetsuppdateringar,  
+ viss support.  
+ 
+Ersättning sker enligt en offererad årlig fast avgift som omfattar support och underhåll. 
+Support och underhållsavtalet ska även omfatta möjlighet till vidareutveckling av 
+systemet. Leverantörens arbeten med systemutveckling sker till en rörlig kostnad. Alla 
+förändringar som görs ska skriftligt godkännas av Medlingsinstitutet. Leverantören ska 
+redovisa påverkan på tid, kostnad och funktion innan arbetet påbörjas. Förändringar får ej 
+göras utan godkännande. Arbetet ska ske enligt samma timkostnad per konsultkategori 
+som redovisas i leverantörens svar på denna avropsförfrågan. Om leverantören använt en 
+underleverantör för arbetet med steg 1 och steg 2 önskar Medlingsinstitutet att samma 
+underleverantör anlitas för support och underhållsavtalet inklusive fortsatt 
+vidareutveckling. Optionen innebär ingen garanterad volym. 
+Timkostnaden för respektive konsultkategori får justeras en gång per avtalsår i enlighet 
+med förändringen i Statistiska centralbyråns arbetskostnadsindex (AKI) för tjänstemän 
+inom informations- och kommunikationsverksamhet (SNI J), eller index som ersätter 
+sådant index. Prisjustering får ske tidigast tolv (12) månader efter avtalets ikraftträdande 
+och får vid varje justeringstillfälle uppgå till högst fyra (4) procent jämfört med 
+föregående avtalsår. Prisjustering ska ske symmetriskt uppåt eller nedåt. 
+Medlingsinstitutet har rätt men ingen skyldighet att utnyttja optionen. 
+16  Kvalificering och utvärdering 
+Medlingsinstitutet kommer att tilldela kontraktet till den leverantör som lämnat det 
+anropssvar med den bästa kombinationen av pris och kvalitet. 
+--- page 8 ---
+8 KVALIFICERING OCH UTVÄRDERING 
+För att leverantörens anropssvar ska utvärderas krävs det att ett komplett avropssvar 
+enligt punkt 9 ”Krav på redovisning i avropssvaret” skickats in till Medlingsinstitutet senast 
+sista datum för svar enligt punkt 13 ”Tidsplan för detta avrop”. Leverantören ska också ha 
+accepterat alla ska krav för att avropssvaret ska utvärderas. 
+Medlingsinstitutet kommer att utvärdera avropssvaren enligt den så kallade 
+mervärdesmodellen. Det innebär att erhållna mervärden ger ett värde som dras av från 
+den totala anbudsumman som angetts i bilaga 4, Prisformulär och som resulterar i ett 
+jämförelsetal enligt nedan: 
+Jämförelsetal = anbudssumma – erhållet mervärde 
+Det anropssvar som erhåller lägst jämförelsetal kommer att tilldelas kontraktet. 
+Medlingsinstitutet kommer att utgå ifrån följande tilldelningskriterier: 
+ Anbudssumma 
+ Arbetsgrupp (max 500  000 kr i mervärde) 
+ Arbetsprocesser och metoder (max 500  000 kr i mervärde) 
+ Rollbaserade användarscenarier och användargränssnitt (max 1 000 000 kr i 
+mervärde) 
+ Muntlig presentation av avropssvaret (max 500  000 kr i mervärde) 
+För samtliga kvalitetskriterier kommer Medlingsinstitutet att göra en samlad bedömning 
+av i vilken utsträckning leverantörens beskrivning, redovisning eller presentation bedöms 
+skapa mervärde för uppdragets genomförande. 
+Vid bedömningen kommer särskild hänsyn att tas till bland annat relevans, tydlighet, 
+konkretionsgrad, genomförbarhet samt i vilken utsträckning redovisningen visar förståelse 
+för uppdragets förutsättningar och behov. 
+Bedömningen sker enligt följande skala: 
+ Mycket högt mervärde: 100% av maximalt mervärde 
+ Högt mervärde: 75% av maximalt mervärde 
+ Visst mervärde: 50% av maximalt mervärde 
+ Begränsat mervärde: 25% av maximalt mervärde 
+ Inget mervärde: 0 kronor 
+Medlingsinstitutet kommer att motivera bedömningen utifrån de mervärden som 
+identifierats i respektive anropssvar. 
+ 
+--- page 9 ---
+9 FAKTURERING 
+17  Fakturering 
+Medlingsinstitutet tar emot elektroniska fakturor via Peppol-nätverket. Vår elektroniska 
+adress i Peppol är 0007: 2021005174 
+30-dagars betalningstid ska gälla för inkomna fakturor. 
+18  Bilagor 
+Till denna avropsförfrågan hör följande bilagor: 
+18.1  Bilaga 1 Kravspecifikation 
+Bilaga 1 Kravspecifikation innehåller bland annat detaljerade krav på systemet och dess 
+arkitektur. Där ges också en djupare bild av Medlingsinstitutets verksamhet och det tänkta 
+syftet med det nya systemet. 
+18.2  Bilaga 2 Leverantörskontroll 
+I bilaga 2 Leverantörskontroll finns ytterligare krav som bland annat tar upp en förnyad 
+kontroll av leverantörskrav (ESPD) men även kompletterande krav och beskrivning av 
+uppdragets omfattning och innehåll. I bilagan ställs också ytterligare krav på uppdragets 
+genomförande. Slutligen anges även här hur leverantören ska ange sina prisuppgifter för 
+de olika stegen.  
+18.3  Bilaga 3, W3D3 Avtal - Användarmanual för kundanpassning 
+vid Medlingsinstitutet 
+Bilaga 3 är användarmanualen till vårt nuvarande system. Tanken är att leverantören ska 
+kunna få en fördjupad förståelse för det system varifrån informationen ska migreras ifrån. 
+Det gamla systemet ska leverantören inte utgå ifrån vid utvecklingen av det nya systemet. 
+18.4  Bilaga 4, Prisformulär 
+Bilaga 4 är den bilaga där leverantören ska ange prisuppgifterna för det olika stegen i 
+avropet. Den ifyllda bilagan är underlaget för den anbudssumma som Medlingsinstitutet 
+kommer att använda i sin utvärdering av avropssvaret. 

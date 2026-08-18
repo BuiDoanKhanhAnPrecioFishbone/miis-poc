@@ -1,0 +1,1736 @@
+
+--- page 1 ---
+  
+  
+Datum: 2026-07-27 
+ 
+  Medlingsinstitutets diarienummer: 2026/0059 
+ 
+ 
+ 
+ 
+Bilaga 1 Kravspecifikation 
+ 
+ 
+ 
+  
+--- page 2 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 2 av 50  
+ 
+KRAVSPECIFIKATION  
+Nytt IT-stöd ”MIIS” för verksamhetsområde Avtal och Medling  
+Medlingsinstitutet 
+ 
+Dokumenttyp  Kravspecifikation  
+Uppdragsgivare  Medlingsinstitutet (org.nr 202100-5174) 
+Datum  2026-06-04  
+Version  1 
+Status  Slutversion – baserat på möten 1 april, 27 april, 6 maj, 8 maj, 19 maj och 4 
+juni  2026.  
+Nästa revidering  - 
+Konfidentialitet  - 
+  
+--- page 3 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 3 av 50  
+Innehållsförteckning  
+ 
+Innehållsförteckning ........................................................................................................................ 3 
+1. Inledning ..................................................................................................................................... 6 
+1.1 Bakgrund och syfte ................................................................................................................ 6 
+1.2 Dokumentets struktur och kravklassificering .......................................................................... 6 
+1.3 Leveransstrategi – Tvåstegsraket .......................................................................................... 6 
+2. Verksamhetsbeskrivning och nuläge ........................................................................................... 7 
+2.1 Medlingsinstitutets uppdrag ................................................................................................... 7 
+2.2 Medlingsinstitutets verksamhetsområde Medling och avtal .................................................... 7 
+Medling .................................................................................................................................... 7 
+Kollektivavtalsbevakning .......................................................................................................... 7 
+2.3 Kollektivavtalslandskapet ....................................................................................................... 7 
+Arbetstagarorganisationer ........................................................................................................ 7 
+Arbetsgivarorganisationer ........................................................................................................ 7 
+Organisatoriska förändringar .................................................................................................... 8 
+Kollektivavtal ............................................................................................................................ 8 
+2.4 Avtalsinformationens betydelse och behov i ett nytt informationssystem ............................... 8 
+2.5 Nuvarande system – W3D3 (Formpipe) ................................................................................. 8 
+Begränsningar och problem ..................................................................................................... 8 
+2.6 Tidigare system – Access-databasen .................................................................................... 8 
+3. Användarroller, autentisering och åtkomstkontroll ..................................................................... 10  
+3.1 Användarroller ..................................................................................................................... 10  
+3.2 Autentisering och åtkomstkontroll ........................................................................................ 10  
+Interna användare .................................................................................................................. 10  
+Allmänhetens dator ................................................................................................................ 10  
+Extern åtkomst för medlare – Option, Steg 2.......................................................................... 10  
+4. Systemöversikt och arkitektur ................................................................................................... 11  
+4.1 Systembeskrivning .............................................................................................................. 11  
+Allmänt ................................................................................................................................... 11  
+Rapporter ............................................................................................................................... 11  
+Uppladdning av dokument ..................................................................................................... 11  
+Skapa dokument .................................................................................................................... 11  
+Systemloggning ..................................................................................................................... 11  
+AI-stöd för registrering ........................................................................................................... 11  
+4.2 Viktiga begrepp ................................................................................................................... 13  
+4.3 Systemskiss ........................................................................................................................ 14  
+4.4 Användarflöde: Registrering av avtalsprotokoll .................................................................... 15  
+4.5 Datamodell .......................................................................................................................... 16  
+4.6 Teknisk plattform ................................................................................................................. 16  
+--- page 4 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 4 av 50  
+5. Funktionella krav ....................................................................................................................... 18  
+5.1 Startsida .............................................................................................................................. 18  
+5.2 Avtalsregistrering och -hantering ......................................................................................... 18  
+5.3 Partshantering ..................................................................................................................... 19  
+5.4 Dokumenthantering ............................................................................................................. 20  
+5.5 Händelse- och ändringslogg ................................................................................................ 20  
+5.6 Sök, export och rapportering ............................................................................................... 20  
+5.7 Skapa dokument ................................................................................................................. 21  
+5.8 AI-funktionalitet .................................................................................................................... 22  
+5.9 Förhandling- och Medlingshantering .................................................................................... 22  
+5.10 Registrering av ”Märket” .................................................................................................... 23  
+5.11 Skicka epost ...................................................................................................................... 23  
+6. Icke-funktionella krav ................................................................................................................ 24  
+6.1 Prestanda och skalbarhet .................................................................................................... 24  
+6.2 Åtkomstkontroll och autentisering ........................................................................................ 24  
+6.3 Loggning och spårbarhet ..................................................................................................... 24  
+6.4 Kryptering och säker kommunikation ................................................................................... 25  
+6.5 Säker systemutveckling och sårbarhetshantering ................................................................ 25  
+6.6 Tillförlitlighet och driftsäkerhet ............................................................................................. 26  
+6.7 Incidenthantering ................................................................................................................. 26  
+6.8 Underhållbarhet och ägandeskap ........................................................................................ 26  
+6.9 Arkitektur ............................................................................................................................. 27  
+6.10 Användargränssnitt ............................................................................................................ 27  
+6.11 Migrering ........................................................................................................................... 27  
+7. Leverantörskrav ........................................................................................................................ 27  
+8. Datakrav och Sekretess ............................................................................................................ 29  
+8.1 Personuppgiftshantering ...................................................................................................... 29  
+9. Testning och verifiering ............................................................................................................. 30  
+9.1 Teststrategi.......................................................................................................................... 30  
+9.2 Acceptanstestning ............................................................................................................... 30  
+10. Bilagor..................................................................................................................................... 31  
+Bilaga A: Komplett datamodell nytt system ................................................................................... 32  
+Bilaga B: Databasdiagram nuvarande system W3D3 (Formpipe) .................................................. 33  
+Bilaga C: Databasdiagram tidigare system (Accessdatabasen) .................................................... 35  
+Bilaga D: Exempel på avtalsprotokoll ............................................................................................ 36  
+Bilaga E: Exempel på generaldirektörsbeslut om medling ............................................................. 38  
+Bilaga F: Rapportexempel (faktiska utskrifter från nuvarande system) .......................................... 39  
+Rapport 1: Avtal – Allmänheten ................................................................................................. 39  
+Rapport 2: Avtalskonstruktioner ................................................................................................. 40  
+Rapport 3: Avtalsrörelse ............................................................................................................ 43  
+Rapport 4: Huvudrapport ........................................................................................................... 46  
+--- page 5 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 5 av 50  
+Rapport 5: Medlare .................................................................................................................... 48  
+Rapport 6: Pensionsavtal och övriga avtal ................................................................................. 50  
+ 
+  
+--- page 6 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 6 av 50  
+1. Inledning 
+1.1 Bakgrund och syfte 
+Medlingsinstitutet (MI) är en statlig myndighet med tre huvuduppgifter: medling i arbetstvister, en 
+väl fungerande lönebildning och lönestatistik. Medlingsinstitutet är ensam om att ha en helhetsbild 
+över kollektivavtalslandskapet i Sverige. 
+Medlingsinstitutets nuvarande avtalsdatabas är byggd ovanpå W3D3, ett dokument- och 
+ärendehanteringssystem från Formpipe. Systemet har anpassats iterativt under lång tid men har 
+nu nått sina gränser avseende kapacitet, prestanda och flexibilitet. 
+Syftet med detta projekt är att ta fram ett nytt IT-stöd, Medlingsinstitutets Informationssystem, 
+(MIIS) som är skräddarsytt för Medlingsinstitutets behov av att registrera, söka, analysera och 
+rapportera kollektivavtalsdata. Det nya systemet ska ägas fullt ut av Medlingsinstitutet med rätt att 
+fritt använda och vidareutveckla det. 
+1.2 Dokumentets struktur och kravklassificering 
+Krav i detta dokument klassificeras i tre nivåer: 
+• Ska-krav – Absoluta krav som måste uppfyllas i de n initiala leveransen. Ingår i 
+upphandlingen. 
+• Bör-krav – Starka önskemål. Bra att ha men inte a vgörande för godkänd leverans. 
+• Option – Önskemål för framtida vidareutveckling. Ingår inte i initial upphandling men 
+systemet ska designas för att möjliggöra dessa. 
+1.3 Leveransstrategi – Tvåstegsraket 
+Systeminförandet planeras i två steg: 
+• Steg 1 (inför 1 april 2027): Systemet måste kunna  hantera löneavtal och allmänna villkor i 
+tid inför den stora avtalsrörelsen. Kärnfunktionalitet för registrering, sökning och 
+rapportering av löneavtal och allmänna villkor ska vara på plats samt medling. 
+• Steg 2 (tidigast hösten 2027): Övriga delar – pen sionsavtal, övriga avtalstyper m.m. – som 
+accepteras komma in efter steg 1. 
+  
+--- page 7 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 7 av 50  
+2. Verksamhetsbeskrivning och nuläge 
+2.1 Medlingsinstitutets uppdrag 
+Medlingsinstitutet är en myndighet med tre huvuduppgifter: medling i arbetstvister, en väl 
+fungerande lönebildning och lönestatistik. Medlingsinstitutet är den enda aktör som har en samlad 
+bild över hela kollektivavtalslandskapet i Sverige, och det är från Medlingsinstitutet som parter, 
+media m. fl. inhämtar uppgifter om avtalsrörelsens omfattning. 
+2.2 Medlingsinstitutets verksamhetsområde Medling och avtal 
+Medlingsinstitutets arbete organiseras inom fyra verksamhetsområden vilka omfattar följande 
+funktioner 
+• Medling och avtal  
+• Statistik och analys 
+• Kommunikation 
+• Verksamhetsstöd 
+Medling 
+Funktionen svarar för myndighetens medlingsverksamhet i vilken ingår 
+• den lokala och centrala medlingsverksamheten 
+• registrering av förhandlingsordningsavtal i enlig het med medbestämmandelagen 
+• rekrytering, utbildning, fortbildning och tillsyn  av medlare 
+• möten med parter före och efter avtalsrörelse. 
+Kollektivavtalsbevakning 
+Funktionen svarar för att följa utvecklingen på arbetsmarknaden i fråga om avtalsförhandlingar, i 
+vilket ingår att  
+• inhämta, sammanställa och analysera kollektivavta l om löner och allmänna villkor samt 
+kollektivavtal i andra frågor 
+• inhämta, sammanställa och analysera tidsplaner, y rkanden 
+• underhålla och utveckla myndighetens hantering oc h systematisering av 
+kollektivavtalsinformation. 
+ 
+Kollektivavtalsbevakningen omfattar centrala branschavtal där en arbetsgivarorganisation är part. 
+Lokala avtal, företagsavtal utan arbetsgivarorganisation samt hängavtal ingår inte och ska inte 
+hanteras i MIIS. 
+2.3 Kollektivavtalslandskapet 
+Den svenska arbetsmarknadsmodellen bygger på kollektivavtal som vanligtvis förhandlas på 
+förbundsnivå mellan arbetsgivar- och arbetstagarorganisationer. Resultatet av en förhandling 
+dokumenteras i ett protokoll som signeras av samtliga avtalsparter. Det finns fler än 100 centrala 
+parter, relativt jämnt fördelade mellan de två sidorna. Förhandlingssystemet är i ständig förändring, 
+både organisatoriskt och vad gäller förhandlingsuppdrag. 
+Arbetstagarorganisationer  
+Det finns drygt 50 fackförbund, uppdelade i förbund för arbetare respektive tjänstemän. De flesta 
+tillhör någon eller flera av huvudorganisationerna LO, TCO, Saco eller PTK. Av dessa är det bara 
+LO och PTK som tecknar egna kollektivavtal, exempelvis om pensioner. Ett annat viktigt 
+samverkansorgan är Facken inom industrin, som spelar en central roll i avtalsrörelserna. 
+Arbetsgivarorganisationer  
+--- page 8 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 8 av 50  
+Det finns cirka 50 arbetsgivarorganisationer i privat sektor och två i offentlig sektor. De flesta 
+organisationer i privat sektor är medlemmar i Svenskt Näringsliv, indelade i olika branscher. Inom 
+branschen Tjänster samlas exempelvis de flesta arbetsgivarorganisationerna i förbundsgruppen 
+Almega. 
+Organisatoriska förändringar  
+Sammanslagningar och namnbyten sker löpande. Exempel på detta är att Lärarförbundet och 
+Lärarnas Riksförbund gick ihop och bildade Sveriges Lärare, samt att KFO och Idea fusionerade till 
+Fremia. Det förekommer även att organisationer byter huvudorganisation eller ändrar namn. 
+Kollektivavtal  
+Förhandlingar sker på tre nivåer: huvudorganisation, förbund och lokal nivå. Löner och allmänna 
+villkor förhandlas främst på förbundsnivå, medan pensioner och försäkringar hanteras på 
+huvudorganisationsnivå. En viktig samordning sker inom industrin, vars centrala avtal sätter den 
+kostnadsnorm som övriga parter på arbetsmarknaden ska hålla sig inom. Andra exempel på 
+koordinerade förhandlingar är LO-förbundens samordnade avtalskrav. Avtalsparter kan också 
+bytas ut över tid – exempelvis tog Transportarbetarförbundet 2025 över förhandlingsrätten för 
+flygets kabinpersonal från Unionen. 
+2.4 Avtalsinformationens betydelse och behov i ett nytt informationssystem 
+För att genomföra vårt uppdrag att medla i arbetstvister och verka för en väl fungerande 
+lönebildning krävs att vi har kunskap om de avtal som finns på svensk arbetsmarknad och hur de 
+är utformade. Antalet avtal varierar över tid då nya avtal kommer till och andra upphör. En del av 
+avtalen löper tills vidare medan andra har specificerade löptider.  
+För att kunna förutse såväl avtalsrörelsens som medlingsverksamhetens omfattning krävs dels god 
+kunskap om avtalens utlöpningstidpunkter, dels kunskap om eventuella stundande tvistefrågor. Till 
+Medlingsinstitutets hjälp finns därför nödvändig avtalsinformation digitalt strukturerad för att 
+underlätta myndighetens och medlarnas arbete inför och under en avtalsrörelse, men också för 
+den kommande analysen när avtalsrörelsen ska slutredovisas i Medlingsinstitutets årsrapporter.  
+Stora resurser läggs därför på att hålla denna information uppdaterad och korrekt. Det betyder att 
+Medlingsinstitutet begär in alla de överenskommelser om löner och allmänna villkor som tecknas 
+under ett år. Medlingsinstitutets beskrivning av avtalsrörelser och överenskommelsernas innehåll 
+blir också vägledande för hur arbetsmarknadens parter, politiker och journalister med flera 
+beskriver avtalsrörelser och överenskommelsernas innehåll.  
+Materialet används även inom ramen för flera av de särskilda uppdrag som Medlingsinstitutet har 
+fått, där det fungerar som ett viktigt analysunderlag. 
+2.5 Nuvarande system – W3D3 (Formpipe) 
+Avtalsinformation i det nuvarande systemet W3D3 (Formpipe) ska migreras till det nya systemet. 
+Formpipe är behjälpliga med att göra ett databasuttag från W3D3-databasen. 
+Begränsningar och problem 
+ Kapacitetstak vid ca 3 500 avtal – systemet byggde s inte för denna datamängd 
+ Rapporter tar orimligt lång tid eller kan inte kör as alls – ingen indexering 
+ Sökbyggaren klarar max två handlingstyper (t ex lö neavtal och pensionsavtal) simultant, 
+vilket tvingat fram tekniska hjälpvariabler 
+ Svårt att exportera data på ett strukturerat och f lexibelt sätt 
+ Systemet har vuxit organiskt utan effektivitetstän k 
+2.6 Tidigare system – Access-databasen 
+--- page 9 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 9 av 50  
+Innan det nuvarande systemet W3D3 (Formpipe) användes en Access-databas för avtals-
+administrering. Den innehåller historisk avtalsinformation som ska migreras till det nya systemet. 
+--- page 10 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 10 av 50  
+3. Användarroller, autentisering och åtkomstkontroll 
+3.1 Användarroller 
+Följande användarroller har identifierats och ska finnas med i det nya systemet Medlingsinstitutets 
+informationssystem (MIIS): 
+Roll  Beskrivning  Behörighet  Klass  
+Systemadministratör Systemadministratör med full 
+åtkomst
+ 
+Full åtkomst inkl. 
+systemkonfiguration 
+(exkl. behörigheter) 
+Ska 
+ 
+Behörighetsadministratör Registrerar och administre rar 
+användare 
+Läsa, skriva, redigera 
+användare 
+Ska 
+Avtalsadministratör / 
+Handläggare  
+Registrerar och redigerar 
+avtalsinformation 
+ 
+Läsa, skriva, redigera  Ska  
+Medlingsadministratör Registrerar och redigerar med ling Läsa, skriva, redigera 
+medling och 
+medlingsbeslut 
+Ska 
+Medlaradministratör Registrerar och redigerar 
+medlare 
+Läsa, skriva, redigera 
+medlare 
+Ska 
+Statistikanvändare  Läser och exporterar data för 
+statistikändamål
+ 
+Läsa, datauttag  Ska  
+Allmänhetens dator Begränsad publik åtkomst via 
+specifik klientdator i MI:s lokaler 
+(vitlistad IP-adress)
+ 
+Specifika rapporter Ska  
+Medlare  Åtkomst till medlingsrelaterad 
+information 
+Specifika rapporter Option, 
+Steg 2  
+3.2 Autentisering och åtkomstkontroll 
+MIIS ska vara en intranätsapplikation med stöd för framtida extern åtkomst för särskilda 
+användargrupper. Åtkomst styrs utifrån användartyp och sker i två steg som införs successivt. 
+Interna användare 
+Medlingsinstitutets anställda ska autentisera sig med EFOS-kort via Försäkringskassans 
+identifieringslösning (IdP, SAML2). Ett Identity Management-verktyg finns tillgängligt för 
+Medlingsinstitutet. Systemet ska konsumera ett befintligt behörighetssystem (Enterprise 
+IAM/SSID). 
+Allmänhetens dator 
+Begränsad åtkomst utan inloggning, tillgänglig endast från Medlingsinstitutets IP-adress. 
+Allmänheten får då tillgång till systemet från en dedikerad klientdator hos Medlingsinstitutet 
+(standalone) som åtkomstskyddas via IP-vitlistning. 
+Extern åtkomst för medlare – Option, Steg 2 
+På sikt ska även medlare kunna logga in, vilket hanteras med autentisering med Bank-ID, även här 
+med Försäkringskassans identifieringslösning.   
+--- page 11 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 11 av 50  
+4. Systemöversikt och arkitektur 
+4.1 Systembeskrivning 
+Allmänt 
+Medlingsinstitutets informationssystem ska vara en webbaserad applikation specifikt utvecklad för 
+hantering av information om medling och kollektivavtal. Medlingsinstitutet ska äga fullständiga 
+rättigheter till systemet och fritt kunna använda, förvalta och vidareutveckla det utan beroende av 
+en enskild leverantör. 
+ 
+Systemet ska vara byggt ändamålsenligt från grunden och ha kollektivavtalsinformationens struktur 
+och logik som sin kärna. Det ska vara intuitivt och enkelt att använda, för medarbetare utan teknisk 
+bakgrund. Gränssnittet ska vara självförklarande och vägleda användaren genom arbetsflödet, 
+oavsett om det gäller nyregistrering av avtal, uppdatering av befintlig avtalsinformation, hantering 
+av avtalsversioner eller organisationsförändringar hos parter samt medlingsverksamhet. 
+ 
+Systemet ska möjliggöra effektiv och korrekt datainmatning med stöd för validering och logiska 
+kontroller som hjälper användaren att undvika fel. Ändringar ska vara enkla att genomföra på ett 
+ställe och automatiskt slå igenom i alla berörda delar av systemet. Organisationsförändringar, 
+namnbyten och omstruktureringar hos arbetsgivar- och fackliga organisationer ska kunna hanteras 
+utan manuellt dubbelarbete. 
+ 
+Systemet ska var utformat så att det är möjligt att lägga till noteringar, skriva kommentarer och 
+ladda upp dokument där så behövs. 
+ 
+Sökning, filtrering och export av information ska vara snabb och flexibel, och möjliggöra 
+sammansatta sökningar utan de begränsningar som präglat nuvarande lösning. 
+ 
+Systemet ska vara utformat med framtida utbyggbarhet i åtanke, så att det vid behov kan utökas 
+med fler avtalstyper och nya funktioner. 
+Rapporter  
+Systemet ska stödja framtagande av standardiserade rapporter samt möjliggöra anpassade uttag i 
+vanliga format (till exempel men inte begränsat till Excel och PDF), inklusive möjligheten att 
+återskapa hur data såg ut vid ett specifikt historiskt datum.  
+Uppladdning av dokument 
+I systemet ska det vara möjligt att ladda upp dokument (avtal, avtalsprotokoll, 
+generaldirektörsbeslut om medling, partsträffsdokumentation) och koppla det till relevant entitet. 
+Skapa dokument 
+Systemet ska också göra det möjligt att skapa Word-dokument (exempelvis 
+partsträffsdokumentation, GD-beslut om medling) utifrån en dokumentmall, där förinmatad 
+information från MIIS ska kunna redigeras. 
+Systemloggning 
+Systemet ska ha en tydlig ändrings- och händelselogg som gör det möjligt att följa vad som 
+registrerats, ändrats och av vem. Användarrollerna ska vara väldefinierade och det ska vara tydligt 
+vad varje roll kan se och göra i systemet. 
+AI-stöd för registrering 
+Systemet ska innehålla ett integrerat AI-stöd som underlättar och effektiviserar 
+registreringsarbetet. AI-stödet ska fungera som ett hjälpmedel för handläggaren – inte ersätta 
+--- page 12 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 12 av 50  
+manuell bedömning – och alla förslag som systemet genererar ska granskas och godkännas av 
+användaren innan de sparas. 
+ 
+AI-stödet ska omfatta följande funktioner: 
+ 
+Snabbregistrering av nya avtal . När ett nytt avtalsprotokoll inkommer till Medlingsinstitutet, ska 
+systemet kunna identifiera vilket befintligt avtal det rör sig om och föreslå att till exempel ett nytt 
+löneavtal eller avtal om allmänna villkor ska skapas. Systemet ska ge förslag på teckningsdatum, 
+löptid och eventuell uppsägningsmöjlighet baserat på information i protokollet. Om avtalsnamn 
+saknas ska systemet kunna använda filnamn eller lista parternas gemensamma avtal som 
+underlag för identifiering. Handläggaren godkänner varje steg manuellt. Helt nya avtal – som inte 
+tidigare tecknats – ska alltid registreras manuellt. 
+ 
+Bevakningsordsmärkning . Systemet ska kunna markera och lyfta fram text i olika dokument utifrån 
+en fördefinierad och anpassningsbar tabell med bevakningsord. Funktionen syftar till att snabbt ge 
+en grov överblick över särskilt utvalda yrkanden, till exempel sådana som identifierats vid 
+partsträffar inför avtalsförhandlingarna. 
+ 
+AI-stöd vid huvud- och avtalsinformationsregistrering . Via fritextsökning i protokoll och avtal ska 
+systemet kunna identifiera och föreslå registrering av specifika skrivningar, exempelvis om 
+jämställdhet, arbetstidsförkortning eller andra utpekade bestämmelser. Funktionen fungerar som 
+stöd vid både huvudregistrering och registrering av avtalsinformation. Handläggaren godkänner 
+manuellt innan information sparas. 
+ 
+Medlingsärenden . Vid inkommet generaldirektörsbeslut om medling ska systemet kunna skapa ett 
+medlingsärende med koppling till berörda avtal, redovisa övriga parter på avtalsområdet samt visa 
+information om tidigare medlingar och eventuella spridningsrisker. 
+ 
+ 
+ 
+--- page 13 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 13 av 50  
+4.2 Viktiga begrepp 
+Följande viktiga begrepp har identifierats: 
+• Avtal  – Övergripande enhet med namn och parter. Medlingsinstitutet registrerar ett avtal 
+per part, dvs om ett avtal har fyra parter registreras det som fyra avtal. Ett avtal har 
+Registreringsstatus som kan vara Ofullständig eller Klar. Till Avtalet kopplas 
+– Löneavtal 
+Med undergrupper Lägstalön och Lönerevision 
+– Allmänna villkor 
+– Pensionsavtal, avtalsförsäkringar och övriga avta l  
+ 
+Samtliga begrepp ovan kopplade till Avtal har egna giltighetsperioder samt datum för 
+tecknande och behöver alltså inte följas åt.  
+• Avtalskonstruktion  
+Det finns sju avtalskonstruktioner som beskriver hur löneutrymmet bestäms och fördelas i 
+svenska kollektivavtal. De är definierade av Medlingsinstitutet och omfattar bland annat 
+Lokal lönebildning – sifferlösa avtal och Lönepott utan individgaranti 
+• Avtalsområde  – grupperar ihop flera avtal med olika parter. 
+• Förhandling  
+Finns två typer, Avtalsrörelse och Övrig förhandling. Kan kopplas på befintligt Avtal men 
+kan också existera fristående, då med direkta kopplingar till Parter. En förhandling av typen 
+Avtalsrörelse avser förhandling om löner och allmänna villkor medan en Övrig förhandling 
+avser annat. 
+• Förhandlingsordningsavtal  
+Avtal där parterna reglerar medling i egen regi utan Medlingsinstitutets inblandning. Det 
+finns för närvarande nio sådana avtal. De är kopplade till specifika centrala kollektivavtal, 
+men inte nödvändigtvis till alla avtal en part har. De är viktiga för att avgöra om 
+Medlingsinstitutet ska tillsätta medlare eller inte 
+• Medling 
+Beslut om medling i förbundsförhandlingar och i lokala tvister om kollektivavtal 
+• Part   
+Typer Arbetsgivarorganisation (AGO), Arbetstagarorganisation (ATO). Stöd för historik med 
+namnbyten 
+• Partsträffar  
+En partsträff är ett möte där Medlingsinstitutet träffar en av arbetsmarknadens parter inför 
+en avtalsrörelse för att få information om förhandlingsläget, identifiera risker för konflikt och 
+bedöma behovet av medling. Parterna träffar inte varandra, och en partsträff är inte en 
+förhandling   
+• Rapporturval 
+Typer Eurofound, Minimilön, Medlingsinstitutets hemsida och Konjunkturlönerapporten. 
+Egenskaper på Avtal som bestämmer om avtalet ska vara med på respektive rapport 
+• Samverkansorgan  
+Ett samverkansorgan är en organiserad samarbetsform där flera förbund går samman för 
+att samordna avtalskrav, lönepolitik eller förhandlingar, utan att förlora sin självständighet 
+som egna avtalsparter. Finns två typer, Huvudorganisation och Samverkan med tilläggsinfo 
+Förhandlande organ Ja/Nej 
+ 
+ 
+--- page 14 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 14 av 50  
+4.3 Systemskiss 
+Nedan följer en systemskiss som beskriver de olika komponenterna i systemet. 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- page 15 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 15 av 50  
+4.4 Användarflöde: Registrering av avtalsprotokoll 
+Nedan följer exempel på ett användarflöde i det nya systemet där användaren registrerar ett 
+avtalsprotokoll. Avtalet kan antingen vara nytt eller finnas i systemet. 
+ 
+  
+
+--- page 16 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 16 av 50  
+4.5 Datamodell  
+Datamodell i form av ett ER-diagram följer: (Se bilaga A för en tydligare bild) 
+ 
+ 
+För avtalstyper som kan tecknas via Part eller Samverkansorgan konstrueras kopplingstabell till 
+Avtal och stödtabell Tecknas av 
+– Pensionsavtal 
+Kopplad till Part eller Samverkansorgan 
+– Övriga avtal 
+Exempelvis förhandlingsordningsavtal. Kopplad till Part eller Samverkansorgan 
+ 
+Datamodellen ovan innehåller de centrala begreppen. Se bilaga för komplett datamodell där olika 
+stödtabeller tagits med, så som Händelselogg, Ändringslogg, Villkorsändring och Bevakningsord. 
+ 
+Observera att de fält som presenteras i datamodellen är exempel och inte uttömmande. Fält 
+kommer att tillkomma. 
+4.6 Teknisk plattform 
+Klientapplikationen ska vara webbaserad och tillgänglig via moderna webbläsare utan krav på lokal 
+installation. Klientapplikationen ska ha ett responsivt användargränssnitt och uppfylla riktlinjer för 
+tillgänglighet enligt WCAG 2.1 nivå AA. 
+ 
+Data ska lagras i en relationsdatabas, förslagsvis Microsoft SQL Server, som möjliggör 
+strukturerad hantering av avtalsinformation, parter och versionshistorik med bibehållen 
+dataintegritet och spårbarhet. 
+ 
+Försäkringskassan kommer att ha ansvar för driften av systemet, i en on-prem-lösning i 
+Medlingsinstitutets servermiljö hos Försäkringskassan. Försäkringskassan erbjuder en Model as a 
+
+--- page 17 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 17 av 50  
+Service-lösning med olika språkmodeller som kan användas för de behov av AI-lösningar som 
+framgår av kraven. 
+  
+--- page 18 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 18 av 50  
+5. Funktionella krav 
+Nedan specificeras funktionella krav grupperade per funktionsområde.  
+5.1 Startsida 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FS-001  Systemet ska ha en startsida som visar relevant 
+information för användaren liknande en dashboard. 
+informationen ska anpassas efter de olika rollerna i 
+systemet. Exempelvis ska medlingsadministratör se 
+pågående medlingar. 
+ 
+Ska-krav    
+5.2 Avtalsregistrering och -hantering 
+Systemet ska stödja registrering och förvaltning av kollektivavtal med tillhörande information. 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FA-
+001
+ 
+Systemet ska stödja registrering av avtalsområde 
+och avtal som en övergripande enhet med 
+avtalsnamn, alternativt avtalsnamn, avtalsparter och 
+avtalstyp.
+ 
+Ska-krav    
+FA-
+00 2 
+Systemet ska stödja registrering av löneavtal – en ny 
+rad per avtalsrörelse/period. 
+Ska-krav    
+FA-
+00 3 
+Systemet ska stödja registrering av allmänna villkor. Ska-krav   
+FA-
+004
+ 
+Systemet ska kunna hantera separata löptider för 
+löneavtal respektive allmänna villkor inom samma 
+avtalsöverenskommelse.
+ 
+Ska-krav    
+FA-
+00 5 
+Systemet ska stödja registrering av 
+försäkringsinformation. 
+Ska-krav   
+FA-
+00 6 
+Systemet ska stödja registrering av Övriga avtal, 
+exempelvis Förhandlingsordningsavtal. 
+Ska-krav   
+FA-
+007
+ 
+Systemet ska stödja registrering av löneavtalets 
+konstruktion: generell höjning, lönepott, individuell 
+förhandling m.m.
+ 
+Ska-krav    
+FA-
+00 8 
+Systemet ska stödja registrering av löneutrymme och 
+kostnadsram. 
+Ska-krav    
+FA-
+009  
+Systemet ska stödja registrering av 
+arbetstidsförkortning och kostnad.
+ 
+Ska-krav    
+FA-
+010 
+Systemet ska stödja registrering av individgarantier. Ska-krav    
+FA-
+011 
+Systemet ska ha en jämställdhetsflagga per avtal. Ska-krav    
+FA-
+012
+ 
+Systemet ska stödja registrering av industrimärke-
+flagga (vilka avtal ingår i märkessättande industrins 
+avtal).
+ 
+Ska-krav    
+FA-
+01 3 
+Systemet ska stödja registrering av lägstalöner 
+grupperade per yrkesgrupp med revisionsdatum.
+ 
+Ska-krav    
+--- page 19 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 19 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FA-
+01 4 
+Systemet ska stödja registrering av arbetsgrupper 
+med frågeområden.
+ 
+Ska-krav    
+FA-
+01 5 
+Systemet ska stödja registrering på avtal som löper 
+ut och inte förnyas. 
+Ska-krav   
+FA-
+01 6 
+Systemet ska stödja registrering av förtida 
+uppsägning.
+ 
+Ska-krav    
+FA-
+01 7 
+Systemet ska stödja registrering av medling i egen 
+regi, genom Förhandlingsordningsavtal 
+ 
+Ska-krav    
+FA-
+01 8 
+Systemet ska stödja hantering av protokoll där 
+avtalsnamn inte framgår.
+ 
+Ska-krav    
+FA-
+01 9 
+Systemet ska göra det möjligt för användaren att 
+söka fram avtal med vissa egenskaper. 
+Ska-krav   
+FA-
+020 
+Systemet ska kunna visa användaren ett avtal med 
+tillhörande löneavtal och allmänna villkor som är 
+giltiga vid en viss tidpunkt. 
+Ska-krav   
+FA-
+021 
+Systemet ska stödja ofullständig registrering på Avtal 
+(exempelvis med en registreringsstatus som kan 
+vara Ofullständig till skillnad från status Klar). 
+Ska-krav   
+FA-
+022  
+Systemet ska stödja markering av Påminnelse om 
+att uppdatera ett Avtal vid ett visst datum 
+ 
+Ska-krav    
+FA-
+023 
+ 
+Systemet ska stödja full registrering av pensionsavtal 
+inklusive upp till tre pensionssystem med 
+lönegränser och premier.
+ 
+Ska-krav   Steg 2  
+FA-
+024
+ 
+Systemet ska stödja registrering av 
+försäkringsinformation (källa, sjukdom, arbetsskada, 
+föräldraskap, dödsfall, omställning, annan).
+ 
+Ska-krav   Steg 2  
+FA-
+025 
+Systemet ska kunna visa användaren ett 
+avtalsområde och avtal med tillhörande löneavtal, 
+allmänna villkor och övriga avtal som är giltiga vid en 
+viss tidpunkt. 
+Ska-krav  Steg 2 
+5.3 Partshantering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FP-001 Systemet ska hålla ett register över 
+arbetsgivarorganisationer (AGO) med historik för 
+namnbyten. Arbetsgivarorganisationer ska kopplas 
+till sektor (privat/stat/kommuner och regioner) och till 
+arbetsgivargrupp. Arbetsgivarorganisationer inom 
+Svenskt Näringsliv ska vara kopplade till 
+branschkod.
+ 
+Ska-krav    
+FP-002 Systemet ska hålla ett register över 
+arbetstagarorganisationer (ATO) med historik för 
+namnbyten och organisatoriska förändringar
+ 
+Ska-krav    
+FP-003 Systemet ska hålla ett register över 
+Samverkansorgan med kopplingar till AGO och ATO 
+och tidsperiod.
+ 
+Ska-krav    
+--- page 20 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 20 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FP-004 Namnändring på en part ska kunna göras på ett 
+ställe och automatiskt slå igenom i samtliga gällande 
+avtal. Namnändringar ska inte slå igenom på 
+historiska avtal.
+ 
+Ska-krav    
+FP-005 Systemet ska göra det möjligt för användaren att 
+söka fram parter med vissa egenskaper. 
+Ska-krav   
+FP-006 Systemet ska stödja koppling till kontaktpersoner 
+(namn, titel, telefon, e-post) för såväl AGO som ATO.
+ 
+Ska-krav    
+ 
+5.4 Dokumenthantering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FD-
+001 
+ 
+Systemet ska stödja uppladdning och hantering av 
+dokument kopplade till avtal (protokoll, avtal, övriga 
+handlingar), GD-beslut om medling, medlarrapporter 
+samt partsträffsdokumentation.
+ 
+Ska-krav    
+ 
+5.5 Händelse- och ändringslogg 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FH-
+001  
+Systemet ska föra en ändringslogg som registrerar 
+vilken information som ändrats, av vem och när.
+ 
+Ska-krav    
+FH-
+002 
+ 
+Systemet ska föra en händelselogg för övergripande 
+händelser kopplade till ett avtal (till exempel 'medling 
+startar', 'avtal tecknat').
+ 
+Ska-krav    
+FH-
+003 
+ 
+Systemet ska möjliggöra 'bokslut' – dvs. återskapa 
+hur data såg ut vid ett specifikt datum (till exempel 
+31 december ett givet år).
+ 
+Ska-krav    
+5.6 Sök, export och rapportering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FR-
+001 
+Systemet ska stödja sökning på alla centrala 
+begrepp med relevanta sökfilter, både i urval och i 
+dokument. 
+Ska-krav   
+FR-
+002 
+Systemet ska stödja sökbyggarfunktion liknande den 
+som finns i det nuvarande systemet. Användaren 
+väljer om sökning gäller avtalsinformation, 
+medlingsinformation osv. Det ska vara en flexibel 
+sökning/filtrering med urvalskriterier på alla relevanta 
+egenskaper, kombinerbara med och/eller, möjlighet 
+att välja presentationskolumner och spara sökningar. 
+ 
+Ska-krav   
+FR-
+003  
+Systemet ska stödja fritext-sökning i uppladdade 
+dokument och i urval.
+ 
+Ska-krav    
+--- page 21 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 21 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FR-
+004  
+Systemet ska stödja export till Excel. Ska-krav    
+FR-
+005  
+Systemet ska ha en rapportgenerator med stöd för 
+minst Word/Excel/PDF.
+ 
+Ska-krav    
+FR-
+006  
+Systemet ska kunna skapa 'Avtalsrörelserapporten' 
+(prioriterad befintlig rapport).
+ 
+Ska-krav    
+FR-
+007  
+Systemet ska kunna skapa rapporten 
+'Avtalskonstruktioner' (prioriterad befintlig rapport).
+ 
+Ska-krav    
+FR-
+008 
+ 
+Systemet ska kunna skapa 
+’Konjunkturlönerapporten’. Rapporten ska skrivas 
+ut/exporteras från en vy som visar en lista med 
+bevakade avtal, en statuskolumn där det framgår om 
+ett avtal är registrerat eller delvis registrerat samt en 
+länk till protokollet även vid ofullständig registrering. 
+Systemet ska hålla reda på vilka avtal som 
+exporterats till rapporten sedan tidigare, vilket också 
+ska framgå av vyn.
+ 
+Ska-krav    
+FR-
+009  
+Systemet ska kunna skapa rapporter för 
+Medlingsinstitutets hemsida 
+Ska-krav  Steg 2 
+FR-
+010  
+Systemet ska kunna skapa rapporter för Eurofound 
+och Minimilön 
+Ska-krav  Steg 2 
+FR-
+011
+ 
+Systemet ska stödja utlämning av protokoll och 
+avtalstryck utan Sekretessmarkerad 
+avtalsinformation för medlare och allmänhet.
+ 
+Ska-krav    
+FR-
+012 
+Systemet ska stödja färgkodning av avtals-status, 
+där nytecknade avtal utan medling markeras med 
+grön färg, avtal som tecknats efter medling markeras 
+med röd färg och kvarstående avtal visas i blått, men 
+rödmarkeras om de har koppling till medling. 
+Ska-krav   
+FR-
+01 3 
+Systemet bör stödja export i strukturerade format (till 
+exempel CSV/JSON) för statistikändamål. 
+Bör-krav    
+FR-
+01 4 
+Systemet bör stödja schemalagda rapportuttag. Bör-krav    
+5.7 Skapa dokument 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FSD-
+001 
+ 
+Systemet ska göra det möjligt att skapa GD-beslut 
+om medling utifrån dokumentmallar – en variant med 
+varsel och en utan varsel.
+ 
+Ska-krav    
+FSD-
+002  
+Systemet ska göra det möjligt att skapa 
+Partsträffsdokument utifrån en dokumentmall.
+ 
+Ska-krav    
+ 
+ 
+--- page 22 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 22 av 50  
+5.8 AI-funktionalitet 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FAI-
+001 
+ 
+Vid registrering av avtal ska systemet kunna föreslå 
+extraktion av nyckelinformation så som löptid, parter, 
+löneutrymme från uppladdat protokoll/avtal med AI-
+stöd.
+ 
+Ska-krav    
+FAI-
+002 
+ 
+AI-förslag ska alltid kräva manuell granskning och 
+godkännande av handläggare innan det sparas. 
+Inget ska göras automatiskt.
+ 
+Ska-krav    
+FAI-
+003  
+Systemet ska stödja OCR-tolkning av inskannade 
+dokument.
+ 
+Ska-krav    
+FAI-
+004  
+Systemet ska ha funktionalitet för att markera och 
+plocka ut bevakningsord ur dokument 
+Ska-krav   
+5.9 Förhandling- och Medlingshantering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FF-001 Systemet ska stödja registrering av förhandlingar, 
+som antingen kan vara kopplade till avtal eller 
+frikopplade 
+Ska-krav   
+FF-002 Systemet ska ha funktionalitet så att förhandlingar 
+som leder till avtal  kopplas till det nytecknade avtalet 
+via protokollsuppladdningen  
+Ska-krav   
+FF-003  Systemet ska ha funktionalitet så att förhandlingar 
+som inte leder till avtal  ska kunna markerade som 
+avslutade med en viss status, antingen manuellt eller 
+med automatik  
+Ska-krav    
+FF-004 Systemet ska stödja registrering och utskrift av 
+partsträffsinformation. Det ska gälla registrering av 
+information både inför och efter en träff, men även 
+ge möjlighet för användaren att mata in information 
+direkt under mötet i en interaktiv vy 
+ 
+Ska-krav    
+FF-005 Systemet ska stödja registrering av samordnade 
+avtalskrav, med flagga om kravet är samordnat eller 
+eget förbundskrav. Samordnade avtalskrav ska 
+kunna kopplas till de förbund som ställt sig bakom 
+det. Det ska även vara möjligt att spara dokument 
+kopplade till samordnade avtalskrav i systemet. 
+Ska-krav   
+FF-006 Systemet ska stödja hantering av 
+medlingsinformation både Särskilda medlingar 
+(förbundsförhandlingar med generaldirektörsbeslut) 
+och Fasta medlingar (lokala tvister). Fasta medlingar 
+hanteras i förenklad form i ett separat formulär. 
+Systemet ska visa om ett avtal täcks av 
+förhandlingsordningsavtal eller inte.  
+Ska-krav    
+FF-007 Om ett medlingsärende i systemet har koppling till ett 
+ärende i diariesystemet, ska det vara möjligt att ange 
+diarienumret i ett därför avsett fält i systemet 
+Ska-krav   
+FF-008 Ett medlingsärende ska kunna kopplas till flera avtal. Ska-krav   
+--- page 23 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 23 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FF-009 Systemet ska ha ett medlarregister av medlare med 
+kontaktuppgifter, typ av medling (särskild/fast), 
+statistik per medlare (år/avtalsområde) och historik 
+inkl. position (ettan/tvåan) 
+Ska-krav   
+FF-010 Systemet ska göra det möjligt att registrera och visa 
+medlingsresultat med fält för: typ av medling, 
+stridsåtgärder, förlorade arbetsdagar, antal berörda 
+anställda, typ av stridsåtgärd 
+Ska-krav   
+ 
+5.10 Registrering av ”Märket” 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FM-
+001 
+ 
+Systemet ska ha en funktion som gör det möjligt att 
+registrera ”Märket” som en periodiserad inställning 
+med fritext för kostnadsram (%), periodisering och 
+tilläggsöverenskommelser
+ 
+Ska-krav    
+FM-
+002 
+Systemet ska larma när nytt avtalsprotokoll på 
+Industriavtalet registreras för period utan 
+märkesdefinition 
+Ska-krav   
+FM-
+003 
+Information om märket ska visas för användarna i 
+olika vyer i systemet där det är relevant, bland annat 
+i medlarvyn 
+Ska-krav   
+ 
+5.11 Skicka epost 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+FE-001  Systemet ska ha en funktion som gör det möjligt att 
+skicka notiser och påminnelser via epost, till exempel 
+skickas notifierings-epost till medlaradministratör när 
+ett medlingsbeslut klarmarkerats, och 
+avtalsadministratören får ett mejl om den lagt in en 
+påminnelse på ett avtal om att uppdatera det vid ett 
+visst datum 
+ 
+Ska-krav    
+FE-002  Mejl som skickas från systemet kan både innehålla 
+information till mottagaren, i form av mejltext eller 
+bifogade dokument, men kan också innehålla en 
+länk till systemet, som mottagaren kan klicka på för 
+att öppna ett avtal eller ett medlingsärende i 
+systemet 
+Ska-krav    
+FE-003 När mejl skickas ska det loggas i Händelseloggen  Ska-krav    
+  
+--- page 24 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 24 av 50  
+6. Icke-funktionella krav 
+Leverantörskraven nedan avser krav kopplade till applikationsnära drift. 
+6.1 Prestanda och skalbarhet 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFP-
+001  
+Systemet ska inte ha kapacitetstak på antal avtal.  Ska-krav    
+NFP-
+002  
+Rapporter ska genereras inom rimlig tid. Inga 
+rapporter ska 'hänga sig' på grund av datamängd.
+ 
+Ska-krav    
+NFP-
+003  
+Sökning ska returnera resultat inom 3 sekunder för 
+standardsökningar.
+ 
+Ska-krav    
+NFP-
+004  
+Systemet ska vara skalbart för att hantera ökad 
+datamängd utan arkitekturell ombyggnad.
+ 
+Ska-krav    
+6.2 Åtkomstkontroll och autentisering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFÅ-
+001
+ 
+Systemet ska stödja autentisering via federerad 
+identitetslösning baserad på SAML 2.0 via 
+Försäkringskassans IdP (EFOS-kort).
+ 
+Ska-krav    
+NFÅ-
+002 
+Inaktiva sessioner ska avslutas automatiskt efter en 
+konfigurerbar tidsgräns (default max 30 minuter 
+inaktivitet). 
+Ska-krav   
+NFÅ-
+003
+ 
+Systemet ska ha stöd för rollbaserad åtkomstkontroll 
+(RBAC) som möjliggör att olika användargrupper 
+enbart kan se och ändra information som de är 
+behöriga till. Se beskrivning av roller i avsnitt 3.2.
+ 
+Ska-krav    
+NFÅ-
+00 4 
+Sekretessmarkerad avtalsinformation ska inte visas 
+för icke-behöriga användare (medlare, allmänhet). 
+ 
+Ska-krav    
+NFÅ-
+005 
+Behörigheter ska kunna administreras i systemet 
+utan leverantörens medverkan av Medlingsinstitutets 
+egna behörighetsadministratörer. Det gäller upplägg 
+och redigering av användare och rolltilldelning. 
+Ska-krav   
+NFÅ-
+006  
+Allmänhetens åtkomst ska begränsas till 
+Medlingsinstitutets IP-adress. 
+Ska-krav    
+NFÅ-
+007  
+Externa användare (medlare) ska kunna 
+autentiseras via Bank-ID eller liknande.
+ 
+Option   Steg 2 
+6.3 Loggning och spårbarhet 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFL-
+001  
+Systemet ska logga alla inloggningar och 
+utloggningar, med tidsstämpel och användar-ID.
+ 
+Ska-krav    
+NFL-
+002  
+Systemet ska logga alla skapanden, ändringar och 
+raderingar av data, inklusive vem som utförde 
+Ska-krav    
+--- page 25 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 25 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+åtgärden, när och vad som ändrades (old/new 
+value).
+ 
+NFL-
+003 
+ 
+Loggar ska lagras i minst 24 månader och ska inte 
+kunna ändras eller raderas av vanliga användare 
+eller systemadministratörer.
+ 
+Ska-krav    
+NFL-
+004 
+Medlingsinstitutet ska ha tillgång till loggarna via ett 
+administrativt gränssnitt eller exportfunktion utan att 
+behöva kontakta leverantören. 
+Ska-krav   
+ 
+6.4 Kryptering och säker kommunikation 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFK-
+001 
+ 
+All kommunikation mellan klient och server ska 
+krypteras med TLS 1.2 eller högre. Stöd för äldre 
+protokollversioner (SSL, TLS 1.0, TLS 1.1) ska vara 
+avaktiverat.
+ 
+Ska-krav    
+6.5 Säker systemutveckling och sårbarhetshantering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFS-
+001
+ 
+Leverantören ska följa principer för säker 
+systemutveckling (till exempel OWASP Top 10), 
+genomföra säkerhetstester (inklusive 
+penetrationstester) inför driftsättning och ha en 
+process för att hantera säkerhetsbrister löpande 
+under systemets livstid.
+ 
+Ska-krav    
+NFS-
+002
+ 
+Kända sårbarheter i systemets beroenden (libraries, 
+ramverk, OS-paket) ska hanteras enligt en definierad 
+process med SLA för kritiska sårbarheter (max 30 
+dagar).
+ 
+Ska-krav    
+NFS-
+003
+ 
+Källkoden som levereras till Medlingsinstitutet ska 
+inte innehålla hårdkodade hemligheter (lösenord, 
+API-nycklar, certifikat). 
+Ska-krav    
+NFS-
+004
+ 
+Leverantören ska ha ett dokumenterat Vulnerability 
+Disclosure Program (VDP) eller annan kanal för att 
+ta emot säkerhetsrapporter.
+ 
+Ska-krav    
+ 
+ 
+ 
+--- page 26 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 26 av 50  
+6.6 Tillförlitlighet och driftsäkerhet 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFT-
+001 
+ 
+Leverantören ska säkerställa att applikationen är 
+tillgänglig och funktionsduglig på minst 99 % av 
+kontorstid (08:00–17:00 helgfria vardagar), exklusive 
+planerat underhåll, förutsatt att den av beställaren 
+tillhandahållna infrastrukturen och servermiljön är i 
+drift och tillgänglig.
+ 
+Ska-krav    
+NFT-
+002 
+ 
+Leverantören ska ha dokumenterade rutiner för 
+säkerhetskopiering och återläsning av 
+applikationsdata och applikationskonfiguration som 
+leverantören ansvarar för. Rutiner för 
+säkerhetskopiering av underliggande infrastruktur 
+och servermiljö faller utanför leverantörens åtagande 
+och regleras separat.
+ 
+Ska-krav    
+NFT-
+003 
+ 
+Leverantörens återställningstid (RTO) för 
+applikationen vid driftstopp som orsakas av fel i 
+applikationen ska vara max 8 timmar, räknat från det 
+att felet har bekräftats ligga inom leverantörens 
+ansvar. Tid för att avhjälpa fel i infrastruktur eller 
+servermiljö som inte ingår i leverantörens åtagande 
+räknas inte in i RTO.
+ 
+Ska-krav    
+6.7 Incidenthantering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFI-
+001 
+ 
+Leverantören ska ha en dokumenterad 
+incidenthanteringsprocess i enlighet med NIS2 och 
+ISO/IEC 27001.
+ 
+Ska-krav    
+NFI-
+002 
+ 
+Leverantören ska rapportera säkerhetsincidenter 
+som påverkar Medlingsinstitutets data eller tjänst till 
+Medlingsinstitutet inom 24 timmar från det att 
+incidenten identifierats.
+ 
+Ska-krav    
+NFI-
+003 
+ 
+Leverantören ska tillhandahålla en incidentrapport 
+med rotorsaksanalys och åtgärdsplan inom 5 
+arbetsdagar efter avslutad incident.
+ 
+Ska-krav    
+ 
+6.8 Underhållbarhet och ägandeskap 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFU-
+001  
+Systemet ska ägas fullt ut av Medlingsinstitutet med 
+full rätt att använda och vidareutveckla det. 
+Ska-krav    
+NFU-
+002  
+Källkod och teknisk dokumentation ska överlämnas 
+till Medlingsinstitutet.
+ 
+Ska-krav    
+NFU-
+003 
+ 
+Systemet ska vara byggt med öppna standarder och 
+teknologier för att undvika inlåsning till specifik 
+leverantör.
+ 
+Ska-krav    
+--- page 27 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 27 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFU-
+004 
+ 
+Systemet ska vara dokumenterat så att annan 
+leverantör kan ta över förvaltning och 
+vidareutveckling.
+ 
+Ska-krav    
+6.9 Arkitektur 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFA-
+001 
+ 
+Systemet får inte ha direkta eller indirekta 
+beroenden till externa molntjänster (t.ex. 
+Microsoft Azure/Entra ID, AWS eller Google 
+Cloud). 
+Ska-krav    
+6.10 Användargränssnitt 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFUI-
+001 
+ 
+Klientapplikationen ska vara webbaserad och 
+tillgänglig via moderna webbläsare utan krav på 
+lokal installation.  
+Ska-krav    
+NFUI-
+002 
+Klientapplikationen ska ha ett responsivt 
+användargränssnitt. 
+Ska-krav   
+NFUI-
+003 
+ 
+Klientapplikationen ska uppfylla riktlinjer för 
+tillgänglighet enligt WCAG 2.1 nivå AA. 
+Ska-krav    
+6.11 Migrering 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+NFM-
+001  
+Aktuellt data i W3D3 ska migreras till det nya 
+systemet. 
+Ska-krav    
+NFM-
+00 2 
+Befintligt data i Access-databasen ska migreras till 
+det nya systemet. 
+Ska-krav  Steg 2 
+NFM-
+00 3 
+Migrering ska genomföras med bibehållen 
+datakvalitet och verifieras.
+ 
+Ska-krav    
+7. Leverantörskrav 
+Leverantörskraven nedan avser krav kopplade till applikationsnära drift. 
+ 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+L-001  Leverantören ska ha en dokumenterad 
+kontinuitetsplan som innehåller drift- och 
+avbrottsdokumentation, reserv- och 
+återställningsrutiner samt beskriver hur 
+uthållighet och robusthet säkerställs.
+ 
+Ska-krav    
+--- page 28 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 28 av 50  
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+L-002 Leverantören ska ha en dokumenterad krisplan 
+som säkerställer förmågan att hantera kriser och 
+begränsa konsekvenser. 
+Ska-krav   
+L-003  Leverantören ska vid kris och höjd beredskap ge 
+beställaren löpande information om läge och 
+prioritet från krisledningsmöten, i enlighet med 
+Förordning (SFS 2022:524) om statliga 
+myndigheters beredskap.
+ 
+Ska-krav    
+L-004 Leverantören ska efter avtalets upphörande, 
+eller på begäran, säkerställa att all data som kan 
+härledas till beställaren raderas på ett 
+oåterkalleligt sätt. Skriftlig bekräftelse på utförd 
+radering ska lämnas. 
+Ska-krav   
+L-005 Leverantören ska ha dokumenterade 
+kontaktvägar och kommunikationsplaner för 
+hantering av informationssäkerhetsincidenter. 
+Ska-krav   
+L-006 Leverantören ska ha dokumenterade processer 
+för säkerhetsuppdatering av de system som 
+nyttjas i leveransen. 
+Ska-krav   
+L-007 Leverantören ska ha ett dokumenterat 
+ledningssystem för informationssäkerhet (ISMS) 
+i enlighet med ISO/IEC 27001 eller motsvarande 
+som omfattar IT-stödet. 
+Ska-krav  Certifikat/ 
+Dokumentation 
+ 
+L-008 Medlingsinstitutet ska ha rätt att genomföra eller 
+låta genomföra revision av leverantörens 
+informations-säkerhetsarbete inom skälig tid 
+(minst 30 dagar). 
+Ska-krav   
+  
+--- page 29 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 29 av 50  
+8. Datakrav och Sekretess 
+8.1 Personuppgiftshantering 
+Systemet kommer att hantera kontaktuppgifter (såsom namn, e-post och telefon) för medlare och 
+avtalsparter samt alla avtalsunderskrifter. Alla personuppgifter ska hanteras i enlighet med GDPR. 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+D-001  Systemet ska stödja Sekretess-markering av avtal 
+med känslig information. Sekretessmarkering kan 
+sättas av Avtalsadministratör och gäller framförallt 
+bifogade dokument.
+ 
+Ska-krav    
+D-002  Detaljinformation i sekretess-markerade avtal ska 
+inte visas för obehöriga användare eller i publika 
+rapporter, däremot ska de räknas med i statistik.
+ 
+Ska-krav    
+D-003  Leverantören ska agera som personuppgiftsbiträde 
+för den personuppgiftsbehandling som sker i 
+systemet på uppdrag av Medlingsinstitutet. Ett 
+personuppgiftsbiträdesavtal (DPA) ska tecknas i 
+samband med avtal.
+ 
+Ska-krav    
+D-004  Systemet ska stödja gallring av personuppgifter i 
+enlighet med Medlingsinstitutets gallringsrutiner, 
+inklusive möjlighet att definiera automatiska 
+gallringsregler.
+ 
+Ska-krav    
+D-005  All data ska lagras och behandlas inom EU/EES. 
+Leverantören ska informera Medlingsinstitutet och 
+inhämta godkännande innan data behandlas i 
+tredjeland.
+ 
+Ska-krav    
+D-006  Leverantören ska inhämta Medlingsinstitutets 
+skriftliga godkännande innan underleverantörer som 
+behandlar personuppgifter anlitas eller byts ut.
+ 
+Ska-krav    
+  
+--- page 30 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 30 av 50  
+9. Testning och verifiering 
+9.1 Teststrategi 
+Teststrategin syftar till att säkerställa att det nya systemet uppfyller de krav som ställs inom ramen 
+för Medlingsinstitutets kollektivavtalsbevakning. 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+T-001  Systemet ska genomgå enhetstester, 
+integrationstester och systemtester innan 
+driftsättning. Testerna ska dokumenteras.
+ 
+Ska-krav    
+T-002  Testning ska ske mot anonymiserade eller fiktiva 
+protokoll och avtal som representerar variationer i 
+det svenska kollektivavtalslandskapet.
+ 
+Ska-krav    
+T-003  Testdata ska inkludera edge cases, såsom helt nya 
+avtal utan tidigare version i systemet.
+ 
+Ska-krav    
+T-004 Regressionstest ska genomföras vid uppdateringar 
+av systemet eller AI-modellen för att säkerställa att 
+befintlig funktionalitet inte påverkas negativt. 
+Ska-krav   
+9.2 Acceptanstestning 
+Systemet ska genomgå acceptanstestning med faktiska användare på Medlingsinstitutet innan 
+driftsättning. Testning ska inkludera representanter för samtliga användarroller. 
+Krav-
+ID  
+Kravbeskrivning  Klass  Status  Notering  
+T-005 Leverantören ska tillhandahålla testmiljö för UAT 
+(User Acceptance Testing).
+ 
+Ska-krav    
+T-006 Samtliga ska-krav ska verifieras och godkännas av 
+Medlingsinstitutet innan slutleverans.
+ 
+Ska-krav    
+T-007 Migrering ska verifieras med avseende på 
+datakvalitet och fullständighet.
+ 
+Ska-krav    
+T-008 Innan slutgiltig leverans godkänns ska 
+funktionaliteten produktionsverifieras av 
+Medlingsinstitutet efter driftsättning. 
+Ska-krav   
+  
+--- page 31 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 31 av 50  
+10. Bilagor 
+Följande bilagor hör till kravspecifikationen: 
+• Bilaga A: Databasdiagram nytt system 
+• Bilaga B: Databasdiagram nuvarande system (W3D3)  
+• Bilaga C: Databasdiagram tidigare system (Accessd atabasen) 
+• Bilaga D: Exempel på avtalsprotokoll  
+• Bilaga E: Exempel på GD-beslut kring medling 
+• Bilaga F: Rapportexempel (faktiska utskrifter frå n nuvarande system) 
+ 
+  
+--- page 32 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 32 av 50  
+Bilaga A: Komplett datamodell nytt system 
+Komplett datamodell i form av ett ER-diagram har tagits fram som beskriver det nya systemets 
+uppbyggnad.  
+ 
+ 
+ 
+Observera att de fält som presenteras i datamodellen är exempel och inte uttömmande. Fält 
+kommer att tillkomma. 
+ 
+ 
+  
+
+--- page 33 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 33 av 50  
+Bilaga B: Databasdiagram nuvarande system W3D3 (Formpipe) 
+Förenklad databasdiagram har tagits fram som beskriver det nuvarande systemets uppbyggnad.  
+ 
+ 
+ 
+Följande handlingstyper har identifierats: 
+• Arbetsgivarorganisation 
+• Arbetstagarorganisation 
+• Löneavtal 
+• Allmänna villkor 
+• Lönerevision 
+• Lägstlön 
+• Arbetsgrupp 
+• Särskilda frågor 
+• Pensionsavtal 
+• Försäkringar 
+• Övrigt avtal 
+• Kontaktpersoner 
+• Alla parter 
+• Protokoll 
+• Avtal 
+• Protokoll PFÖ 
+• Avtal PFÖ 
+ 
+Följande metadatatyper har identifierats: 
+• AGO/ATO 
+• Sektor (AGO), Central arbetsgivarorganisation, Ar betsgivargrupp 
+• Central arbetstagarorganisation, Samverkansgrupp 
+• Avtalstyp (för Basfakta och Övrigt avtal) 
+• Allmänna villkor, Villkorsförändring (1–3) 
+• Lönerevision, Avtalskonstruktion, Alternativ avta lskonstruktion 
+• Enhet (för nivåhöjningar, individgaranti och arbe tskraftskostnader) 
+
+--- page 34 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 34 av 50  
+• Lägstlön, Enhet 1–2 
+• Arbetsgrupp, Huvudgrupp 
+• Pensionsavtal (primärt och sekundärt system 1–3) 
+• Övrigt avtal, Diarienr Industriavtalet, Industrin s avtal 
+ 
+  
+--- page 35 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 35 av 50  
+Bilaga C: Databasdiagram tidigare system (Accessdatabasen) 
+Ett diagram med databas-tabeller ur tidigare system presenteras nedan: 
+ 
+ 
+ 
+ 
+  
+
+--- page 36 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 36 av 50  
+Bilaga D: Exempel på avtalsprotokoll 
+Exempel på avtalsprotokoll följer nedan. Endast de första sidorna visas. 
+ 
+
+--- page 37 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 37 av 50  
+ 
+ 
+ 
+ 
+
+--- page 38 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 38 av 50  
+Bilaga E: Exempel på generaldirektörsbeslut om medling 
+Två exempel på generaldirektörsbeslut om medling följer nedan. 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- page 39 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 39 av 50  
+Bilaga F: Rapportexempel (faktiska utskrifter från nuvarande 
+system) 
+Nedan följer rapporter från nuvarande systemet. För varje rapport visas urvalsbild och resultat. 
+Rapport 1: Avtal – Allmänheten 
+ 
+ 
+ 
+ 
+ 
+  
+
+--- page 40 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 40 av 50  
+Rapport 2: Avtalskonstruktioner 
+ 
+ 
+ 
+ 
+
+--- page 41 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 41 av 50  
+ 
+ 
+
+--- page 42 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 42 av 50  
+ 
+ 
+ 
+  
+
+--- page 43 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 43 av 50  
+Rapport 3: Avtalsrörelse 
+ 
+ 
+ 
+
+--- page 44 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 44 av 50  
+ 
+ 
+ 
+
+--- page 45 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 45 av 50  
+ 
+ 
+ 
+ 
+  
+
+--- page 46 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 46 av 50  
+Rapport 4: Huvudrapport 
+ 
+ 
+ 
+
+--- page 47 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 47 av 50  
+ 
+  
+
+--- page 48 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 48 av 50  
+Rapport 5: Medlare 
+ 
+ 
+
+--- page 49 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 49 av 50  
+ 
+ 
+  
+
+--- page 50 ---
+Kravspecifikation – Medlingsinstitutets informationssystem  Medlingsinstitutet / Veratech  
+Version 1 Sida 50 av 50  
+Rapport 6: Pensionsavtal och övriga avtal 
+ 
+ 
+ 
+ 
+ 
+ 

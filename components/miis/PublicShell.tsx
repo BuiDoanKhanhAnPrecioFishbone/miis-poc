@@ -53,12 +53,25 @@ export function PublicShell({
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
           <div className="flex items-center gap-4">
             {/* Placeholder mark — see CLAUDE.md. The official logo is never redrawn. */}
-            <span
+            {/*
+              Medlingsinstitutet's own mark, supplied by MI and installed
+              verbatim — the crown is a protected state emblem and is never
+              redrawn (CLAUDE.md rule 6). The file is the white version, which
+              is the one MI's artwork is drawn for: every path is #FFFFFF, i.e.
+              it is made for a dark or coloured ground, which is what the header
+              is. Its own proportions are 284.8 × 511.5, so it is set by height
+              and left to find its width rather than forced into the square the
+              placeholder used.
+            */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/mi-mark-white.svg"
+              alt=""
               aria-hidden
-              className="grid size-11 shrink-0 place-items-center rounded-sm bg-[var(--mi-sand-500)] font-display text-section font-bold text-[var(--mi-ink)]"
-            >
-              MI
-            </span>
+              width={25}
+              height={44}
+              className="h-11 w-auto shrink-0"
+            />
             <span className="leading-tight">
               <span className="block font-display text-section font-semibold">
                 {t.common.appName}

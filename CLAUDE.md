@@ -8,8 +8,17 @@ presentation at MI in week 35.
 
 Read `docs/00-START-HERE.md` before doing design work.
 
-**Three source documents, all in `docs/requirements/` with a searchable `.txt` beside
-the authoritative `.docx`. Check work against all three, not just the first:**
+**Five source documents in `docs/requirements/`, each with a searchable `.txt` beside
+the authoritative original. Check work against all of them, not just the first.**
+
+**MI's own, in Swedish — these outrank ours:**
+
+| | |
+|---|---|
+| `tender/Bilaga_1_Kravspecifikation.pdf` | **This is "Appendix 1"** — MI's real requirement specification, 50 pages, diarienummer 2026/0059. §3.1 roles, §4.3 system sketch, §4.4 the registration flow, §5 the requirement tables. **§4.3 and §4.4 are diagrams and are absent from the `.txt` — open the PDF** |
+| `tender/Avropsforfragan.pdf` | The call-off request. §16 is how the response is scored: our criterion is worth **SEK 1 000 000 of 2 500 000**, awarded in five bands (100/75/50/25/0 %), judged on *relevans, tydlighet, konkretionsgrad, genomförbarhet* and understanding of MI's needs |
+
+**Ours, written from MI's — useful, but second-hand:**
 
 | | |
 |---|---|
@@ -17,9 +26,12 @@ the authoritative `.docx`. Check work against all three, not just the first:**
 | `bargaining-process-EN.txt` | How the Swedish bargaining round actually works, phase by phase, and which MIIS menu and scenarios serve each phase (chapter 5) |
 | `information-model-EN.txt` | The 34-entity logical model and the SQL Server schema it becomes — the shape `lib/domain/` is meant to converge on |
 
-`docs/12-source-documents.md` records what they confirm, what they corrected, and the
-places our domain model still diverges. When our shape differs from the information
-model, the model wins.
+`docs/13-tender-pack.md` records what MI's originals settle — the nav, the five steps and
+the eight roles all check out — and what has **not** been diffed yet (chapter 5's
+requirement tables). `docs/12-source-documents.md` records the same for the two English
+guides, plus the places our domain model still diverges from the information model.
+
+**When our English rendering and MI's Swedish original disagree, MI's original wins.**
 
 ## Hard rules
 
@@ -69,9 +81,16 @@ model, the model wins.
    happy path asserts human review instead of demonstrating it.
    AI belongs where a requirement puts it. There is no general assistant: the only
    free-standing AI surface is the §4.1 decision-support panel on a mediation case.
-6. **Do not touch the logo.** The MI logo contains a protected Swedish state emblem.
-   The `MI` square in the header is a placeholder until MI supplies the official asset.
-   Never generate, redraw or "improve" it.
+6. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
+   a royal crown over the shield. **MI supplied the official asset on 2026-08-18**, so
+   the `MI` placeholder square is gone; `public/mi-mark-white.svg` is MI's own file with
+   its paths untouched. Never generate, redraw, recolour or "improve" it, and never
+   substitute a lookalike. The only edit ever made was cropping the `viewBox` from the
+   square export to the artwork's own bounds (`56.7 29.5 284.8 511.5`, measured with
+   `getBBox()`), because the emblem is portrait and the square canvas was padding.
+   White on the dark header is MI's intended treatment — every path in the source is
+   `#FFFFFF`. `public/icon.svg` is the same artwork as the tab icon, with a fill rule so
+   it survives a dark browser theme; `public/favicon.ico` is MI's file verbatim.
 7. **Never rewrite pushed git history** (no force-push, rebase, amend or squash of
    pushed commits). Others review from this history and from deployed builds of it.
 

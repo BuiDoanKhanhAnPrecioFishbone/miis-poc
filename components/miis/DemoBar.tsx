@@ -39,9 +39,9 @@ function setCookie(name: string, value: string) {
 }
 
 const controlClass =
-  "min-h-11 w-full rounded-sm border-2 border-demo-border bg-card px-3 py-1.5 text-label font-semibold text-foreground";
+  "min-h-11 min-w-0 rounded-sm border-2 border-demo-border bg-card px-3 py-1.5 text-label font-semibold text-foreground";
 
-const labelClass = "text-meta font-bold uppercase tracking-wide text-demo-foreground";
+const labelClass = "shrink-0 text-meta font-bold uppercase tracking-wide text-demo-foreground";
 
 export function DemoBar({
   role,
@@ -72,12 +72,21 @@ export function DemoBar({
 
   return (
     <div className="border-b-2 border-dashed border-demo-border bg-demo text-demo-foreground">
-      <div className="flex flex-wrap items-end gap-x-4 gap-y-3 px-5 py-2.5 sm:px-8">
-        <p className="mr-2 flex-1 basis-full text-meta font-bold uppercase tracking-wide xl:basis-auto">
-          {t.title}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2 sm:px-8">
+        {/*
+          The strip has to stay unmistakably not-MIIS (CLAUDE.md), which is what
+          the dashed border, the demo ground and these two sentences do. They no
+          longer take a full-width row each: the label and the explanation are
+          one block on the left, and the controls sit beside them rather than
+          under them, which is where most of the old height went.
+        */}
+        <p className="basis-full text-meta leading-snug">
+          <span className="font-bold uppercase tracking-wide">{t.title}</span>
+          <span aria-hidden className="mx-2">·</span>
+          {t.explain}
         </p>
 
-        <div className="flex min-w-[11rem] flex-col gap-1">
+        <div className="flex items-center gap-2">
           <label htmlFor="demo-role" className={labelClass}>
             {t.role}
           </label>
@@ -96,7 +105,7 @@ export function DemoBar({
           </select>
         </div>
 
-        <div className="flex min-w-[9rem] flex-col gap-1">
+        <div className="flex items-center gap-2">
           <label htmlFor="demo-dataset" className={labelClass}>
             {t.dataset}
           </label>
@@ -115,7 +124,7 @@ export function DemoBar({
           </select>
         </div>
 
-        <div className="flex min-w-[8rem] flex-col gap-1">
+        <div className="flex items-center gap-2">
           <label htmlFor="demo-lang" className={labelClass}>
             {t.language}
           </label>
@@ -134,7 +143,7 @@ export function DemoBar({
           </select>
         </div>
 
-        <div className="flex min-w-[8rem] flex-col gap-1">
+        <div className="flex items-center gap-2">
           <label htmlFor="demo-reqtags" className={labelClass}>
             {t.reqTags}
           </label>
@@ -155,8 +164,6 @@ export function DemoBar({
             {t.sessionWarning}
           </Button>
         )}
-
-        <p className="basis-full text-meta text-demo-foreground">{t.explain}</p>
       </div>
     </div>
   );

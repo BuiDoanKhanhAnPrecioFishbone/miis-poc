@@ -36,15 +36,27 @@ import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
  * protocol it was read from (FAI-001, FAI-004, FR-003).
  */
 
-/** FA-001 — agreement area, name, alternative name, parties and agreement type. */
+/**
+ * FA-001 — agreement area, name, alternative name, parties and agreement type.
+ *
+ * The matched agreement leads because it is the panel's headline claim — the
+ * heading says *Matchat avtal* — and the corrected employee party closes,
+ * because it is the one field carrying a correction footnote. Both are also the
+ * two longest values in the extraction, and both are laid out full width for
+ * that reason: an `<input>` clips silently, and a party name the officer cannot
+ * read in full defeats the review this screen exists for.
+ */
 const IDENTIFICATION: ProposalField[] = [
-  "area",
   "matched",
+  "area",
   "alternativeName",
   "agreementType",
   "employerOrg",
   "employeeOrg",
 ];
+
+/** Fields whose values do not fit a half-width column at any real viewport. */
+const FULL_WIDTH: ReadonlySet<ProposalField> = new Set(["matched", "employeeOrg"]);
 
 /** US-01 — AI analysis 2: signing date, validity period, termination option. */
 const VALIDITY: ProposalField[] = ["signedDate", "validity", "termination"];
@@ -201,9 +213,25 @@ function PreFilledField({
   const adjusted = isAdjusted(proposal, value);
   const inputId = `prop-${proposal.id}`;
 
+  /*
+    Each field is a three-row band — label, input, correction — sharing the
+    grid's rows with its neighbour through `grid-rows-subgrid`. Without it the
+    columns drift apart as soon as one label wraps and the other does not, which
+    is what a longer translation or a 125 % zoom reliably causes: the header was
+    28px in one column and 52px in the other, so the inputs no longer lined up.
+    Subgrid makes the row as tall as the tallest label and puts every input on
+    the same line, whatever the language.
+
+    Selection is an outline rather than a background with negative margins —
+    an outline is drawn outside the box and cannot shift the grid.
+  */
   return (
-    <div className={selected ? "-m-2 rounded-md bg-ai/50 p-2" : ""}>
-      <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2">
+    <div
+      className={`grid gap-0 @xl:row-span-3 @xl:grid-rows-subgrid ${
+        FULL_WIDTH.has(proposal.id) ? "@xl:col-span-2" : ""
+      } ${selected ? "rounded-sm outline-2 outline-offset-4 outline-ai-border" : ""}`}
+    >
+      <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2 self-end">
         <label htmlFor={inputId} className="text-label font-bold text-foreground">
           {name}
         </label>
@@ -232,22 +260,29 @@ function PreFilledField({
         }`}
       />
 
-      {/* FH-001 records the old and the new value, so both stay visible. */}
-      {adjusted && (
-        <p className="mt-1 flex flex-wrap items-center gap-2 text-label text-muted-foreground">
-          <span className="line-through decoration-2">{t.aiProposed(proposal.value)}</span>
-          {!locked && (
-            <button
-              type="button"
-              onClick={() => onReset(proposal.id)}
-              aria-label={t.resetFor(name)}
-              className="font-semibold text-primary underline underline-offset-2"
-            >
-              {t.reset}
-            </button>
-          )}
-        </p>
-      )}
+      {/*
+        FH-001 records the old and the new value, so both stay visible. The row
+        is always rendered — empty when there is nothing to show — because the
+        band has to occupy three grid rows for the subgrid above to line up, and
+        because its bottom margin is what separates one field from the next.
+      */}
+      <p className="mt-1 mb-5 flex flex-wrap items-center gap-2 text-label text-muted-foreground">
+        {adjusted && (
+          <>
+            <span className="line-through decoration-2">{t.aiProposed(proposal.value)}</span>
+            {!locked && (
+              <button
+                type="button"
+                onClick={() => onReset(proposal.id)}
+                aria-label={t.resetFor(name)}
+                className="font-semibold text-primary underline underline-offset-2"
+              >
+                {t.reset}
+              </button>
+            )}
+          </>
+        )}
+      </p>
     </div>
   );
 }
@@ -475,7 +510,7 @@ export function ProtocolReview({
           <div id="steg-ai" ref={reviewRef} tabIndex={-1} className="scroll-mt-4">
             <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
               <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
-              <div className="grid gap-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
+              <div className="grid gap-x-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
 
               <div className="mt-4">
                 <Callout tone="ok">{t.analysis1.validation}</Callout>
@@ -484,7 +519,7 @@ export function ProtocolReview({
               <h3 className="mb-3 mt-5 font-display text-body font-semibold">
                 {t.analysis2.title}
               </h3>
-              <div className="grid gap-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
+              <div className="grid gap-x-4 @xl:grid-cols-2 @5xl:grid-cols-3">{group(VALIDITY)}</div>
 
               <p aria-live="polite" className="mt-4 text-table">
                 {adjustedCount > 0 ? t.review.adjustedCount(adjustedCount) : t.review.noneAdjusted}

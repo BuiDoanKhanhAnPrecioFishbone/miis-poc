@@ -10,7 +10,17 @@ export const metadata: Metadata = {
   description:
     "UX/UI-mockup av MIIS – Medlingsinstitutets informationssystem för kollektivavtal och medling.",
   authors: [{ name: "Medlingsinstitutet" }],
-  icons: { icon: "/favicon.ico" },
+  /*
+    MI's own mark. The .ico is the file MI supplied; the SVG is the same
+    artwork with the canvas cropped to it, and carries a light/dark fill rule
+    because a browser tab is white in one theme and near-black in the other.
+  */
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+  },
   openGraph: {
     title: "MIIS – Medlingsinstitutets Informationssystem",
     description:
