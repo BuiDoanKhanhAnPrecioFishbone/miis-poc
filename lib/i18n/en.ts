@@ -857,14 +857,81 @@ export const en: Dictionary = {
   },
   partstraffar: {
     title: "Party meetings",
+    subtitle:
+      "Meetings with one party at a time ahead of the bargaining round – input for MI's assessment of conflict risk",
     epic: "Party meetings ahead of the bargaining round",
-    subtitle: "Meetings between MI and an individual party ahead of the bargaining round",
     features: [
-      "Registration of a party meeting before, during and after the meeting.",
-      "Coordinated bargaining demands with a coordinated/own-union flag and the unions behind them.",
-      "Party meeting documents created from a template pre-filled with MIIS information.",
-      "Demands from the meeting can be added to the watchword table.",
+      "Registration of party meeting information before, during and after the meeting.",
+      "Coordinated bargaining demands with a flag and links to the unions behind the demand.",
+      "Party meeting documents created from a document template.",
+      "Demands from the meeting added to the watchword table.",
     ],
+    table: {
+      date: "Date",
+      party: "Party",
+      area: "Agreement area",
+      state: "Status",
+      demands: "Demands",
+    },
+    register: {
+      heading: "Party meetings",
+      intro:
+        "The Mediation Office meets one party at a time to gauge the state of negotiations, identify risks of conflict and assess the need for mediation.",
+      onePartyNote:
+        "The parties never meet each other at a party meeting, and a party meeting is not a negotiation (Bilaga 1 §4.2). That is what allows the party to speak candidly.",
+    },
+    current: {
+      heading: (party: string, date: string) => `${party} · ${date}`,
+    },
+    phaseLabel: "Stage of the party meeting",
+    phase: { before: "Before", during: "During the meeting", after: "After" },
+    before: {
+      heading: "Before the meeting",
+      purpose: "Purpose",
+      participants: "Participants",
+      agenda: "Agenda",
+      createDocument: "Create a party meeting document from the template",
+      documentCreated: "Document created",
+      templateNote:
+        "The template is pre-filled from MIIS – party, agreement area, date and participants – so the case officer only adds what is specific to this meeting.",
+    },
+    during: {
+      heading: "During the meeting",
+      intro:
+        "Notes and demands are entered directly during the meeting. Every note is time-stamped as it is written.",
+      noteLabel: "New note",
+      notePlaceholder: "What was said?",
+      addNote: "Add",
+      noteCount: (n: number) => (n === 1 ? "1 note" : `${n} notes`),
+      traceNote:
+        "Notes can be added both before and after the meeting. The change log records what changed, by whom and when.",
+    },
+    demands: {
+      heading: "Bargaining demands",
+      intro:
+        "Demands raised at the meeting are registered with a flag for a coordinated demand or a single union's own.",
+      empty: "No demands registered for this meeting yet.",
+      add: "Register a demand",
+      watchwordCount: (n: number, total: number) =>
+        `${n} of ${total} demands are in the watchword table`,
+    },
+    backedBy: "Backed by:",
+    demandDocuments: "Documents:",
+    isWatchword: "Watchword",
+    watchwordExplain: "Highlighted automatically in incoming protocols",
+    promoteToWatchword: "Add as a watchword",
+    after: {
+      heading: "After the meeting",
+      summary: "Summary",
+      conflictRisk: "Assessed risk of conflict",
+      conflictRiskHint: "MI's own assessment, not the party's",
+      notHeld: "The meeting has not been held yet. A summary is registered afterwards.",
+      documents: "Documentation",
+      print: "Print the party meeting information",
+      upload: "Upload documentation",
+      logNote:
+        "The printout and the uploaded documentation are linked to the party meeting. The event is recorded in the change log.",
+    },
   },
   medlare: {
     title: "Mediators",

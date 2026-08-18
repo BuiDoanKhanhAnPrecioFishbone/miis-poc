@@ -843,14 +843,80 @@ export const sv = {
   },
   partstraffar: {
     title: "Partsträffar",
+    subtitle: "Möten med en part i taget inför avtalsrörelsen – underlag för MI:s bedömning av konfliktrisk",
     epic: "Partsträffar inför avtalsrörelsen",
-    subtitle: "Möten mellan MI och enskild part inför avtalsrörelsen",
     features: [
-      "Registrering av partsträff före, under och efter mötet.",
-      "Samordnade avtalskrav med flagga för samordnat eller eget förbund och kopplade fackförbund.",
-      "Partsträffsdokument skapas från mall förifylld med MIIS-information.",
-      "Krav från mötet kan läggas till i bevakningsordstabellen.",
+      "Registrering av partsträffsinformation inför, under och efter mötet.",
+      "Samordnade avtalskrav med flagga och koppling till förbunden bakom kravet.",
+      "Partsträffsdokument skapas utifrån dokumentmall.",
+      "Yrkanden från träffen läggs till i bevakningsordstabellen.",
     ],
+    table: {
+      date: "Datum",
+      party: "Part",
+      area: "Avtalsområde",
+      state: "Status",
+      demands: "Yrkanden",
+    },
+    register: {
+      heading: "Partsträffar",
+      intro:
+        "Medlingsinstitutet träffar en part i taget för att stämma av förhandlingsläget, identifiera konfliktrisker och bedöma behovet av medling.",
+      onePartyNote:
+        "Parterna möts aldrig varandra vid en partsträff, och en partsträff är inte en förhandling (Bilaga 1 §4.2). Det är förutsättningen för att parten ska kunna tala öppet.",
+    },
+    current: {
+      heading: (party: string, date: string) => `${party} · ${date}`,
+    },
+    phaseLabel: "Skede i partsträffen",
+    phase: { before: "Inför", during: "Under mötet", after: "Efter" },
+    before: {
+      heading: "Inför träffen",
+      purpose: "Syfte",
+      participants: "Deltagare",
+      agenda: "Dagordning",
+      createDocument: "Skapa partsträffsdokument från mall",
+      documentCreated: "Dokument skapat",
+      templateNote:
+        "Mallen förifylls med uppgifter ur MIIS – part, avtalsområde, datum och deltagare – så att handläggaren bara kompletterar det som är specifikt för träffen.",
+    },
+    during: {
+      heading: "Under mötet",
+      intro:
+        "Anteckningar och yrkanden registreras direkt under mötet. Varje anteckning tidsstämplas när den skrivs.",
+      noteLabel: "Ny anteckning",
+      notePlaceholder: "Vad sades?",
+      addNote: "Lägg till",
+      noteCount: (n: number) => (n === 1 ? "1 anteckning" : `${n} anteckningar`),
+      traceNote:
+        "Anteckningar kan kompletteras både före och efter mötet. Ändringsloggen registrerar vad som ändrats, av vem och när.",
+    },
+    demands: {
+      heading: "Avtalskrav",
+      intro:
+        "Krav som förs fram vid träffen registreras med flagga för samordnat krav eller eget förbundskrav.",
+      empty: "Inga krav registrerade för den här träffen ännu.",
+      add: "Registrera krav",
+      watchwordCount: (n: number, total: number) =>
+        `${n} av ${total} krav finns i bevakningsordstabellen`,
+    },
+    backedBy: "Står bakom kravet:",
+    demandDocuments: "Dokument:",
+    isWatchword: "Bevakningsord",
+    watchwordExplain: "Markeras automatiskt i inkommande protokoll",
+    promoteToWatchword: "Lägg till som bevakningsord",
+    after: {
+      heading: "Efter träffen",
+      summary: "Sammanfattning",
+      conflictRisk: "Bedömd konfliktrisk",
+      conflictRiskHint: "MI:s egen bedömning, inte partens",
+      notHeld: "Träffen är ännu inte genomförd. Sammanfattning registreras efteråt.",
+      documents: "Dokumentation",
+      print: "Skriv ut partsträffsinformation",
+      upload: "Ladda upp dokumentation",
+      logNote:
+        "Utskrift och uppladdad dokumentation kopplas till partsträffen. Händelsen registreras i ändringsloggen.",
+    },
   },
   medlare: {
     title: "Medlare",
