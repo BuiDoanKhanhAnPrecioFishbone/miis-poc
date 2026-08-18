@@ -115,10 +115,13 @@ with a Model as a Service offer — the AI seam `lib/data/extraction.ts` was wri
 - **Chapter 5 has now been diffed** — see `docs/14-chapter-5-diff.md`. Nothing was
   invented or renamed, one tooltip overstated its requirement, and nine Stage 1
   requirements had no screen. All fixed; Stage 1 coverage is complete.
-- **Chapter 6 (§6.1–§6.11, 38 non-functional IDs) has not been diffed**, and §6.10
-  *Användargränssnitt* and §6.2 *Åtkomstkontroll* are the UI-relevant ones. Neither has
-  chapter 8, which is where our `D-*` secrecy IDs come from. The rest of the 50 pages has
-  been read only where a question sent us there: §3.1, §4.1, §4.3, §4.4, §4.6, §16.
+- **Chapter 6 has now been diffed** — see `docs/15-chapter-6-diff.md`. 37 requirements,
+  nothing invented, and §6.10 *Användargränssnitt* turned out to have no tag on any
+  screen despite being the three requirements the award criterion rests on. Fixed.
+- **Chapters 7, 8 and 9 have not been diffed.** Chapter 8 (*Datakrav och Sekretess*) is
+  where our `D-*` IDs come from and is the one with UI consequences. The rest of the 50
+  pages has been read only where a question sent us there: §3.1, §4.1, §4.3, §4.4, §4.6,
+  §16.
 - **Bilaga D, E and F are unused.** The PDF contains a real example agreement protocol
   (Bilaga D), a real Director-General mediation decision (Bilaga E) and **six actual
   report printouts from the current system** (Bilaga F). `lib/mock/` was written from

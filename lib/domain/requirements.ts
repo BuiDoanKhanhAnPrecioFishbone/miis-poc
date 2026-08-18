@@ -386,6 +386,101 @@ export const REQUIREMENTS: Record<string, Text> = {
     sv: "MI ska ha åtkomst till loggarna via ett administrativt gränssnitt eller en exportfunktion utan att kontakta leverantören.",
     en: "MI shall have access to the logs via an administrative interface or export function without needing to contact the supplier.",
   },
+  /*
+    MI's Bilaga 1 chapter 6, added by the chapter 6 diff on 2026-08-18. Most of
+    these are obligations on the supplier or on the operating environment rather
+    than on the interface — an incident process or a TLS version has nothing an
+    interface can show — but they belong here so any tag resolves and so the
+    reference is the whole specification rather than the part we drew.
+  */
+  "NFP-001": {
+    sv: "Inget kapacitetstak på antal avtal.",
+    en: "No capacity ceiling on the number of agreements.",
+  },
+  "NFP-004": {
+    sv: "Skalbart för ökad datamängd utan arkitekturell ombyggnad.",
+    en: "Scalable for a growing volume of data without an architectural rebuild.",
+  },
+  "NFK-001": {
+    sv: "All kommunikation mellan klient och server krypteras med TLS 1.2 eller högre.",
+    en: "All client–server communication encrypted with TLS 1.2 or higher.",
+  },
+  "NFS-001": {
+    sv: "Principer för säker systemutveckling, till exempel OWASP Top 10, och säkerhetstester före driftsättning.",
+    en: "Secure development principles such as OWASP Top 10, with security testing before go-live.",
+  },
+  "NFS-002": {
+    sv: "Kända sårbarheter i beroenden hanteras enligt en definierad process med SLA för kritiska fall.",
+    en: "Known vulnerabilities in dependencies handled by a defined process with an SLA for critical cases.",
+  },
+  "NFS-003": {
+    sv: "Levererad källkod innehåller inga hårdkodade hemligheter.",
+    en: "Delivered source code contains no hard-coded secrets.",
+  },
+  "NFS-004": {
+    sv: "Dokumenterat Vulnerability Disclosure Program eller annan kanal för säkerhetsrapporter.",
+    en: "A documented Vulnerability Disclosure Program or another channel for security reports.",
+  },
+  "NFT-001": {
+    sv: "Tillgänglig minst 99 % av kontorstid, 08:00–17:00 helgfria vardagar.",
+    en: "Available at least 99 % of office hours, 08:00–17:00 on working weekdays.",
+  },
+  "NFT-002": {
+    sv: "Dokumenterade rutiner för säkerhetskopiering och återläsning.",
+    en: "Documented routines for backup and restore.",
+  },
+  "NFT-003": {
+    sv: "Återställningstid högst 8 timmar vid driftstopp orsakat av fel i applikationen.",
+    en: "Recovery time of at most 8 hours for an outage caused by a fault in the application.",
+  },
+  "NFI-001": {
+    sv: "Dokumenterad incidenthanteringsprocess enligt NIS2 och ISO/IEC 27001.",
+    en: "A documented incident-handling process per NIS2 and ISO/IEC 27001.",
+  },
+  "NFI-002": {
+    sv: "Säkerhetsincidenter rapporteras till Medlingsinstitutet inom 24 timmar.",
+    en: "Security incidents reported to the Mediation Office within 24 hours.",
+  },
+  "NFI-003": {
+    sv: "Incidentrapport med rotorsaksanalys och åtgärdsplan inom 5 arbetsdagar.",
+    en: "An incident report with root-cause analysis and remediation plan within 5 working days.",
+  },
+  "NFU-001": {
+    sv: "Systemet ägs fullt ut av Medlingsinstitutet med full rätt att använda och vidareutveckla det.",
+    en: "The system is owned outright by the Mediation Office, with full rights to use and develop it.",
+  },
+  "NFU-002": {
+    sv: "Källkod och teknisk dokumentation överlämnas till Medlingsinstitutet.",
+    en: "Source code and technical documentation are handed over to the Mediation Office.",
+  },
+  "NFU-003": {
+    sv: "Byggt med öppna standarder och teknologier för att undvika leverantörsinlåsning.",
+    en: "Built on open standards and technologies to avoid supplier lock-in.",
+  },
+  "NFU-004": {
+    sv: "Dokumenterat så att en annan leverantör kan ta över förvaltning och vidareutveckling.",
+    en: "Documented so that another supplier can take over maintenance and development.",
+  },
+  "NFA-001": {
+    sv: "Inga direkta eller indirekta beroenden till externa molntjänster.",
+    en: "No direct or indirect dependencies on external cloud services.",
+  },
+  "NFUI-001": {
+    sv: "Klientapplikationen är webbaserad och nås via moderna webbläsare utan lokal installation.",
+    en: "The client application is web-based and reached through modern browsers with no local install.",
+  },
+  "NFM-001": {
+    sv: "Aktuellt data i W3D3 migreras till det nya systemet.",
+    en: "Current data in W3D3 is migrated to the new system.",
+  },
+  "NFM-002": {
+    sv: "Befintligt data i Access-databasen migreras till det nya systemet.",
+    en: "Existing data in the Access database is migrated to the new system.",
+  },
+  "NFM-003": {
+    sv: "Migrering genomförs med bibehållen datakvalitet och verifieras.",
+    en: "Migration is carried out with data quality preserved, and verified.",
+  },
   "NFUI-002": { sv: "Responsivt användargränssnitt.", en: "Responsive user interface." },
   "NFUI-003": {
     sv: "Tillgänglighet enligt WCAG 2.1 nivå AA.",
