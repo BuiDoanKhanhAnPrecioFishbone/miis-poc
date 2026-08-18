@@ -112,12 +112,18 @@ with a Model as a Service offer — the AI seam `lib/data/extraction.ts` was wri
 
 ## Still open
 
-- **A line-by-line pass of all 50 pages has not been done.** What is recorded above is
-  what was checked deliberately: §3.1, §4.3, §4.4, §4.6 and the call-off's §16. Chapter 5
-  (the functional requirement tables, §5.1–§5.10) has *not* been diffed against our
-  `FA-*/FR-*/FD-*` IDs, and it is the one place our English rendering could have dropped
-  or renumbered something. That diff is the highest-value remaining check on this
-  document.
+- **Chapter 5 has now been diffed** — see `docs/14-chapter-5-diff.md`. Nothing was
+  invented or renamed, one tooltip overstated its requirement, and nine Stage 1
+  requirements had no screen. All fixed; Stage 1 coverage is complete.
+- **Chapter 6 (§6.1–§6.11, 38 non-functional IDs) has not been diffed**, and §6.10
+  *Användargränssnitt* and §6.2 *Åtkomstkontroll* are the UI-relevant ones. Neither has
+  chapter 8, which is where our `D-*` secrecy IDs come from. The rest of the 50 pages has
+  been read only where a question sent us there: §3.1, §4.1, §4.3, §4.4, §4.6, §16.
+- **Bilaga D, E and F are unused.** The PDF contains a real example agreement protocol
+  (Bilaga D), a real Director-General mediation decision (Bilaga E) and **six actual
+  report printouts from the current system** (Bilaga F). `lib/mock/` was written from
+  plausible invention and `/rapporter` was designed without them. This is the largest
+  single opportunity left to make the prototype read as MI's own.
 - **§4.5's ER diagram and "bilaga A"** — the full data model, including
   Händelselogg, Ändringslogg, Villkorsändring and Bevakningsord. `docs/12` lists our
   divergences from the information model; this is the drawing to settle them against.

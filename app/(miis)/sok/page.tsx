@@ -100,7 +100,14 @@ export default async function SokPage() {
 
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
-      <PageHeading title={t.title} subtitle={t.subtitle} tags={["FR-001", "FR-002"]} />
+      {/* FA-019 "söka fram avtal med vissa egenskaper" is what this screen is; it
+          sat untagged because our English rendering filed the same capability
+          under FR-001/FR-002 only. */}
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FA-019", "FR-001", "FR-002"]}
+      />
 
       <SearchBuilder
         lang={lang}

@@ -80,6 +80,31 @@ export const REQUIREMENTS: Record<string, Text> = {
     sv: "Registrering av lägstalöner grupperade per yrkesgrupp med revisionsdatum.",
     en: "Registration of minimum wages grouped by occupational group with revision date.",
   },
+  /*
+    Present in MI's Bilaga 1 chapter 5 but absent from our English rendering,
+    found by the chapter 5 diff on 2026-08-18. FA-014 is a Stage 1 Ska-krav;
+    the other four are the Steg 2 requirements MI defers itself.
+  */
+  "FA-014": {
+    sv: "Registrering av arbetsgrupper med frågeområden.",
+    en: "Registration of working groups with subject areas.",
+  },
+  "FA-023": {
+    sv: "Full registrering av pensionsavtal inklusive upp till tre pensionssystem med lönegränser och premier.",
+    en: "Full registration of pension agreements including up to three pension systems with wage thresholds and premiums.",
+  },
+  "FA-024": {
+    sv: "Registrering av försäkringsinformation (källa, sjukdom, arbetsskada, föräldraskap, dödsfall, omställning, annan).",
+    en: "Registration of insurance information (source, sickness, occupational injury, parenthood, death, transition, other).",
+  },
+  "FR-009": {
+    sv: "Rapporter för Medlingsinstitutets hemsida.",
+    en: "Reports for the Mediation Office website.",
+  },
+  "FR-010": {
+    sv: "Rapporter för Eurofound och Minimilön.",
+    en: "Reports for Eurofound and Minimum Wage.",
+  },
   "FA-015": {
     sv: "Registrering av avtal som löper ut och inte förnyas.",
     en: "Registration of agreements that expire and are not renewed.",
@@ -234,8 +259,8 @@ export const REQUIREMENTS: Record<string, Text> = {
     en: "OCR interpretation of scanned documents.",
   },
   "FAI-004": {
-    sv: "Funktion för att markera och extrahera bevakningsord ur dokument utifrån en fördefinierad och anpassningsbar bevakningsordstabell.",
-    en: "Functionality to highlight and extract watchwords from documents based on a predefined and customisable watchword table.",
+    sv: "Funktion för att markera och extrahera bevakningsord ur dokument. Tabellen är fördefinierad och anpassningsbar enligt Bilaga 1 §4.1.",
+    en: "Functionality to highlight and extract watchwords from documents. The table is predefined and customisable per Bilaga 1 §4.1.",
   },
 
   // Epic F9 – negotiation and mediation management
