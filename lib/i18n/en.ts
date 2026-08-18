@@ -274,8 +274,34 @@ export const en: Dictionary = {
       "4. Wage agreement / General terms",
       "5. Link the protocol",
     ],
+    upload: {
+      title: "Upload an agreement protocol",
+      intro:
+        "The protocol reaches MI as a scanned document or a PDF and is uploaded by the case officer.",
+      dropHint: "Drag the protocol here, or choose it from your computer.",
+      dropActive: "Drop the file to start the interpretation",
+      choose: "Choose a file",
+      accepts: "PDF, TIFF, PNG or JPG",
+      fileNameNote:
+        "If the agreement name is not stated in the protocol, the file name is used as identification input.",
+      rejected: (name: string) =>
+        `${name} is in a format that cannot be OCR-interpreted. Upload a PDF, TIFF, PNG or JPG.`,
+      pipelineTitle: "This happens automatically once the file is uploaded",
+      stages: {
+        receive: "Receiving the document and linking it to the agreement",
+        ocr: "OCR-interpreting scanned text",
+        watchwords: "Searching for watchwords from the watchword table",
+        match: "Matching the content against existing agreements",
+      },
+      progress: (done: number, total: number) => `${done} of ${total} steps done`,
+      ready: (name: string) => `${name} has been read and interpreted.`,
+      replace: "Replace the protocol",
+      size: (kb: string) => `${kb} kB`,
+      identifiedAs: (name: string) => `Identification input from the file name: ${name}`,
+      demoNote:
+        "In the mockup the file name and size are those of the uploaded file, while the protocol text below is prepared sample data. A real installation OCR-interprets the uploaded file.",
+    },
     document: {
-      fileName: "Avtalsprotokoll_Kommunikation_2027.pdf",
       ocr: "OCR",
       watchwordHits: (n: number) => `Highlighted text = hit in the watchword table (${n} hits)`,
       sourceHint:

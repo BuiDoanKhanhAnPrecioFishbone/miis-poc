@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import type { ExtractionProposal, ProposalField, SourceAnchor } from "@/lib/domain/extraction";
 import { initialValue, isAdjusted, isEmpty } from "@/lib/domain/extraction";
 import type { Lang } from "@/lib/domain/lang";
+import type { UploadedFile } from "@/lib/domain/upload";
+import { UPLOAD_PIPELINE } from "@/lib/domain/upload";
 import { dictionary, type Dictionary } from "@/lib/i18n";
+import { ProtocolUpload } from "./ProtocolUpload";
 import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
@@ -94,18 +97,8 @@ type StepState = "done" | "current" | "upcoming";
 
 const STEP_TARGETS = ["#steg-protokoll", "#steg-ai", "#steg-ai", "#steg-loneavtal", "#steg-spara"];
 
-function RegistrationSteps({ d, approved }: { d: Dictionary; approved: boolean }) {
+function RegistrationSteps({ d, states }: { d: Dictionary; states: StepState[] }) {
   const t = d.registrera;
-
-  // Steps 1 and 2 are done as soon as the screen has a protocol and an
-  // extraction. Step 3 is the approval; 4 opens once it is given.
-  const states: StepState[] = [
-    "done",
-    "done",
-    approved ? "done" : "current",
-    approved ? "current" : "upcoming",
-    "upcoming",
-  ];
 
   const style: Record<StepState, string> = {
     done: "border-ok-border bg-ok text-ok-foreground",
@@ -282,12 +275,59 @@ export function ProtocolReview({
     Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])),
   );
   const [approved, setApproved] = useState(false);
+  const [file, setFile] = useState<UploadedFile | null>(null);
+  const [completed, setCompleted] = useState(0);
   const [activeSource, setActiveSource] = useState<SourceAnchor | null>(null);
   const [activeField, setActiveField] = useState<ProposalField | null>(null);
   const lineRefs = useRef<Partial<Record<SourceAnchor, HTMLElement | null>>>({});
 
   const adjustedCount = proposals.filter((p) => isAdjusted(p, values[p.id] ?? "")).length;
   const emptyCount = proposals.filter((p) => isEmpty(values[p.id] ?? "")).length;
+
+  const ready = file !== null && completed >= UPLOAD_PIPELINE.length;
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  /*
+    US-01 step 1: OCR runs "automatically", so there is no control here — the
+    pipeline advances on its own once a file exists. A timeout per stage rather
+    than one interval, so unmounting or replacing the protocol cancels it.
+  */
+  useEffect(() => {
+    if (!file || completed >= UPLOAD_PIPELINE.length) return;
+    const id = setTimeout(() => setCompleted((c) => c + 1), 700);
+    return () => clearTimeout(id);
+  }, [file, completed]);
+
+  /*
+    The form appears after an asynchronous step the user did not scroll to, so
+    keyboard and screen-reader focus is moved to it rather than left on a
+    control that no longer exists (WCAG 2.4.3).
+  */
+  useEffect(() => {
+    if (ready) reviewRef.current?.focus();
+  }, [ready]);
+
+  /*
+    MI's five steps against real state. Before a file there is nothing to
+    analyse; during the pipeline step 1 is done and step 2 is running; after it
+    the officer is at the approval, and approving moves them on.
+  */
+  const stepStates: StepState[] = !file
+    ? ["current", "upcoming", "upcoming", "upcoming", "upcoming"]
+    : !ready
+      ? ["done", "current", "upcoming", "upcoming", "upcoming"]
+      : approved
+        ? ["done", "done", "done", "current", "upcoming"]
+        : ["done", "done", "current", "upcoming", "upcoming"];
+
+  function pick(picked: UploadedFile | null) {
+    setFile(picked);
+    setCompleted(0);
+    setApproved(false);
+    setActiveSource(null);
+    setActiveField(null);
+    setValues(Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])));
+  }
 
   function register(anchor: SourceAnchor, el: HTMLParagraphElement | null) {
     lineRefs.current[anchor] = el;
@@ -354,20 +394,42 @@ export function ProtocolReview({
     { anchor: "negotiation", content: t.document.lines.negotiation },
   ];
 
+  /*
+    Before the protocol has been read there is nothing to pre-fill, so the
+    upload owns the whole width. It carries `steg-protokoll` because a step is
+    a step in MI's process, not a panel on our screen: step 1 points at the
+    document, whether that is the drop zone or the document it produced.
+  */
+  if (!ready) {
+    return (
+      <>
+        <RegistrationSteps d={d} states={stepStates} />
+        <div id="steg-protokoll" className="scroll-mt-4">
+          <ProtocolUpload d={d} lang={lang} file={file} completed={completed} onPick={pick} />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
-      <RegistrationSteps d={d} approved={approved} />
+      <RegistrationSteps d={d} states={stepStates} />
 
       <div className="grid items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div id="steg-protokoll" className="scroll-mt-4 @3xl:sticky @3xl:top-4">
           <Panel>
             <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
-              <h2 className="font-display text-section font-semibold text-primary">
-                {t.document.fileName}
-              </h2>
+              <h2 className="font-display text-section font-semibold text-primary">{file.name}</h2>
               <Badge tone="ok">{t.document.ocr}</Badge>
               <ReqTag id="FAI-003" />
+              <span className="ml-auto">
+                <Button variant="secondary" size="sm" onClick={() => pick(null)}>
+                  {t.upload.replace}
+                </Button>
+              </span>
             </div>
+
+            <Rationale>{t.upload.demoNote}</Rationale>
 
             <p aria-live="polite" className="mb-3 text-label text-muted-foreground">
               {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
@@ -384,7 +446,7 @@ export function ProtocolReview({
             <div
               tabIndex={0}
               role="region"
-              aria-label={t.document.fileName}
+              aria-label={file.name}
               className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
               lang="sv"
             >
@@ -410,7 +472,7 @@ export function ProtocolReview({
         </div>
 
         <div className="@container space-y-5">
-          <div id="steg-ai" className="scroll-mt-4">
+          <div id="steg-ai" ref={reviewRef} tabIndex={-1} className="scroll-mt-4">
             <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
               <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
               <div className="grid gap-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>

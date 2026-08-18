@@ -37,6 +37,10 @@ axe finds roughly a third of WCAG issues. It cannot judge whether a heading is
 keyboard alone. The manual checks in `axe-2026-08-17.md` exist for that reason and
 should be repeated whenever a screen changes.
 
+`axe-2026-08-18.md` records the run for US-01 step 1, the protocol upload. It is scoped
+to `/registrera` rather than the whole app, and covers all five states of that screen —
+a screen with an asynchronous step has more than one state to test.
+
 ## Open questions that affect this work
 
 Browsers and minimum screen resolution are still unanswered by MI (question deadline

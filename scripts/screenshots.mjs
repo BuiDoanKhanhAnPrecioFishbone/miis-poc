@@ -15,6 +15,7 @@
  * Add `--lang=en` for the English pass, `--width=768` for the tablet pass.
  */
 
+import { Buffer } from "node:buffer";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
@@ -42,15 +43,41 @@ const ROLE_DEFAULT = "agreement-admin";
  * beside the form, and a full-page capture flattens that into a tall left-hand
  * gap rather than showing the behaviour it exists for.
  */
+
+/**
+ * US-01 step 1. `/registrera` opens on the upload, because that is where the
+ * scenario opens, so every shot past it has to hand the page a file first —
+ * the same PDF name the protocol pane has always carried, so the captures stay
+ * comparable with the ones taken before the upload existed.
+ */
+async function uploadProtocol(page) {
+  await page.setInputFiles('input[type="file"]', {
+    name: "Avtalsprotokoll_Kommunikation_2027.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.alloc(184320),
+  });
+  // The pipeline runs four stages of 700 ms on its own; wait for the result.
+  // By id, not by button label — this has to hold for the English pass too.
+  await page.waitForSelector("#steg-ai", { timeout: 15000 });
+  await page.waitForTimeout(150);
+}
+
 const SHOTS = [
   { name: "start-avtalsadministrator", path: "/", role: "agreement-admin" },
   { name: "start-medlingsadministrator", path: "/", role: "mediation-admin" },
   { name: "start-statistikanvandare", path: "/", role: "statistics-user" },
-  { name: "registrera-protokoll", path: "/registrera", role: "agreement-admin" },
+  { name: "registrera-uppladdning", path: "/registrera", role: "agreement-admin" },
+  {
+    name: "registrera-protokoll",
+    path: "/registrera",
+    role: "agreement-admin",
+    prepare: uploadProtocol,
+  },
   {
     name: "registrera-protokoll-kallkoppling",
     path: "/registrera",
     role: "agreement-admin",
+    prepare: uploadProtocol,
     fullPage: false,
     scrollTo: 900,
   },
@@ -110,6 +137,8 @@ async function main() {
         failures += 1;
         continue;
       }
+
+      if (shot.prepare) await shot.prepare(page);
 
       if (shot.scrollTo) {
         await page.evaluate((y) => window.scrollTo(0, y), shot.scrollTo);

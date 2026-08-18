@@ -43,3 +43,37 @@ panel — two panels on the right in total, against our five. Ours are all
 requirement-backed content (FA-003/FA-004, FA-021, FF-002/FD-001, D-001), so this is a
 question of compactness rather than correctness. Worth revisiting if the screen feels
 long, but it is not a fix for anything.
+
+---
+
+# Step 1 — the upload (added 2026-08-18)
+
+The sketch begins at the pre-filled form, so it has nothing to say about how the
+protocol got there. This section is therefore checked against the requirement alone,
+with the sketch noted where it constrains the result anyway.
+
+The gap it closes was specific: the stepper said **"✓ 1. Ladda upp — Klart"** on a
+screen where nothing had been uploaded, and the `OCR` badge asserted FAI-003 rather
+than showing it. There was no `<input type="file">` anywhere in the application.
+
+| # | Decision | Requirement | Chosen | Why |
+|---|---|---|---|---|
+| 12 | **Where the upload lives** | US-01: "The case officer uploads the agreement protocol **from the start page**" | Start-page button → `/registrera`, which opens on step 1 | The action starts on the start page, as the scenario says; the screen it opens is the registration view, as the sketch shows. A modal on the start page would put the file picker somewhere the stepper cannot reach. |
+| 13 | **Whether OCR has a button** | US-01: "Scanned documents are **automatically** OCR-interpreted" | No control — the pipeline runs itself | "Automatically" is load-bearing. A *Kör OCR* button would describe a system the requirement does not. |
+| 14 | **Whether the stages are named** | FD-001, FAI-003, FAI-004, FAI-001 are each discharged between choosing a file and seeing the form | Four named stages, each tagged | An unlabelled progress bar asserts four mandatory requirements. Naming them shows the work instead. `UPLOAD_PIPELINE` in `lib/domain/upload.ts` holds the order and the requirement; the labels are in `lib/i18n/`. |
+| 15 | **The file the officer picks** | FA-018: "Agreement name not stated in the protocol: the system uses the **file name** … as identification input" | Real file, real name and size, carried into the protocol pane and shown as identification input | FA-018 cannot be demonstrated at all without an upload — it was previously only described, in the validation sentence. `identificationName()` drops the extension, because the extension is not part of the name. |
+| 16 | **What happens to an unreadable file** | FAI-003 is scoped to *scanned* documents | `.pdf/.tif/.tiff/.png/.jpg` accepted; anything else refused with an `error` callout | A `.docx` is not refused because it is hard to read but because accepting it would claim an OCR path the requirement does not describe. Drag-and-drop bypasses the input's `accept`, so the check is real rather than cosmetic. |
+| 17 | **Honesty about the prepared extraction** | — | The uploaded file's name and size are real; the protocol text is prepared, and the annotation layer says so | The alternative — refusing arbitrary files and offering a pick-list — is safer but removes the affordance US-01 names. A `Rationale` is the right home: it is not needed to do the task, and CLAUDE.md's tie-break sends it there. |
+| 18 | **Whether it is a wizard step** | §4.1 "Quick registration"; US-01's alternative flows are non-linear | One page. Before a file, only the upload; after, the two-pane layout | Same reasoning as the stepper itself. Step 1 and the protocol pane share the `steg-protokoll` anchor, because a step is a step in MI's process, not a panel on our screen. |
+
+## Consequences elsewhere
+
+- `registrera.document.fileName` is gone from both dictionaries. The pane reads the
+  uploaded file's name, so a hardcoded one would be another superseded leftover.
+- `scripts/screenshots.mjs` uploads an in-memory PDF before capturing `/registrera`,
+  under the same file name the pane always carried, so the captures stay comparable
+  with the ones taken before step 1 existed. A new shot, `registrera-uppladdning`,
+  covers the upload itself.
+- `/dokument` still has an inert **Ladda upp dokument** button. That is FD-001's
+  general document flow — any type, linked to any entity — and is a different screen,
+  not a smaller version of this one.

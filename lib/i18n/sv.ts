@@ -264,8 +264,34 @@ export const sv = {
       "4. Löneavtal / Allmänna villkor",
       "5. Koppla protokoll",
     ],
+    upload: {
+      title: "Ladda upp avtalsprotokoll",
+      intro:
+        "Protokollet kommer in till MI som skannat dokument eller PDF och laddas upp av handläggaren.",
+      dropHint: "Dra protokollet hit, eller välj det från datorn.",
+      dropActive: "Släpp filen så börjar tolkningen",
+      choose: "Välj fil",
+      accepts: "PDF, TIFF, PNG eller JPG",
+      fileNameNote:
+        "Framgår inte avtalsnamnet av protokollet används filnamnet som identifieringsunderlag.",
+      rejected: (name: string) =>
+        `${name} har ett filformat som inte kan OCR-tolkas. Ladda upp PDF, TIFF, PNG eller JPG.`,
+      pipelineTitle: "Detta sker automatiskt när filen är uppladdad",
+      stages: {
+        receive: "Tar emot dokumentet och kopplar det till avtalet",
+        ocr: "OCR-tolkar skannad text",
+        watchwords: "Söker bevakningsord ur bevakningsordstabellen",
+        match: "Matchar innehållet mot befintliga avtal",
+      },
+      progress: (done: number, total: number) => `${done} av ${total} steg klara`,
+      ready: (name: string) => `${name} är inläst och tolkad.`,
+      replace: "Byt protokoll",
+      size: (kb: string) => `${kb} kB`,
+      identifiedAs: (name: string) => `Identifieringsunderlag från filnamnet: ${name}`,
+      demoNote:
+        "I mockupen är filens namn och storlek den uppladdade filens, medan protokolltexten nedan är förberedd exempeldata. En verklig installation OCR-tolkar den uppladdade filen.",
+    },
     document: {
-      fileName: "Avtalsprotokoll_Kommunikation_2027.pdf",
       ocr: "OCR",
       watchwordHits: (n: number) => `Markerad text = träff i bevakningsordstabellen (${n} träffar)`,
       sourceHint:
