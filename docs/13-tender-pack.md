@@ -136,3 +136,48 @@ with a Model as a Service offer — the AI seam `lib/data/extraction.ts` was wri
 
 Same standing as the other three sources: check work against them before designing a
 screen, and when our shape differs, MI's document wins and the divergence is logged.
+
+---
+
+## Bilaga D, E and F in the mock data (2026-08-18)
+
+The appendices are scanned pages, so they carry no extractable text — they were read as
+images out of the PDF. What went in:
+
+**Bilaga D — the example agreement protocol.** MI's is an Industriavtalet agreement
+between Industriarbetsgivarna and Unionen. Its *shape* is what the sample protocol on
+`/registrera` now follows: the numbered sections (*1 Avtalets giltighetstid, 2 Fredsplikt,
+3 Överenskommelsens omfattning*), the *"som sades upp den … ska gälla med angivna
+ändringar och tillägg"* clause, the lettered appendix list, and the place-and-date line
+that closes it. Parties, area and dates stay ours, so the document still describes the
+agreement the screen registers.
+
+**Bilaga F, Rapport 1 — Avtal, Allmänheten.** MI's example is *our* agreement: Almega
+Tjänsteförbunden / Seko, Service- och kommunikationsfacket, area Kommunikation. Two
+things came from it. The validity period is now MI's own — **2025-08-01 – 2027-07-31**,
+carried through the extraction, the wage panel and the general terms — and it is a better
+fit than the invented one, because an agreement running out in mid-2027 is exactly what
+the 2027 round renegotiates. And the protocol's file name follows MI's convention,
+`Seko Kommunikation 2025-27.pdf`: party, area, period, with spaces.
+
+**Bilaga E — the Director-General decisions.** Both examples are Spårtrafik disputes,
+which is the mediation case we already model. It names three mediators —
+Gunilla Runnquist, Bengt Huldt and **Gerald Lindberg**; we had the first two and have
+added the third. The decisions are signed by MI's Director-General Irene Wennemo and by
+Per Ewaldsson, and copied to *Medlarna*, the employer organisation and each union
+separately.
+
+### Not done yet
+
+**Bilaga F, Rapport 2 — Avtalskonstruktioner.** MI's real report counts **employees**,
+not agreements, and splits every construction three ways — Privat / Offentlig / Alla
+sektorer, each as a count and a percent — and again by Arbetare / Tjänstemän. Our report
+counts agreements per construction, derived from the records, which is the right
+architecture but the wrong measure. Doing MI's version properly means giving an agreement
+an employee count, a sector and a worker/salaried split, and deriving the table from
+those — a domain change, not a data change. MI's own figures are in the PDF on page 41
+when it is done: construction 4 covers 893 047 employees across all sectors, 23,5 %,
+which is the largest.
+
+**Rapport 3–6** (Avtalsrörelse, Huvudrapport, Medlare, Pensionsavtal) have not been read
+in detail. `/rapporter` names them; their real layouts are on pages 43–50.

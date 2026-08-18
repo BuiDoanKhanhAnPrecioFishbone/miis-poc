@@ -24,6 +24,8 @@ export const MEDIATION_CASES: MediationCase[] = [
     mediators: [
       { id: "ME-01", name: "Gunilla Runnquist", position: "first-chair", previousAssignments: 14 },
       { id: "ME-02", name: "Bengt Huldt", position: "second-chair", previousAssignments: 9 },
+      /* Bilaga E appoints three mediators to this dispute, not two. */
+      { id: "ME-05", name: "Gerald Lindberg", position: "second-chair", previousAssignments: 6 },
     ],
     coveredByProcedureAgreement: false,
     status: { sv: "Pågående", en: "Ongoing" },
@@ -151,6 +153,19 @@ export const MEDIATORS: Mediator[] = [
     history: [
       { year: 2027, agreementArea: "Spårtrafik", position: "second-chair" },
       { year: 2025, agreementArea: "Byggverksamhet", position: "second-chair" },
+    ],
+  },
+  {
+    /* Named with Runnquist and Huldt on the Spårtrafik decision in Bilaga E. */
+    id: "ME-05",
+    name: "Gerald Lindberg",
+    email: "gerald.lindberg@example.se",
+    phone: "070-456 78 90",
+    types: ["special"],
+    active: true,
+    history: [
+      { year: 2027, agreementArea: "Spårtrafik", position: "second-chair" },
+      { year: 2024, agreementArea: "Transport", position: "second-chair" },
     ],
   },
   {

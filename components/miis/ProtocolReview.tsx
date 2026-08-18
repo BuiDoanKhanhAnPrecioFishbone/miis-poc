@@ -107,7 +107,17 @@ function label(d: Dictionary, id: ProposalField): string {
  */
 type StepState = "done" | "current" | "upcoming";
 
-const STEP_TARGETS = ["#steg-protokoll", "#steg-ai", "#steg-ai", "#steg-loneavtal", "#steg-spara"];
+/*
+  Steps 2 and 3 used to point at the same panel, which made them look like one
+  thing named twice. They are not. MI's §4.4 alternates between the two all the
+  way down — AI-analys, then Formulär + "Manuell justering/godkännande", then
+  AI-analys again, then another form and another approval — and keeping the
+  machine's reading apart from the officer's decision is the whole substance of
+  FAI-002. Step 2 is what the AI found; step 3 is the officer accepting it and
+  the agreement being registered, so it points at the approval, not at the
+  readings above it.
+*/
+const STEP_TARGETS = ["#steg-protokoll", "#steg-ai", "#steg-avtal", "#steg-loneavtal", "#steg-spara"];
 
 function RegistrationSteps({ d, states }: { d: Dictionary; states: StepState[] }) {
   const t = d.registrera;
@@ -240,7 +250,7 @@ function PreFilledField({
     <div
       className={`grid gap-0 @xl:row-span-3 @xl:grid-rows-subgrid ${
         FULL_WIDTH.has(proposal.id) ? "@xl:col-span-2" : ""
-      } ${selected ? "rounded-sm outline-2 outline-offset-4 outline-ai-border" : ""}`}
+      }`}
     >
       {/*
         The label row carries the label, and — only when the officer has changed
@@ -255,38 +265,36 @@ function PreFilledField({
         {adjusted && <Badge tone="ai">{t.adjusted}</Badge>}
       </div>
 
-      <div className="flex items-stretch gap-2">
-        {/*
-          The violet border is the per-field AI mark. It is never the only
-          carrier: the button beside it is a second, non-colour signal, its
-          accessible name begins with "AI-förslag", and the panel says in words
-          what the colour means. Violet is AI's alone (CLAUDE.md rule 2), so it
-          cannot be confused with the FR-012 hues or with an error — an empty
-          required field still takes the error border and wins.
-        */}
-        <input
-          id={inputId}
-          type="text"
-          value={value}
-          readOnly={locked}
-          onChange={(e) => onChange(proposal.id, e.target.value)}
-          className={`field-input ${locked ? "bg-secondary" : ""} ${
-            isEmpty(value) ? "border-error-border" : "border-ai-border"
-          }`}
-        />
-        <button
-          type="button"
-          onClick={() => onShowSource(proposal)}
-          aria-pressed={selected}
-          aria-label={t.sourceButton(name)}
-          title={t.sourceButton(name)}
-          className={`flex min-h-12 w-12 shrink-0 items-center justify-center rounded-md border-2 border-ai-border text-lg transition-colors ${
-            selected ? "bg-ai-foreground text-card" : "bg-ai text-ai-foreground"
-          } hover:brightness-95`}
-        >
-          <span aria-hidden>⤵</span>
-        </button>
-      </div>
+      {/*
+        There is no button for "show me where this came from". Checking a
+        pre-filled value already means putting the cursor in it, so that is the
+        gesture: focusing a field marks the passage it was read from and brings
+        it into view. A dedicated control had to explain itself with an icon,
+        and an icon for "find this text in that document" is a symbol nobody
+        knows — so the control was learnable only by pressing it.
+
+        Focus is reachable by mouse, keyboard and touch alike, it costs no room
+        in the row, and it makes the link the officer's own action rather than a
+        separate errand. `aria-describedby` states the connection once per
+        field, and the protocol pane announces the change politely.
+
+        The violet border is the AI mark; the violet ground is the field being
+        traced right now. Neither is the only carrier — the panel says what the
+        colour means, the pane names the field in words, and an empty required
+        field still takes the error border and wins.
+      */}
+      <input
+        id={inputId}
+        type="text"
+        value={value}
+        readOnly={locked}
+        onFocus={() => onShowSource(proposal)}
+        onChange={(e) => onChange(proposal.id, e.target.value)}
+        aria-describedby="ai-forklaring"
+        className={`field-input ${locked ? "bg-secondary" : ""} ${
+          isEmpty(value) ? "border-error-border" : "border-ai-border"
+        } ${selected && !isEmpty(value) ? "bg-ai" : ""}`}
+      />
 
       {/*
         FH-001 records the old and the new value, so both stay visible. The row
@@ -433,30 +441,30 @@ export function ProtocolReview({
     });
   }
 
-  const lines: { anchor: SourceAnchor; content: ReactNode }[] = [
-    {
-      anchor: "heading",
-      content: <span className="font-semibold tracking-wide">{t.document.lines.heading}</span>,
-    },
-    { anchor: "parties", content: t.document.lines.parties },
-    { anchor: "period", content: <mark className="bg-sand px-1">{t.document.lines.period}</mark> },
-    { anchor: "prolonged", content: t.document.lines.prolonged },
-    {
-      anchor: "workingTime",
-      content: <mark className="bg-sand px-1">{t.document.lines.workingTime}</mark>,
-    },
-    { anchor: "wageAppendix", content: t.document.lines.wageAppendix },
-    {
-      anchor: "revision",
-      content: <mark className="bg-sand px-1">{t.document.lines.revision}</mark>,
-    },
-    { anchor: "minimumWage", content: t.document.lines.minimumWage },
-    { anchor: "terminationLead", content: t.document.lines.terminationLead },
-    {
-      anchor: "termination",
-      content: <mark className="bg-sand px-1">{t.document.lines.termination}</mark>,
-    },
-    { anchor: "negotiation", content: t.document.lines.negotiation },
+  /*
+    The order and the section headings follow the real protocol MI supplied as
+    Bilaga D: validity, then peace obligation, then what the agreement covers,
+    then the place and date it was settled. A heading is not a source, so it
+    carries no anchor and registers no ref — only the lines a proposal can be
+    traced to do.
+  */
+  const l = t.document.lines;
+  const lines: { anchor: SourceAnchor | null; content: ReactNode }[] = [
+    { anchor: "heading", content: <span className="font-semibold tracking-wide">{l.heading}</span> },
+    { anchor: "parties", content: l.parties },
+    { anchor: null, content: l.validityHeading },
+    { anchor: "prolonged", content: l.prolonged },
+    { anchor: "period", content: <mark className="bg-sand px-1">{l.period}</mark> },
+    { anchor: "terminationLead", content: l.terminationLead },
+    { anchor: "termination", content: <mark className="bg-sand px-1">{l.termination}</mark> },
+    { anchor: null, content: l.peaceHeading },
+    { anchor: "peace", content: l.peace },
+    { anchor: null, content: l.scopeHeading },
+    { anchor: "wageAppendix", content: l.wageAppendix },
+    { anchor: "revision", content: <mark className="bg-sand px-1">{l.revision}</mark> },
+    { anchor: "minimumWage", content: l.minimumWage },
+    { anchor: "workingTime", content: <mark className="bg-sand px-1">{l.workingTime}</mark> },
+    { anchor: "negotiation", content: l.negotiation },
   ];
 
   /*
@@ -550,17 +558,23 @@ export function ProtocolReview({
               className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
               lang="sv"
             >
-              {lines.map((line) => (
-                <SourceLine
-                  key={line.anchor}
-                  anchor={line.anchor}
-                  active={activeSource === line.anchor}
-                  marker={t.document.sourceMarker}
-                  register={register}
-                >
-                  {line.content}
-                </SourceLine>
-              ))}
+              {lines.map((line, i) =>
+                line.anchor === null ? (
+                  <p key={`h${i}`} className="px-3 pt-3 pb-1 font-semibold">
+                    {line.content}
+                  </p>
+                ) : (
+                  <SourceLine
+                    key={line.anchor}
+                    anchor={line.anchor}
+                    active={activeSource === line.anchor}
+                    marker={t.document.sourceMarker}
+                    register={register}
+                  >
+                    {line.content}
+                  </SourceLine>
+                ),
+              )}
             </div>
 
             <div className="mt-6">
@@ -578,7 +592,9 @@ export function ProtocolReview({
                 The colour is explained in words once, next to the fields it
                 applies to, so violet is never carrying meaning on its own.
               */}
-              <p className="mb-3 text-label text-muted-foreground">{t.review.aiLegend}</p>
+              <p id="ai-forklaring" className="mb-3 text-label text-muted-foreground">
+                {t.review.aiLegend}
+              </p>
 
               <h3 className="mb-3 font-display text-body font-semibold">{t.analysis1.title}</h3>
               <div className="grid grid-cols-1 gap-x-4 @xl:grid-cols-2">{group(IDENTIFICATION)}</div>
@@ -608,7 +624,10 @@ export function ProtocolReview({
             FAI-002: one approval, for the form, with the guarantee stated next
             to the control it describes — the sketch's own wording.
           */}
-              <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+              <div
+                id="steg-avtal"
+                className="mt-5 flex scroll-mt-24 flex-wrap items-center gap-3 border-t border-border pt-4"
+              >
                 {approved ? (
                   <>
                     <Badge tone="ok">{t.review.approved}</Badge>

@@ -52,7 +52,7 @@ const ROLE_DEFAULT = "agreement-admin";
  */
 async function uploadProtocol(page) {
   await page.setInputFiles('input[type="file"]', {
-    name: "Avtalsprotokoll_Kommunikation_2027.pdf",
+    name: "Seko Kommunikation 2025-27.pdf",
     mimeType: "application/pdf",
     buffer: Buffer.alloc(184320),
   });

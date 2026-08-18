@@ -48,6 +48,7 @@ export type SourceAnchor =
   | "terminationLead"
   | "termination"
   | "minimumWage"
+  | "peace"
   | "negotiation";
 
 export interface ExtractionProposal {

@@ -318,19 +318,32 @@ export const en: Dictionary = {
       showSource: "Show the source in the protocol",
       showSourceFor: (field: string) => `Show the source for ${field} in the protocol`,
       sourceMarker: "Source",
+      /*
+        Structured after the real agreement protocol MI supplied as Bilaga D:
+        the numbered sections, the "sades upp den … ska gälla med angivna
+        ändringar och tillägg" wording, the appendix list and the place-and-date
+        line are MI's own. Parties, area and dates are ours, so the document
+        still describes the agreement this screen registers.
+      */
       lines: {
         heading: "ÖVERENSKOMMELSE",
-        parties: "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket",
-        period: "avtalsperioden 2027-06-01 – 2029-05-31",
+        parties:
+          "mellan Almega Tjänsteförbunden och Seko – Service- och kommunikationsfacket (Kommunikation)",
+        validityHeading: "1 Avtalets giltighetstid",
         prolonged:
-          "Parterna är överens om att avtalet om allmänna anställningsvillkor prolongeras med ändringar…",
-        workingTime: "arbetstidsförkortning om 0,2 %",
+          "Parterna är överens om att avtalet om allmänna anställningsvillkor som sades upp den 20 december 2024 ska gälla med angivna ändringar och tillägg.",
+        period: "Överenskommelsen omfattar avtalsperioden 2025-08-01 – 2027-07-31.",
+        terminationLead: "Part äger rätt att senast den 30 april 2027",
+        termination: "säga upp avtalet att upphöra att gälla per den 31 juli 2027.",
+        peaceHeading: "2 Fredsplikt",
+        peace: "Fredsplikt gäller under avtalsperioden.",
+        scopeHeading: "3 Överenskommelsens omfattning",
         wageAppendix: "Löneavtal, Bilaga B. Lönerevision per den",
-        revision: "1 juni 2027, 3,2 %",
-        terminationLead: "Part äger rätt att senast den 30 november 2028",
-        termination: "säga upp avtalet till upphörande…",
-        minimumWage: "Lägstalön för yrkesvana höjs till 25 480 kr per månad",
-        negotiation: "Förhandlingen avslutades 2027-05-28 och protokollet justerades samma dag",
+        revision: "1 augusti 2025, 3,4 %",
+        minimumWage: "Lägstalön för yrkesvana höjs till 25 480 kr per månad, Bilaga C",
+        workingTime: "Arbetstidsförkortning om 0,2 % avsätts, Bilaga D",
+        negotiation:
+          "Stockholm den 15 juli 2025. Förhandlingen avslutades och protokollet justerades samma dag.",
       },
     },
     analysis1: {
@@ -357,8 +370,7 @@ export const en: Dictionary = {
       aiFilled: "AI proposal",
       adjusted: "Adjusted",
       aiLegend:
-        "A violet border marks an AI proposal. Choose the button beside a field to see the passage it was read from.",
-      sourceButton: (field: string) => `AI proposal – show the source for ${field} in the protocol`,
+        "A violet border marks an AI proposal. Put the cursor in a field and the passage it was read from is shown in the protocol on the left.",
       aiProposed: (value: string) => `AI proposed: ${value}`,
       reset: "Restore the AI proposal",
       resetFor: (field: string) => `Restore the AI proposal for ${field}`,

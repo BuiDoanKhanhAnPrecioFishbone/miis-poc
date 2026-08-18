@@ -51,17 +51,17 @@ export const EXTRACTION_PROPOSALS: ExtractionProposal[] = [
   },
   {
     id: "signedDate",
-    value: "2027-05-28",
+    value: "2025-07-15",
     source: "negotiation",
   },
   {
     id: "validity",
-    value: "2027-06-01 – 2029-05-31",
+    value: "2025-08-01 – 2027-07-31",
     source: "period",
   },
   {
     id: "termination",
-    value: "Ja, senast 2028-11-30",
+    value: "Ja, senast 2027-04-30",
     source: "terminationLead",
   },
 ];

@@ -53,7 +53,7 @@ export default async function RegistreraPage() {
               />
 
               <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
-                <Field label={t.wage.scope} value={percent(3.2, lang)} />
+                <Field label={t.wage.scope} value={percent(3.4, lang)} />
                 <Field label={t.wage.costFrame} value={percent(6.4, lang)} />
                 <Field label={t.wage.individualGuarantee} value={i18n.common.no} />
                 <Field
@@ -70,12 +70,12 @@ export default async function RegistreraPage() {
               <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
                 <Field
                   label={t.wage.revision}
-                  value={`2027-06-01 · ${percent(3.2, lang)}`}
+                  value={`2027-06-01 · ${percent(3.4, lang)}`}
                   hint={t.wage.revisionHint}
                 />
                 <Field
                   label={t.wage.minimumWage}
-                  value="25 480 kr/mån 2027-06-01"
+                  value="25 480 kr/mån 2025-08-01"
                   hint={t.wage.minimumWageHint}
                 />
               </div>
@@ -97,15 +97,15 @@ export default async function RegistreraPage() {
         <div className="grid grid-cols-1 gap-5 @5xl:grid-cols-2">
           <Panel title={t.terms.title} tags={["FA-003", "FA-004"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field label={t.terms.ownSignedDate} value="2027-05-28" />
-              <Field label={t.terms.ownValidity} value="2027-06-01 – 2030-05-31" />
+              <Field label={t.terms.ownSignedDate} value="2025-07-15" />
+              <Field label={t.terms.ownValidity} value="2025-08-01 – 2027-07-31" />
             </div>
             <Rationale>{t.terms.note}</Rationale>
           </Panel>
 
           <Panel title={t.link.title} tags={["FF-002", "FD-001"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field label={t.link.negotiation} value="FÖ-2027/218 – Kommunikation, 2027-05-28" />
+              <Field label={t.link.negotiation} value="FÖ-2025/218 – Kommunikation, 2025-07-15" />
               <Field label={t.link.documentLinkedTo} value={t.link.documentLinkedToValue} />
             </div>
           </Panel>
