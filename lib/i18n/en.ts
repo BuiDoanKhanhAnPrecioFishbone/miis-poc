@@ -357,6 +357,8 @@ export const en: Dictionary = {
         scopeC: "Tekniska anvisningar till löneavtalet, Bilaga C",
         workingTime: "Direktiv arbetsgrupp löneavtal, Bilaga D",
         scopeE: "Direktiv industrigemensamma arbetsgrupper, Bilaga E",
+        pension:
+          "§ 5  Parterna är överens om att ytterligare deltidspensionspremie avsätts med 0,4 % per den 1 november 2020.",
         negotiation: "Stockholm den 31 oktober 2020",
         signatures: "[Namnteckningar maskerade i MI:s exempel]",
         footer: "Avtal 20 Industriarbetsgivarna & Unionen (Stål- och metallindustrin)",
@@ -626,7 +628,7 @@ export const en: Dictionary = {
       },
       registered: "Registered",
       partiallyRegistered: "Partially registered",
-      notRegistered: "Not registered",
+    notRegistered: "Not registered",
       openProtocol: "Open protocol",
       protocolMissing: "No protocol",
       protocolIncompleteNote:
@@ -960,6 +962,9 @@ export const en: Dictionary = {
       subtitle: "Register a party meeting ahead of the bargaining round – nothing is filled in yet",
     },
     notRegistered: "Not registered",
+    watchwordTermLabel: "Watchword to add",
+    watchwordConfirm: "Save the watchword",
+    watchwordOrigin: "Party meeting",
     phaseLabel: "Stage of the party meeting",
     phase: { before: "Before", during: "During the meeting", after: "After" },
     before: {

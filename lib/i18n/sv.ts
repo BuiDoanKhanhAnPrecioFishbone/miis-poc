@@ -347,6 +347,8 @@ export const sv = {
         scopeC: "Tekniska anvisningar till löneavtalet, Bilaga C",
         workingTime: "Direktiv arbetsgrupp löneavtal, Bilaga D",
         scopeE: "Direktiv industrigemensamma arbetsgrupper, Bilaga E",
+        pension:
+          "§ 5  Parterna är överens om att ytterligare deltidspensionspremie avsätts med 0,4 % per den 1 november 2020.",
         negotiation: "Stockholm den 31 oktober 2020",
         signatures: "[Namnteckningar maskerade i MI:s exempel]",
         footer: "Avtal 20 Industriarbetsgivarna & Unionen (Stål- och metallindustrin)",
@@ -614,7 +616,7 @@ export const sv = {
       },
       registered: "Registrerat",
       partiallyRegistered: "Delvis registrerat",
-      notRegistered: "Ej registrerat",
+    notRegistered: "Ej registrerat",
       openProtocol: "Öppna protokoll",
       protocolMissing: "Protokoll saknas",
       protocolIncompleteNote:
@@ -945,6 +947,9 @@ export const sv = {
       subtitle: "Registrera en partsträff inför avtalsrörelsen – inget är ifyllt ännu",
     },
     notRegistered: "Ej registrerat",
+    watchwordTermLabel: "Bevakningsord att lägga till",
+    watchwordConfirm: "Spara bevakningsord",
+    watchwordOrigin: "Partsträff",
     phaseLabel: "Skede i partsträffen",
     phase: { before: "Inför", during: "Under mötet", after: "Efter" },
     before: {

@@ -15,4 +15,12 @@ export const DATASET_COOKIE = "miis_dataset";
 export const LANG_COOKIE = "miis_lang";
 export const REQTAGS_COOKIE = "miis_reqtags";
 
+/*
+  FAI-004's customisable half. A watchword added at a party meeting has to reach
+  the registration screen, which is a different route rendered on the server, so
+  it travels the same way role and language do. In week 2 these are rows in
+  `Bevakningsord` and the cookie disappears with the mock data.
+*/
+export const WATCHWORD_COOKIE = "miis_watchwords";
+
 export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;

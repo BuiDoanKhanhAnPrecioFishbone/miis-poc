@@ -7,6 +7,7 @@ import { PartyMeetingView } from "@/components/miis/PartyMeetingView";
 import { PageHeading } from "@/components/miis/primitives";
 import { getPartyMeeting } from "@/lib/data/party-meetings";
 import { listEmployeeOrgs } from "@/lib/data/parties";
+import { listWatchwords } from "@/lib/data/watchwords";
 import type { PartyMeeting } from "@/lib/domain/party-meeting";
 import { getSession } from "@/lib/session";
 
@@ -52,9 +53,10 @@ export default async function PartyMeetingPage({ params }: { params: Promise<{ i
   const session = await getSession();
   const { i18n, lang } = session;
   const { id } = await params;
-  const [meeting, employeeOrgs] = await Promise.all([
+  const [meeting, employeeOrgs, watchwords] = await Promise.all([
     id === "ny" ? Promise.resolve(EMPTY) : getPartyMeeting(id),
     listEmployeeOrgs(),
+    listWatchwords(),
   ]);
   if (!meeting) notFound();
   const t = i18n.partstraffar;
@@ -80,6 +82,7 @@ export default async function PartyMeetingPage({ params }: { params: Promise<{ i
         meeting={meeting}
         lang={lang}
         unions={employeeOrgs.map((p) => p.name)}
+        addedWatchwords={watchwords.filter((w) => w.origin !== "Fördefinierad")}
       />
     </AppShell>
   );

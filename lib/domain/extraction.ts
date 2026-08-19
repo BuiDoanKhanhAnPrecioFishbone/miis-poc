@@ -50,6 +50,7 @@ export type SourceAnchor =
   | "peace"
   | "wageAppendix"
   | "workingTime"
+  | "pension"
   | "negotiation";
 
 export interface ExtractionProposal {

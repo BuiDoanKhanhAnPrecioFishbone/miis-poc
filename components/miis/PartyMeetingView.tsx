@@ -1,15 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { t as text } from "@/lib/domain/lang";
 import type { BargainingDemand, MeetingPhase, PartyMeeting } from "@/lib/domain/party-meeting";
 import type { DemandKind } from "@/lib/domain/party-meeting";
 import { DEMAND_KIND_LABEL, phaseState, watchwordCount } from "@/lib/domain/party-meeting";
+import { WATCHWORD_COOKIE, COOKIE_MAX_AGE_SECONDS } from "@/lib/cookies";
+import type { Watchword } from "@/lib/domain/watchword";
+import { addWatchword, encodeWatchwords, suggestTerm } from "@/lib/domain/watchword";
+
 import { dictionary } from "@/lib/i18n";
 import { Stepper, type StepState } from "./Stepper";
-import { Badge, Button, Callout, Chip, Field, Panel, Rationale, ReqTag, ReqTags } from "./primitives";
+import {
+  Badge,
+  Button,
+  Callout,
+  Chip,
+  Field,
+  Panel,
+  Rationale,
+  ReqTag,
+  ReqTags,
+} from "./primitives";
 
 /**
  * US-08 — a party meeting through its three phases.
@@ -35,11 +50,21 @@ function DemandRow({
   lang,
   d,
   onPromote,
+  promotingId,
+  term,
+  onTermChange,
+  onConfirm,
+  onCancel,
 }: {
   demand: BargainingDemand;
   lang: Lang;
   d: ReturnType<typeof dictionary>;
   onPromote: (id: string) => void;
+  promotingId: string | null;
+  term: string;
+  onTermChange: (value: string) => void;
+  onConfirm: () => void;
+  onCancel: () => void;
 }) {
   const t = d.partstraffar;
   return (
@@ -89,6 +114,33 @@ function DemandRow({
             <Badge tone="ok">{t.isWatchword}</Badge>
             <span className="text-label text-muted-foreground">{t.watchwordExplain}</span>
           </>
+        ) : promotingId === demand.id ? (
+          <span className="flex flex-wrap items-end gap-2">
+            <span>
+              <label htmlFor="wd-term" className="mb-1 block text-label font-bold">
+                {t.watchwordTermLabel}
+              </label>
+              <input
+                id="wd-term"
+                type="text"
+                value={term}
+                onChange={(e) => onTermChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    onConfirm();
+                  }
+                }}
+                className="field-input w-64"
+              />
+            </span>
+            <Button size="sm" onClick={onConfirm} disabled={term.trim().length === 0}>
+              {t.watchwordConfirm}
+            </Button>
+            <Button variant="secondary" size="sm" onClick={onCancel}>
+              {t.demands.cancel}
+            </Button>
+          </span>
         ) : (
           <Button variant="secondary" size="sm" onClick={() => onPromote(demand.id)}>
             {t.promoteToWatchword}
@@ -104,6 +156,7 @@ export function PartyMeetingView({
   meeting,
   lang,
   unions,
+  addedWatchwords,
 }: {
   meeting: PartyMeeting;
   lang: Lang;
@@ -113,7 +166,16 @@ export function PartyMeetingView({
    * a hardcoded array, so a demand can only be backed by a union MIIS knows.
    */
   unions: string[];
+  /**
+   * FAI-004's customisable half — the terms already added from party meetings.
+   * Promoting a demand appends to this and the registration screen picks it up,
+   * which is the whole point: a demand heard in January is what marks a clause
+   * in a protocol that arrives in June.
+   */
+  addedWatchwords: Watchword[];
 }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
   const d = dictionary(lang);
   const t = d.partstraffar;
   const [phase, setPhase] = useState<MeetingPhase>(
@@ -126,6 +188,8 @@ export function PartyMeetingView({
   const [topic, setTopic] = useState("");
   const [kind, setKind] = useState<DemandKind>("coordinated");
   const [backing, setBacking] = useState<string[]>([]);
+  const [promoting, setPromoting] = useState<string | null>(null);
+  const [term, setTerm] = useState("");
 
   function addNote() {
     const value = draft.trim();
@@ -159,8 +223,47 @@ export function PartyMeetingView({
     setAdding(false);
   }
 
-  function promote(id: string) {
-    setDemands((list) => list.map((x) => (x.id === id ? { ...x, watchword: true } : x)));
+  /*
+    Promotion writes to the watchword table, not to a flag on the demand. The
+    table is what /registrera reads, so the term genuinely starts marking text
+    in incoming protocols rather than only turning a badge green here.
+
+    The cookie is the transport because the two screens are separate server
+    renders; `router.refresh()` is the same mechanism the demo bar uses. In week
+    2 this is a row in `Bevakningsord` and nothing above this line changes.
+  */
+  /*
+    Promoting asks for the term first. A demand's topic is a sentence — "Höjd
+    deltidspensionspremie" — and a watchword is a word, the one that will
+    actually turn up in a protocol six months later. The field opens on a
+    suggestion and the officer decides, because §4.1 makes the table
+    customisable and no heuristic should be quietly authoritative about what MI
+    watches.
+  */
+  function startPromote(id: string) {
+    const demand = demands.find((x) => x.id === id);
+    if (!demand) return;
+    setPromoting(id);
+    setTerm(suggestTerm(text(demand.topic, "sv")));
+  }
+
+  /*
+    Confirming writes to the watchword table, not to a flag on the demand. The
+    table is what /registrera reads, so the term genuinely starts marking text
+    in incoming protocols rather than only turning a badge green here.
+
+    The cookie is the transport because the two screens are separate server
+    renders; `router.refresh()` is the same mechanism the demo bar uses. In week
+    2 this is a row in `Bevakningsord` and nothing above this line changes.
+  */
+  function confirmPromote() {
+    const value = term.trim();
+    if (!promoting || !value) return;
+    const next = addWatchword(addedWatchwords, value, `${t.watchwordOrigin} ${meeting.date}`);
+    document.cookie = `${WATCHWORD_COOKIE}=${encodeWatchwords(next)};path=/;max-age=${COOKIE_MAX_AGE_SECONDS};samesite=lax`;
+    setDemands((list) => list.map((x) => (x.id === promoting ? { ...x, watchword: true } : x)));
+    setPromoting(null);
+    startTransition(() => router.refresh());
   }
 
   const promoted = watchwordCount({ ...meeting, demands });
@@ -292,7 +395,12 @@ export function PartyMeetingView({
                       demand={demand}
                       lang={lang}
                       d={d}
-                      onPromote={promote}
+                      onPromote={startPromote}
+                      promotingId={promoting}
+                      term={term}
+                      onTermChange={setTerm}
+                      onConfirm={confirmPromote}
+                      onCancel={() => setPromoting(null)}
                     />
                   ))}
                 </ul>

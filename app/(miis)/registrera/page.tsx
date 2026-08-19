@@ -15,6 +15,7 @@ import {
   ReqTag,
 } from "@/components/miis/primitives";
 import { listExtractionProposals } from "@/lib/data/extraction";
+import { listWatchwords } from "@/lib/data/watchwords";
 import { AGREEMENT_CONSTRUCTIONS, registrationStatusLabel } from "@/lib/domain/agreement";
 import { statusInfo, STATUS_LEGEND } from "@/lib/domain/status";
 import { percent } from "@/lib/format";
@@ -30,14 +31,17 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RegistreraPage() {
   const session = await getSession();
   const { i18n, lang } = session;
-  const proposals = await listExtractionProposals();
+  const [proposals, watchwords] = await Promise.all([
+    listExtractionProposals(),
+    listWatchwords(),
+  ]);
   const t = i18n.registrera;
 
   return (
     <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FAI-001", "FAI-002", "FAI-003"]} />
 
-      <ProtocolReview proposals={proposals} lang={lang}>
+      <ProtocolReview proposals={proposals} lang={lang} watchwords={watchwords}>
         <div id="steg-loneavtal" className="scroll-mt-24">
           <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
             <div className="space-y-4">

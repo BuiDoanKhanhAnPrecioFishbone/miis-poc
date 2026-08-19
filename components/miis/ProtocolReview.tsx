@@ -6,10 +6,13 @@ import type { ExtractionProposal, ProposalField, SourceAnchor } from "@/lib/doma
 import { initialValue, isAdjusted, isEmpty } from "@/lib/domain/extraction";
 import type { Lang } from "@/lib/domain/lang";
 import type { UploadedFile } from "@/lib/domain/upload";
+import type { Watchword } from "@/lib/domain/watchword";
+import { countHits } from "@/lib/domain/watchword";
 import { UPLOAD_PIPELINE } from "@/lib/domain/upload";
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { ProtocolUpload } from "./ProtocolUpload";
 import { Stepper, type StepState } from "./Stepper";
+import { Marked } from "./Marked";
 import { Tabs } from "./Select";
 import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
@@ -292,10 +295,13 @@ function PreFilledField({
 export function ProtocolReview({
   proposals,
   lang,
+  watchwords,
   children,
 }: {
   proposals: ExtractionProposal[];
   lang: Lang;
+  /** FAI-004 — MI's predefined terms plus whatever a party meeting added. */
+  watchwords: Watchword[];
   /**
    * The rest of the registration form. It lives in the right-hand column so the
    * protocol on the left can stay put while the case officer works down it —
@@ -444,66 +450,47 @@ export function ProtocolReview({
   const l = t.document.lines;
 
   /*
-    The page, line for line. Watchword hits (FAI-004) are marked with <mark>:
-    fredsplikt, avtalsperioden, uppsägning and arbetsgrupp are the kind of term
-    MI's watchword table carries — §4.1 describes it as demands picked up at
-    party meetings, and every one of these is a clause an officer is watching
-    for. A heading is not a source, so it registers no ref.
+    Plain strings now. The highlighting used to be four <mark> elements written
+    into this array by hand, which asserted FAI-004 rather than performing it —
+    the marks could not change, so the "customisable table" the requirement
+    describes had nothing to customise. Each line is matched against the table
+    at render time instead, so a demand promoted at a party meeting lights up
+    here without anyone editing this file.
+
+    A heading is not a source, so it carries no anchor and registers no ref.
   */
-  const lines: { anchor: SourceAnchor | null; content: ReactNode }[] = [
-    {
-      anchor: "heading",
-      content: <span className="block text-center font-semibold tracking-wide">{l.heading}</span>,
-    },
-    { anchor: null, content: <span className="block text-center">{l.betweenLabel}</span> },
-    {
-      anchor: "employerParty",
-      content: <span className="block text-center font-semibold">{l.employerParty}</span>,
-    },
-    { anchor: null, content: <span className="block text-center">{l.andLabel}</span> },
-    {
-      anchor: "employeeParty",
-      content: <span className="block text-center font-semibold">{l.employeeParty}</span>,
-    },
-    { anchor: "area", content: <span className="block text-center font-semibold">{l.area}</span> },
-    { anchor: "preamble", content: l.preamble },
-    { anchor: null, content: l.validityHeading },
-    { anchor: "prolonged", content: l.prolonged },
-    {
-      anchor: "period",
-      content: (
-        <>
-          Överenskommelsen omfattar <mark className="bg-sand px-1">avtalsperioden 2020-2023</mark>{" "}
-          varmed avses avtalsåren 1 november 2020 – 31 mars 2022 och den 1 april 2022 – 31 mars
-          2023.
-        </>
-      ),
-    },
-    { anchor: "terminationLead", content: l.terminationLead },
-    {
-      anchor: "termination",
-      content: <mark className="bg-sand px-1">{l.termination}</mark>,
-    },
-    { anchor: null, content: l.renegotiation },
-    { anchor: null, content: l.peaceHeading },
-    { anchor: "peace", content: <mark className="bg-sand px-1">{l.peace}</mark> },
-    { anchor: null, content: l.scopeHeading },
-    { anchor: null, content: `– ${l.scopeA}` },
-    { anchor: "wageAppendix", content: `– ${l.wageAppendix}` },
-    { anchor: null, content: `– ${l.scopeC}` },
-    {
-      anchor: "workingTime",
-      content: (
-        <>
-          – Direktiv <mark className="bg-sand px-1">arbetsgrupp</mark> löneavtal, Bilaga D
-        </>
-      ),
-    },
-    { anchor: null, content: `– ${l.scopeE}` },
-    { anchor: "negotiation", content: l.negotiation },
-    { anchor: null, content: <span className="text-muted-foreground">{l.signatures}</span> },
-    { anchor: null, content: <span className="text-meta text-muted-foreground">{l.footer}</span> },
+  const lines: { anchor: SourceAnchor | null; text: string; center?: boolean; muted?: boolean }[] = [
+    { anchor: "heading", text: l.heading, center: true },
+    { anchor: null, text: l.betweenLabel, center: true },
+    { anchor: "employerParty", text: l.employerParty, center: true },
+    { anchor: null, text: l.andLabel, center: true },
+    { anchor: "employeeParty", text: l.employeeParty, center: true },
+    { anchor: "area", text: l.area, center: true },
+    { anchor: "preamble", text: l.preamble },
+    { anchor: null, text: l.validityHeading },
+    { anchor: "prolonged", text: l.prolonged },
+    { anchor: "period", text: l.period },
+    { anchor: "terminationLead", text: l.terminationLead },
+    { anchor: "termination", text: l.termination },
+    { anchor: null, text: l.renegotiation },
+    { anchor: null, text: l.peaceHeading },
+    { anchor: "peace", text: l.peace },
+    { anchor: null, text: l.scopeHeading },
+    { anchor: null, text: `– ${l.scopeA}` },
+    { anchor: "wageAppendix", text: `– ${l.wageAppendix}` },
+    { anchor: null, text: `– ${l.scopeC}` },
+    { anchor: "workingTime", text: `– ${l.workingTime}` },
+    { anchor: null, text: `– ${l.scopeE}` },
+    { anchor: "pension", text: l.pension },
+    { anchor: "negotiation", text: l.negotiation },
+    { anchor: null, text: l.signatures, muted: true },
+    { anchor: null, text: l.footer, muted: true },
   ];
+
+  const hits = countHits(
+    lines.map((line) => line.text),
+    watchwords,
+  );
 
   /*
     Before the protocol has been read there is nothing to pre-fill, so the
@@ -626,10 +613,18 @@ export function ProtocolReview({
               className="max-h-[32rem] space-y-1 overflow-y-auto text-table leading-relaxed"
               lang="sv"
             >
-              {lines.map((line, i) =>
-                line.anchor === null ? (
+              {lines.map((line, i) => {
+                const body = <Marked text={line.text} watchwords={watchwords} />;
+                const cls = [
+                  line.center ? "block text-center" : "",
+                  line.muted ? "text-muted-foreground" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ");
+                const content = cls ? <span className={cls}>{body}</span> : body;
+                return line.anchor === null ? (
                   <p key={`h${i}`} className="px-3 pt-3 pb-1 font-semibold">
-                    {line.content}
+                    {content}
                   </p>
                 ) : (
                   <SourceLine
@@ -638,10 +633,10 @@ export function ProtocolReview({
                     active={activeSource === line.anchor}
                     register={register}
                   >
-                    {line.content}
+                    {content}
                   </SourceLine>
-                ),
-              )}
+                );
+              })}
             </div>
 
             {/*
@@ -674,7 +669,7 @@ export function ProtocolReview({
 
             <div className="mt-6">
               <Callout tone="attention" tags={["FAI-004"]}>
-                {t.document.watchwordHits(4)}
+                {t.document.watchwordHits(hits)}
               </Callout>
             </div>
           </Panel>
