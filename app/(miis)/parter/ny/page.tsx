@@ -28,7 +28,7 @@ export default async function NyPartPage() {
   const t = i18n.parter;
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="parter" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.newParty.title}
         subtitle={t.newParty.subtitle}

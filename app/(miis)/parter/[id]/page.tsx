@@ -50,7 +50,7 @@ export default async function PartyPage({ params }: { params: Promise<{ id: stri
   const t = i18n.parter;
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="parter" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={party.name}
         subtitle={PARTY_TYPE_LABEL[lang][party.type]}

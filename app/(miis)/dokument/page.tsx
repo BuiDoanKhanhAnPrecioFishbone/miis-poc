@@ -69,7 +69,7 @@ export default async function DokumentPage() {
   }));
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="dokument" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

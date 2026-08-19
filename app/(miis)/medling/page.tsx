@@ -68,7 +68,7 @@ export default async function MediationListPage() {
   });
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="medling" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={m.title} subtitle={m.subtitle} tags={["FF-006", "FF-007"]} />
 
       <Panel title={m.title} tags={["FF-008"]}>

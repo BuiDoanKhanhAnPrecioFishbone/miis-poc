@@ -102,11 +102,25 @@ export default async function AvtalPage() {
   });
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}
         tags={["FA-001", "FA-005", "FA-006", "FR-012"]}
+        action={
+          /*
+            Registration is an action, not a place, so it is a button and never
+            a menu item — but it was only on the start page. The agreement
+            register is where an officer stands when the next protocol arrives,
+            and it had no way to begin one.
+          */
+          <Link
+            href="/registrera"
+            className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
+          >
+            {i18n.registrera.title}
+          </Link>
+        }
       />
 
       <Panel title={t.register.heading} tags={["FA-001", "FA-021", "FR-012"]}>

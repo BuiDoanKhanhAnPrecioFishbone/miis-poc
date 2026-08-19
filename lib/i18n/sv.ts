@@ -45,6 +45,9 @@ export const sv = {
     sortedAscending: "Sorterat stigande",
     sortedDescending: "Sorterat fallande",
     backTo: (page: string) => `Tillbaka till ${page}`,
+    notAuthorised: "Behörighet saknas",
+    notAuthorisedFor: (screen: string, role: string) =>
+      `${screen} ingår inte i behörigheten för rollen ${role}. Byt roll i demoläget för att se vyn. I MIIS styrs detta av behörighetsadministratören (NFÅ-003).`,
     notInDemo: "Ej aktiv i demon",
     requirementUnknown: "Kravtexten finns inte registrerad för detta id.",
   },

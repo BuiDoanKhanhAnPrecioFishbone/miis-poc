@@ -105,7 +105,7 @@ export default async function SokPage() {
   });
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="sok" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       {/* FA-019 "söka fram avtal med vissa egenskaper" is what this screen is; it
           sat untagged because our English rendering filed the same capability
           under FR-001/FR-002 only. */}

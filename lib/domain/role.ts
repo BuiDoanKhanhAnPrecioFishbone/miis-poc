@@ -181,3 +181,18 @@ export function roleOptions(lang: Lang = DEFAULT_LANG): { id: Role; label: strin
 export function isRole(value: string | undefined): value is Role {
   return ROLES.some((r) => r.id === value);
 }
+
+/**
+ * NFÅ-003 — whether a role may open a screen.
+ *
+ * The same list drives three things and that is the point: the menu a role
+ * sees, the screens it may open, and the table on
+ * `/administration/anvandare`. Authorisation that lives only in the navigation
+ * is a navigation feature — a statistics user who could not see an
+ * Administration item could still type `/administration` and read the change
+ * log — so the shell asks this before it renders a screen, not only before it
+ * renders a link.
+ */
+export function canAccess(role: Pick<RoleDefinition, "nav">, screen: NavId): boolean {
+  return role.nav.includes(screen);
+}

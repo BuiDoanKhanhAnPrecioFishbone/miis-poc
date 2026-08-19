@@ -63,7 +63,7 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
   const ds = i18n.decisionSupport;
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="medling" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={c.heading(
           caseNumber(mediationCase.id),

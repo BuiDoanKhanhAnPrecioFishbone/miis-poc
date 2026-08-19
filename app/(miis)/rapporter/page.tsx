@@ -68,7 +68,7 @@ export default async function RapporterPage() {
   }));
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="rapporter" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FR-005", "FR-008", "NFP-002"]} />
 
       {/*

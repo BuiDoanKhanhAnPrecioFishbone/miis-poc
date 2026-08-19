@@ -7,9 +7,10 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { DatasetName } from "@/lib/domain/dataset";
 import type { Lang } from "@/lib/domain/lang";
 import { isHeadingOnly, navFor, NAV_HREF, type NavId } from "@/lib/domain/nav";
-import type { RoleInfo } from "@/lib/domain/role";
+import { canAccess, type RoleInfo } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
 import { DemoBar } from "./DemoBar";
+import { Callout } from "./primitives";
 import { SessionTimeoutWarning } from "./SessionTimeoutWarning";
 
 /**
@@ -31,12 +32,23 @@ export function AppShell({
   dataset,
   lang,
   reqTags,
+  requires,
   children,
 }: {
   role: RoleInfo;
   dataset: DatasetName;
   lang: Lang;
   reqTags: boolean;
+  /**
+   * NFÅ-003 — the menu item this screen belongs to. A role without it is
+   * refused here rather than merely not shown the link.
+   *
+   * Filtering the menu satisfies the sketch; it does not satisfy the
+   * requirement. A statistics user who could not see an Administration item
+   * could still open `/administration` by typing it, and read the change log.
+   * Authorisation that only exists in the navigation is a navigation feature.
+   */
+  requires?: NavId;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -228,7 +240,18 @@ export function AppShell({
           id="innehall"
           className="@container min-w-0 flex-1 bg-background px-5 py-8 sm:px-8 xl:px-10"
         >
-          {children}
+          {/*
+            NFÅ-003 enforced, not merely reflected. A role that does not have
+            this screen's menu item is refused the screen, so authorisation is a
+            property of the system rather than of the navigation.
+          */}
+          {requires && !canAccess(role, requires) ? (
+            <Callout tone="attention" label={t.common.notAuthorised}>
+              {t.common.notAuthorisedFor(t.nav[requires], role.label)}
+            </Callout>
+          ) : (
+            children
+          )}
         </main>
       </div>
 

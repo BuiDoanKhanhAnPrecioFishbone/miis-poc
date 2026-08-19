@@ -47,6 +47,9 @@ export const en: Dictionary = {
     sortedAscending: "Sorted ascending",
     sortedDescending: "Sorted descending",
     backTo: (page: string) => `Back to ${page}`,
+    notAuthorised: "Not authorised",
+    notAuthorisedFor: (screen: string, role: string) =>
+      `${screen} is not part of the permissions for the role ${role}. Switch role in demo mode to see the view. In MIIS this is governed by the authorisation administrator (NFÅ-003).`,
     notInDemo: "Not active in the demo",
     requirementUnknown: "No requirement text is registered for this ID.",
   },

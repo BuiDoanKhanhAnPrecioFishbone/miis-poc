@@ -128,7 +128,7 @@ export default async function AgreementDetailPage({
   }));
 
   return (
-    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={agreementTitle(agreement)}
         back={
