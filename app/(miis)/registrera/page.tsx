@@ -10,6 +10,10 @@ import {
   Button,
   ConfidentialityMarker,
   Field,
+  FieldLabel,
+  TextField,
+  StatusDot,
+  StatusLegend,
   PageHeading,
   Panel,
   Rationale,
@@ -18,7 +22,7 @@ import {
 import { listExtractionProposals } from "@/lib/data/extraction";
 import { listWatchwords } from "@/lib/data/watchwords";
 import { AGREEMENT_CONSTRUCTIONS, registrationStatusLabel } from "@/lib/domain/agreement";
-import { statusInfo, STATUS_LEGEND } from "@/lib/domain/status";
+import { statusInfo } from "@/lib/domain/status";
 import { percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
@@ -57,13 +61,37 @@ export default async function RegistreraPage() {
                 }))}
               />
 
+              {/*
+                These are the officer's to register (FA-008 to FA-010), so they
+                are inputs. They were `Field` — display only — and read as
+                editable purely because `Field` was borrowing the input styling.
+              */}
               <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
-                <Field label={t.wage.scope} value={percent(3.4, lang)} />
-                <Field label={t.wage.costFrame} value={percent(6.4, lang)} />
-                <Field label={t.wage.individualGuarantee} value={i18n.common.no} />
-                <Field
+                <TextField
+                  id="wage-scope"
+                  label={t.wage.scope}
+                  defaultValue={percent(3.4, lang)}
+                  numeric
+                />
+                <TextField
+                  id="wage-cost-frame"
+                  label={t.wage.costFrame}
+                  defaultValue={percent(6.4, lang)}
+                  numeric
+                />
+                <Select
+                  id="wage-individual-guarantee"
+                  label={t.wage.individualGuarantee}
+                  defaultValue="no"
+                  options={[
+                    { id: "no", label: i18n.common.no },
+                    { id: "yes", label: i18n.common.yes },
+                  ]}
+                />
+                <TextField
+                  id="wage-working-time"
                   label={t.wage.workingTime}
-                  value={`${i18n.common.yes} · ${percent(0.2, lang)}`}
+                  defaultValue={`${i18n.common.yes} · ${percent(0.2, lang)}`}
                 />
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
@@ -73,14 +101,16 @@ export default async function RegistreraPage() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-                <Field
+                <TextField
+                  id="wage-revision"
                   label={t.wage.revision}
-                  value={`2027-06-01 · ${percent(3.4, lang)}`}
+                  defaultValue={`2027-06-01 · ${percent(3.4, lang)}`}
                   hint={t.wage.revisionHint}
                 />
-                <Field
+                <TextField
+                  id="wage-minimum"
                   label={t.wage.minimumWage}
-                  value="25 480 kr/mån 2025-08-01"
+                  defaultValue="25 480 kr/mån 2025-08-01"
                   hint={t.wage.minimumWageHint}
                 />
               </div>
@@ -102,15 +132,37 @@ export default async function RegistreraPage() {
         <div className="grid grid-cols-1 gap-5 @5xl:grid-cols-2">
           <Panel title={t.terms.title} tags={["FA-003", "FA-004"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field label={t.terms.ownSignedDate} value="2025-07-15" />
-              <Field label={t.terms.ownValidity} value="2025-08-01 – 2027-07-31" />
+              <TextField
+                id="terms-signed"
+                label={t.terms.ownSignedDate}
+                type="date"
+                defaultValue="2025-07-15"
+                numeric
+              />
+              <TextField
+                id="terms-validity"
+                label={t.terms.ownValidity}
+                defaultValue="2025-08-01 – 2027-07-31"
+                numeric
+              />
             </div>
             <Rationale>{t.terms.note}</Rationale>
           </Panel>
 
           <Panel title={t.link.title} tags={["FF-002", "FD-001"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field label={t.link.negotiation} value="FÖ-2025/218 – Kommunikation, 2025-07-15" />
+              {/*
+                FF-002 links the protocol to a negotiation that already exists,
+                so this is a choice from a register rather than free text.
+              */}
+              <Select
+                id="link-negotiation"
+                label={t.link.negotiation}
+                options={[
+                  { id: "fo-218", label: "FÖ-2025/218 – Kommunikation, 2025-07-15" },
+                  { id: "fo-204", label: "FÖ-2025/204 – Stål- och metallindustrin, 2025-06-02" },
+                ]}
+              />
               <Field label={t.link.documentLinkedTo} value={t.link.documentLinkedToValue} />
             </div>
           </Panel>
@@ -133,11 +185,22 @@ export default async function RegistreraPage() {
               will carry in every list, so the form says which one — the reader
               should not have to deduce it from a legend elsewhere.
             */}
-              <Field
-                label={t.save.colourCoding}
-                value={statusInfo("newly-signed", lang).label}
-                hint={STATUS_LEGEND[lang]}
-              />
+              {/*
+                The agreement's own FR-012 status, with the key beside it. The
+                label used to read "Färgkodning i vyerna" — a sentence about the
+                interface rather than about the agreement, which told the
+                officer where the value would be seen and not what it was.
+              */}
+              <div>
+                <FieldLabel>{t.save.agreementStatus}</FieldLabel>
+                <div className="min-h-11 border-b border-border py-2 text-body">
+                  <StatusDot status={statusInfo("newly-signed", lang)} showLabel />
+                </div>
+                <p className="mt-2 text-label text-muted-foreground">{t.save.statusKey}</p>
+                <div className="mt-1">
+                  <StatusLegend lang={lang} />
+                </div>
+              </div>
             </div>
 
             <div className="mt-4 flex flex-wrap items-start gap-2">

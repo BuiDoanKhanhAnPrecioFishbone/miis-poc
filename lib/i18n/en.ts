@@ -394,6 +394,9 @@ export const en: Dictionary = {
       sourceButton: (field: string) => `AI proposal – show the source for ${field} in the protocol`,
       aiLegend:
         "Fields marked AI were pre-filled by the AI analysis. Choose the AI mark beside a field and the passage it was read from is marked in the protocol on the left.",
+      lockedByApproval: "Locked by the approval – reopen the registration to change it",
+      approvedLockNote:
+        "The fields are locked by the approval. They can be read and copied but not changed — choose Reopen for changes if something needs correcting.",
       aiProposed: (value: string) => `AI proposed: ${value}`,
       reset: "Restore the AI proposal",
       resetFor: (field: string) => `Restore the AI proposal for ${field}`,
@@ -443,10 +446,14 @@ export const en: Dictionary = {
     save: {
       title: "Save the registration",
       registrationStatus: "Registration status",
-      colourCoding: "Colour coding in the views",
+      agreementStatus: "Agreement status (FR-012)",
+      statusKey: "How the status appears in agreement lists and reports:",
       approveAndLink: "Approve and link the protocol",
       approveFirst: "Approve the AI proposals first — nothing can be linked before they are reviewed.",
       registered: "The protocol is registered and linked",
+      registeredWhere:
+        "The agreement is now in the agreement register with the status Newly signed, no mediation, and appears under Agreements, in Search and in the reports. The change log has recorded who approved it and when.",
+      registeredNext: "Open the agreement in the register",
       registeredNote:
         "The agreement, the wage agreement and the negotiation are linked to the protocol. The change log has recorded who approved it and when.",
       reopen: "Change the registration",
@@ -570,8 +577,8 @@ export const en: Dictionary = {
     procedureAgreement: "Negotiation procedure agreement",
     coveredNot: "The agreement area is NOT covered by a negotiation procedure agreement.",
     covered: "The agreement area is covered by a negotiation procedure agreement.",
-    miAppoints: "→ The Mediation Office appoints mediators.",
-    partiesMediate: "→ The parties mediate under their own procedure. MI appoints no mediator.",
+    miAppoints: "The Mediation Office appoints mediators.",
+    partiesMediate: "The parties mediate under their own procedure. MI appoints no mediator.",
     procedureNote:
       "Where the agreement is covered by a negotiation procedure agreement the parties mediate under their own procedure and MI appoints no mediator.",
     benchmarkTitle: "Märket (reference in the mediator view)",
@@ -582,7 +589,7 @@ export const en: Dictionary = {
     createWithoutNotice: "Create DG decision – without notice",
     finalise: "Finalise the decision",
     finaliseNote:
-      "→ A notification e-mail with a link is sent to the mediator administrator and logged",
+      "A notification e-mail with a link is sent to the mediator administrator and logged",
     templateNote:
       "The document templates are pre-filled with information from MIIS and can be edited before completion",
     outcome: "Mediation outcome",

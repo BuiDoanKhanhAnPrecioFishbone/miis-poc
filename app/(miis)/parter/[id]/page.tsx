@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconBack } from "@/components/miis/icons";
 import { NameChange } from "@/components/miis/NameChange";
 import { Badge, Field, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { agreementsForParty, getParty } from "@/lib/data/parties";
@@ -56,7 +57,7 @@ export default async function PartyPage({ params }: { params: Promise<{ id: stri
         tags={["FP-001", "FP-002", "FP-004", "FP-006"]}
         back={
           <Link href="/parter" className="font-semibold text-primary underline underline-offset-2">
-            ← {t.title}
+            <IconBack /> {t.title}
           </Link>
         }
       />

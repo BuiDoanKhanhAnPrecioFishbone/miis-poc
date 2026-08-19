@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconBack, IconForward } from "@/components/miis/icons";
 import {
   AiRegion,
   Badge,
@@ -73,7 +74,7 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
             href="/medling"
             className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
           >
-            <span aria-hidden>←</span> {i18n.common.backTo(i18n.medling.title)}
+            <IconBack /> {i18n.common.backTo(i18n.medling.title)}
           </Link>
         }
       />
@@ -135,8 +136,12 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
         <div className="space-y-5">
           <Panel title={c.procedureAgreement} tags={["FF-006", "FA-017"]} tone="mint">
             <p className="text-table">{miAppoints ? c.coveredNot : c.covered}</p>
-            <p className="mt-3 font-semibold text-primary">
-              {miAppoints ? c.miAppoints : c.partiesMediate}
+            {/* The consequence of the rule above, marked as one. */}
+            <p className="mt-3 flex items-start gap-2 font-semibold text-primary">
+              <span className="flex h-6 items-center">
+                <IconForward />
+              </span>
+              <span className="min-w-0">{miAppoints ? c.miAppoints : c.partiesMediate}</span>
             </p>
             <Rationale>{c.procedureNote}</Rationale>
           </Panel>
@@ -215,7 +220,12 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
             <Button variant="secondary">{c.createWithoutNotice}</Button>
             <Button>{c.finalise}</Button>
             <ReqTag id="FE-001" />
-            <span className="text-label text-muted-foreground">{c.finaliseNote}</span>
+            <span className="flex items-start gap-2 text-label text-muted-foreground">
+              <span className="flex h-6 items-center">
+                <IconForward size="sm" />
+              </span>
+              <span className="min-w-0">{c.finaliseNote}</span>
+            </span>
           </div>
           <Rationale>{c.templateNote}</Rationale>
         </Panel>

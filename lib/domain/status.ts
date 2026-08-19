@@ -96,13 +96,12 @@ export function agreementStatus(
 }
 
 /**
- * The legend shown under status-coded tables. Names the shape as well as the
- * colour, because the shape is what a greyscale print or a colour-blind reader
- * actually goes by.
+ * The legend, as the three status codes rather than a pre-drawn sentence.
+ *
+ * It used to be a string with ● ■ ○ typed into it, which drew the shapes twice
+ * in two different ways — once as CSS in `StatusDot` and once as Unicode
+ * characters here — and left the two free to disagree. Rendering the legend
+ * from the same `statusInfo` the rows use means the mark in the key is the mark
+ * in the table, by construction.
  */
-export const STATUS_LEGEND: Record<Lang, string> = {
-  sv:
-    "● Grön cirkel = nytecknat utan medling · ■ Röd fyrkant = tecknat efter medling / medlingskoppling · ○ Blå ring = kvarstående",
-  en:
-    "● Green circle = newly signed without mediation · ■ Red square = signed after mediation / linked to mediation · ○ Blue ring = remaining",
-};
+export const STATUS_LEGEND_CODES = ["newly-signed", "after-mediation", "remaining"] as const;

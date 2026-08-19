@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
+import { IconSortable, IconSortAsc, IconSortDesc } from "./icons";
 import { dictionary } from "@/lib/i18n";
 
 /**
@@ -138,8 +139,16 @@ export function DataTable({
                         — a filled triangle against a double arrow — which is
                         the stronger signal anyway, and neither is now faint.
                       */}
-                      <span aria-hidden>
-                        {active ? (direction === "asc" ? "▲" : "▼") : "↕"}
+                      <span className="flex h-4 items-center">
+                        {active ? (
+                          direction === "asc" ? (
+                            <IconSortAsc size="sm" />
+                          ) : (
+                            <IconSortDesc size="sm" />
+                          )
+                        ) : (
+                          <IconSortable size="sm" />
+                        )}
                       </span>
                       <span className="sr-only">
                         {active

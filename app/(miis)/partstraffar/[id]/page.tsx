@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconBack } from "@/components/miis/icons";
 import { PartyMeetingView } from "@/components/miis/PartyMeetingView";
 import { PageHeading } from "@/components/miis/primitives";
 import { getPartyMeeting } from "@/lib/data/party-meetings";
@@ -73,7 +74,7 @@ export default async function PartyMeetingPage({ params }: { params: Promise<{ i
             href="/partstraffar"
             className="font-semibold text-primary underline underline-offset-2"
           >
-            ← {t.title}
+            <IconBack /> {t.title}
           </Link>
         }
       />

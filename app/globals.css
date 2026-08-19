@@ -214,6 +214,18 @@
   --ai-solid: var(--mi-ai-700);
   --ai-solid-foreground: #ffffff;
   /*
+    The AI gradient — allowed on a band, never under measured text.
+
+    A gradient has no single contrast ratio, so any text over it has to clear
+    4.5:1 against its *lightest* stop or the figure is a guess. Both stops here
+    are dark violets — #4527A0 and #5E35B1 — and white measures 10.24:1 and
+    8.02:1 on them, so the header band passes wherever the eye lands on it. It
+    is deliberately shallow: two neighbouring steps of the same hue, not a
+    hue-shifting sweep, because a governance system flagging unverified machine
+    output should read as a mark rather than as marketing.
+  */
+  --ai-gradient: linear-gradient(100deg, var(--mi-ai-700) 0%, var(--mi-ai-500) 100%);
+  /*
     The ring on a traced field. A non-text indicator needs 3:1 against what it
     sits on (WCAG 1.4.11); --mi-ai-500 on the panel's paper measures 4.78:1, so
     it clears it with room and stays unmistakably the AI hue rather than a
@@ -448,6 +460,15 @@
  */
 :root[data-reqtags="off"] .rationale {
   display: none;
+}
+
+/*
+  The AI band. A utility rather than an arbitrary class so the gradient is
+  defined once and `AiRegion` is the only thing that can reach for it.
+*/
+@utility ai-band {
+  background-image: var(--ai-gradient);
+  color: var(--ai-solid-foreground);
 }
 
 @utility card-panel {

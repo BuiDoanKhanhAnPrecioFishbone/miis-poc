@@ -1,6 +1,7 @@
 "use client";
 
 import type { Lang } from "@/lib/domain/lang";
+import { IconCheck } from "./icons";
 import { dictionary } from "@/lib/i18n";
 
 /**
@@ -77,7 +78,7 @@ export function Stepper({
         const state = states[i] ?? "upcoming";
         const content = (
           <>
-            {state === "done" && <span aria-hidden>✓</span>}
+            {state === "done" && <IconCheck size="sm" />}
             {step.label}
             {/* The state is never carried by colour alone. */}
             <span className="sr-only">— {d.registrera.stepState[state]}</span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { IconCheck } from "./icons";
 import { useId, useState, type DragEvent } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
@@ -18,7 +19,7 @@ import { Badge, Callout, Panel, Rationale, ReqTag } from "./primitives";
 /**
  * US-01, step 1 — the only step of MI's five that the screen did not have.
  *
- * It was missing in a specific and awkward way: the stepper said *"✓ 1. Ladda
+ * It was missing in a specific and awkward way: the stepper said *" 1. Ladda
  * upp — Klart"* on a screen where nothing had been uploaded, and the `OCR`
  * badge on the protocol pane asserted FAI-003 rather than showing it. Four
  * mandatory requirements are discharged in the gap between choosing a file and
@@ -65,7 +66,7 @@ function StageRow({
         aria-hidden
         className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-meta font-bold ${STATE_STYLE[state]}`}
       >
-        {state === "done" ? "✓" : state === "current" ? "…" : ""}
+        {state === "done" ? "" : state === "current" ? "…" : ""}
       </span>
       <span className={state === "upcoming" ? "text-muted-foreground" : "text-foreground"}>
         {stageLabel(d, id)}

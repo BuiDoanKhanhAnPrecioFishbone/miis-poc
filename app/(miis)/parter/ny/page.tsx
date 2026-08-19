@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconBack } from "@/components/miis/icons";
 import { NewParty } from "@/components/miis/NewParty";
 import { PageHeading } from "@/components/miis/primitives";
 import { listParties } from "@/lib/data/parties";
@@ -34,7 +35,7 @@ export default async function NyPartPage() {
         tags={["FP-001", "FP-002", "FP-006"]}
         back={
           <Link href="/parter" className="font-semibold text-primary underline underline-offset-2">
-            ← {t.title}
+            <IconBack /> {t.title}
           </Link>
         }
       />

@@ -15,6 +15,7 @@ import { RegistrationProvider } from "./RegistrationSave";
 import { Stepper, type StepState } from "./Stepper";
 import { Marked } from "./Marked";
 import { Tabs } from "./Select";
+import { IconAi, IconLock } from "./icons";
 import { AiRegion, Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
@@ -236,9 +237,10 @@ function PreFilledField({
           aria-pressed={selected}
           aria-label={t.sourceButton(name)}
           title={t.sourceButton(name)}
-          className="inline-flex h-6 shrink-0 items-center rounded-sm border border-ai-border bg-ai px-1.5 text-meta font-bold tracking-[0.08em] text-ai-foreground transition-colors hover:bg-card"
+          className="inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-ai-border bg-ai px-1.5 text-meta font-bold tracking-[0.08em] text-ai-foreground transition-colors hover:bg-card"
         >
-          AI
+          <IconAi size="sm" />
+          {d.common.aiMark}
         </button>
         {adjusted && <Badge tone="ai">{t.adjusted}</Badge>}
       </div>
@@ -254,17 +256,37 @@ function PreFilledField({
         pushes the value's own contrast down. An empty required field keeps the
         error border and wins.
       */}
-      <input
-        id={inputId}
-        type="text"
-        value={value}
-        readOnly={locked}
-        onChange={(e) => onChange(proposal.id, e.target.value)}
-        aria-describedby="ai-forklaring"
-        className={`field-input ${locked ? "bg-secondary" : ""} ${
-          isEmpty(value) ? "border-error-border" : ""
-        } ${selected ? "outline-3 outline-offset-2 outline-ai-ring" : ""}`}
-      />
+      {/*
+        Read-only, not disabled, once the form is approved.
+
+        A `disabled` input is skipped by the keyboard and its value cannot be
+        selected or copied — wrong for a registered value the officer may still
+        need to read, quote or hand to a colleague. `readOnly` keeps it
+        focusable and selectable and only refuses edits, which is exactly what
+        approval means here. The padlock and the sentence under the group say so
+        out loud, because a grey fill on its own is ambiguous between "you may
+        not edit this" and "this is broken".
+      */}
+      <div className="relative">
+        <input
+          id={inputId}
+          type="text"
+          value={value}
+          readOnly={locked}
+          aria-readonly={locked || undefined}
+          onChange={(e) => onChange(proposal.id, e.target.value)}
+          aria-describedby="ai-forklaring"
+          className={`field-input ${locked ? "bg-secondary pr-11" : ""} ${
+            isEmpty(value) ? "border-error-border" : ""
+          } ${selected ? "outline-3 outline-offset-2 outline-ai-ring" : ""}`}
+        />
+        {locked && (
+          <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-muted-foreground">
+            <IconLock size="md" />
+            <span className="sr-only">{t.lockedByApproval}</span>
+          </span>
+        )}
+      </div>
 
       {/*
         FH-001 records the old and the new value, so both stay visible. The row
@@ -593,7 +615,10 @@ export function ProtocolReview({
             </div>
 
             {confirming && (
-              <div className="mb-4">
+              /* Space above as well as below: the callout now sits under the
+                 toolbar rather than under the heading, so without it the
+                 warning touches the button that raised it. */
+              <div className="mt-3 mb-4">
                 <Callout tone="attention" live>
                   <span className="basis-full">{t.upload.replaceWarning(adjustedCount)}</span>
                   <span className="mt-2 flex flex-wrap gap-2">
@@ -761,6 +786,11 @@ export function ProtocolReview({
                 {approved ? (
                   <>
                     <Badge tone="ok">{t.review.approved}</Badge>
+                    {/* Says what the padlocks mean, once, next to the control
+                        that puts them there. */}
+                    <span className="basis-full text-label text-muted-foreground">
+                      {t.review.approvedLockNote}
+                    </span>
                     <Button
                       variant="secondary"
                       onClick={() => {

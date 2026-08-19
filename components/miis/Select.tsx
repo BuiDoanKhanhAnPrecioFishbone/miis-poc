@@ -2,6 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 
+import { FieldLabel } from "./primitives";
+
 /**
  * A closed list of options.
  *
@@ -77,15 +79,15 @@ export function Select({
 
   return (
     <div>
-      <div className={srOnlyLabel ? "" : "mb-1 flex min-h-7 flex-wrap items-center gap-2"}>
-        <label
-          htmlFor={id}
-          className={srOnlyLabel ? "sr-only" : "text-label font-bold text-foreground"}
-        >
+      {srOnlyLabel ? (
+        <label htmlFor={id} className="sr-only">
           {label}
         </label>
-        {!srOnlyLabel && badge}
-      </div>
+      ) : (
+        <FieldLabel htmlFor={id} badge={badge}>
+          {label}
+        </FieldLabel>
+      )}
       {/*
         The chevron is drawn here rather than by the platform. A native select
         anchors its own mark to the border box and ignores `padding-inline-end`

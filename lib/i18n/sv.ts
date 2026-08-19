@@ -385,6 +385,9 @@ export const sv = {
       sourceButton: (field: string) => `AI-förslag – visa källan till ${field} i protokollet`,
       aiLegend:
         "Fält märkta AI är förifyllda av AI-analysen. Välj AI-märket vid ett fält så markeras stycket det lästes ur i protokollet till vänster.",
+      lockedByApproval: "Låst av godkännandet – öppna registreringen för att ändra",
+      approvedLockNote:
+        "Fälten är låsta av godkännandet. De går att läsa och kopiera men inte ändra – välj Öppna för ändring om något behöver rättas.",
       aiProposed: (value: string) => `AI föreslog: ${value}`,
       reset: "Återställ AI-förslaget",
       resetFor: (field: string) => `Återställ AI-förslaget för ${field}`,
@@ -435,10 +438,14 @@ export const sv = {
     save: {
       title: "Spara registrering",
       registrationStatus: "Registreringsstatus",
-      colourCoding: "Färgkodning i vyerna",
+      agreementStatus: "Avtalets status (FR-012)",
+      statusKey: "Så visas statusen i avtalslistor och rapporter:",
       approveAndLink: "Godkänn och koppla protokoll",
       approveFirst: "Godkänn AI-förslagen först — inget kan kopplas innan de är granskade.",
       registered: "Protokollet är registrerat och kopplat",
+      registeredWhere:
+        "Avtalet ligger nu i avtalsregistret med status Nytecknat utan medling och syns i Avtal, i Sök och i rapporterna. Ändringsloggen har registrerat vem som godkände och när.",
+      registeredNext: "Öppna avtalet i avtalsregistret",
       registeredNote:
         "Avtalet, löneavtalet och förhandlingen är kopplade till protokollet. Ändringsloggen har registrerat vem som godkände och när.",
       reopen: "Ändra registreringen",
@@ -559,8 +566,8 @@ export const sv = {
     procedureAgreement: "Förhandlingsordningsavtal",
     coveredNot: "Avtalsområdet täcks INTE av förhandlingsordningsavtal.",
     covered: "Avtalsområdet täcks av förhandlingsordningsavtal.",
-    miAppoints: "→ Medlingsinstitutet tillsätter medlare.",
-    partiesMediate: "→ Parterna medlar i egen regi. MI tillsätter ingen medlare.",
+    miAppoints: "Medlingsinstitutet tillsätter medlare.",
+    partiesMediate: "Parterna medlar i egen regi. MI tillsätter ingen medlare.",
     procedureNote:
       "Omfattas avtalet av förhandlingsordningsavtal medlar parterna i egen regi och MI tillsätter ingen medlare.",
     benchmarkTitle: "Märket (referens i medlarvyn)",
@@ -570,7 +577,7 @@ export const sv = {
     createWithNotice: "Skapa GD-beslut – med varsel",
     createWithoutNotice: "Skapa GD-beslut – utan varsel",
     finalise: "Klarmarkera beslut",
-    finaliseNote: "→ Notifierings-epost med länk skickas till medlaradministratör och loggas",
+    finaliseNote: "Notifierings-epost med länk skickas till medlaradministratör och loggas",
     templateNote:
       "Dokumentmallarna förifylls med information från MIIS och kan redigeras före färdigställande",
     outcome: "Medlingsresultat",

@@ -12,8 +12,11 @@
 
 import type { ReactNode } from "react";
 
+import type { Lang } from "@/lib/domain/lang";
+
+import { IconAi, IconAlert, IconCheck, IconClose, IconLock, IconPlus } from "./icons";
 import { REQUIREMENTS } from "@/lib/domain/requirements";
-import type { StatusInfo } from "@/lib/domain/status";
+import { statusInfo, STATUS_LEGEND_CODES, type StatusInfo } from "@/lib/domain/status";
 
 /* -------------------------------------------------------------------------- */
 /* Annotation layer                                                            */
@@ -240,11 +243,11 @@ const CALLOUT_TONE: Record<Exclude<Tone, "neutral">, string> = {
   ai: "border-l-ai-border bg-ai text-ai-foreground",
 };
 
-const CALLOUT_ICON: Record<Exclude<Tone, "neutral">, string> = {
-  ok: "✓",
-  attention: "!",
-  error: "✕",
-  ai: "✦",
+const CALLOUT_ICON: Record<Exclude<Tone, "neutral">, () => ReactNode> = {
+  ok: () => <IconCheck />,
+  attention: () => <IconAlert />,
+  error: () => <IconClose />,
+  ai: () => <IconAi />,
 };
 
 /**
@@ -274,9 +277,7 @@ export function Callout({
       aria-live={live ? "polite" : undefined}
       className={`flex flex-wrap items-start gap-x-2 gap-y-1 rounded-md border border-l-4 px-4 py-3 text-label ${CALLOUT_TONE[tone]}`}
     >
-      <span aria-hidden className="font-bold">
-        {CALLOUT_ICON[tone]}
-      </span>
+      <span className="flex h-6 items-center">{CALLOUT_ICON[tone]()}</span>
       <span className="min-w-0 flex-1">
         {label && <span className="font-bold">{label} </span>}
         {children}
@@ -354,12 +355,21 @@ export function AiRegion({
       aria-label={regionLabel}
       className="min-w-0 overflow-hidden rounded-lg border-2 border-l-[6px] border-ai-border border-l-ai-solid bg-card shadow-card"
     >
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-ai-solid px-4 py-2.5">
+      <div className="ai-band flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5">
         <div className="flex min-w-0 flex-wrap items-center gap-2.5">
+          {/*
+            Sparkle *and* letters, never one without the other. The sparkle is
+            what the eye finds; the letters are what it means. A sparkle alone
+            has come to read as "magic" in consumer software, and the thing this
+            has to say is "machine-generated, not yet approved" — which no
+            pictogram says on its own, and which has to survive greyscale and a
+            projector.
+          */}
           <span
             aria-hidden
-            className="shrink-0 rounded-sm bg-ai-solid-foreground px-1.5 py-0.5 text-meta font-bold tracking-[0.14em] text-ai-solid"
+            className="inline-flex shrink-0 items-center gap-1 rounded-sm bg-ai-solid-foreground px-1.5 py-0.5 text-meta font-bold tracking-[0.14em] text-ai-solid"
           >
+            <IconAi size="sm" />
             {mark}
           </span>
           <Heading className="min-w-0 font-display text-section font-semibold text-ai-solid-foreground">
@@ -424,9 +434,7 @@ export function Chip({
         aria-pressed={pressed}
         className={`${base} ${tone} min-h-11 transition-colors hover:bg-accent`}
       >
-        <span aria-hidden className="font-bold">
-          {pressed ? "✓" : "+"}
-        </span>
+        {pressed ? <IconCheck size="sm" /> : <IconPlus size="sm" />}
         <span>{children}</span>
       </button>
     );
@@ -444,9 +452,7 @@ export function Chip({
       className={`${base} ${tone} min-h-11 transition-colors hover:bg-accent`}
     >
       <span>{children}</span>
-      <span aria-hidden className="font-bold">
-        ✕
-      </span>
+      <IconClose size="sm" />
     </button>
   );
 }
@@ -520,6 +526,91 @@ export function Panel({
  * reads as missing data; a masked one reads as withheld data, and those are
  * different facts.
  */
+/**
+ * The label row above a control, shared by `Field`, `TextField` and `Select`.
+ *
+ * It exists because they disagreed. `Select` reserved a 28px row so an optional
+ * badge would fit; the other two used a plain ~20px line. Put a select next to
+ * a field in the same grid row — which `/registrera` does twice — and the
+ * select's control started 8px below its neighbour's. One row definition is the
+ * only way that stays fixed.
+ *
+ * `htmlFor` is optional: `Field` has no control to point at, and a `<label>`
+ * with nothing to label is invalid, so it renders a span instead.
+ */
+export function FieldLabel({
+  htmlFor,
+  children,
+  badge,
+}: {
+  htmlFor?: string;
+  children: ReactNode;
+  badge?: ReactNode;
+}) {
+  const text = "min-w-0 break-words text-label font-bold text-foreground";
+  return (
+    <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2">
+      {htmlFor ? (
+        <label htmlFor={htmlFor} className={text}>
+          {children}
+        </label>
+      ) : (
+        <span className={text}>{children}</span>
+      )}
+      {badge}
+    </div>
+  );
+}
+
+/**
+ * A value the officer enters — the editable counterpart to `Field`.
+ *
+ * `Field` displays what is registered; `TextField` registers it. Keeping them
+ * as two components is what stops the confusion that made this necessary: the
+ * wage agreement, the general terms and the linking panels were built out of
+ * `Field`, so nothing on those screens could be typed into, and nobody noticed
+ * because `Field` was borrowing the input styling and looked editable. FA-002
+ * and FA-007 to FA-012 put those values in the officer's hands.
+ *
+ * Uncontrolled, so a server-rendered page can use it without becoming a client
+ * component. This is a prototype: nothing is persisted, and pretending
+ * otherwise would need a store the mockup does not have.
+ */
+export function TextField({
+  id,
+  label,
+  defaultValue,
+  hint,
+  type = "text",
+  numeric,
+  placeholder,
+}: {
+  id: string;
+  label: string;
+  defaultValue?: string;
+  hint?: string;
+  type?: "text" | "date";
+  /** Tabular figures, for amounts and percentages. */
+  numeric?: boolean;
+  placeholder?: string;
+}) {
+  return (
+    <div className="flex h-full flex-col">
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <div className="mt-auto">
+        <input
+          id={id}
+          type={type}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          className={`field-input ${numeric ? "tabular-nums" : ""}`}
+        />
+        {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
+      </div>
+    </div>
+  );
+}
+
 export function Field({
   label,
   value,
@@ -542,18 +633,9 @@ export function Field({
   return (
     <div className="flex h-full flex-col">
       {(label || ai) && (
-        <div className="mb-1 flex flex-wrap items-center gap-2">
-          {/* A label narrower than its longest word has to break it rather than
-              spill: "Diarienummer (diariesystemet)" is 107px in a 91px column
-              at 1152px. `min-w-0` lets the row shrink, `break-words` lets the
-              word wrap once it has to. */}
-          {label && (
-            <span className="min-w-0 break-words text-label font-bold text-foreground">
-              {label}
-            </span>
-          )}
-          {ai && aiLabel && <Badge tone="ai">{aiLabel}</Badge>}
-        </div>
+        <FieldLabel badge={ai && aiLabel ? <Badge tone="ai">{aiLabel}</Badge> : undefined}>
+          {label}
+        </FieldLabel>
       )}
       {/*
         A registered value is text, not a control.
@@ -582,7 +664,7 @@ export function Field({
       >
         {masked ? (
           <div className="flex min-h-11 items-center gap-2 py-2 text-body text-muted-foreground">
-            <span aria-hidden>🔒</span>
+            <IconLock size="md" />
             <span className="min-w-0 break-words">{maskedText}</span>
           </div>
         ) : (
@@ -660,6 +742,27 @@ export function StatusDot({
  * row the icon carries the meaning and the label goes to assistive technology
  * and to the tooltip. Detail views, which have the room, keep the full marker.
  */
+/**
+ * The FR-012 key — the three agreement statuses, drawn by the same component
+ * that draws them on a row.
+ *
+ * Earns its place only where a single status is on screen and the other two
+ * need explaining; `/registrera` is that place. A table does not get one,
+ * because `StatusDot` already carries colour, shape and label together on every
+ * row and a legend would repeat what each row already says.
+ */
+export function StatusLegend({ lang }: { lang: Lang }) {
+  return (
+    <ul className="flex flex-wrap gap-x-5 gap-y-2">
+      {STATUS_LEGEND_CODES.map((code) => (
+        <li key={code} className="text-label">
+          <StatusDot status={statusInfo(code, lang)} showLabel />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function ConfidentialityMarker({
   label,
   note,
@@ -675,7 +778,7 @@ export function ConfidentialityMarker({
         title={note ? `${label} — ${note}` : label}
         className="inline-flex size-6 shrink-0 items-center justify-center rounded-sm border border-attention-border bg-attention text-attention-foreground"
       >
-        <span aria-hidden>🔒</span>
+        <IconLock size="md" />
         <span className="sr-only">{note ? `${label}. ${note}` : label}</span>
       </span>
     );
@@ -683,7 +786,7 @@ export function ConfidentialityMarker({
 
   return (
     <span className="inline-flex flex-wrap items-center gap-2 rounded-sm border-2 border-attention-border bg-attention px-3 py-1 text-label font-bold text-attention-foreground">
-      <span aria-hidden>🔒</span>
+      <IconLock size="lg" />
       {label}
       {note && <span className="font-normal">· {note}</span>}
     </span>

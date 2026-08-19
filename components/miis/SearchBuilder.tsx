@@ -1,5 +1,6 @@
 "use client";
 
+import { IconClose } from "./icons";
 import { useState, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
@@ -284,7 +285,7 @@ export function SearchBuilder({
                             onClick={() => removeCondition(cond.id)}
                             ariaLabel={c.removeCondition(conditionText(cond))}
                           >
-                            ✕
+                            <IconClose />
                           </Button>
                         </div>
                       </li>

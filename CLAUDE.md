@@ -63,6 +63,11 @@ guides, plus the places our domain model still diverges from the information mod
    information being read. `Badge tone="ai"` is the **only filled badge in the system** —
    every other tone is a dark word on a pale tint, so the inverted silhouette is what
    makes AI findable before it is read. Do not fill another badge.
+   The mark is **sparkles plus the letters `AI`, never one without the other** —
+   a sparkle alone reads as "magic" in consumer software, and what this has to say
+   is "machine-generated, not yet approved". The gradient (`ai-band`) belongs on
+   the `AiRegion` header and nowhere else: a gradient has no single contrast
+   ratio, so text may only sit on one whose lightest stop still clears 4.5:1.
 3. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —
@@ -74,22 +79,34 @@ guides, plus the places our domain model still diverges from the information mod
    agreement and has no FR-012 colour.
    **That label goes on the row, not in a legend under the table.** `StatusDot` carries
    colour, shape and label together, so a legend would repeat what every row already
-   says; the only place `STATUS_LEGEND` still earns its keep is `/registrera`, where a
+   says; the only place `StatusLegend` still earns its keep is `/registrera`, where a
    single status is shown and the other two need explaining.
-4. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
+4. **No emoji, and no glyph used as an icon.** Every icon comes from
+   `components/miis/icons.tsx`, which wraps `lucide-react` — already a dependency
+   via shadcn. A padlock typed as `🔒` is a colour emoji on one machine and a flat
+   outline on another, `✦` has no emoji form at all, and a screen reader may read
+   any of them aloud by their Unicode name; none of that is reachable from our
+   stylesheet, and the padlock on a sekretessmarkering is carrying a legal status.
+   **An icon never stands alone** — it is `aria-hidden`, and the label beside it
+   carries the meaning.
+   **`Field` displays, `TextField` registers, `Button` acts, and the three do not
+   look alike.** A read-only value is text on a rule; anything boxed can be typed
+   into or pressed. `Field`, `TextField` and `Select` share `FieldLabel` so a
+   select never sits 8px below the field beside it.
+5. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off
    by default** (`miis_reqtags`), so the plain product view exists too — every new ID
    also needs its sentence in `lib/domain/requirements.ts`, which is what the hover
    tooltip reads.
-5. **AI proposals are never applied automatically (FAI-002).** Anything AI-suggested is
+6. **AI proposals are never applied automatically (FAI-002).** Anything AI-suggested is
    labelled `AI-FÖRSLAG` and needs an explicit human approve/reject control. Every
    proposal is **source-linked**: selecting it highlights the passage in the protocol it
    was read from (FAI-001, FAI-004). Show the rejected path too — a demo of only the
    happy path asserts human review instead of demonstrating it.
    AI belongs where a requirement puts it. There is no general assistant: the only
    free-standing AI surface is the §4.1 decision-support panel on a mediation case.
-6. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
+7. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
    a royal crown over the shield. **MI supplied the official asset on 2026-08-18**, so
    the `MI` placeholder square is gone; `public/mi-mark-white.svg` is MI's own file with
    its paths untouched. Never generate, redraw, recolour or "improve" it, and never
@@ -99,7 +116,7 @@ guides, plus the places our domain model still diverges from the information mod
    White on the dark header is MI's intended treatment — every path in the source is
    `#FFFFFF`. `public/icon.svg` is the same artwork as the tab icon, with a fill rule so
    it survives a dark browser theme; `public/favicon.ico` is MI's file verbatim.
-7. **Never rewrite pushed git history** (no force-push, rebase, amend or squash of
+8. **Never rewrite pushed git history** (no force-push, rebase, amend or squash of
    pushed commits). Others review from this history and from deployed builds of it.
 
 ## Stack
