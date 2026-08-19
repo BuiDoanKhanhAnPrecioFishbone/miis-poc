@@ -6,6 +6,13 @@
 import type { Benchmark } from "@/lib/domain/benchmark";
 import type { AuditEvent, Reminder } from "@/lib/domain/event";
 
+/*
+  Three rounds, so `/market` shows a periodised setting with history rather than
+  a single figure — FM-001 registers Märket *per period*, and a register with one
+  row cannot demonstrate that. The two earlier rounds carry the real Swedish
+  figures: 7,4 % over 24 months from the 2023 round and 6,4 % from 2025. The
+  2027 round is ours, because it has not happened.
+*/
 export const BENCHMARKS: Benchmark[] = [
   {
     id: "MK-2027",
@@ -16,6 +23,28 @@ export const BENCHMARKS: Benchmark[] = [
     periodisation: "3,2 % / 3,2 %",
     supplementaryAgreements: ["deltidspension 0,2 %"],
     registeredDate: "2027-03-18",
+    months: 24,
+  },
+  {
+    id: "MK-2025",
+    period: "2025–2027",
+    validFrom: "2025-04-01",
+    validTo: "2027-03-31",
+    costFramePercent: 6.4,
+    periodisation: "3,4 % / 3,0 %",
+    supplementaryAgreements: ["deltidspension 0,2 %"],
+    registeredDate: "2025-03-31",
+    months: 24,
+  },
+  {
+    id: "MK-2023",
+    period: "2023–2025",
+    validFrom: "2023-04-01",
+    validTo: "2025-03-31",
+    costFramePercent: 7.4,
+    periodisation: "4,1 % / 3,3 %",
+    supplementaryAgreements: ["deltidspension 0,2 %"],
+    registeredDate: "2023-03-31",
     months: 24,
   },
 ];

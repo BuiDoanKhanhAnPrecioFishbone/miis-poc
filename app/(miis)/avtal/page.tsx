@@ -1,31 +1,25 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-import { PlaceholderPage } from "@/components/miis/Placeholder";
+import { AgreementFilters } from "@/components/miis/AgreementFilters";
+import { AppShell } from "@/components/miis/AppShell";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import {
+  Badge,
+  ConfidentialityMarker,
+  PageHeading,
+  Panel,
+  Rationale,
+  StatusDot,
+} from "@/components/miis/primitives";
+import { listAgreementAreas, listAgreements, listWageAgreements } from "@/lib/data/agreements";
+import {
+  partiesLabel,
+  registrationStatusLabel,
+  validityLabel,
+} from "@/lib/domain/agreement";
+import { agreementStatus } from "@/lib/domain/status";
 import { getSession } from "@/lib/session";
-
-/** Requirement IDs are structure, so they stay here; the sentences are copy. */
-/*
-  Every Ska-krav in Bilaga 1 §5.2 that no built screen shows, so chapter 5 is
-  covered end to end rather than only where a screen happens to exist. The
-  order matches the sentences in `i18n.avtal.features` — Placeholder pairs the
-  two positionally.
-*/
-const FEATURE_IDS = [
-  "FA-001",
-  "FA-002",
-  "FA-003",
-  "FA-004",
-  "FA-005",
-  "FA-006",
-  "FA-011",
-  "FA-013",
-  "FA-014",
-  "FA-015",
-  "FA-016",
-  "FA-017",
-  "FA-021",
-  "FA-022",
-];
 
 export async function generateMetadata(): Promise<Metadata> {
   const { i18n } = await getSession();
@@ -34,22 +28,101 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title, description, openGraph: { title, description } };
 }
 
+/**
+ * The agreement register — FA-001 to FA-006, FA-021, FR-012.
+ *
+ * The register a registration lands in. `/registrera` now says the agreement
+ * "is now in the agreement register" and offers the way here, so this is the
+ * far side of the system's central flow and could not stay a stub.
+ *
+ * Same shape as `/parter`, `/medling` and `/partstraffar`: the page lists and
+ * filters, `/avtal/[id]` opens one. FR-012's colour lives on the row through
+ * `StatusDot`, which carries the mark, the shape and the label together — so
+ * the table needs no legend under it.
+ */
 export default async function AvtalPage() {
   const session = await getSession();
-  const t = session.i18n.avtal;
+  const { i18n, lang } = session;
+  const t = i18n.avtal;
+  const [agreements, areas] = await Promise.all([listAgreements(), listAgreementAreas()]);
+  const wageCounts = await Promise.all(
+    agreements.map(async (a) => (await listWageAgreements(a.id)).length),
+  );
+
+  const columns: Column[] = [
+    { key: "name", header: t.table.name, sortable: true },
+    { key: "parties", header: t.table.parties, sortable: true },
+    { key: "validity", header: t.table.validity, sortable: true },
+    { key: "status", header: t.table.status, sortable: true },
+    { key: "registration", header: t.table.registration, sortable: true },
+    { key: "wage", header: t.table.wageRows, numeric: true, sortable: true },
+  ];
+
+  const rows: Row[] = agreements.map((a, i) => {
+    const status = agreementStatus(a, lang);
+    return {
+      key: a.id,
+      cells: [
+        <span key="n" className="flex flex-wrap items-center gap-2">
+          <Link
+            href={`/avtal/${a.id}`}
+            className="font-semibold text-primary underline underline-offset-2"
+          >
+            {a.name}
+          </Link>
+          {/* D-001 travels with the row; a marker lost in a list is a marker
+              that was not set. */}
+          {a.confidential && (
+            <ConfidentialityMarker
+              compact
+              label={i18n.confidentiality.marked}
+              note={i18n.confidentiality.inStatistics}
+            />
+          )}
+        </span>,
+        partiesLabel(a),
+        <span key="v" className="tabular-nums">
+          {validityLabel(a, lang)}
+        </span>,
+        <StatusDot key="s" status={status} showLabel />,
+        <Badge key="r" tone={a.registrationStatus === "complete" ? "ok" : "attention"}>
+          {registrationStatusLabel(a.registrationStatus, lang)}
+        </Badge>,
+        wageCounts[i],
+      ],
+      sort: [
+        a.name,
+        partiesLabel(a),
+        a.validFrom ?? "",
+        status.label,
+        registrationStatusLabel(a.registrationStatus, lang),
+        wageCounts[i] ?? 0,
+      ],
+    };
+  });
 
   return (
-    <PlaceholderPage
-      title={t.title}
-      epic={t.epic}
-      subtitle={t.subtitle}
-      features={t.features}
-      featureIds={FEATURE_IDS}
-      role={session.role}
-      dataset={session.dataset}
-      lang={session.lang}
-      reqTags={session.reqTags}
-      i18n={session.i18n}
-    />
+    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FA-001", "FA-005", "FA-006", "FR-012"]}
+      />
+
+      <Panel title={t.register.heading} tags={["FA-001", "FA-021", "FR-012"]}>
+        <p className="mb-4 max-w-4xl text-table">{t.register.intro}</p>
+        <AgreementFilters lang={lang} areas={areas} />
+        <div className="mt-4">
+          <DataTable
+            columns={columns}
+            rows={rows}
+            lang={lang}
+            caption={t.register.heading}
+            minWidth="62rem"
+          />
+        </div>
+        <Rationale>{t.register.areaNote}</Rationale>
+      </Panel>
+    </AppShell>
   );
 }

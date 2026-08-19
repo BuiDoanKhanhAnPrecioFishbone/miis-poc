@@ -13,6 +13,8 @@
 
 import { AGREEMENTS } from "./agreements";
 import { DOCUMENTS } from "./documents";
+import { CHANGE_LOG } from "./changelog";
+import { NEGOTIATIONS } from "./negotiations";
 import { WAGE_AGREEMENTS } from "./wageAgreements";
 import { generateAgreements, generateEvents, generateReminders } from "./generate";
 import { assertIntegrity } from "./integrity";
@@ -28,9 +30,11 @@ const quiet: Dataset = {
   documents: DOCUMENTS.slice(0, 1),
   mediationCases: [],
   mediators: MEDIATORS.slice(0, 1),
+  negotiations: NEGOTIATIONS.slice(0, 1),
   benchmarks: [],
   reminders: [],
   events: [],
+  changeLog: [],
   mediationEvents: [],
   totalReminders: 0,
 };
@@ -42,9 +46,11 @@ const normal: Dataset = {
   documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
+  negotiations: NEGOTIATIONS,
   benchmarks: BENCHMARKS,
   reminders: REMINDERS,
   events: EVENTS,
+  changeLog: CHANGE_LOG,
   mediationEvents: MEDIATION_EVENTS,
   totalReminders: 12,
 };
@@ -59,9 +65,11 @@ const peak: Dataset = {
   documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
+  negotiations: NEGOTIATIONS,
   benchmarks: BENCHMARKS,
   reminders: [...REMINDERS, ...generateReminders(9, generated)],
   events: [...EVENTS, ...generateEvents(18, generated)],
+  changeLog: CHANGE_LOG,
   mediationEvents: MEDIATION_EVENTS,
   totalReminders: 64,
 };

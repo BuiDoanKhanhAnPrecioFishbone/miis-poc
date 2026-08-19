@@ -15,6 +15,7 @@ import {
   type Agreement,
   type AgreementRow,
   type RegistrationStatus,
+  type WageAgreement,
 } from "@/lib/domain/agreement";
 import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import { agreementStatus } from "@/lib/domain/status";
@@ -87,4 +88,27 @@ export async function listIncompleteAgreements(): Promise<Agreement[]> {
 
 export async function countAgreements(): Promise<number> {
   return (await agreements()).length;
+}
+
+/** FA-002 — the wage agreement rows for one agreement, newest period first. */
+export async function listWageAgreements(agreementId: string): Promise<WageAgreement[]> {
+  return getDataset(await activeDataset())
+    .wageAgreements.filter((w) => w.agreementId === agreementId)
+    .sort((a, b) => b.validFrom.localeCompare(a.validFrom));
+}
+
+/** Everything one agreement's detail view needs, in one read. */
+export async function getAgreementDetail(
+  id: string,
+): Promise<{ agreement: Agreement; wageAgreements: WageAgreement[] } | null> {
+  const agreement = await getAgreement(id);
+  if (!agreement) return null;
+  return { agreement, wageAgreements: await listWageAgreements(id) };
+}
+
+/** The distinct agreement areas present in the data — FA-001, and /avtal's filter. */
+export async function listAgreementAreas(): Promise<string[]> {
+  return [...new Set((await agreements()).map((a) => a.agreementArea))].sort((a, b) =>
+    a.localeCompare(b, "sv"),
+  );
 }

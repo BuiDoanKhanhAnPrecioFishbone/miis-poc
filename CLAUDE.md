@@ -184,7 +184,7 @@ Key files: `AppShell.tsx` (shell + role-filtered nav, client) · `primitives.tsx
 (`Panel`, `Field`, `Button`, `Badge`, `Callout`, `Chip`, `PageHeading`, `ReqTag`,
 `Rationale`, `StatusDot`, `ConfidentialityMarker`) · `DataTable.tsx` (sticky header,
 sort, overflow guard) · `DemoBar.tsx` (the reviewer controls, above the product chrome)
-· `SessionTimeoutWarning.tsx` (NFÅ-002) · `Placeholder.tsx` (stub for undesigned views).
+· `SessionTimeoutWarning.tsx` (NFÅ-002) · `icons.tsx` (the lucide set — rule 4).
 
 **A screen does not build its own button or table.** `no-restricted-syntax` in
 `eslint.config.mjs` fails the build on a raw `<button>` or `<table>` under `app/`,

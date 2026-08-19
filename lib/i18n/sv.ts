@@ -818,22 +818,66 @@ export const sv = {
     title: "Avtal",
     epic: "Avtalsregistrering och -hantering",
     subtitle: "Avtal, avtalsområden, löneavtal och allmänna villkor",
-    features: [
-      "Avtalsområde och avtal som övergripande enhet med parter och avtalstyp.",
-      "Registrering av löneavtal – en ny rad per avtalsrörelse och period.",
-      "Registrering av allmänna villkor.",
-      "Separata löptider för löneavtal respektive allmänna villkor.",
-      "Registrering av försäkringsinformation.",
-      "Registrering av övriga avtal, exempelvis förhandlingsordningsavtal.",
-      "Jämställdhetsflagga per avtal.",
-      "Lägstalöner grupperade per yrkesgrupp med revisionsdatum.",
-      "Registrering av arbetsgrupper med frågeområden.",
-      "Registrering på avtal som löper ut och inte förnyas.",
-      "Registrering av förtida uppsägning.",
-      "Registrering av förhandlingsordningsavtal.",
-      "Registreringsstatus Ofullständig eller Klar.",
-      "Påminnelser för komplettering av avtalsuppgifter.",
-    ],
+    register: {
+      heading: "Avtalsregister",
+      intro:
+        "Ett avtal per part och avtalsområde. Färgmarkeringen visar hur avtalet kom till – nytecknat, tecknat efter medling eller kvarstående.",
+      areaNote:
+        "Avtalsområdet är den övergripande enheten i MI:s modell (FA-001); avtalen under det registreras per partskombination.",
+    },
+    table: {
+      name: "Avtal",
+      parties: "Parter",
+      validity: "Löptid",
+      status: "Status",
+      registration: "Registrering",
+      wageRows: "Löneavtal",
+    },
+    filters: {
+      area: "Avtalsområde",
+      registration: "Registreringsstatus",
+      status: "Avtalsstatus",
+      all: "Alla",
+      clear: "Rensa filter",
+    },
+    detail: {
+      identity: "Avtalet",
+      area: "Avtalsområde",
+      alternativeName: "Alternativt avtalsnamn",
+      type: "Avtalstyp",
+      employerOrg: "Avtalspart AGO",
+      employeeOrg: "Avtalspart ATO",
+      signedDate: "Teckningsdatum",
+      validity: "Löptid",
+      registration: "Registreringsstatus",
+      statusHeading: "Status och löptid",
+      wageAgreements: "Löneavtal per avtalsrörelse",
+      wageIntro:
+        "En rad per avtalsrörelse och period. Konstruktionen är en av MI:s sju och ordnas efter förhandlingsnivå.",
+      construction: "Avtalskonstruktion",
+      scope: "Löneutrymme",
+      costFrame: "Kostnadsram",
+      guarantee: "Individgaranti",
+      revision: "Lönerevision",
+      period: "Period",
+      minimumWages: "Lägstalöner per yrkesgrupp",
+      minimumWagesIntro: "Grupperade per yrkesgrupp med revisionsdatum (FA-013).",
+      occupationalGroup: "Yrkesgrupp",
+      amount: "Belopp",
+      revisionDate: "Revisionsdatum",
+      noWageAgreements:
+        "Inget löneavtal registrerat. Ett löneavtal uppstår när protokollet registreras.",
+      flags: "Märkning",
+      equality: "Jämställdhetsflagga",
+      benchmark: "Industrimärke (märkessättande avtal)",
+      lifecycle: "Avtalets livslängd",
+      expires: "Löper ut utan förnyelse",
+      earlyTermination: "Förtida uppsägning",
+      noLifecycle: "Inget registrerat om utlöpande eller förtida uppsägning.",
+      mediation: "Kopplat till medling",
+      confidential: "Sekretessmarkerat",
+      notFound: "Avtalet finns inte i den valda datamängden.",
+    },
   },
   parter: {
     title: "Parter",
@@ -961,12 +1005,35 @@ export const sv = {
     title: "Förhandlingar",
     epic: "Förhandlings- och medlingshantering",
     subtitle: "Avtalsrörelse och övrig förhandling",
-    features: [
-      "Registrering av förhandling av typen avtalsrörelse eller övrig förhandling.",
-      "Koppling av förhandling till avtal via protokollsuppladdning.",
-      "Fristående förhandling med direkta kopplingar till parter.",
-      "Uppföljning av förhandlingens status och utfall.",
-    ],
+    register: {
+      heading: "Förhandlingsregister",
+      intro:
+        "En förhandling är antingen en avtalsrörelse, som hör till ett avtal, eller en övrig förhandling, som kan stå för sig själv med direkta kopplingar till parterna.",
+      standaloneNote:
+        "En fristående förhandling har inget avtal – FF-003 kopplar den direkt till parterna. Tom kolumn är alltså en uppgift, inte en lucka.",
+    },
+    table: {
+      id: "Diarienummer",
+      type: "Typ",
+      agreement: "Avtal",
+      parties: "Parter",
+      status: "Status",
+      closed: "Avslutad",
+    },
+    status: {
+      ongoing: "Pågående",
+      "closed-with-agreement": "Avslutad med avtal",
+      "closed-without-agreement": "Avslutad utan avtal",
+    },
+    filters: {
+      type: "Typ",
+      status: "Status",
+      all: "Alla",
+      clear: "Rensa filter",
+    },
+    standalone: "Fristående",
+    linkNote:
+      "Förhandlingen kopplas till avtalet när protokollet registreras – steg 5 i Registrera avtalsprotokoll.",
   },
   partstraffar: {
     title: "Partsträffar",
@@ -1070,47 +1137,141 @@ export const sv = {
     title: "Medlare",
     epic: "Medlarregistret",
     subtitle: "Medlare, uppdrag och statistik",
-    features: [
-      "Registrering och administration av medlare i medlarregistret.",
-      "Statistik per medlare (år och avtalsområde) samt position ettan eller tvåan.",
-      "Notifierings-epost när ett medlingsbeslut klarmarkerats.",
-      "Alla ändringar i registret loggas i ändringsloggen.",
-      "Medlarens personuppgifter omfattas av MI:s gallringsrutiner.",
-    ],
+    register: {
+      heading: "Medlarregistret",
+      intro:
+        "Medlare som Medlingsinstitutet kan förordna. Statistiken räknas ur uppdragshistoriken och lagras inte separat, så den kan inte säga emot de uppdrag den räknar.",
+      privacyNote:
+        "Medlarens personuppgifter omfattas av MI:s gallringsrutiner (D-004). Kontaktuppgifterna visas för medlingsadministratören, inte för allmänheten.",
+    },
+    table: {
+      name: "Medlare",
+      types: "Medlingstyp",
+      assignments: "Uppdrag",
+      firstChair: "Som ettan",
+      secondChair: "Som tvåan",
+      latest: "Senaste år",
+      areas: "Avtalsområden",
+      contact: "Kontakt",
+      status: "Status",
+    },
+    active: "Aktiv",
+    inactive: "Inaktiv",
+    filters: {
+      type: "Medlingstyp",
+      status: "Status",
+      all: "Alla",
+      clear: "Rensa filter",
+    },
+    notify: {
+      heading: "Notifiering",
+      body:
+        "När ett medlingsbeslut klarmarkeras skickas en notifierings-epost med länk till medlaradministratören, och händelsen läggs i ändringsloggen.",
+    },
   },
   market: {
     title: "Märket",
     epic: "Registrering av Märket",
     subtitle: "Industrins kostnadsnorm som referens i avtals- och medlarvyer",
-    features: [
-      "Registrering av Märket som periodiserad inställning med kostnadsram, periodisering och tilläggsöverenskommelser.",
-      "Larm när nytt avtalsprotokoll för Industriavtalet registreras för period utan märkesdefinition.",
-      "Märket visas som referens på startsidan och i medlarvyn.",
-      "Industrimärke-flagga på märkessättande avtal.",
-    ],
+    current: {
+      heading: "Märket i kraft",
+      intro:
+        "Märket registreras som en periodiserad inställning och visas som referens där den behövs – på startsidan, i medlarvyn och i rapporterna. MI sätter inte märket; det läses ur industrins avtal.",
+      costFrame: "Kostnadsram",
+      periodisation: "Periodisering",
+      period: "Period",
+      months: "Antal månader",
+      supplementary: "Tilläggsöverenskommelser",
+      registered: "Registrerat",
+      none: "Inget märke registrerat för perioden.",
+    },
+    history: {
+      heading: "Registrerade perioder",
+      intro: "En rad per avtalsrörelse. Perioderna får inte överlappa.",
+      period: "Period",
+      validity: "Giltighet",
+      costFrame: "Kostnadsram",
+      periodisation: "Periodisering",
+      months: "Månader",
+      registered: "Registrerat",
+    },
+    sources: {
+      heading: "Märkessättande avtal",
+      intro:
+        "Avtalen med industrimärke-flaggan (FA-012). Kostnadsramen i märket ska stämma med dem.",
+      name: "Avtal",
+      parties: "Parter",
+      period: "Period",
+      costFrame: "Kostnadsram",
+      empty: "Inget avtal är flaggat som märkessättande i den valda datamängden.",
+    },
+    alarm: {
+      label: "Larm",
+      covered:
+        "Alla registrerade avtalsperioder täcks av ett märke. Registreras ett protokoll för Industriavtalet utan märkesdefinition för perioden larmar systemet här.",
+      missing: (period: string) =>
+        `Ingen märkesdefinition för ${period}. Ett protokoll för Industriavtalet kan inte tolkas mot märket förrän det är registrerat.`,
+    },
   },
   administration: {
     title: "Administration",
     epic: "Loggar och systemkonfiguration",
     subtitle: "Stödtabeller, spårbarhet och systeminställningar",
-    features: [
-      "Ändringslogg med vem, vad och när – inklusive gammalt och nytt värde.",
-      "Händelselogg över systemhändelser och utskickade e-postmeddelanden.",
-      "Loggar bevaras i minst 24 månader och kan inte ändras eller raderas.",
-      "Underhåll av bevakningsordstabellen inför avtalsrörelsen.",
-      "MI når loggarna via administrationsvyn eller export, utan leverantörens medverkan.",
-    ],
+    changeLog: {
+      heading: "Ändringslogg",
+      intro:
+        "Vem som ändrade vad och när, med gammalt och nytt värde. Loggen skrivs av systemet och kan inte redigeras härifrån.",
+      time: "Tidpunkt",
+      user: "Användare",
+      object: "Objekt",
+      field: "Uppgift",
+      from: "Från",
+      to: "Till",
+    },
+    eventLog: {
+      heading: "Händelselogg",
+      intro: "Systemhändelser och utskickade e-postmeddelanden, senaste först.",
+      time: "Tidpunkt",
+      type: "Händelse",
+      detail: "Avser",
+    },
+    watchwords: {
+      heading: "Bevakningsord",
+      intro:
+        "Tabellen underhålls inför avtalsrörelsen. Orden markeras i uppladdade protokoll och styr vad AI-analysen lyfter fram.",
+      term: "Ord",
+      source: "Ursprung",
+      predefined: "Fördefinierat",
+      added: "Tillagt i sessionen",
+      note: "Ord som lagts till från en partsträff gäller i den här demonstrationen bara den egna sessionen.",
+    },
+    retention: {
+      heading: "Bevarande och åtkomst",
+      body:
+        "Loggarna bevaras i minst 24 månader och kan varken ändras eller raderas. MI når dem via den här vyn eller via export, utan leverantörens medverkan.",
+      export: "Exportera loggar",
+    },
   },
   anvandare: {
     title: "Användare",
     epic: "Behörighetsadministration",
     subtitle: "Användare, roller och tilldelade behörigheter",
-    features: [
-      "Autentisering med EFOS-kort via Försäkringskassans IdP (SAML 2.0).",
-      "Rollbaserad behörighetsstyrning enligt de åtta användarrollerna.",
-      "Behörigheter administreras av MI:s egna behörighetsadministratörer utan leverantörens medverkan.",
-      "In- och utloggningar loggas med tidpunkt och användar-id.",
-    ],
+    roles: {
+      heading: "Roller och behörigheter",
+      intro:
+        "De åtta rollerna i Bilaga 1 §3.1. Rollen avgör både vad användaren får göra och vilka menyval som visas – rollväxlaren i demoläget byter roll för att göra just det synligt.",
+      role: "Roll",
+      person: "Exempelanvändare",
+      permissions: "Behörighet",
+      menu: "Menyval",
+    },
+    auth: {
+      heading: "Inloggning",
+      body:
+        "Autentisering sker med EFOS-kort mot Försäkringskassans IdP över SAML 2.0. MIIS lagrar inga lösenord.",
+      logging:
+        "In- och utloggningar loggas med tidpunkt och användar-id. Behörigheter administreras av MI:s egna behörighetsadministratörer, utan leverantörens medverkan.",
+    },
   },
 
   notFound: {

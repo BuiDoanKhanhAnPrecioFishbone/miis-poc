@@ -832,22 +832,66 @@ export const en: Dictionary = {
     title: "Agreements",
     epic: "Agreement registration and management",
     subtitle: "Agreements, agreement areas, wage agreements and general terms",
-    features: [
-      "Agreement area and agreement as an overarching entity with parties and agreement type.",
-      "Registration of wage agreements – one new row per bargaining round and period.",
-      "Registration of general terms and conditions.",
-      "Separate validity periods for the wage agreement and the general terms.",
-      "Registration of insurance information.",
-      "Registration of other agreements, for example negotiation procedure agreements.",
-      "Gender equality flag per agreement.",
-      "Minimum wages grouped by occupational group, with revision dates.",
-      "Registration of working groups with subject areas.",
-      "Registration of agreements that expire and are not renewed.",
-      "Registration of early termination.",
-      "Registration of negotiation procedure agreements.",
-      "Registration status Incomplete or Complete.",
-      "Reminders to complete agreement information.",
-    ],
+    register: {
+      heading: "Agreement register",
+      intro:
+        "One agreement per party and agreement area. The colour marking shows how the agreement came about — newly signed, signed after mediation, or remaining.",
+      areaNote:
+        "The agreement area is the overarching unit in MI's model (FA-001); the agreements under it are registered per party combination.",
+    },
+    table: {
+      name: "Agreement",
+      parties: "Parties",
+      validity: "Validity period",
+      status: "Status",
+      registration: "Registration",
+      wageRows: "Wage agreements",
+    },
+    filters: {
+      area: "Agreement area",
+      registration: "Registration status",
+      status: "Agreement status",
+      all: "All",
+      clear: "Clear filters",
+    },
+    detail: {
+      identity: "The agreement",
+      area: "Agreement area",
+      alternativeName: "Alternative agreement name",
+      type: "Agreement type",
+      employerOrg: "Employer party (AGO)",
+      employeeOrg: "Employee party (ATO)",
+      signedDate: "Date signed",
+      validity: "Validity period",
+      registration: "Registration status",
+      statusHeading: "Status and validity",
+      wageAgreements: "Wage agreements by bargaining round",
+      wageIntro:
+        "One row per bargaining round and period. The construction is one of MI's seven, ordered by bargaining level.",
+      construction: "Agreement construction",
+      scope: "Wage scope",
+      costFrame: "Cost frame",
+      guarantee: "Individual guarantee",
+      revision: "Wage revision",
+      period: "Period",
+      minimumWages: "Minimum wages by occupational group",
+      minimumWagesIntro: "Grouped by occupational group with a revision date (FA-013).",
+      occupationalGroup: "Occupational group",
+      amount: "Amount",
+      revisionDate: "Revision date",
+      noWageAgreements:
+        "No wage agreement registered. A wage agreement comes into being when the protocol is registered.",
+      flags: "Flags",
+      equality: "Gender equality flag",
+      benchmark: "Industry benchmark (norm-setting agreement)",
+      lifecycle: "The agreement's lifespan",
+      expires: "Expires without renewal",
+      earlyTermination: "Early termination",
+      noLifecycle: "Nothing registered about expiry or early termination.",
+      mediation: "Linked to mediation",
+      confidential: "Confidentiality-marked",
+      notFound: "The agreement does not exist in the selected dataset.",
+    },
   },
   parter: {
     title: "Parties",
@@ -974,13 +1018,36 @@ export const en: Dictionary = {
   forhandlingar: {
     title: "Negotiations",
     epic: "Negotiation and mediation management",
-    subtitle: "Bargaining rounds and other negotiations",
-    features: [
-      "Registration of a negotiation of type bargaining round or other negotiation.",
-      "Linking a negotiation to an agreement through the protocol upload.",
-      "Standalone negotiation with direct links to the parties.",
-      "Follow-up of the negotiation's status and outcome.",
-    ],
+    subtitle: "Bargaining round and other negotiation",
+    register: {
+      heading: "Negotiation register",
+      intro:
+        "A negotiation is either a bargaining round, which belongs to an agreement, or another negotiation, which can stand alone with direct links to the parties.",
+      standaloneNote:
+        "A standalone negotiation has no agreement — FF-003 links it directly to the parties. An empty column here is therefore a fact, not a gap.",
+    },
+    table: {
+      id: "Registry number",
+      type: "Type",
+      agreement: "Agreement",
+      parties: "Parties",
+      status: "Status",
+      closed: "Closed",
+    },
+    status: {
+      ongoing: "Ongoing",
+      "closed-with-agreement": "Closed with an agreement",
+      "closed-without-agreement": "Closed without an agreement",
+    },
+    filters: {
+      type: "Type",
+      status: "Status",
+      all: "All",
+      clear: "Clear filters",
+    },
+    standalone: "Standalone",
+    linkNote:
+      "The negotiation is linked to the agreement when the protocol is registered — step 5 of Register an agreement protocol.",
   },
   partstraffar: {
     title: "Party meetings",
@@ -1085,47 +1152,141 @@ export const en: Dictionary = {
     title: "Mediators",
     epic: "The mediator register",
     subtitle: "Mediators, assignments and statistics",
-    features: [
-      "Registration and administration of mediators in the mediator register.",
-      "Statistics per mediator (year and agreement area) and position, Ettan or Tvåan.",
-      "Notification e-mail when a mediation decision is finalised.",
-      "Every change to the register is recorded in the change log.",
-      "The mediator's personal data falls under MI's retention routines.",
-    ],
+    register: {
+      heading: "The mediator register",
+      intro:
+        "Mediators the National Mediation Office can appoint. The statistics are counted from the assignment history rather than stored separately, so they cannot disagree with the assignments they count.",
+      privacyNote:
+        "A mediator's personal data falls under MI's retention routines (D-004). The contact details are shown to the mediation administrator, not to the public.",
+    },
+    table: {
+      name: "Mediator",
+      types: "Mediation type",
+      assignments: "Assignments",
+      firstChair: "As lead",
+      secondChair: "As second",
+      latest: "Latest year",
+      areas: "Agreement areas",
+      contact: "Contact",
+      status: "Status",
+    },
+    active: "Active",
+    inactive: "Inactive",
+    filters: {
+      type: "Mediation type",
+      status: "Status",
+      all: "All",
+      clear: "Clear filters",
+    },
+    notify: {
+      heading: "Notification",
+      body:
+        "When a mediation decision is marked complete, a notification email with a link is sent to the mediator administrator, and the event is added to the change log.",
+    },
   },
   market: {
     title: "Märket",
-    epic: "Registration of Märket",
-    subtitle: "The industry cost norm as a reference in the agreement and mediator views",
-    features: [
-      "Registration of Märket as a periodised setting with cost frame, periodisation and supplementary agreements.",
-      "Alert when a new Industry Agreement protocol is registered for a period without a benchmark definition.",
-      "Märket is shown as a reference on the start page and in the mediator view.",
-      "Industry benchmark flag on norm-setting agreements.",
-    ],
+    epic: "Registering Märket",
+    subtitle: "The industry cost norm as a reference in agreement and mediator views",
+    current: {
+      heading: "Märket (industry benchmark) in force",
+      intro:
+        "Märket is registered as a periodised setting and shown as a reference wherever it is needed — on the start page, in the mediator view and in the reports. MI does not set it; it is read from the industry agreements.",
+      costFrame: "Cost frame",
+      periodisation: "Periodisation",
+      period: "Period",
+      months: "Number of months",
+      supplementary: "Supplementary agreements",
+      registered: "Registered",
+      none: "No benchmark registered for the period.",
+    },
+    history: {
+      heading: "Registered periods",
+      intro: "One row per bargaining round. The periods must not overlap.",
+      period: "Period",
+      validity: "Validity",
+      costFrame: "Cost frame",
+      periodisation: "Periodisation",
+      months: "Months",
+      registered: "Registered",
+    },
+    sources: {
+      heading: "Norm-setting agreements",
+      intro:
+        "The agreements carrying the industry benchmark flag (FA-012). The cost frame in Märket has to match them.",
+      name: "Agreement",
+      parties: "Parties",
+      period: "Period",
+      costFrame: "Cost frame",
+      empty: "No agreement is flagged as norm-setting in the selected dataset.",
+    },
+    alarm: {
+      label: "Alert",
+      covered:
+        "Every registered agreement period is covered by a benchmark. If a protocol for the Industry Agreement is registered without a benchmark definition for the period, the system raises the alert here.",
+      missing: (period: string) =>
+        `No benchmark definition for ${period}. A protocol for the Industry Agreement cannot be read against Märket until one is registered.`,
+    },
   },
   administration: {
     title: "Administration",
     epic: "Logs and system configuration",
-    subtitle: "Supporting tables, traceability and system settings",
-    features: [
-      "Change log with who, what and when – including the old and the new value.",
-      "Event log covering system events and e-mails sent.",
-      "Logs are retained for at least 24 months and cannot be changed or deleted.",
-      "Maintenance of the watchword table ahead of the bargaining round.",
-      "MI reaches the logs through Administration or an export, without supplier involvement.",
-    ],
+    subtitle: "Support tables, traceability and system settings",
+    changeLog: {
+      heading: "Change log",
+      intro:
+        "Who changed what and when, with the old and the new value. The log is written by the system and cannot be edited from here.",
+      time: "Time",
+      user: "User",
+      object: "Object",
+      field: "Field",
+      from: "From",
+      to: "To",
+    },
+    eventLog: {
+      heading: "Event log",
+      intro: "System events and emails sent, most recent first.",
+      time: "Time",
+      type: "Event",
+      detail: "Concerns",
+    },
+    watchwords: {
+      heading: "Watchwords",
+      intro:
+        "The table is maintained ahead of the bargaining round. The terms are marked in uploaded protocols and govern what the AI analysis highlights.",
+      term: "Term",
+      source: "Origin",
+      predefined: "Predefined",
+      added: "Added in this session",
+      note: "In this demonstration, terms added from a party meeting apply only to your own session.",
+    },
+    retention: {
+      heading: "Retention and access",
+      body:
+        "The logs are kept for at least 24 months and can neither be changed nor deleted. MI reaches them through this view or through an export, without the supplier's involvement.",
+      export: "Export the logs",
+    },
   },
   anvandare: {
     title: "Users",
     epic: "Authorisation administration",
     subtitle: "Users, roles and assigned permissions",
-    features: [
-      "Authentication with an EFOS card via Försäkringskassan's IdP (SAML 2.0).",
-      "Role-based access control per the eight user roles.",
-      "Permissions administered by MI's own authorisation administrators without supplier involvement.",
-      "Sign-ins and sign-outs are logged with time and user ID.",
-    ],
+    roles: {
+      heading: "Roles and permissions",
+      intro:
+        "The eight roles in Appendix 1 §3.1. The role decides both what the user may do and which menu items appear — the role switcher in demo mode changes role in order to make exactly that visible.",
+      role: "Role",
+      person: "Example user",
+      permissions: "Permission",
+      menu: "Menu items",
+    },
+    auth: {
+      heading: "Sign-in",
+      body:
+        "Authentication uses an EFOS card against the Swedish Social Insurance Agency's IdP over SAML 2.0. MIIS stores no passwords.",
+      logging:
+        "Sign-ins and sign-outs are logged with a timestamp and a user id. Permissions are administered by MI's own authorisation administrators, without the supplier's involvement.",
+    },
   },
 
   notFound: {

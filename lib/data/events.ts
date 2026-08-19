@@ -2,7 +2,7 @@
  * Data access for the event log and reminders — THE SEAM.
  */
 
-import type { AuditEvent, Reminder } from "@/lib/domain/event";
+import type { AuditEvent, ChangeLogEntry, Reminder } from "@/lib/domain/event";
 import { getDataset } from "@/lib/mock";
 import { activeDataset } from "@/lib/session";
 
@@ -24,4 +24,12 @@ export async function listReminders(count = 3): Promise<Reminder[]> {
 
 export async function reminderCount(): Promise<number> {
   return getDataset(await activeDataset()).totalReminders;
+}
+
+/** FH-001 – the change log, newest first. */
+export async function listChangeLog(count = 20): Promise<ChangeLogEntry[]> {
+  return getDataset(await activeDataset())
+    .changeLog.slice()
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+    .slice(0, count);
 }
