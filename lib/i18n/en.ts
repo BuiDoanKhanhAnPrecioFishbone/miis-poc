@@ -895,6 +895,44 @@ export const en: Dictionary = {
       inactive: "Deregistered",
       logNote: "Changes are recorded in the change log with time and user.",
     },
+    newParty: {
+      action: "+ New party",
+      title: "Register a party",
+      subtitle: "A new employer or employee organisation in the party register",
+      identity: "Party details",
+      type: "Type of party",
+      typeHint: "Decides which properties are registered",
+      name: "Name of the party",
+      namePlaceholder: "e.g. Sveriges Lärare",
+      validFrom: "The name applies from",
+      validFromHint: "The name goes into the name history with this date, so that a future name change can be bounded correctly.",
+      sector: "Sector",
+      group: "Employer group",
+      industryCode: "Industry code",
+      industryCodePlaceholder: "e.g. 25–30 Metal and machinery industry",
+      choose: "Choose",
+      scopeNote:
+        "Sector, employer group and industry code are registered only on employer organisations, and the industry code only inside Svenskt Näringsliv. The fields therefore appear when they apply rather than sitting greyed out — an employee organisation has no sector at all.",
+      merger: "Organisational change",
+      mergerIntro:
+        "If the party is formed by other organisations merging, name the ones it replaces. The link is what lets statistics and agreement history be followed across the merger.",
+      predecessors: "Replaces these organisations",
+      noPredecessors: "No organisation selected – the party is registered as new.",
+      predecessorCount: (n: number) =>
+        n === 1 ? "1 organisation replaced" : `${n} organisations replaced`,
+      mergerNote:
+        "A merger is registered as a new party with links to its predecessors, not as a name change. The predecessors stay in the register because older agreements still reference them.",
+      save: "Save the party",
+      saveAction: "Register the party",
+      saveHint: "Contact people are added after registration",
+      savedNote: (name: string, predecessors: number) =>
+        predecessors === 0
+          ? `${name} is registered in the party register.`
+          : `${name} is registered and replaces ${predecessors} organisations, which stay for older agreements.`,
+      logNote:
+        "The registration is recorded in the change log with time and user, as is the link to any predecessors.",
+      contactsLater: "Contact people are registered on the party's own page once it is saved.",
+    },
     nameChange: {
       heading: "Name change and organisational change",
       intro:

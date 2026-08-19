@@ -115,6 +115,14 @@ export default async function ParterPage() {
         title={t.title}
         subtitle={t.subtitle}
         tags={["FP-001", "FP-002", "FP-005", "FP-006"]}
+        action={
+          <Link
+            href="/parter/ny"
+            className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
+          >
+            {t.newParty.action}
+          </Link>
+        }
       />
 
       <Panel title={t.register.heading} tags={["FP-001", "FP-002", "FP-005"]}>

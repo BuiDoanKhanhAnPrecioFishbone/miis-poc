@@ -881,6 +881,44 @@ export const sv = {
       inactive: "Avregistrerad",
       logNote: "Ändringar registreras i ändringsloggen med tidpunkt och användare.",
     },
+    newParty: {
+      action: "+ Ny part",
+      title: "Registrera part",
+      subtitle: "Ny arbetsgivar- eller arbetstagarorganisation i partsregistret",
+      identity: "Uppgifter om parten",
+      type: "Typ av part",
+      typeHint: "Avgör vilka egenskaper som registreras",
+      name: "Partens namn",
+      namePlaceholder: "T.ex. Sveriges Lärare",
+      validFrom: "Namnet gäller från",
+      validFromHint: "Namnet läggs in i namnhistoriken med detta datum, så att ett framtida namnbyte kan avgränsas korrekt.",
+      sector: "Sektor",
+      group: "Arbetsgivargrupp",
+      industryCode: "Branschkod",
+      industryCodePlaceholder: "T.ex. 25–30 Metallvaru- och maskinindustri",
+      choose: "Välj",
+      scopeNote:
+        "Sektor, arbetsgivargrupp och branschkod registreras bara på arbetsgivarorganisationer, och branschkod bara inom Svenskt Näringsliv. Fälten visas därför när de är tillämpliga i stället för att stå gråade – en arbetstagarorganisation har ingen sektor alls.",
+      merger: "Organisationsförändring",
+      mergerIntro:
+        "Bildas parten genom att andra organisationer går samman anges vilka den ersätter. Kopplingen gör att statistik och avtalshistorik kan följas över sammanslagningen.",
+      predecessors: "Ersätter följande organisationer",
+      noPredecessors: "Ingen organisation vald – parten registreras som ny.",
+      predecessorCount: (n: number) =>
+        n === 1 ? "1 organisation ersätts" : `${n} organisationer ersätts`,
+      mergerNote:
+        "En sammanslagning registreras som en ny part med koppling till sina föregångare, inte som ett namnbyte. Föregångarna ligger kvar i registret eftersom äldre avtal fortfarande hänvisar till dem.",
+      save: "Spara parten",
+      saveAction: "Registrera parten",
+      saveHint: "Kontaktpersoner läggs till efter registreringen",
+      savedNote: (name: string, predecessors: number) =>
+        predecessors === 0
+          ? `${name} är registrerad i partsregistret.`
+          : `${name} är registrerad och ersätter ${predecessors} organisationer, som ligger kvar för äldre avtal.`,
+      logNote:
+        "Registreringen förs in i ändringsloggen med tidpunkt och användare, liksom kopplingen till eventuella föregångare.",
+      contactsLater: "Kontaktpersoner registreras på partens sida när parten är sparad.",
+    },
     nameChange: {
       heading: "Namnbyte och organisationsförändring",
       intro:

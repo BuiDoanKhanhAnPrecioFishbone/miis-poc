@@ -39,6 +39,9 @@ export const PARTY_REGISTER: Party[] = [
       },
       { name: "Sveriges Lärare", validFrom: "2023-01-01" },
     ],
+    /* Information model §4.2 — a merger is a new party with relationships to
+       its predecessors, not a note in the name history. */
+    predecessorIds: ["P-101", "P-102"],
     contacts: [
       {
         name: "Karin Sundberg",
@@ -65,6 +68,7 @@ export const PARTY_REGISTER: Party[] = [
       },
       { name: "Fremia", validFrom: "2021-01-01" },
     ],
+    predecessorIds: ["P-103", "P-104"],
     contacts: [
       {
         name: "Anders Björk",
@@ -180,6 +184,54 @@ export const PARTY_REGISTER: Party[] = [
       { name: "Malin Ragnegård", title: "Förbundsordförande", phone: "010-442 70 00", email: "malin.ragnegard@example.se" },
     ],
     active: true,
+  },
+  /*
+    The organisations that were replaced. They stay in the register rather than
+    being deleted: an agreement signed in 2019 still references one of them, and
+    FP-002's history of organisational changes is only navigable if both ends of
+    the relationship exist.
+  */
+  {
+    id: "P-101",
+    type: "employee",
+    name: "Lärarförbundet",
+    nameHistory: [{ name: "Lärarförbundet", validFrom: "1991-01-01", validTo: "2022-12-31" }],
+    contacts: [],
+    active: false,
+    successorId: "P-028",
+  },
+  {
+    id: "P-102",
+    type: "employee",
+    name: "Lärarnas Riksförbund",
+    nameHistory: [{ name: "Lärarnas Riksförbund", validFrom: "1884-01-01", validTo: "2022-12-31" }],
+    contacts: [],
+    active: false,
+    successorId: "P-028",
+  },
+  {
+    id: "P-103",
+    type: "employer",
+    name: "Arbetsgivarföreningen KFO",
+    sector: "private",
+    employerGroup: "Fristående arbetsgivarorganisationer",
+    nameHistory: [
+      { name: "Arbetsgivarföreningen KFO", validFrom: "1946-01-01", validTo: "2020-12-31" },
+    ],
+    contacts: [],
+    active: false,
+    successorId: "P-016",
+  },
+  {
+    id: "P-104",
+    type: "employer",
+    name: "Idea",
+    sector: "private",
+    employerGroup: "Fristående arbetsgivarorganisationer",
+    nameHistory: [{ name: "Idea", validFrom: "1993-01-01", validTo: "2020-12-31" }],
+    contacts: [],
+    active: false,
+    successorId: "P-016",
   },
 ];
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Party } from "./party";
-import { nameAtDate } from "./party";
+import { nameAtDate, predecessorsOf, successorOf } from "./party";
 
 /**
  * FP-002 — *"register över arbetstagarorganisationer (ATO) med historik för
@@ -57,5 +57,39 @@ describe("nameAtDate — FP-002", () => {
 
   it("falls back to the current name when there is no history at all", () => {
     expect(nameAtDate({ ...party, nameHistory: [] }, "2019-06-01")).toBe("Sveriges Lärare");
+  });
+});
+
+/**
+ * FP-002 and the information model §4.2 — a merger is a new party pointing at
+ * the ones it replaced. The relationship is what preserves statistical
+ * continuity; a note in the name history cannot be followed by a query.
+ */
+describe("predecessors and successors — FP-002", () => {
+  const lararforbundet: Party = { ...party, id: "P-101", name: "Lärarförbundet", nameHistory: [], successorId: "P-028" };
+  const riksforbundet: Party = { ...party, id: "P-102", name: "Lärarnas Riksförbund", nameHistory: [], successorId: "P-028" };
+  const merged: Party = { ...party, id: "P-028", predecessorIds: ["P-101", "P-102"] };
+  const register = [lararforbundet, riksforbundet, merged];
+
+  it("resolves both predecessors of a merged party", () => {
+    expect(predecessorsOf(merged, register).map((p) => p.name)).toEqual([
+      "Lärarförbundet",
+      "Lärarnas Riksförbund",
+    ]);
+  });
+
+  it("resolves the successor from either predecessor", () => {
+    expect(successorOf(lararforbundet, register)?.id).toBe("P-028");
+    expect(successorOf(riksforbundet, register)?.id).toBe("P-028");
+  });
+
+  it("returns nothing for a party with no merger", () => {
+    expect(predecessorsOf(party, register)).toEqual([]);
+    expect(successorOf(party, register)).toBeUndefined();
+  });
+
+  /* A pointer at a party that is not in the register must not crash a render. */
+  it("skips a predecessor id the register does not hold", () => {
+    expect(predecessorsOf({ ...merged, predecessorIds: ["P-999"] }, register)).toEqual([]);
   });
 });

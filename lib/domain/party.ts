@@ -58,6 +58,32 @@ export interface Party {
   nameHistory: NameHistoryEntry[];
   contacts: ContactPerson[];
   active: boolean;
+  /**
+   * FP-002's *organisatoriska förändringar*, as a relationship rather than a
+   * sentence.
+   *
+   * The information model §4.2 is explicit: *"Mergers (Sveriges Lärare, Fremia)
+   * are handled as new parties with relationships to their predecessors …
+   * preserving statistical continuity."* So a merger is not a name change with
+   * a note attached — it is a new party that points at the ones it replaced,
+   * and the pointer is what lets a report follow an agreement's history across
+   * the merger. A free-text note cannot be queried, so it cannot preserve
+   * continuity of anything.
+   */
+  predecessorIds?: string[];
+  /** Set when the party has been replaced, so the register can say by whom. */
+  successorId?: string;
+}
+
+/** The parties this one replaced, resolved against the register. */
+export function predecessorsOf(party: Party, register: readonly Party[]): Party[] {
+  const ids = party.predecessorIds ?? [];
+  return ids.map((id) => register.find((p) => p.id === id)).filter((p): p is Party => Boolean(p));
+}
+
+/** The party that replaced this one, if any. */
+export function successorOf(party: Party, register: readonly Party[]): Party | undefined {
+  return party.successorId ? register.find((p) => p.id === party.successorId) : undefined;
 }
 
 export type CooperationBodyType = "umbrella" | "cooperation";

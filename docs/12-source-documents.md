@@ -96,6 +96,21 @@ demand behind it, or a hit has to be located on a page.
 `/registrera`'s "4 träffar" is the other end of the same gap: it is a hardcoded number
 where the model wants `WatchwordHit` rows.
 
+### 3b. Mergers were a note; they are a relationship now — closed
+
+The model's §4.2 is explicit: *"Mergers (Sveriges Lärare, Fremia) are handled as new
+parties with relationships to their predecessors … preserving statistical continuity."*
+
+Our register recorded a merger as free text on the name history — `note: "Gick samman
+med Lärarnas Riksförbund"` — which reads correctly and cannot be followed by a query, so
+it preserves the continuity of nothing. `Party` now carries `predecessorIds` and
+`successorId`, the replaced organisations stay in the register rather than being deleted,
+and `/parter/ny` records the relationship when a party is registered.
+
+Found by a question about how to add a party, not by a check of ours: the create flow was
+missing entirely, and looking for where it should go turned up the model paragraph that
+said what it had to do.
+
 ### 4. Fields on the party meeting that no requirement defines
 
 `PartyMeeting` carries `purpose`, `agenda`, `participants`, `location` and a
