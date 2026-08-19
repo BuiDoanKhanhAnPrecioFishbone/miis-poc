@@ -39,7 +39,7 @@ import { Badge, Callout, Panel, Rationale, ReqTag } from "./primitives";
  */
 
 const STATE_STYLE = {
-  done: "border-ok-border bg-ok text-ok-foreground",
+  done: "border-ok-border bg-ok-border text-card",
   current: "border-transparent bg-primary text-primary-foreground",
   upcoming: "border-border bg-secondary text-muted-foreground",
 } as const;
@@ -62,11 +62,18 @@ function StageRow({
 }) {
   return (
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      {/*
+        A completed stage is a filled disc with a tick in it. The tick was lost
+        when the emoji sweep replaced ✓ with an icon everywhere else and left
+        this one empty, so "done" and "remaining" differed only by the colour of
+        an empty ring — which is exactly the failure the icon set exists to
+        prevent.
+      */}
       <span
         aria-hidden
         className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 text-meta font-bold ${STATE_STYLE[state]}`}
       >
-        {state === "done" ? "" : state === "current" ? "…" : ""}
+        {state === "done" ? <IconCheck size="sm" /> : state === "current" ? "…" : ""}
       </span>
       <span className={state === "upcoming" ? "text-muted-foreground" : "text-foreground"}>
         {stageLabel(d, id)}
@@ -124,7 +131,13 @@ export function ProtocolUpload({
           <span className="text-label tabular-nums text-muted-foreground">
             {t.size(decimal(fileSizeKb(file.bytes), lang))}
           </span>
-          <Badge tone="ai">{d.registrera.document.ocr}</Badge>
+          {/*
+            `ok`, not `ai`. The filled violet badge means "machine-generated and
+            not yet approved"; OCR is a fact about the document that has already
+            happened. The protocol pane marks it the same way, and two badges
+            for one thing were saying different things about it.
+          */}
+          <Badge tone="ok">{d.registrera.document.ocr}</Badge>
         </div>
 
         <p aria-live="polite" className="mt-4 text-table">

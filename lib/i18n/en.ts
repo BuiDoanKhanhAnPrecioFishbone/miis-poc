@@ -133,11 +133,15 @@ export const en: Dictionary = {
 
     reminders: {
       title: "My reminders",
+      lead:
+        "Dates when an agreement needs reviewing, soonest first. The reminder is also sent by e-mail with a link to the agreement.",
       empty: "No reminders right now.",
       footnote: "Reminders are also sent by e-mail with a link to the agreement",
     },
     incomplete: {
       title: "Incomplete registrations",
+      lead:
+        "Agreements saved with the status Incomplete, waiting to be finished. The same selection appears in the Short-Term Wage Report with a status column and a link to the protocol — that is where the completion is done.",
       empty: "All registrations are complete.",
       badge: "Incomplete",
       footnote:
@@ -146,6 +150,8 @@ export const en: Dictionary = {
     },
     recent: {
       title: "Recently registered agreements",
+      lead:
+        "The most recently registered agreements, newest first — the officer's own work list, and a quick check that yesterday's registrations landed correctly.",
       empty: "No agreements registered yet.",
     },
     events: {
@@ -452,6 +458,8 @@ export const en: Dictionary = {
     save: {
       title: "Save the registration",
       registrationStatus: "Registration status",
+      statusFromAction:
+        "Set by the choice below: Approve and link gives the status Complete, Save as incomplete gives the status Incomplete.",
       agreementStatus: "Agreement status (FR-012)",
       statusKey: "How the status appears in agreement lists and reports:",
       approveAndLink: "Approve and link the protocol",

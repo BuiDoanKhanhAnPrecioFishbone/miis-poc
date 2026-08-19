@@ -227,7 +227,12 @@ function PreFilledField({
         Focus no longer does, because tracing on every focus is what made the
         view move while the officer was reading.
       */}
-      <div className="mb-1 flex min-h-7 flex-wrap items-baseline gap-2 self-end">
+      {/*
+        `items-center`, not `items-baseline`. The AI mark is a 24px button and
+        the ADJUSTED badge is a 21px pill; on a shared baseline their boxes sit
+        at different heights, which reads as one of them having slipped.
+      */}
+      <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2 self-end">
         <label htmlFor={inputId} className="min-w-0 break-words text-label font-bold">
           {name}
         </label>

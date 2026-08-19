@@ -34,6 +34,14 @@ export interface PanelAction {
  * If you cannot decide which one a sentence is, it is a rationale.
  */
 export interface PanelProse {
+  /**
+   * A plain sentence the reader needs in order to know what the panel is.
+   * Not a `Rationale`: those ride the requirement-ID switch and are off by
+   * default, which is how "Open the Short-Term Wage Report" came to sit in a
+   * panel about incomplete registrations with nothing on screen connecting
+   * the two.
+   */
+  lead?: string;
   note?: string;
   rationale?: string;
 }

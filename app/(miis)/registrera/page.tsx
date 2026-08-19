@@ -214,21 +214,22 @@ export default async function RegistreraPage() {
 
         <div id="steg-spara" className="scroll-mt-24">
           <Panel title={t.save.title} tags={["FA-021", "D-001"]}>
-            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Select
-                id="registration-status"
-                label={t.save.registrationStatus}
-                defaultValue="incomplete"
-                options={[
-                  { id: "incomplete", label: registrationStatusLabel("incomplete", lang) },
-                  { id: "complete", label: registrationStatusLabel("complete", lang) },
-                ]}
-              />
-              {/*
-              FR-012 in words. The registration decides the colour the agreement
-              will carry in every list, so the form says which one — the reader
-              should not have to deduce it from a legend elsewhere.
+            {/*
+              There is no registration-status dropdown any more, and its absence
+              is the fix.
+
+              FA-021 gives a registration two states, Ofullständig and Klar. The
+              panel offered both a dropdown *and* two buttons that each set one
+              of them — so an officer could choose Klar and then press "Spara
+              som ofullständig", and nothing on the screen said which of the two
+              won. Two controls over one value is not a preference; it is a bug
+              waiting to be found in a demo.
+
+              The action sets the status, because that is what the action means.
+              The status the current choice will produce is shown below, derived
+              rather than chosen.
             */}
+            <div className="max-w-2xl">
               {/*
                 The agreement's own FR-012 status, with the key beside it. The
                 label used to read "Färgkodning i vyerna" — a sentence about the

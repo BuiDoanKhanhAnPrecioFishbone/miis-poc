@@ -71,6 +71,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
             when: r.date,
             text: t(r.text, lang),
           })),
+          lead: s.reminders.lead,
           emptyText: s.reminders.empty,
           rationale: s.reminders.footnote,
           ...(total > 0 ? { action: { text: i18n.common.showAll(total) } } : {}),
@@ -78,6 +79,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
         {
           kind: "list",
           title: s.incomplete.title,
+          lead: s.incomplete.lead,
           reqTags: ["FA-021"],
           // Registrations still awaiting information come first — those are the
           // ones an agreement administrator has to chase (US-04).
@@ -100,6 +102,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
         {
           kind: "agreement-table",
           title: s.recent.title,
+          lead: s.recent.lead,
           reqTags: ["FR-012"],
           rows: recent,
           emptyText: s.recent.empty,

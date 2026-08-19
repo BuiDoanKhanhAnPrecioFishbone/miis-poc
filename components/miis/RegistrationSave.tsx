@@ -7,7 +7,7 @@ import type { Lang } from "@/lib/domain/lang";
 import { canRegister, type RegistrationStage } from "@/lib/domain/upload";
 import { dictionary } from "@/lib/i18n";
 import { IconForward } from "./icons";
-import { Button, Callout, ReqTag } from "./primitives";
+import { Button, Callout, FieldLabel, ReqTag } from "./primitives";
 
 /**
  * The registration's stage, shared between the stepper and the save panel.
@@ -111,7 +111,16 @@ export function RegistrationSave({ lang }: { lang: Lang }) {
 
   return (
     <>
-      <div className="mt-5 flex flex-wrap items-center gap-3">
+      {/*
+        FA-021's two states, shown as the consequence of the two actions rather
+        than as a third control that could disagree with them.
+      */}
+      <div className="mt-5 border-t border-border pt-4">
+        <FieldLabel>{t.registrationStatus}</FieldLabel>
+        <p className="text-body">{t.statusFromAction}</p>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         {/*
           FAI-002 as a gate the officer can see. A control that silently does
           nothing teaches an evaluator that the prototype is a picture, so the

@@ -129,11 +129,15 @@ export const sv = {
 
     reminders: {
       title: "Mina påminnelser",
+      lead:
+        "Datum då ett avtal behöver ses över, tidigast först. Påminnelsen skickas också som e-post med länk till avtalet.",
       empty: "Inga påminnelser just nu.",
       footnote: "Påminnelser skickas även som e-post med länk till avtalet",
     },
     incomplete: {
       title: "Ofullständiga registreringar",
+      lead:
+        "Avtal som sparats med status Ofullständig och väntar på komplettering. Samma urval visas i Korttidslönerapporten med statuskolumn och länk till protokollet — det är där kompletteringen görs.",
       empty: "Alla registreringar är kompletta.",
       badge: "Ofullständig",
       footnote:
@@ -142,6 +146,8 @@ export const sv = {
     },
     recent: {
       title: "Senast registrerade avtal",
+      lead:
+        "De senast registrerade avtalen, nyast först — handläggarens egen arbetslista och en snabb kontroll av att gårdagens registreringar hamnade rätt.",
       empty: "Inga avtal registrerade ännu.",
     },
     events: {
@@ -444,6 +450,8 @@ export const sv = {
     save: {
       title: "Spara registrering",
       registrationStatus: "Registreringsstatus",
+      statusFromAction:
+        "Sätts av valet nedan: Godkänn och koppla ger status Klar, Spara som ofullständig ger status Ofullständig.",
       agreementStatus: "Avtalets status (FR-012)",
       statusKey: "Så visas statusen i avtalslistor och rapporter:",
       approveAndLink: "Godkänn och koppla protokoll",

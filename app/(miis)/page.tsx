@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import {
+  Button,
   Badge,
   ConfidentialityMarker,
   EmptyState,
@@ -138,7 +139,13 @@ export default async function DashboardPage() {
   const halfWidth = page.panels.filter(isHalfWidth);
   const fullWidth = page.panels.filter((p) => !isHalfWidth(p));
 
-  function Prose({ panel }: { panel: DashboardPanel }) {
+  /** The sentence the reader needs, above the panel's own content. */
+function Lead({ panel }: { panel: DashboardPanel }) {
+  if (!("lead" in panel) || !panel.lead) return null;
+  return <p className="mb-3 max-w-3xl text-table text-muted-foreground">{panel.lead}</p>;
+}
+
+function Prose({ panel }: { panel: DashboardPanel }) {
     return (
       <>
         {panel.note && <p className="mt-3 text-label text-muted-foreground">{panel.note}</p>}
@@ -198,10 +205,18 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-2">
         {halfWidth.map((panel) => (
           <Panel key={panel.title} title={panel.title} tags={panel.reqTags}>
+            <Lead panel={panel} />
             <PanelBody panel={panel} i18n={i18n} lang={lang} />
             <Prose panel={panel} />
             {"action" in panel && panel.action && (
               <div className="mt-4 flex flex-wrap items-center gap-3">
+                {/*
+                  An action without a destination is inert and says so. It used
+                  to fall through to `/rapporter`, so "Visa alla (64)" under My
+                  reminders quietly opened the reports hub — a link that goes
+                  somewhere unrelated is worse than one that goes nowhere,
+                  because the reader believes it.
+                */}
                 {panel.action.href ? (
                   <Link
                     href={panel.action.href}
@@ -210,12 +225,9 @@ export default async function DashboardPage() {
                     {panel.action.text}
                   </Link>
                 ) : (
-                  <Link
-                    href="/rapporter"
-                    className="inline-flex min-h-12 items-center rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-                  >
+                  <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
                     {panel.action.text}
-                  </Link>
+                  </Button>
                 )}
                 {panel.action.reqTag && <ReqTag id={panel.action.reqTag} />}
               </div>
@@ -227,6 +239,7 @@ export default async function DashboardPage() {
       {fullWidth.map((panel) => (
         <div key={panel.title} className="mt-5">
           <Panel title={panel.title} tags={panel.reqTags}>
+            <Lead panel={panel} />
             <PanelBody panel={panel} i18n={i18n} lang={lang} />
             <Prose panel={panel} />
           </Panel>
