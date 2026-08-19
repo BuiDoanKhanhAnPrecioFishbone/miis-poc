@@ -72,8 +72,18 @@ export function AppShell({
     return [
       "block border-l-4 py-3 text-table transition-colors",
       nested ? "pl-9 pr-4" : "px-5",
+      /*
+        The current-page rule is slate, not sand.
+
+        Two reasons and they agree. Sand-500 measured 1.74:1 against the active
+        item's own fill and sand-600 only 2.81:1, so neither clears WCAG
+        1.4.11's 3:1 for an indicator that identifies a state. And sand already
+        carries Märket, attention, requirement tags, the public view and
+        watchword hits — "you are here" was quietly a sixth meaning for it.
+        Primary slate is MI's identity colour and measures 6.21:1.
+      */
       active
-        ? "border-[var(--mi-sand-500)] bg-sidebar-accent font-bold text-sidebar-accent-foreground"
+        ? "border-primary bg-sidebar-accent font-bold text-sidebar-accent-foreground"
         : "border-transparent text-sidebar-foreground hover:bg-sidebar-accent/60",
     ].join(" ");
   }

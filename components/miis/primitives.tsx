@@ -140,6 +140,21 @@ export function Button({
   const sizeClass =
     size === "sm" ? "min-h-11 px-3 py-2 text-label" : "min-h-12 px-5 py-3 text-table";
 
+  /*
+    Disabled replaces the variant rather than fading it.
+
+    `opacity-60` over a filled primary rendered white on #8C9BA3 — 2.86:1,
+    measured. WCAG exempts inactive controls from the contrast minimum, so no
+    tool flags it, but the label is still a sentence someone has to read in
+    order to understand why they cannot proceed, and the house rule against
+    softening text with opacity exists precisely to stop this. Dropping the
+    fill says "inactive" more clearly than a fade does, and the label lands at
+    6.21:1.
+  */
+  const look = disabled
+    ? "cursor-not-allowed border-input bg-secondary text-muted-foreground"
+    : BUTTON_VARIANT[variant];
+
   return (
     <button
       type={type}
@@ -152,9 +167,8 @@ export function Button({
       className={[
         "rounded-sm border-2 font-bold transition-colors",
         sizeClass,
-        BUTTON_VARIANT[variant],
+        look,
         fullWidth ? "w-full" : "",
-        disabled ? "cursor-not-allowed opacity-60" : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -171,7 +185,18 @@ const BADGE_TONE: Record<Tone, string> = {
   ok: "border-ok-border bg-ok text-ok-foreground",
   attention: "border-attention-border bg-attention text-attention-foreground",
   error: "border-error-border bg-error text-error-foreground",
-  ai: "border-ai-border bg-ai text-ai-foreground",
+  /*
+    The only filled badge in MIIS, and deliberately the only one.
+
+    Every other tone is a dark word on a pale tint, so they read as a family and
+    a violet member of that family is just a differently coloured one — at a
+    glance, across a screen that already carries sand, mint and slate chips, hue
+    alone does not announce anything. Inverting the fill changes the silhouette
+    instead, which is what makes AI findable before it is read, and what keeps it
+    findable in greyscale, on a projector, and to a reader who cannot separate
+    violet from slate.
+  */
+  ai: "border-ai-solid bg-ai-solid text-ai-solid-foreground",
 };
 
 /**
@@ -262,6 +287,99 @@ export function Callout({
 }
 
 /**
+ * A compartment holding machine-generated material — FAI-002.
+ *
+ * Everything AI produces in MIIS lives inside one of these, and nothing else
+ * does. The point is not decoration: a case officer scrolling a case must be
+ * able to tell, without reading a word, which parts of the screen are MI's
+ * registered facts and which are a proposal that has not been approved yet.
+ * FAI-002 makes that a requirement, and a tinted badge somewhere in the middle
+ * of a panel does not deliver it — by the time you have found the badge you
+ * have already read the content as though it were true.
+ *
+ * So the signal is structural, and it is four signals at once, because any one
+ * of them can be lost:
+ *
+ * - a **banded header**, which no `Panel` in the system has, so the compartment
+ *   is visible as a shape before any colour is processed;
+ * - the **`AI` mark**, letters rather than a pictogram — there is no
+ *   conventional icon for this and an invented one has to be learned;
+ * - a **6px spine** down the leading edge, which survives being cropped,
+ *   projected or printed in grey;
+ * - the **violet**, the one deliberate step outside MI's palette, and the last
+ *   of the four rather than the first.
+ *
+ * The standing sentence under the header states the guarantee rather than
+ * implying it. FAI-002 is a promise about what the system will not do on its
+ * own, and a promise the interface never says out loud is one the evaluator has
+ * to take on trust.
+ */
+export function AiRegion({
+  title,
+  notice,
+  mark,
+  regionLabel,
+  action,
+  tags,
+  children,
+  headingLevel = 2,
+  id,
+}: {
+  title: string;
+  /** The FAI-002 guarantee, in the reader's language. */
+  notice: string;
+  /** The letters, from the dictionary — `i18n.common.aiMark`. */
+  mark: string;
+  /** What the compartment is called to a screen reader. */
+  regionLabel: string;
+  action?: ReactNode;
+  tags?: readonly string[];
+  children: ReactNode;
+  headingLevel?: 2 | 3;
+  id?: string;
+}) {
+  const Heading = headingLevel === 3 ? "h3" : "h2";
+
+  return (
+    /*
+      Three layers, and the violet fades out as you move into the content: a
+      solid band, a tinted strip carrying the guarantee, then the ordinary
+      reading surface. Tinting the content as well was the first attempt and it
+      was worse — it colours the case officer's information rather than the
+      frame around it, and a whole panel of violet is harder to scan than a
+      white one with a violet edge. The identity belongs to the container.
+    */
+    <section
+      id={id}
+      aria-label={regionLabel}
+      className="min-w-0 overflow-hidden rounded-lg border-2 border-l-[6px] border-ai-border border-l-ai-solid bg-card shadow-card"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-ai-solid px-4 py-2.5">
+        <div className="flex min-w-0 flex-wrap items-center gap-2.5">
+          <span
+            aria-hidden
+            className="shrink-0 rounded-sm bg-ai-solid-foreground px-1.5 py-0.5 text-meta font-bold tracking-[0.14em] text-ai-solid"
+          >
+            {mark}
+          </span>
+          <Heading className="min-w-0 font-display text-section font-semibold text-ai-solid-foreground">
+            {title}
+          </Heading>
+        </div>
+        {action}
+      </div>
+      <p className="border-b border-ai-border bg-ai px-5 py-2.5 text-label text-ai-foreground">
+        {notice}
+      </p>
+      <div className="px-5 py-4">
+        {children}
+        <ReqTags ids={tags} />
+      </div>
+    </section>
+  );
+}
+
+/**
  * A selection, shown where its effect is.
  *
  * Three modes: static, removable (`onRemove`) and toggleable (`onToggle`).
@@ -285,9 +403,18 @@ export function Chip({
 }) {
   const base =
     "inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-label font-semibold";
+  /*
+    The unselected border is `input`, not `border`.
+
+    `--border` is slate-300, which measures 1.51:1 against the chip's own fill —
+    fine for a panel edge, which carries no meaning, and a failure of WCAG
+    1.4.11 here, where the border is the whole of what says "this is a control
+    you can press". `--input` is the token for exactly that job and measures
+    3.43:1.
+  */
   const tone = selected
     ? "border-primary bg-accent text-accent-foreground"
-    : "border-border bg-secondary text-secondary-foreground";
+    : "border-input bg-secondary text-secondary-foreground";
 
   if (onToggle) {
     return (
@@ -413,7 +540,7 @@ export function Field({
   maskedReason?: string;
 }) {
   return (
-    <div>
+    <div className="flex h-full flex-col">
       {(label || ai) && (
         <div className="mb-1 flex flex-wrap items-center gap-2">
           {/* A label narrower than its longest word has to break it rather than
@@ -428,18 +555,44 @@ export function Field({
           {ai && aiLabel && <Badge tone="ai">{aiLabel}</Badge>}
         </div>
       )}
-      {masked ? (
-        <div className="field-input flex items-center gap-2 border-dashed text-muted-foreground">
-          <span aria-hidden>🔒</span>
-          <span>{maskedText}</span>
-        </div>
-      ) : (
-        <div className="field-input">{value}</div>
-      )}
-      {masked && maskedReason && (
-        <p className="mt-1 text-label text-muted-foreground">{maskedReason}</p>
-      )}
-      {!masked && hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
+      {/*
+        A registered value is text, not a control.
+
+        This used to render `field-input` — the *editable* style: 2px border,
+        48px tall, white, radius 8. `Button variant="secondary"` is 2px border,
+        48px tall, white, radius 4. A value the officer can only read was drawn
+        as something they could press, four pixels of corner radius away from
+        the button beside it. On the mediation case that put four unpressable
+        boxes in a row next to a real `+ Koppla avtal`.
+
+        The rule keeps the rhythm the boxes were providing, and a long value now
+        wraps where a box would have clipped it.
+
+        `mt-auto` in a full-height column bottom-aligns the whole block, so the
+        rules line up across a row however many lines each label took —
+        "Diarienummer (diariesystemet)" wraps to two where "Typ" takes one. The
+        hint sits *inside* that block, above the rule: it belongs to the field,
+        and hanging it below would put a variable number of lines under the
+        thing being aligned and break the alignment again.
+      */}
+      <div
+        className={`mt-auto border-b ${
+          masked ? "border-dashed border-border" : "border-border"
+        }`}
+      >
+        {masked ? (
+          <div className="flex min-h-11 items-center gap-2 py-2 text-body text-muted-foreground">
+            <span aria-hidden>🔒</span>
+            <span className="min-w-0 break-words">{maskedText}</span>
+          </div>
+        ) : (
+          <div className="min-h-11 py-2 text-body break-words">{value}</div>
+        )}
+        {masked && maskedReason && (
+          <p className="pb-2 text-label text-muted-foreground">{maskedReason}</p>
+        )}
+        {!masked && hint && <p className="pb-2 text-label text-muted-foreground">{hint}</p>}
+      </div>
     </div>
   );
 }

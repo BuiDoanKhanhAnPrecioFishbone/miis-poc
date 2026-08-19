@@ -8,13 +8,14 @@ import type { Lang } from "@/lib/domain/lang";
 import type { UploadedFile } from "@/lib/domain/upload";
 import type { Watchword } from "@/lib/domain/watchword";
 import { countHits } from "@/lib/domain/watchword";
-import { UPLOAD_PIPELINE } from "@/lib/domain/upload";
+import { UPLOAD_PIPELINE, registrationSteps, type RegistrationStage } from "@/lib/domain/upload";
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { ProtocolUpload } from "./ProtocolUpload";
+import { RegistrationProvider } from "./RegistrationSave";
 import { Stepper, type StepState } from "./Stepper";
 import { Marked } from "./Marked";
 import { Tabs } from "./Select";
-import { Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
+import { AiRegion, Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
 
 /**
  * US-01 — the protocol and the form it pre-fills, side by side and linked.
@@ -318,6 +319,7 @@ export function ProtocolReview({
     Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])),
   );
   const [approved, setApproved] = useState(false);
+  const [registered, setRegistered] = useState(false);
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [completed, setCompleted] = useState(0);
   const [confirming, setConfirming] = useState(false);
@@ -358,19 +360,23 @@ export function ProtocolReview({
     analyse; during the pipeline step 1 is done and step 2 is running; after it
     the officer is at the approval, and approving moves them on.
   */
-  const stepStates: StepState[] = !file
-    ? ["current", "upcoming", "upcoming", "upcoming", "upcoming"]
+  const stage: RegistrationStage = !file
+    ? "empty"
     : !ready
-      ? ["done", "current", "upcoming", "upcoming", "upcoming"]
-      : approved
-        ? ["done", "done", "done", "current", "upcoming"]
-        : ["done", "done", "current", "upcoming", "upcoming"];
+      ? "analysing"
+      : registered
+        ? "registered"
+        : approved
+          ? "approved"
+          : "review";
+  const stepStates: StepState[] = registrationSteps(stage);
 
   function pick(picked: UploadedFile | null) {
     setConfirming(false);
     setFile(picked);
     setCompleted(0);
     setApproved(false);
+    setRegistered(false);
     setActiveSource(null);
     setActiveField(null);
     setValues(Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])));
@@ -526,27 +532,64 @@ export function ProtocolReview({
       <div className="grid grid-cols-1 items-start gap-5 @3xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div id="steg-protokoll" className="scroll-mt-24 @3xl:sticky @3xl:top-24">
           <Panel>
-            <div className="mb-4 flex flex-wrap items-center gap-3 border-b border-border pb-3">
+            {/*
+              The filename is a heading, so it gets a line of its own and may
+              wrap as far as it needs to. It used to share a flex row with the
+              replace action, which meant the position of a button depended on
+              how long a filename happened to be — with a real one
+              (`1786435639682_Bilaga_1_Kravspecifikation.pdf`) the heading
+              consumed the row and the button dropped underneath it, alone and
+              right-aligned. Truncating the name instead is worse: verifying
+              that the right document was uploaded is the first thing the
+              officer does here.
+            */}
+            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border pb-3">
               <h2 className="min-w-0 break-all font-display text-section font-semibold text-primary">
                 {file.name}
               </h2>
               <Badge tone="ok">{t.document.ocr}</Badge>
               <ReqTag id="FAI-003" />
-              {/*
-                Replacing the protocol resets every field, every correction and
-                the approval. It asks first — but only when there is something
-                to lose, because a confirmation on a no-op is the kind that
-                teaches people to dismiss confirmations without reading them.
-              */}
-              <span className="ml-auto">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => (adjustedCount > 0 || approved ? setConfirming(true) : pick(null))}
-                >
-                  {t.upload.replace}
-                </Button>
-              </span>
+            </div>
+
+            <Rationale>{t.upload.demoNote}</Rationale>
+
+            {/*
+              Two views of one document. Text is the OCR output — selectable,
+              highlightable, and the only form in which a watchword hit reaches
+              a screen reader, which NFUI-003 makes non-negotiable. Original is
+              the page as it arrived, so the screen never has to be taken on
+              trust. Tracing a field returns to Text, because that is where the
+              passage can actually be marked.
+            */}
+            {/*
+              The document toolbar: which view on the left, what to do with the
+              document on the right. Replacing the protocol acts on this pane
+              exactly as the view switch does, so it belongs in the row of
+              controls rather than hanging off the heading. The row reserves the
+              action's place whatever the filename does.
+
+              Replacing resets every field, every correction and the approval.
+              It asks first — but only when there is something to lose, because
+              a confirmation on a no-op is the kind that teaches people to
+              dismiss confirmations without reading them.
+            */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <Tabs
+                label={t.document.viewLabel}
+                tabs={[
+                  { id: "text", label: t.document.viewText },
+                  { id: "original", label: t.document.viewOriginal },
+                ]}
+                value={view}
+                onChange={(id) => setView(id as "text" | "original")}
+              />
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => (adjustedCount > 0 || approved ? setConfirming(true) : pick(null))}
+              >
+                {t.upload.replace}
+              </Button>
             </div>
 
             {confirming && (
@@ -571,26 +614,6 @@ export function ProtocolReview({
                 </Callout>
               </div>
             )}
-
-            <Rationale>{t.upload.demoNote}</Rationale>
-
-            {/*
-              Two views of one document. Text is the OCR output — selectable,
-              highlightable, and the only form in which a watchword hit reaches
-              a screen reader, which NFUI-003 makes non-negotiable. Original is
-              the page as it arrived, so the screen never has to be taken on
-              trust. Tracing a field returns to Text, because that is where the
-              passage can actually be marked.
-            */}
-            <Tabs
-              label={t.document.viewLabel}
-              tabs={[
-                { id: "text", label: t.document.viewText },
-                { id: "original", label: t.document.viewOriginal },
-              ]}
-              value={view}
-              onChange={(id) => setView(id as "text" | "original")}
-            />
 
             <p aria-live="polite" className="mt-3 mb-3 text-label text-muted-foreground">
               {activeField ? t.document.sourceActive(label(d, activeField)) : t.document.sourceHint}
@@ -677,7 +700,20 @@ export function ProtocolReview({
 
         <div className="@container space-y-5">
           <div id="steg-ai" ref={reviewRef} tabIndex={-1} className="scroll-mt-24">
-            <Panel title={t.review.heading} tags={["FAI-001", "FAI-002", "FA-001"]}>
+            {/*
+              The whole analysis sits inside one AI compartment rather than a
+              plain panel with violet marks scattered through it. FAI-002 is
+              about the officer knowing what has and has not been approved, and
+              a boundary they can see is a stronger guarantee than a badge they
+              have to find.
+            */}
+            <AiRegion
+              title={t.review.heading}
+              mark={d.common.aiMark}
+              notice={d.common.aiNotice}
+              regionLabel={d.common.aiRegionLabel}
+              tags={["FAI-001", "FAI-002", "FA-001"]}
+            >
               {/*
                 The colour is explained in words once, next to the fields it
                 applies to, so violet is never carrying meaning on its own.
@@ -725,7 +761,13 @@ export function ProtocolReview({
                 {approved ? (
                   <>
                     <Badge tone="ok">{t.review.approved}</Badge>
-                    <Button variant="secondary" onClick={() => setApproved(false)}>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setApproved(false);
+                        setRegistered(false);
+                      }}
+                    >
                       {t.review.reopen}
                     </Button>
                   </>
@@ -741,10 +783,12 @@ export function ProtocolReview({
               </div>
 
               <Rationale>{t.review.changeLogNote}</Rationale>
-            </Panel>
+            </AiRegion>
           </div>
 
-          {children}
+          <RegistrationProvider value={{ stage, setRegistered }}>
+            {children}
+          </RegistrationProvider>
         </div>
       </div>
     </>

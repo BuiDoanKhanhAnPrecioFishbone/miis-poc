@@ -22,6 +22,10 @@ export const sv = {
     loggedInVia: "miis.mi.se · Inloggad via EFOS",
     benchmarkTerm: "Märket",
     aiProposal: "AI-förslag",
+    aiMark: "AI",
+    aiNotice:
+      "Maskinellt framtaget underlag. Ingenting registreras förrän en handläggare har godkänt det.",
+    aiRegionLabel: "AI-förslag – granskas av handläggare",
     empty: "Inget att visa.",
     none: "–",
     yes: "Ja",
@@ -433,6 +437,11 @@ export const sv = {
       registrationStatus: "Registreringsstatus",
       colourCoding: "Färgkodning i vyerna",
       approveAndLink: "Godkänn och koppla protokoll",
+      approveFirst: "Godkänn AI-förslagen först — inget kan kopplas innan de är granskade.",
+      registered: "Protokollet är registrerat och kopplat",
+      registeredNote:
+        "Avtalet, löneavtalet och förhandlingen är kopplade till protokollet. Ändringsloggen har registrerat vem som godkände och när.",
+      reopen: "Ändra registreringen",
       saveIncomplete: "Spara som ofullständig",
       incompleteNote: "Ofullständig registrering följs upp med påminnelse",
       confidentialityLabel: "Sekretessmarkera avtalet",

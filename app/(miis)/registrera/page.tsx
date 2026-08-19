@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { RegistrationSave } from "@/components/miis/RegistrationSave";
 import { ProtocolReview } from "@/components/miis/ProtocolReview";
 import { Select } from "@/components/miis/Select";
 import { Toggle } from "@/components/miis/Toggle";
@@ -150,11 +151,12 @@ export default async function RegistreraPage() {
             </div>
             <Rationale>{t.save.confidentialityHint}</Rationale>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Button>{t.save.approveAndLink}</Button>
-              <Button variant="secondary">{t.save.saveIncomplete}</Button>
-              <ReqTag id="FA-022" />
-            </div>
+            {/*
+              The controls live in a client component because they finish MI's
+              five-step flow, and the stepper at the top of the page has to hear
+              about it. They used to be plain buttons with no handler at all.
+            */}
+            <RegistrationSave lang={lang} />
             <Rationale>{t.save.incompleteNote}</Rationale>
 
             <Rationale>{t.save.auditNote}</Rationale>

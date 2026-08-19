@@ -50,6 +50,8 @@
   --color-ai-foreground: var(--ai-foreground);
   --color-ai-border: var(--ai-border);
   --color-ai-ring: var(--ai-ring);
+  --color-ai-solid: var(--ai-solid);
+  --color-ai-solid-foreground: var(--ai-solid-foreground);
   --color-req: var(--req);
   --color-req-foreground: var(--req-foreground);
   --color-req-border: var(--req-border);
@@ -148,10 +150,18 @@
    * watchword hits and accent — all of them on screen together in /registrera.
    * That is the same failure the FR-012 status colours are protected from.
    *
-   * Contrast: 8.47:1 text on badge, 4.78:1 border against paper.
+   * The violet is deep rather than bright. #7E57C2 measured 4.78:1 on paper —
+   * enough for a border and no more, and next to MI's slate and sand it read as
+   * decoration. #5E35B1 measures 7.36:1, holds its own against the identity
+   * colour, and looks like an institution's mark rather than a product accent.
+   * Standing out and looking serious are the same edit here.
+   *
+   * Contrast: 8.47:1 text on the tint, 7.36:1 spine against paper, 10.24:1
+   * white on the solid marker.
    */
   --mi-ai-100: #EDE7F6;
-  --mi-ai-500: #7E57C2;
+  --mi-ai-500: #5E35B1;
+  --mi-ai-700: #4527A0;
   --mi-ai-800: #4527A0;
 
   --radius: 8px;
@@ -167,7 +177,18 @@
   --secondary: var(--mi-slate-100);
   --secondary-foreground: var(--mi-slate-900);
   --muted: var(--mi-slate-100);
-  --muted-foreground: var(--mi-slate-700);
+  /*
+    Secondary text, at slate-800 rather than slate-700.
+
+    slate-700 measured 4.79:1 on the slate tint and 4.72:1 on the AI tint —
+    passing AA by two hundredths, which is why an automated sweep stayed silent
+    while the text still looked thin. Hints and helper lines are 13–14px and sit
+    on six different tinted grounds in this system; a token that only just
+    clears on the palest one has no margin for the rest. slate-800 measures
+    6.12:1 at worst and 7.40:1 on card, and is still visibly secondary to the
+    ink.
+  */
+  --muted-foreground: var(--mi-slate-800);
   --accent: var(--mi-sand-100);
   --accent-foreground: var(--mi-ink);
   --destructive: #A33B35;
@@ -184,6 +205,14 @@
   --ai: var(--mi-ai-100);
   --ai-foreground: var(--mi-ai-800);
   --ai-border: var(--mi-ai-500);
+  /*
+    The one filled marker in MIIS. Every other badge is an outline on a tint, so
+    a solid block is a silhouette no other state word can imitate — recognition
+    survives greyscale, a projector and a colour-blind reader, which a hue on
+    its own does not.
+  */
+  --ai-solid: var(--mi-ai-700);
+  --ai-solid-foreground: #ffffff;
   /*
     The ring on a traced field. A non-text indicator needs 3:1 against what it
     sits on (WCAG 1.4.11); --mi-ai-500 on the panel's paper measures 4.78:1, so
@@ -441,12 +470,33 @@
 }
 
 /*
-  A <select> draws its own chevron at the right padding edge, so with the same
-  0.8rem the field uses for text the mark sits almost on the border. Chrome and
-  Firefox both honour padding-inline-end for it, so the whole control breathes
-  rather than only the text moving. Unlayered so it wins over the utility.
+  The chevron.
+
+  A native <select> anchors the platform's own arrow to the *border box*, a few
+  pixels in, and ignores `padding-inline-end` while doing it — measured in
+  Chrome at `appearance: auto`: 24px of end padding moved the text and left the
+  mark 10px from the border. Padding cannot fix this because padding is not what
+  positions it.
+
+  So the platform mark is turned off and the component draws its own, absolutely
+  positioned at a stated distance from the edge. `appearance: none` removes the
+  OS painting only — the keyboard behaviour, the mobile picker and the
+  accessibility tree are the native ones still. The reserved end padding is the
+  gap plus the mark plus a gap, so a long option label can never run underneath
+  it.
 */
 select.field-input,
 select.demo-select {
-  padding-inline-end: 1.5rem;
+  appearance: none;
+  padding-inline-end: calc(var(--select-chevron-gap) * 2 + var(--select-chevron-size));
+}
+
+:root {
+  /*
+    16px is MI's `space.4`. The field's text sits 12.8px from its inner edge, so
+    matching that would be symmetric and one step past it reads as air that was
+    put there on purpose — which is the complaint being answered.
+  */
+  --select-chevron-gap: 1rem;
+  --select-chevron-size: 0.75rem; /* 12px */
 }

@@ -14,6 +14,7 @@ import { datasetOptions, type DatasetName } from "@/lib/domain/dataset";
 import { LANGS, type Lang } from "@/lib/domain/lang";
 import { roleOptions, type Role } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
+import { SelectChevron } from "./Select";
 import { Button } from "./primitives";
 
 /**
@@ -90,73 +91,85 @@ export function DemoBar({
           <label htmlFor="demo-role" className={labelClass}>
             {t.role}
           </label>
-          <select
-            id="demo-role"
-            value={role}
-            disabled={pending}
-            onChange={(e) => change(ROLE_COOKIE, e.target.value)}
-            className={controlClass}
-          >
-            {roleOptions(lang).map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.label}
-              </option>
-            ))}
-          </select>
+          <span className="relative flex">
+            <select
+              id="demo-role"
+              value={role}
+              disabled={pending}
+              onChange={(e) => change(ROLE_COOKIE, e.target.value)}
+              className={controlClass}
+            >
+              {roleOptions(lang).map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
           <label htmlFor="demo-dataset" className={labelClass}>
             {t.dataset}
           </label>
-          <select
-            id="demo-dataset"
-            value={dataset}
-            disabled={pending}
-            onChange={(e) => change(DATASET_COOKIE, e.target.value)}
-            className={controlClass}
-          >
-            {datasetOptions(lang).map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.label}
-              </option>
-            ))}
-          </select>
+          <span className="relative flex">
+            <select
+              id="demo-dataset"
+              value={dataset}
+              disabled={pending}
+              onChange={(e) => change(DATASET_COOKIE, e.target.value)}
+              className={controlClass}
+            >
+              {datasetOptions(lang).map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
           <label htmlFor="demo-lang" className={labelClass}>
             {t.language}
           </label>
-          <select
-            id="demo-lang"
-            value={lang}
-            disabled={pending}
-            onChange={(e) => change(LANG_COOKIE, e.target.value)}
-            className={controlClass}
-          >
-            {LANGS.map((l) => (
-              <option key={l.id} value={l.id} lang={l.htmlLang}>
-                {l.label}
-              </option>
-            ))}
-          </select>
+          <span className="relative flex">
+            <select
+              id="demo-lang"
+              value={lang}
+              disabled={pending}
+              onChange={(e) => change(LANG_COOKIE, e.target.value)}
+              className={controlClass}
+            >
+              {LANGS.map((l) => (
+                <option key={l.id} value={l.id} lang={l.htmlLang}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+            <SelectChevron />
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
           <label htmlFor="demo-reqtags" className={labelClass}>
             {t.reqTags}
           </label>
-          <select
-            id="demo-reqtags"
-            value={reqTags ? "on" : "off"}
-            disabled={pending}
-            onChange={(e) => change(REQTAGS_COOKIE, e.target.value)}
-            className={controlClass}
-          >
-            <option value="off">{t.reqTagsOff}</option>
-            <option value="on">{t.reqTagsOn}</option>
-          </select>
+          <span className="relative flex">
+            <select
+              id="demo-reqtags"
+              value={reqTags ? "on" : "off"}
+              disabled={pending}
+              onChange={(e) => change(REQTAGS_COOKIE, e.target.value)}
+              className={controlClass}
+            >
+              <option value="off">{t.reqTagsOff}</option>
+              <option value="on">{t.reqTagsOn}</option>
+            </select>
+            <SelectChevron />
+          </span>
         </div>
 
         {onShowSessionWarning && (

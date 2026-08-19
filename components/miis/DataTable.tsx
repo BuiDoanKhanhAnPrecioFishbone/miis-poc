@@ -130,7 +130,15 @@ export function DataTable({
                       className="inline-flex min-h-11 items-center gap-1 font-semibold text-muted-foreground hover:text-foreground"
                     >
                       {column.header}
-                      <span aria-hidden className={active ? "" : "opacity-40"}>
+                      {/*
+                        The "sortable" glyph is the only thing telling a sighted
+                        user this column can be ordered, so WCAG 1.4.11's 3:1
+                        applies to it. At `opacity-40` it measured 1.91:1. The
+                        active and inactive states stay distinguishable by shape
+                        — a filled triangle against a double arrow — which is
+                        the stronger signal anyway, and neither is now faint.
+                      */}
+                      <span aria-hidden>
                         {active ? (direction === "asc" ? "▲" : "▼") : "↕"}
                       </span>
                       <span className="sr-only">

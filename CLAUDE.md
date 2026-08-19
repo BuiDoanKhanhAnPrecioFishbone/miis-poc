@@ -55,6 +55,14 @@ guides, plus the places our domain model still diverges from the information mod
    MI's own information. They must not share a hue. Sand already carries Märket,
    attention, requirement tags, the public view and watchword hits — do not add a sixth
    meaning to it.
+   **Everything AI produces lives inside an `<AiRegion>`, and nothing else does.** A
+   banded header, the `AI` letter-mark, a 6px spine and the violet — four signals,
+   because any one of them can be lost to greyscale, a projector or a colour-blind
+   reader, and FAI-002 is a guarantee the officer has to be able to see. The violet
+   frames the compartment; it never tints the content inside it, which is MI's own
+   information being read. `Badge tone="ai"` is the **only filled badge in the system** —
+   every other tone is a dark word on a pale tint, so the inverted silhouette is what
+   makes AI findable before it is read. Do not fill another badge.
 3. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —

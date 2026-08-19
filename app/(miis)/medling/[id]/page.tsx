@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
 import {
+  AiRegion,
   Badge,
   Button,
   Callout,
@@ -149,11 +150,14 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
             unrequested feature reads as requirements that were not read closely.
           */}
           {mediationCase.decisionSupport && (
-            <Panel title={ds.title} tags={["§4.1", "FAI-002"]}>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <Badge tone="ai">{i18n.common.aiProposal}</Badge>
-                <span className="text-label text-muted-foreground">{ds.subtitle}</span>
-              </div>
+            <AiRegion
+              title={ds.title}
+              mark={i18n.common.aiMark}
+              notice={i18n.common.aiNotice}
+              regionLabel={i18n.common.aiRegionLabel}
+              tags={["§4.1", "FAI-002"]}
+            >
+              <p className="mb-3 text-label text-muted-foreground">{ds.subtitle}</p>
 
               <dl className="space-y-3">
                 <div>
@@ -179,7 +183,7 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
               <div className="mt-4">
                 <Callout tone="ai">{ds.scopeNote}</Callout>
               </div>
-            </Panel>
+            </AiRegion>
           )}
 
           {benchmark && (

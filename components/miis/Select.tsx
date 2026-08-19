@@ -17,6 +17,38 @@ import { useState, type ReactNode } from "react";
  * Where the caller needs to know the value — the query builder chains field to
  * operator to value — pass `value` and `onChange` and it becomes controlled.
  */
+/**
+ * The mark at the end of a closed list, drawn by us so its distance from the
+ * border is a number we chose. Sized and positioned from the same two custom
+ * properties that reserve the select's end padding, so the gap and the space
+ * kept clear for it can never drift apart.
+ */
+export function SelectChevron() {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute inset-y-0 right-[var(--select-chevron-gap)] flex items-center text-foreground"
+    >
+      {/*
+        Sized from CSS, not from `width`/`height` attributes — an SVG
+        presentation attribute takes a number, not a `var()`, so the custom
+        property has to arrive through a class or it is silently ignored.
+      */}
+      <svg
+        viewBox="0 0 12 12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-[var(--select-chevron-size)] w-[var(--select-chevron-size)]"
+      >
+        <path d="M2 4.5 6 8.5 10 4.5" />
+      </svg>
+    </span>
+  );
+}
+
 export function Select({
   id,
   label,
@@ -54,21 +86,34 @@ export function Select({
         </label>
         {!srOnlyLabel && badge}
       </div>
-      <select
-        id={id}
-        value={current}
-        onChange={(e) => {
-          if (value === undefined) setInternal(e.target.value);
-          onChange?.(e.target.value);
-        }}
-        className="field-input"
-      >
-        {options.map((o) => (
-          <option key={o.id} value={o.id}>
-            {o.label}
-          </option>
-        ))}
-      </select>
+      {/*
+        The chevron is drawn here rather than by the platform. A native select
+        anchors its own mark to the border box and ignores `padding-inline-end`
+        while doing it, so the gap could not be set from CSS — measured in
+        Chrome, 24px of end padding left the mark 10px from the border. The
+        select keeps `appearance: none` (see `globals.css`), which removes the
+        painting and nothing else, and this span sits at a stated distance from
+        the edge. `pointer-events-none` so clicking the mark still opens the
+        list; `aria-hidden` because the select already announces itself.
+      */}
+      <div className="relative">
+        <select
+          id={id}
+          value={current}
+          onChange={(e) => {
+            if (value === undefined) setInternal(e.target.value);
+            onChange?.(e.target.value);
+          }}
+          className="field-input"
+        >
+          {options.map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+        <SelectChevron />
+      </div>
       {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
     </div>
   );

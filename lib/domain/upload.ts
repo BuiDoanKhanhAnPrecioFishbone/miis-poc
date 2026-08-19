@@ -60,3 +60,57 @@ export function identificationName(file: UploadedFile): string {
 export function fileSizeKb(bytes: number): number {
   return Math.max(1, Math.round(bytes / 1024));
 }
+
+/**
+ * Where the officer is in MI's five-step registration (Appendix 1 §4.4).
+ *
+ * The stepper is an argument — the claim that MIIS follows the customer's
+ * process in the customer's order — so it has to be able to reach the end. It
+ * previously could not: the last state it modelled was `approved`, which lit
+ * step 4 and left steps 4 and 5 permanently unfinished no matter what the
+ * officer did. A process diagram that can never show a completed process is
+ * making the opposite of the intended point.
+ */
+export type RegistrationStage =
+  /** No protocol yet. */
+  | "empty"
+  /** Uploaded; OCR and extraction running. */
+  | "analysing"
+  /** Proposals on screen, awaiting the officer's approval (FAI-002). */
+  | "review"
+  /** Approved, so the wage agreement and the linking can be filled in. */
+  | "approved"
+  /** Saved and linked — the protocol is registered. */
+  | "registered";
+
+export type StepProgress = "done" | "current" | "upcoming";
+
+/**
+ * FAI-002, as a gate rather than a sentence.
+ *
+ * *"AI-generated proposals are never applied automatically … approval before
+ * being saved."* Saving is therefore not something the officer can reach while
+ * proposals are unapproved, and the control that saves says so instead of
+ * failing quietly when pressed.
+ */
+export function canRegister(stage: RegistrationStage): boolean {
+  return stage === "approved" || stage === "registered";
+}
+
+const STEP_PROGRESS: Record<RegistrationStage, StepProgress[]> = {
+  empty: ["current", "upcoming", "upcoming", "upcoming", "upcoming"],
+  analysing: ["done", "current", "upcoming", "upcoming", "upcoming"],
+  review: ["done", "done", "current", "upcoming", "upcoming"],
+  approved: ["done", "done", "done", "current", "upcoming"],
+  /*
+    Registering completes steps 4 and 5 together. They are one act on this
+    screen — the wage agreement is filled in above the save panel and committed
+    by the same button that links the protocol — and marking step 5 done while
+    leaving step 4 open would report a process the officer did not follow.
+  */
+  registered: ["done", "done", "done", "done", "done"],
+};
+
+export function registrationSteps(stage: RegistrationStage): StepProgress[] {
+  return STEP_PROGRESS[stage];
+}

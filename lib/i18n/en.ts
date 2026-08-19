@@ -24,6 +24,10 @@ export const en: Dictionary = {
     loggedInVia: "miis.mi.se · Signed in with EFOS",
     benchmarkTerm: "Märket (industry benchmark)",
     aiProposal: "AI proposal",
+    aiMark: "AI",
+    aiNotice:
+      "Machine-generated material. Nothing is registered until a case officer has approved it.",
+    aiRegionLabel: "AI proposal – reviewed by a case officer",
     empty: "Nothing to show.",
     none: "–",
     yes: "Yes",
@@ -441,6 +445,11 @@ export const en: Dictionary = {
       registrationStatus: "Registration status",
       colourCoding: "Colour coding in the views",
       approveAndLink: "Approve and link the protocol",
+      approveFirst: "Approve the AI proposals first — nothing can be linked before they are reviewed.",
+      registered: "The protocol is registered and linked",
+      registeredNote:
+        "The agreement, the wage agreement and the negotiation are linked to the protocol. The change log has recorded who approved it and when.",
+      reopen: "Change the registration",
       saveIncomplete: "Save as incomplete",
       incompleteNote: "An incomplete registration is followed up with a reminder",
       confidentialityLabel: "Confidentiality-mark the agreement",

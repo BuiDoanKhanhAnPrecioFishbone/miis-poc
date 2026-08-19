@@ -37,7 +37,9 @@ export interface Step {
 const STYLE: Record<StepState, string> = {
   done: "border-ok-border bg-ok text-ok-foreground",
   current: "border-transparent bg-primary font-bold text-primary-foreground",
-  upcoming: "border-border bg-secondary text-muted-foreground",
+  /* `input`, not `border`: this is a control's own edge, so WCAG 1.4.11 puts a
+     3:1 floor on it. Slate-300 measured 1.51:1 against the step's fill. */
+  upcoming: "border-input bg-secondary text-muted-foreground",
 };
 
 const SHARED =
