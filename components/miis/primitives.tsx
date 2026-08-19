@@ -560,10 +560,13 @@ export function Panel({
  */
 export function FieldLabel({
   htmlFor,
+  id,
   children,
   badge,
 }: {
   htmlFor?: string;
+  /** For a control that names its label by id — `Toggle`'s `aria-labelledby`. */
+  id?: string;
   children: ReactNode;
   badge?: ReactNode;
 }) {
@@ -582,7 +585,9 @@ export function FieldLabel({
           {children}
         </label>
       ) : (
-        <span className={text}>{children}</span>
+        <span id={id} className={text}>
+          {children}
+        </span>
       )}
       {badge}
     </div>
@@ -622,18 +627,25 @@ export function TextField({
   placeholder?: string;
 }) {
   return (
-    <div className="flex h-full flex-col">
+    /*
+      Top-aligned: label, then the control immediately under it.
+
+      This used to bottom-align the control so that a hinted field and an
+      unhinted one ended level at the foot of the row. It bought that at the
+      cost of the thing a form is actually read by — the row of boxes. Two
+      fields side by side, one with a hint and one without, put their inputs at
+      different heights, and the eye follows the inputs, not the hints.
+    */
+    <div>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
-      <div className="mt-auto">
-        <input
-          id={id}
-          type={type}
-          defaultValue={defaultValue}
-          placeholder={placeholder}
-          className={`field-input ${numeric ? "tabular-nums" : ""}`}
-        />
-        {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
-      </div>
+      <input
+        id={id}
+        type={type}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        className={`field-input ${numeric ? "tabular-nums" : ""}`}
+      />
+      {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
     </div>
   );
 }
@@ -658,7 +670,7 @@ export function Field({
   maskedReason?: string;
 }) {
   return (
-    <div className="flex h-full flex-col">
+    <div>
       {(label || ai) && (
         <FieldLabel badge={ai && aiLabel ? <Badge tone="ai">{aiLabel}</Badge> : undefined}>
           {label}
@@ -677,18 +689,17 @@ export function Field({
         The rule keeps the rhythm the boxes were providing, and a long value now
         wraps where a box would have clipped it.
 
-        `mt-auto` in a full-height column bottom-aligns the whole block, so the
-        rules line up across a row however many lines each label took —
-        "Diarienummer (diariesystemet)" wraps to two where "Typ" takes one. The
-        hint sits *inside* that block, above the rule: it belongs to the field,
-        and hanging it below would put a variable number of lines under the
-        thing being aligned and break the alignment again.
+        Top-aligned, like `TextField` and `Select`: label, then the value
+        directly under it. An earlier version bottom-aligned the block so the
+        rules ended level across a row, which held only until two fields
+        differed in whether they had a hint — and then it put the *inputs* at
+        different heights to keep the *rules* level, which is the wrong thing to
+        hold steady. A form is read down its column of controls.
+
+        The hint stays inside the rule because it belongs to the field rather
+        than to the space under it.
       */}
-      <div
-        className={`mt-auto border-b ${
-          masked ? "border-dashed border-border" : "border-border"
-        }`}
-      >
+      <div className={`border-b ${masked ? "border-dashed border-border" : "border-border"}`}>
         {masked ? (
           <div className="flex min-h-11 items-center gap-2 py-2 text-body text-muted-foreground">
             <IconLock size="md" />

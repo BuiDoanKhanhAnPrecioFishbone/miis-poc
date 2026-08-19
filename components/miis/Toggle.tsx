@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
+import { FieldLabel } from "./primitives";
 
 /**
  * A flag the requirements name as a flag — FA-011 gender equality, FA-012
@@ -45,11 +46,13 @@ export function Toggle({
 
   return (
     <div>
-      <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2">
-        <span id={`${id}-label`} className="text-label font-bold text-foreground">
-          {label}
-        </span>
-      </div>
+      {/*
+        The shared label row, so a switch lines up with the fields beside it.
+        Its own row was a different height, which put the toggle below its
+        neighbour whenever the label wrapped — "Industrimärke (märkessättande
+        avtal)" takes two lines where "Jämställdhetsflagga" takes one.
+      */}
+      <FieldLabel id={`${id}-label`}>{label}</FieldLabel>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
