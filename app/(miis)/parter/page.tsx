@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-import { PlaceholderPage } from "@/components/miis/Placeholder";
+import { AppShell } from "@/components/miis/AppShell";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { PartyFilters } from "@/components/miis/PartyFilters";
+import { Badge, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { listCooperationBodies, listParties } from "@/lib/data/parties";
+import { SECTOR_LABEL } from "@/lib/domain/agreement";
+import {
+  COOPERATION_BODY_TYPE_LABEL,
+  PARTY_TYPE_ABBREVIATION,
+  PARTY_TYPE_LABEL,
+} from "@/lib/domain/party";
 import { getSession } from "@/lib/session";
-
-/** Requirement IDs are structure, so they stay here; the sentences are copy. */
-const FEATURE_IDS = ["FP-001", "FP-002", "FP-003", "FP-004", "FP-005", "FP-006"];
 
 export async function generateMetadata(): Promise<Metadata> {
   const { i18n } = await getSession();
@@ -13,22 +21,124 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title, description, openGraph: { title, description } };
 }
 
+/**
+ * The party register — FP-001 to FP-006, US-03.
+ *
+ * A register and its detail, the same shape `/medling` and `/partstraffar` use:
+ * this page lists and filters, `/parter/[id]` opens one. FP-005 is the filtering
+ * — *"söka fram parter med vissa egenskaper"* — and the properties it filters on
+ * are the ones FP-001 names, because those are the properties MI says a party
+ * has.
+ */
 export default async function ParterPage() {
   const session = await getSession();
-  const t = session.i18n.parter;
+  const { i18n, lang } = session;
+  const [parties, bodies] = await Promise.all([listParties(), listCooperationBodies()]);
+  const t = i18n.parter;
+
+  const columns: Column[] = [
+    { key: "name", header: t.table.name, sortable: true },
+    { key: "type", header: t.table.type, sortable: true },
+    { key: "sector", header: t.table.sector, sortable: true },
+    { key: "group", header: t.table.group, sortable: true },
+    { key: "history", header: t.table.formerNames, numeric: true, sortable: true },
+  ];
+
+  const rows: Row[] = parties.map((p) => {
+    const former = p.nameHistory.filter((n) => n.validTo).length;
+    return {
+      key: p.id,
+      cells: [
+        <Link
+          key="n"
+          href={`/parter/${p.id}`}
+          className="font-semibold text-primary underline underline-offset-2"
+        >
+          {p.name}
+        </Link>,
+        <Badge key="t" tone="neutral">
+          {PARTY_TYPE_ABBREVIATION[p.type]}
+        </Badge>,
+        p.sector ? SECTOR_LABEL[lang][p.sector] : i18n.common.none,
+        p.employerGroup ?? i18n.common.none,
+        former,
+      ],
+      sort: [
+        p.name,
+        PARTY_TYPE_LABEL[lang][p.type],
+        p.sector ? SECTOR_LABEL[lang][p.sector] : "",
+        p.employerGroup ?? "",
+        former,
+      ],
+    };
+  });
+
+  const bodyColumns: Column[] = [
+    { key: "name", header: t.bodies.name, sortable: true },
+    { key: "type", header: t.bodies.type, sortable: true },
+    { key: "negotiating", header: t.bodies.negotiating, sortable: true },
+    { key: "members", header: t.bodies.members, numeric: true },
+    { key: "period", header: t.bodies.period },
+  ];
+
+  const bodyRows: Row[] = bodies.map((b) => ({
+    key: b.id,
+    cells: [
+      b.name,
+      COOPERATION_BODY_TYPE_LABEL[lang][b.type],
+      /*
+        FF-006 makes this decision-critical rather than descriptive: MI may not
+        appoint mediators against the will of parties covered by a negotiation
+        procedure agreement, and whether a body negotiates is part of that
+        picture.
+      */
+      <Badge key="n" tone={b.negotiatingBody ? "attention" : "neutral"}>
+        {b.negotiatingBody ? i18n.common.yes : i18n.common.no}
+      </Badge>,
+      b.members.length,
+      <span key="p" className="tabular-nums">
+        {b.validFrom} – {b.validTo ?? ""}
+      </span>,
+    ],
+    sort: [
+      b.name,
+      COOPERATION_BODY_TYPE_LABEL[lang][b.type],
+      b.negotiatingBody ? "1" : "0",
+      b.members.length,
+      b.validFrom,
+    ],
+  }));
 
   return (
-    <PlaceholderPage
-      title={t.title}
-      epic={t.epic}
-      subtitle={t.subtitle}
-      features={t.features}
-      featureIds={FEATURE_IDS}
-      role={session.role}
-      dataset={session.dataset}
-      lang={session.lang}
-      reqTags={session.reqTags}
-      i18n={session.i18n}
-    />
+    <AppShell role={session.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FP-001", "FP-002", "FP-005", "FP-006"]}
+      />
+
+      <Panel title={t.register.heading} tags={["FP-001", "FP-002", "FP-005"]}>
+        <p className="mb-4 max-w-4xl text-table">{t.register.intro}</p>
+        {/* FP-005 — the properties are the ones FP-001 gives a party. */}
+        <PartyFilters lang={lang} />
+        <div className="mt-4">
+          <DataTable columns={columns} rows={rows} lang={lang} caption={t.register.heading} />
+        </div>
+        <Rationale>{t.register.sectorNote}</Rationale>
+      </Panel>
+
+      <div className="mt-5">
+        <Panel title={t.bodies.heading} tags={["FP-003"]}>
+          <p className="mb-3 max-w-4xl text-table">{t.bodies.intro}</p>
+          <DataTable
+            columns={bodyColumns}
+            rows={bodyRows}
+            lang={lang}
+            caption={t.bodies.heading}
+            minWidth="40rem"
+          />
+        </Panel>
+      </div>
+    </AppShell>
   );
 }

@@ -88,6 +88,8 @@ const SHOTS = [
   { name: "partstraff", path: "/partstraffar/PT-2027-04", role: "mediation-admin" },
   { name: "medling-arendelista", path: "/medling", role: "mediation-admin" },
   { name: "medling-arende", path: "/medling/M-2027-12", role: "mediation-admin" },
+  { name: "parter", path: "/parter", role: "agreement-admin" },
+  { name: "part-namnbyte", path: "/parter/P-028", role: "agreement-admin" },
   { name: "dokument", path: "/dokument", role: "agreement-admin" },
   { name: "allmanheten", path: "/allmanheten", role: "public" },
 ];

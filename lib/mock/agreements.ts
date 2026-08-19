@@ -185,4 +185,26 @@ export const AGREEMENTS: Agreement[] = [
     validTo: "2029-04-30",
     registeredAt: "2027-05-05",
   },
+  {
+    /*
+      An agreement that has run out — the dataset had none, which left FA-015
+      ("avtal som löper ut och inte förnyas") without data and, more usefully,
+      left FP-004's harder half with nothing to show. This one was signed by
+      Lärarförbundet in 2018 and expired in 2021, two years before that union
+      became Sveriges Lärare. The party register must never rewrite it.
+    */
+    id: "A-012",
+    agreementArea: "Skola och utbildning",
+    name: "Fristående skolor 2018–2021",
+    employerOrg: PARTIES.fremia,
+    employeeOrg: PARTIES.sverigesLarare,
+    agreementType: STANDARD_TYPE,
+    registrationStatus: "complete",
+    confidential: false,
+    reportSelection: BASIC_REPORTS,
+    signedDate: "2018-04-12",
+    validFrom: "2018-05-01",
+    validTo: "2021-04-30",
+    registeredAt: "2018-04-13",
+  },
 ];

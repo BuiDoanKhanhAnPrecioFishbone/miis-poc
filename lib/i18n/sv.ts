@@ -819,8 +819,9 @@ export const sv = {
   },
   parter: {
     title: "Parter",
+    subtitle:
+      "Register över arbetsgivar- och arbetstagarorganisationer med historik och samverkansorgan",
     epic: "Partshantering",
-    subtitle: "AGO, ATO, samverkansorgan och partshistorik",
     features: [
       "Registrering av part med typ AGO eller ATO.",
       "Historik vid namnbyte och organisationsförändring hos part.",
@@ -829,6 +830,76 @@ export const sv = {
       "Sökning efter parter med vissa egenskaper.",
       "Kontaktpersoner med namn, titel, telefon och e-post för både AGO och ATO.",
     ],
+    table: {
+      name: "Part",
+      type: "Typ",
+      sector: "Sektor",
+      group: "Arbetsgivargrupp",
+      formerNames: "Tidigare namn",
+    },
+    register: {
+      heading: "Partsregister",
+      intro:
+        "Arbetsgivarorganisationer kopplas till sektor och arbetsgivargrupp; de inom Svenskt Näringsliv även till branschkod. Arbetstagarorganisationer bär historik för namnbyten och organisatoriska förändringar.",
+      sectorNote:
+        "Sektor, arbetsgivargrupp och branschkod är egenskaper hos arbetsgivarorganisationer. En arbetstagarorganisation har dem inte, och fältet visar därför Saknas i stället för ett tomrum.",
+    },
+    filters: {
+      type: "Typ av part",
+      sector: "Sektor",
+      sectorHint: "Gäller arbetsgivarorganisationer",
+      group: "Arbetsgivargrupp",
+      all: "Alla",
+      none: "Inga filter valda",
+      count: (n: number) => (n === 1 ? "1 filter" : `${n} filter`),
+      remove: (label: string) => `Ta bort filtret ${label}`,
+      clearAll: "Rensa alla",
+    },
+    bodies: {
+      heading: "Samverkansorgan",
+      intro:
+        "Samverkansorgan kopplas till de förbund som ingår och till en tidsperiod. Om organet förhandlar är avgörande för medlingshanteringen.",
+      name: "Samverkansorgan",
+      type: "Typ",
+      negotiating: "Förhandlande organ",
+      members: "Medlemmar",
+      period: "Tidsperiod",
+    },
+    detail: {
+      identity: "Uppgifter om parten",
+      industryCode: "Branschkod",
+      industryCodeHint: "Gäller organisationer inom Svenskt Näringsliv",
+      sectorEmployeeHint: "Sektor registreras på arbetsgivarsidan",
+      contacts: "Kontaktpersoner",
+      noContacts: "Inga kontaktpersoner registrerade.",
+      contactNote:
+        "Kontaktpersoner registreras för både AGO och ATO och följer parten, inte det enskilda avtalet.",
+      status: "Status",
+      active: "Aktiv",
+      inactive: "Avregistrerad",
+      logNote: "Ändringar registreras i ändringsloggen med tidpunkt och användare.",
+    },
+    nameChange: {
+      heading: "Namnbyte och organisationsförändring",
+      intro:
+        "Ett namnbyte registreras på ett ställe med giltighetsdatum. Namnet slår igenom på samtliga gällande avtal, men aldrig på historiska avtal – de visar det namn parten hade när avtalet tecknades.",
+      historyHeading: "Namnhistorik",
+      currentName: "Gällande",
+      newName: "Nytt namn",
+      newNamePlaceholder: "T.ex. Sveriges Lärare",
+      validFrom: "Gäller från",
+      apply: "Registrera namnbyte",
+      appliedNote: (name: string, current: number, historical: number) =>
+        `Namnbytet är registrerat. ${name} slår igenom på ${current} gällande avtal och lämnar ${historical} historiska avtal orörda.`,
+      currentHeading: (n: number) => `Gällande avtal (${n})`,
+      historicalHeading: (n: number) => `Historiska avtal (${n})`,
+      noAgreements: "Inga avtal kopplade till parten i denna datamängd.",
+      showsAs: "Visar parten som",
+      currentExplain: "Följer partens gällande namn.",
+      historicalExplain: "Behåller namnet som gällde när avtalet tecknades.",
+      derivedNote:
+        "Namnet lagras aldrig i avtalet. Registreringen lägger till en post i namnhistoriken, och varje vy frågar vilket namn parten hade vid den tidpunkt som gäller för just den vyn. Därför kan ett historiskt avtal aldrig skrivas om av ett senare namnbyte.",
+    },
   },
   forhandlingar: {
     title: "Förhandlingar",

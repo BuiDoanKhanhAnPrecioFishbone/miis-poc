@@ -833,8 +833,9 @@ export const en: Dictionary = {
   },
   parter: {
     title: "Parties",
-    epic: "Party management",
-    subtitle: "AGO, ATO, cooperation bodies and party history",
+    subtitle:
+      "Register of employer and employee organisations, with history and cooperation bodies",
+    epic: "Party handling",
     features: [
       "Registration of a party of type AGO or ATO.",
       "History of name changes and organisational changes at a party.",
@@ -843,6 +844,76 @@ export const en: Dictionary = {
       "Searching for parties with particular properties.",
       "Contact people with name, title, telephone and email for both AGO and ATO.",
     ],
+    table: {
+      name: "Party",
+      type: "Type",
+      sector: "Sector",
+      group: "Employer group",
+      formerNames: "Former names",
+    },
+    register: {
+      heading: "Party register",
+      intro:
+        "Employer organisations are linked to sector and employer group; those inside Svenskt Näringsliv also to an industry code. Employee organisations carry a history of name changes and organisational changes.",
+      sectorNote:
+        "Sector, employer group and industry code are properties of employer organisations. An employee organisation does not have them, so the field reads None rather than showing a blank.",
+    },
+    filters: {
+      type: "Type of party",
+      sector: "Sector",
+      sectorHint: "Applies to employer organisations",
+      group: "Employer group",
+      all: "All",
+      none: "No filters selected",
+      count: (n: number) => (n === 1 ? "1 filter" : `${n} filters`),
+      remove: (label: string) => `Remove the filter ${label}`,
+      clearAll: "Clear all",
+    },
+    bodies: {
+      heading: "Cooperation bodies",
+      intro:
+        "A cooperation body links the unions that belong to it and a time period. Whether the body negotiates is decisive for mediation handling.",
+      name: "Cooperation body",
+      type: "Type",
+      negotiating: "Negotiating body",
+      members: "Members",
+      period: "Period",
+    },
+    detail: {
+      identity: "Party details",
+      industryCode: "Industry code",
+      industryCodeHint: "Applies to organisations inside Svenskt Näringsliv",
+      sectorEmployeeHint: "Sector is registered on the employer side",
+      contacts: "Contact people",
+      noContacts: "No contact people registered.",
+      contactNote:
+        "Contact people are registered for both AGO and ATO and follow the party, not the individual agreement.",
+      status: "Status",
+      active: "Active",
+      inactive: "Deregistered",
+      logNote: "Changes are recorded in the change log with time and user.",
+    },
+    nameChange: {
+      heading: "Name change and organisational change",
+      intro:
+        "A name change is registered in one place with a validity date. The name propagates to every current agreement, but never to historical ones — those show the name the party had when the agreement was signed.",
+      historyHeading: "Name history",
+      currentName: "Current",
+      newName: "New name",
+      newNamePlaceholder: "e.g. Sveriges Lärare",
+      validFrom: "Valid from",
+      apply: "Register the name change",
+      appliedNote: (name: string, current: number, historical: number) =>
+        `The name change is registered. ${name} propagates to ${current} current agreements and leaves ${historical} historical agreements untouched.`,
+      currentHeading: (n: number) => `Current agreements (${n})`,
+      historicalHeading: (n: number) => `Historical agreements (${n})`,
+      noAgreements: "No agreements linked to this party in this dataset.",
+      showsAs: "Shows the party as",
+      currentExplain: "Follows the party's current name.",
+      historicalExplain: "Keeps the name that applied when the agreement was signed.",
+      derivedNote:
+        "The name is never stored on the agreement. Registering a change appends an entry to the name history, and every view asks what the party was called at the date that view is about. That is why a later name change can never rewrite a historical agreement.",
+    },
   },
   forhandlingar: {
     title: "Negotiations",
