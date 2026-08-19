@@ -423,10 +423,13 @@ export const en: Dictionary = {
       scope: "Wage scope (%)",
       costFrame: "Cost frame (%)",
       individualGuarantee: "Individual guarantee",
-      workingTime: "Working time reduction / cost",
-      revision: "Subgroup: wage revision",
+      workingTimeFlag: "Working time reduction",
+      workingTimeCost: "Cost of working time reduction (%)",
+      revisionDate: "Wage revision, date",
+      revisionPercent: "Wage revision (%)",
       revisionHint: "Linked to the wage agreement",
-      minimumWage: "Subgroup: minimum wage",
+      minimumWage: "Minimum wage (SEK/month)",
+      minimumWageDate: "Minimum wage applies from",
       minimumWageHint: "Linked to the wage agreement",
       equalityFlag: "Gender equality flag – wording identified",
       benchmarkFlag: "Industry benchmark (norm-setting agreement)",
@@ -458,6 +461,9 @@ export const en: Dictionary = {
         "The agreement, the wage agreement and the negotiation are linked to the protocol. The change log has recorded who approved it and when.",
       reopen: "Change the registration",
       saveIncomplete: "Save as incomplete",
+      savedIncomplete: "Saved as incomplete",
+      savedIncompleteNote:
+        "The registration keeps the status Incomplete and a reminder is sent until the details are completed. The agreement appears in the register, marked Incomplete.",
       incompleteNote: "An incomplete registration is followed up with a reminder",
       confidentialityLabel: "Confidentiality-mark the agreement",
       confidentialityHint:
@@ -474,6 +480,7 @@ export const en: Dictionary = {
       title: "Selection criteria",
       infoTypeLabel: "Information type",
       groupLabel: (n: number) => `Group ${n}`,
+      groupJoinLabel: (n: number) => `Operator for group ${n}`,
       groupJoinAll: "AND",
       groupJoinAny: "OR",
       joinExplain:
@@ -1050,6 +1057,8 @@ export const en: Dictionary = {
       "The negotiation is linked to the agreement when the protocol is registered — step 5 of Register an agreement protocol.",
   },
   partstraffar: {
+    editableNote:
+      "The information can be supplemented both before and after the meeting — US-08 requires exactly that. No phase is locked; instead the change log records who changed what and when (FF-004, FH-001).",
     title: "Party meetings",
     subtitle:
       "Meetings with one party at a time ahead of the bargaining round – input for MI's assessment of conflict risk",

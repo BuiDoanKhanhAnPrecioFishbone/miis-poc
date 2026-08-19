@@ -415,10 +415,13 @@ export const sv = {
       scope: "Löneutrymme (%)",
       costFrame: "Kostnadsram (%)",
       individualGuarantee: "Individgaranti",
-      workingTime: "Arb.tidsförk. / kostnad",
-      revision: "Undergrupp: Lönerevision",
+      workingTimeFlag: "Arbetstidsförkortning",
+      workingTimeCost: "Kostnad för arbetstidsförkortning (%)",
+      revisionDate: "Lönerevision, datum",
+      revisionPercent: "Lönerevision (%)",
       revisionHint: "Kopplad till löneavtalet",
-      minimumWage: "Undergrupp: Lägstalön",
+      minimumWage: "Lägstalön (kr/mån)",
+      minimumWageDate: "Lägstalön gäller från",
       minimumWageHint: "Kopplad till löneavtalet",
       equalityFlag: "Jämställdhetsflagga – skrivning identifierad",
       benchmarkFlag: "Industrimärke (märkessättande avtal)",
@@ -450,6 +453,9 @@ export const sv = {
         "Avtalet, löneavtalet och förhandlingen är kopplade till protokollet. Ändringsloggen har registrerat vem som godkände och när.",
       reopen: "Ändra registreringen",
       saveIncomplete: "Spara som ofullständig",
+      savedIncomplete: "Sparat som ofullständigt",
+      savedIncompleteNote:
+        "Registreringen ligger kvar med status Ofullständig och en påminnelse skickas tills uppgifterna kompletteras. Avtalet syns i avtalsregistret, märkt Ofullständig.",
       incompleteNote: "Ofullständig registrering följs upp med påminnelse",
       confidentialityLabel: "Sekretessmarkera avtalet",
       confidentialityHint:
@@ -466,6 +472,7 @@ export const sv = {
       title: "Urvalskriterier",
       infoTypeLabel: "Informationstyp",
       groupLabel: (n: number) => `Grupp ${n}`,
+      groupJoinLabel: (n: number) => `Operator för grupp ${n}`,
       groupJoinAll: "OCH",
       groupJoinAny: "ELLER",
       joinExplain:
@@ -1036,6 +1043,8 @@ export const sv = {
       "Förhandlingen kopplas till avtalet när protokollet registreras – steg 5 i Registrera avtalsprotokoll.",
   },
   partstraffar: {
+    editableNote:
+      "Uppgifterna kan kompletteras både före och efter mötet – US-08 kräver det uttryckligen. Ingen fas låses; i stället registrerar ändringsloggen vem som ändrade vad och när (FF-004, FH-001).",
     title: "Partsträffar",
     subtitle: "Möten med en part i taget inför avtalsrörelsen – underlag för MI:s bedömning av konfliktrisk",
     epic: "Partsträffar inför avtalsrörelsen",

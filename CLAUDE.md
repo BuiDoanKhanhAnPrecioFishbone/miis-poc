@@ -93,6 +93,24 @@ guides, plus the places our domain model still diverges from the information mod
    look alike.** A read-only value is text on a rule; anything boxed can be typed
    into or pressed. `Field`, `TextField` and `Select` share `FieldLabel` so a
    select never sits 8px below the field beside it.
+   **The unit goes in the label, the value stays a bare number** — `Löneutrymme
+   (%)` with `3,4`, never a field reading `3,4 %`. A user typing into a box that
+   already carries the sign has to decide whether to keep it, and `"3,4 %"` is a
+   string no report can sum. **One fact per field**: `Ja · 0,2 %` was two.
+   **A control that does nothing is `disabled` with a `disabledReason`.** Never
+   leave a `<Button>` without `onClick`, and never style a `<span>` as a link —
+   a control that looks live and is not teaches an evaluator that the whole
+   prototype is a picture. Disabled is a **dashed** border, because a solid
+   outline in a paler colour is still an outlined button and leaves the page's
+   real priority unreadable.
+   **Three "pick one" controls, kept apart on purpose.** `Toggle` is a `switch`
+   (a flag on or off). `Tabs` is a `tablist` (which panel is shown).
+   `SegmentedControl` is a `radiogroup` (a value that is part of the data, like
+   the OCH/ELLER operator). Do not build a fourth by hand.
+   **A selected chip is filled, an unselected one is an outline on card.** The
+   two states used to be two pale tints measuring 1.01:1 against each other, and
+   `tone` read `selected` while the toggle variant set `pressed` — so a pressed
+   chip changed nothing but its glyph.
 5. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off
@@ -184,7 +202,7 @@ Key files: `AppShell.tsx` (shell + role-filtered nav, client) · `primitives.tsx
 (`Panel`, `Field`, `Button`, `Badge`, `Callout`, `Chip`, `PageHeading`, `ReqTag`,
 `Rationale`, `StatusDot`, `ConfidentialityMarker`) · `DataTable.tsx` (sticky header,
 sort, overflow guard) · `DemoBar.tsx` (the reviewer controls, above the product chrome)
-· `SessionTimeoutWarning.tsx` (NFÅ-002) · `icons.tsx` (the lucide set — rule 4).
+· `SessionTimeoutWarning.tsx` (NFÅ-002) · `icons.tsx` (the lucide set — rule 4) · `Select.tsx` (`Select`, `SegmentedControl`, `Tabs`).
 
 **A screen does not build its own button or table.** `no-restricted-syntax` in
 `eslint.config.mjs` fails the build on a raw `<button>` or `<table>` under `app/`,

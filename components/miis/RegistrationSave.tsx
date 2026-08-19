@@ -25,6 +25,8 @@ import { Button, Callout, ReqTag } from "./primitives";
 interface Registration {
   stage: RegistrationStage;
   setRegistered: (value: boolean) => void;
+  incomplete: boolean;
+  setIncomplete: (value: boolean) => void;
 }
 
 const RegistrationContext = createContext<Registration | null>(null);
@@ -55,6 +57,22 @@ export function RegistrationSave({ lang }: { lang: Lang }) {
   /* Rendered outside the flow (a static preview) — show the buttons inert. */
   const stage: RegistrationStage = ctx?.stage ?? "empty";
   const allowed = canRegister(stage);
+
+  /* FA-021 — the other way this screen ends. */
+  if (ctx?.incomplete) {
+    return (
+      <div className="mt-5">
+        <Callout tone="attention" live label={t.savedIncomplete} tags={["FA-021", "FA-022"]}>
+          {t.savedIncompleteNote}
+        </Callout>
+        <div className="mt-3">
+          <Button variant="secondary" onClick={() => ctx.setIncomplete(false)}>
+            {t.reopen}
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (stage === "registered") {
     return (
@@ -106,7 +124,16 @@ export function RegistrationSave({ lang }: { lang: Lang }) {
         >
           {t.approveAndLink}
         </Button>
-        <Button variant="secondary">{t.saveIncomplete}</Button>
+        {/*
+          Wired, not marked inert: US-01's alternative flow is "save as
+          incomplete and complete later", and FA-021 makes Ofullständig a real
+          registration state with a reminder attached. It is one of the two ways
+          this screen can end, so a demo that cannot take it is showing half the
+          scenario.
+        */}
+        <Button variant="secondary" onClick={() => ctx?.setIncomplete(true)}>
+          {t.saveIncomplete}
+        </Button>
         <ReqTag id="FA-022" />
       </div>
       {!allowed && (

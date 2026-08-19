@@ -99,8 +99,16 @@ export function Select({
         list; `aria-hidden` because the select already announces itself.
       */}
       <div className="relative">
+        {/*
+          `title` carries the full value. A native select clips a long option
+          rather than ellipsising it, and the constructions MI defines run to 56
+          characters — longer than any column that also has to hold an operator
+          and a value. The dropdown and the written-out expression below both
+          still show it in full; this is the third way to reach it.
+        */}
         <select
           id={id}
+          title={options.find((o) => o.id === current)?.label}
           value={current}
           onChange={(e) => {
             if (value === undefined) setInternal(e.target.value);
@@ -117,6 +125,91 @@ export function Select({
         <SelectChevron />
       </div>
       {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
+    </div>
+  );
+}
+
+/**
+ * A choice between a few mutually exclusive values — the third of MIIS's three
+ * "pick one" controls, and the one that had no component.
+ *
+ * The three are not interchangeable, and telling them apart is the point:
+ *
+ * - **`Toggle`** is a `switch`. It sets a flag on or off — jämställdhetsflagga,
+ *   sekretessmarkering. There is a default state and a changed one.
+ * - **`Tabs`** is a `tablist`. It changes which panel is shown. Nothing about
+ *   the case is different afterwards.
+ * - **`SegmentedControl`** is a `radiogroup`. It is a value with two or three
+ *   options, and the value is part of the data — the OCH/ELLER operator joining
+ *   search conditions is a property of the query, not a view preference and not
+ *   a flag.
+ *
+ * The query builder was building this by hand out of two `Button`s inside a
+ * bordered span, which gave the system a third look for "pick one" and told
+ * assistive technology it was a pair of unrelated toggle buttons. Radio
+ * semantics also bring the arrow-key behaviour a keyboard user expects: the
+ * group is one tab stop, and arrows move within it.
+ */
+export function SegmentedControl({
+  label,
+  options,
+  value,
+  onChange,
+  size = "md",
+}: {
+  label: string;
+  options: { id: string; label: string }[];
+  value: string;
+  onChange: (id: string) => void;
+  size?: "sm" | "md";
+}) {
+  const index = Math.max(
+    0,
+    options.findIndex((o) => o.id === value),
+  );
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    const delta =
+      e.key === "ArrowRight" || e.key === "ArrowDown"
+        ? 1
+        : e.key === "ArrowLeft" || e.key === "ArrowUp"
+          ? -1
+          : 0;
+    if (delta === 0) return;
+    e.preventDefault();
+    const next = options[(index + delta + options.length) % options.length];
+    if (next) onChange(next.id);
+  }
+
+  const pad = size === "sm" ? "min-h-11 px-3 text-label" : "min-h-12 px-4 text-table";
+
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      onKeyDown={onKeyDown}
+      className="inline-flex overflow-hidden rounded-md border-2 border-primary"
+    >
+      {options.map((o) => {
+        const selected = o.id === value;
+        return (
+          <button
+            key={o.id}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            tabIndex={selected ? 0 : -1}
+            onClick={() => onChange(o.id)}
+            className={`${pad} font-bold transition-colors ${
+              selected
+                ? "bg-primary text-primary-foreground"
+                : "bg-card text-primary hover:bg-secondary"
+            }`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

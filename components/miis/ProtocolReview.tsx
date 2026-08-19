@@ -342,6 +342,7 @@ export function ProtocolReview({
   );
   const [approved, setApproved] = useState(false);
   const [registered, setRegistered] = useState(false);
+  const [incomplete, setIncomplete] = useState(false);
   const [file, setFile] = useState<UploadedFile | null>(null);
   const [completed, setCompleted] = useState(0);
   const [confirming, setConfirming] = useState(false);
@@ -399,6 +400,7 @@ export function ProtocolReview({
     setCompleted(0);
     setApproved(false);
     setRegistered(false);
+    setIncomplete(false);
     setActiveSource(null);
     setActiveField(null);
     setValues(Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])));
@@ -816,7 +818,7 @@ export function ProtocolReview({
             </AiRegion>
           </div>
 
-          <RegistrationProvider value={{ stage, setRegistered }}>
+          <RegistrationProvider value={{ stage, setRegistered, incomplete, setIncomplete }}>
             {children}
           </RegistrationProvider>
         </div>

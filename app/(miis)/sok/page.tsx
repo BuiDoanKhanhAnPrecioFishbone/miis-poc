@@ -83,9 +83,15 @@ export default async function SokPage() {
         wage?.wageScopePercent === undefined
           ? i18n.common.none
           : percent(wage.wageScopePercent, lang),
-        <span key="o" className="font-semibold text-primary underline underline-offset-2">
+        /*
+          Was a <span> wearing a link's clothes — underlined, primary-coloured,
+          and not clickable. A cell that looks like a link and is not is worse
+          than a plain one: it invites the click it cannot answer. FA-020's
+          point-in-time view is Stage 2, so it says so.
+        */
+        <Button key="o" variant="ghost" size="sm" disabled disabledReason={i18n.common.notInDemo}>
           {t.results.openAt(SNAPSHOT_DATE)}
-        </span>,
+        </Button>,
       ],
       sort: [
         status.label,
@@ -133,16 +139,28 @@ export default async function SokPage() {
 
         <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-4">
           <span className="text-label font-bold">{i18n.common.exportLabel}</span>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >
             Excel
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >
             CSV
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >
             JSON
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >
             Word / PDF
           </Button>
           <ReqTags ids={["FR-004", "FR-005", "FR-013"]} />

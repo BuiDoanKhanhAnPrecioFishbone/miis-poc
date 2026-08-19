@@ -74,7 +74,10 @@ export default async function DokumentPage() {
         title={t.title}
         subtitle={t.subtitle}
         tags={["FD-001"]}
-        action={<Button variant="secondary">{t.upload}</Button>}
+        action={<Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{t.upload}</Button>}
       />
 
       <Panel title={t.title} tags={["FD-001", "FAI-003"]}>

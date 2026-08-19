@@ -96,7 +96,10 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           <Panel
             title={c.linkedAgreements(linkedAgreements.length)}
             tags={["FF-008"]}
-            action={<Button variant="secondary">{c.linkAgreement}</Button>}
+            action={<Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{c.linkAgreement}</Button>}
           >
             <ul className="space-y-3">
               {linkedAgreements.map((a) => (
@@ -114,7 +117,10 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           <Panel
             title={c.mediators}
             tags={["FF-009"]}
-            action={<Button variant="secondary">{c.addMediator}</Button>}
+            action={<Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{c.addMediator}</Button>}
           >
             {mediationCase.mediators.length === 0 ? (
               <p className="text-table text-muted-foreground">{c.noMediators}</p>
@@ -216,9 +222,18 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
               : mediationCase.dgDecision.document}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Button variant="secondary">{c.createWithNotice}</Button>
-            <Button variant="secondary">{c.createWithoutNotice}</Button>
-            <Button>{c.finalise}</Button>
+            <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{c.createWithNotice}</Button>
+            <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{c.createWithoutNotice}</Button>
+            <Button
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{c.finalise}</Button>
             <ReqTag id="FE-001" />
             <span className="flex items-start gap-2 text-label text-muted-foreground">
               <span className="flex h-6 items-center">
@@ -264,7 +279,10 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
             </div>
             <Rationale>{c.outcomeNote}</Rationale>
             <div className="mt-4">
-              <Button variant="secondary">{c.registerStanding}</Button>
+              <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{c.registerStanding}</Button>
             </div>
           </Panel>
         )}

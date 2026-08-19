@@ -23,7 +23,7 @@ import { listExtractionProposals } from "@/lib/data/extraction";
 import { listWatchwords } from "@/lib/data/watchwords";
 import { AGREEMENT_CONSTRUCTIONS, registrationStatusLabel } from "@/lib/domain/agreement";
 import { statusInfo } from "@/lib/domain/status";
-import { percent } from "@/lib/format";
+import { decimal } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,17 +66,29 @@ export default async function RegistreraPage() {
                 are inputs. They were `Field` — display only — and read as
                 editable purely because `Field` was borrowing the input styling.
               */}
-              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-4">
+              {/*
+                Three columns, not four. At four, "Kostnad för
+                arbetstidsförkortning (%)" is wider than its column — the label
+                is the longest string on this screen and it decides the grid,
+                not the other way round.
+              */}
+              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3">
+                {/*
+                  The unit lives in the label and the field holds a bare number.
+                  A user typing into a box that already reads "3,4 %" has to
+                  decide whether to keep the sign, and a stored value of
+                  "3,4 %" is a string that no report can sum.
+                */}
                 <TextField
                   id="wage-scope"
                   label={t.wage.scope}
-                  defaultValue={percent(3.4, lang)}
+                  defaultValue={decimal(3.4, lang)}
                   numeric
                 />
                 <TextField
                   id="wage-cost-frame"
                   label={t.wage.costFrame}
-                  defaultValue={percent(6.4, lang)}
+                  defaultValue={decimal(6.4, lang)}
                   numeric
                 />
                 <Select
@@ -88,10 +100,26 @@ export default async function RegistreraPage() {
                     { id: "yes", label: i18n.common.yes },
                   ]}
                 />
-                <TextField
+                {/*
+                  Two facts, two fields. This was one box reading "Ja · 0,2 %" —
+                  a yes/no and a percentage joined by a separator, which cannot
+                  be validated, cannot be filtered on and cannot be answered by
+                  a user who has one of the two.
+                */}
+                <Select
                   id="wage-working-time"
-                  label={t.wage.workingTime}
-                  defaultValue={`${i18n.common.yes} · ${percent(0.2, lang)}`}
+                  label={t.wage.workingTimeFlag}
+                  defaultValue="yes"
+                  options={[
+                    { id: "yes", label: i18n.common.yes },
+                    { id: "no", label: i18n.common.no },
+                  ]}
+                />
+                <TextField
+                  id="wage-working-time-cost"
+                  label={t.wage.workingTimeCost}
+                  defaultValue={decimal(0.2, lang)}
+                  numeric
                 />
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
@@ -102,16 +130,32 @@ export default async function RegistreraPage() {
 
               <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
                 <TextField
-                  id="wage-revision"
-                  label={t.wage.revision}
-                  defaultValue={`2027-06-01 · ${percent(3.4, lang)}`}
+                  id="wage-revision-date"
+                  label={t.wage.revisionDate}
+                  type="date"
+                  defaultValue="2027-06-01"
+                  numeric
+                />
+                <TextField
+                  id="wage-revision-percent"
+                  label={t.wage.revisionPercent}
+                  defaultValue={decimal(3.4, lang)}
                   hint={t.wage.revisionHint}
+                  numeric
                 />
                 <TextField
                   id="wage-minimum"
                   label={t.wage.minimumWage}
-                  defaultValue="25 480 kr/mån 2025-08-01"
+                  defaultValue={decimal(25480, lang)}
+                  numeric
+                />
+                <TextField
+                  id="wage-minimum-date"
+                  label={t.wage.minimumWageDate}
+                  type="date"
+                  defaultValue="2025-08-01"
                   hint={t.wage.minimumWageHint}
+                  numeric
                 />
               </div>
 

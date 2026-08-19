@@ -150,12 +150,17 @@ export function Button({
     measured. WCAG exempts inactive controls from the contrast minimum, so no
     tool flags it, but the label is still a sentence someone has to read in
     order to understand why they cannot proceed, and the house rule against
-    softening text with opacity exists precisely to stop this. Dropping the
-    fill says "inactive" more clearly than a fade does, and the label lands at
-    6.21:1.
+    softening text with opacity exists precisely to stop this.
+
+    The border is **dashed**, and that is the whole point. A solid outline in a
+    lighter colour is still an outlined button, so a disabled control sat in the
+    same visual class as a real secondary action and an evaluator could not tell
+    the page's actual priority at a glance. Dashed is a shape difference: it
+    survives greyscale, and it reads as "not available" rather than "available,
+    quietly". The label lands at 6.21:1.
   */
   const look = disabled
-    ? "cursor-not-allowed border-input bg-secondary text-muted-foreground"
+    ? "cursor-not-allowed border-dashed border-input bg-transparent text-muted-foreground"
     : BUTTON_VARIANT[variant];
 
   return (
@@ -414,17 +419,32 @@ export function Chip({
   const base =
     "inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-label font-semibold";
   /*
-    The unselected border is `input`, not `border`.
+    Selected is filled; unselected is an empty outline.
 
-    `--border` is slate-300, which measures 1.51:1 against the chip's own fill —
-    fine for a panel edge, which carries no meaning, and a failure of WCAG
-    1.4.11 here, where the border is the whole of what says "this is a control
-    you can press". `--input` is the token for exactly that job and measures
-    3.43:1.
+    The two states used to be two pale tints — sand for selected, slate for
+    unselected — which measured **1.01:1 against each other**. Identical in
+    lightness, differing only in hue, so at a glance a set of chips read as one
+    undifferentiated row and the answer to "which of these did I pick" was
+    carried entirely by a small tick. Inverting the fill changes the silhouette,
+    which is the same reason the AI badge is filled: a state you have to find
+    before you can read it cannot rely on hue.
+
+    Unselected sits on `card` rather than `secondary` so the contrast between
+    the states is the full 7.40:1, and its border is `input` — the token for a
+    control's own edge, which WCAG 1.4.11 puts a 3:1 floor on.
   */
-  const tone = selected
-    ? "border-primary bg-accent text-accent-foreground"
-    : "border-input bg-secondary text-secondary-foreground";
+  /*
+    `selected || pressed`, and the `||` is a bug fix rather than tidying. The
+    three shapes of this component carry their state in two different props —
+    `selected` on a static chip, `pressed` on a toggle — and `tone` read only
+    the first. A toggle chip therefore never changed colour at all: pressing
+    one swapped a + for a ✓ and nothing else, so "which unions back this
+    demand" was answered by a 14px glyph.
+  */
+  const on = selected || pressed;
+  const tone = on
+    ? "border-primary bg-primary text-primary-foreground"
+    : "border-input bg-card text-foreground hover:bg-secondary";
 
   if (onToggle) {
     return (
@@ -432,7 +452,7 @@ export function Chip({
         type="button"
         onClick={onToggle}
         aria-pressed={pressed}
-        className={`${base} ${tone} min-h-11 transition-colors hover:bg-accent`}
+        className={`${base} ${tone} min-h-11 transition-colors`}
       >
         {pressed ? <IconCheck size="sm" /> : <IconPlus size="sm" />}
         <span>{children}</span>
@@ -449,7 +469,7 @@ export function Chip({
       type="button"
       onClick={onRemove}
       aria-label={removeLabel}
-      className={`${base} ${tone} min-h-11 transition-colors hover:bg-accent`}
+      className={`${base} ${tone} min-h-11 transition-colors`}
     >
       <span>{children}</span>
       <IconClose size="sm" />
@@ -547,7 +567,14 @@ export function FieldLabel({
   children: ReactNode;
   badge?: ReactNode;
 }) {
-  const text = "min-w-0 break-words text-label font-bold text-foreground";
+  /*
+    `hyphens` rather than `break-words`. Swedish compounds long words —
+    "arbetstidsförkortning" is 21 characters — and `break-words` splits them at
+    an arbitrary letter, which is how "Arbetstidsförkortnin / g" appeared. With
+    hyphenation the browser breaks at a syllable and marks it, and the word
+    stays readable when it has to wrap.
+  */
+  const text = "min-w-0 hyphens-auto text-label font-bold text-foreground";
   return (
     <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2">
       {htmlFor ? (

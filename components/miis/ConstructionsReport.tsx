@@ -174,13 +174,22 @@ export function ConstructionsReport({
 
       <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
         <span className="text-label font-bold">{d.common.exportLabel}</span>
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >
           Excel
         </Button>
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >
           CSV
         </Button>
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >
           PDF
         </Button>
         <ReqTags ids={["FR-004", "FR-005", "FR-013"]} />

@@ -120,7 +120,10 @@ export function ShortTermWageReport({
           {t.reminderSet(r.reminderDate)}
         </span>
       ) : (
-        <Button key="m" variant="secondary" size="sm">
+        <Button key="m" variant="secondary" size="sm"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >
           {t.setReminder}
         </Button>
       ),
@@ -176,10 +179,16 @@ export function ShortTermWageReport({
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-        <Button>{t.export}</Button>
+        <Button
+        disabled
+        disabledReason={d.common.notInDemo}
+      >{t.export}</Button>
         <span className="text-label text-muted-foreground">{t.exportFormats}</span>
         <ReqTag id="FR-005" />
-        <Button variant="secondary">{t.markExported}</Button>
+        <Button variant="secondary"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >{t.markExported}</Button>
       </div>
       <Rationale>{t.markExportedNote}</Rationale>
     </Panel>

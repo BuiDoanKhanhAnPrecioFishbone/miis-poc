@@ -17,7 +17,7 @@ import {
 } from "@/lib/domain/options";
 import { dictionary } from "@/lib/i18n";
 import { Button, Callout, Chip, Panel, Rationale, ReqTag } from "./primitives";
-import { Select, Tabs } from "./Select";
+import { SegmentedControl, Select, Tabs } from "./Select";
 
 /**
  * FR-002 — the query builder.
@@ -206,19 +206,22 @@ export function SearchBuilder({
               <fieldset key={g.id} className="rounded-md border-2 border-border bg-surface/40 p-4">
                 <legend className="flex flex-wrap items-center gap-3 px-1">
                   <span className="text-label font-bold">{c.groupLabel(gi + 1)}</span>
-                  <span className="inline-flex overflow-hidden rounded-md border-2 border-primary">
-                    {(["all", "any"] as const).map((j) => (
-                      <Button
-                        key={j}
-                        variant={g.join === j ? "primary" : "ghost"}
-                        size="sm"
-                        pressed={g.join === j}
-                        onClick={() => setJoin(g.id, j)}
-                      >
-                        {joinWord(j)}
-                      </Button>
-                    ))}
-                  </span>
+                  {/*
+                    The operator is a value in the query, not a view preference
+                    and not a flag, so it is a radiogroup — see
+                    `SegmentedControl` for why MIIS keeps three "pick one"
+                    controls apart rather than making them look alike.
+                  */}
+                  <SegmentedControl
+                    size="sm"
+                    label={c.groupJoinLabel(gi + 1)}
+                    value={g.join}
+                    onChange={(j) => setJoin(g.id, j as Join)}
+                    options={(["all", "any"] as const).map((j) => ({
+                      id: j,
+                      label: joinWord(j),
+                    }))}
+                  />
                   <Button variant="ghost" size="sm" onClick={() => removeGroup(g.id)}>
                     {c.removeGroup(gi + 1)}
                   </Button>
@@ -234,7 +237,16 @@ export function SearchBuilder({
                             {joinWord(g.join)}
                           </p>
                         )}
-                        <div className="grid grid-cols-1 gap-2 @xl:grid-cols-[minmax(0,1fr)_8rem_minmax(0,1.3fr)_auto]">
+                        <div /*
+                          Wider on the first and third columns than it looks
+                          like it needs. The field names are long Swedish
+                          compounds — "Avtalskonstruktion" is 130px — and a
+                          native select clips rather than ellipsising, so a
+                          column sized to the average silently truncates the
+                          longest. Measured: at 1fr the label overflowed its box
+                          by 17px.
+                        */
+                          className="grid grid-cols-1 gap-2 @xl:grid-cols-[minmax(0,1.35fr)_7rem_minmax(0,1.5fr)_auto]">
                           <Select
                             id={`${cond.id}-field`}
                             srOnlyLabel
@@ -402,11 +414,17 @@ export function SearchBuilder({
           </ul>
 
           <div className="mt-5 space-y-3">
-            <Button variant="secondary" fullWidth>
+            <Button variant="secondary" fullWidth
+        disabled
+        disabledReason={d.common.notInDemo}
+      >
               {t.columns.saveSearch}: {t.columns.savedSearchName}
             </Button>
             <Rationale>{t.columns.savedSearchNote}</Rationale>
-            <Button fullWidth>{d.common.search}</Button>
+            <Button fullWidth
+        disabled
+        disabledReason={d.common.notInDemo}
+      >{d.common.search}</Button>
           </div>
         </Panel>
       </div>

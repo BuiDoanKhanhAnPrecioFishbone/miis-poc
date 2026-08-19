@@ -321,6 +321,16 @@ export function PartyMeetingView({
             )}
 
             {/* FSD-002 — the party-meeting document comes from MI's template. */}
+            {/*
+              US-08's alternative flow: *"Information is supplemented
+              afterwards: the registration can be updated both before and after
+              the meeting, with full traceability (FF-004, FH-001)."* So there
+              is no lock after a phase passes — MI asks for the opposite — and
+              what the requirement pairs with that freedom is the change log.
+              Saying so is what makes an always-editable record defensible
+              rather than merely convenient.
+            */}
+            <Rationale>{t.editableNote}</Rationale>
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
               {meeting.templateDocument ? (
                 <>
@@ -330,7 +340,10 @@ export function PartyMeetingView({
                   </span>
                 </>
               ) : (
-                <Button variant="secondary">{t.before.createDocument}</Button>
+                <Button variant="secondary"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >{t.before.createDocument}</Button>
               )}
               <ReqTag id="FSD-002" />
             </div>
@@ -536,8 +549,14 @@ export function PartyMeetingView({
 
             {/* FF-004 names printing explicitly — "registrering och utskrift". */}
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-              <Button variant="secondary">{t.after.print}</Button>
-              <Button variant="secondary">{t.after.upload}</Button>
+              <Button variant="secondary"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >{t.after.print}</Button>
+              <Button variant="secondary"
+        disabled
+        disabledReason={d.common.notInDemo}
+      >{t.after.upload}</Button>
               <ReqTags ids={["FF-004", "FD-001"]} />
             </div>
             <Rationale>{t.after.logNote}</Rationale>

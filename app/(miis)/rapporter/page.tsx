@@ -110,7 +110,10 @@ export default async function RapporterPage() {
               ))}
             </ul>
             <div className="mt-4">
-              <Button variant="secondary">{t.bargainingRound.generate}</Button>
+              <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{t.bargainingRound.generate}</Button>
             </div>
           </Panel>
         </div>
@@ -138,7 +141,10 @@ export default async function RapporterPage() {
           />
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <Button variant="secondary">{t.scheduled.add}</Button>
+            <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{t.scheduled.add}</Button>
             <ReqTag id="FE-003" />
           </div>
           <Rationale>{t.scheduled.logNote}</Rationale>

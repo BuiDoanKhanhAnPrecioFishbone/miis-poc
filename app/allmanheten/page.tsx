@@ -165,8 +165,14 @@ export default async function AllmanhetenPage() {
         <p className="mt-3 text-label text-muted-foreground">{t.selection.hint}</p>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <Button>{t.selection.search}</Button>
-          <Button variant="secondary">{t.selection.reset}</Button>
+          <Button
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{t.selection.search}</Button>
+          <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{t.selection.reset}</Button>
         </div>
       </Panel>
 
@@ -182,7 +188,10 @@ export default async function AllmanhetenPage() {
               <DataTable columns={columns} rows={rows} lang={lang} caption={t.result.title} />
 
               <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-                <Button variant="secondary">{t.result.download}</Button>
+                <Button variant="secondary"
+        disabled
+        disabledReason={i18n.common.notInDemo}
+      >{t.result.download}</Button>
                 <span className="text-label text-muted-foreground">{t.result.downloadNote}</span>
                 <ReqTags ids={["FR-011", "NFÅ-004"]} />
               </div>
