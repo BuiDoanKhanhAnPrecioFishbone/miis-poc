@@ -39,6 +39,7 @@ export const en: Dictionary = {
     save: "Save",
     search: "Search",
     exportLabel: "Export:",
+    showingOf: (shown: number, total: number) => `Showing ${shown} of ${total}`,
     showAll: (n: number) => `Show all (${n})`,
     agreementCount: (n: number) => `${n} agreements`,
     andMoreRows: (n: number) => `… ${n} more rows`,
@@ -112,6 +113,7 @@ export const en: Dictionary = {
     heading: (role: string) => `Start page – ${role}`,
     subheading:
       "Content adapted to the assigned role and its authorisation. Signed in with an EFOS card; the session ends after 30 minutes of inactivity.",
+    benchmarkOverMonths: (n: number) => `over ${n} months`,
     benchmarkKicker: "Reference in agreement and mediator views",
     benchmarkLine: (period: string) => `Märket ${period}:`,
     benchmarkCostFrame: (v: string) => `Cost frame ${v}`,

@@ -138,6 +138,18 @@ guides, plus the places our domain model still diverges from the information mod
    a tinted box with a border — sand also carries `Ofullständig` and watchword
    hits, so the form has to say "reference" where the hue cannot.
 
+   **The start page shows three rows per panel and says how many there are.**
+   `START_PAGE_ROWS` in `lib/domain/dashboard.ts` is the one number; panels were
+   showing three, three, four and five, which gave the eye no rhythm. The page is
+   for noticing that something is waiting, not for working through it — a panel
+   with more than it shows renders "Visar 3 av 12" and the register owns the rest.
+   One primary quick action per role and at most two more, taken from that role's
+   own US scenarios rather than from the menu.
+   **There is no sign-in screen, and there should not be.** NFÅ-001 puts
+   authentication in Försäkringskassan's IdP over SAML, so drawing a login page
+   would claim we built the one thing we certainly did not. Signing *out* is
+   different — NFL-001 logs it — so the header carries it.
+
 6. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off

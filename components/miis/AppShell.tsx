@@ -161,11 +161,31 @@ export function AppShell({
               <span className="block text-label opacity-85">{t.common.appSubtitle}</span>
             </span>
           </Link>
-          <div className="text-right text-label leading-tight opacity-90">
-            <div>{t.common.loggedInVia}</div>
-            <div>
-              {role.person} · {role.label}
+          {/*
+            Who is signed in, and the way out.
+
+            There is no sign-*in* screen in MIIS and there should not be:
+            NFÅ-001 puts authentication in Försäkringskassan's IdP over SAML,
+            so the login page belongs to them and drawing one here would claim
+            we had built the one thing we certainly have not. Signing *out* is
+            different — NFL-001 logs logins and logouts, so the action exists,
+            and it had no control anywhere except inside the session-timeout
+            dialog, which a user only sees if they wait.
+          */}
+          <div className="flex flex-wrap items-center justify-end gap-4">
+            <div className="text-right text-label leading-tight">
+              <div className="opacity-90">{t.common.loggedInVia}</div>
+              <div className="font-semibold">
+                {role.person} · {role.label}
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={() => setSessionWarning(true)}
+              className="min-h-11 rounded-sm border-2 border-primary-foreground/60 px-3 py-2 text-label font-bold transition-colors hover:bg-primary-foreground hover:text-primary"
+            >
+              {t.session.logout}
+            </button>
           </div>
         </div>
       </header>

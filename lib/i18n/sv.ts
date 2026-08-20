@@ -37,6 +37,7 @@ export const sv = {
     save: "Spara",
     search: "Sök",
     exportLabel: "Exportera:",
+    showingOf: (shown: number, total: number) => `Visar ${shown} av ${total}`,
     showAll: (n: number) => `Visa alla (${n})`,
     agreementCount: (n: number) => `${n} avtal`,
     andMoreRows: (n: number) => `… ytterligare ${n} rader`,
@@ -108,6 +109,7 @@ export const sv = {
     heading: (role: string) => `Startsida – ${role}`,
     subheading:
       "Rollanpassat innehåll enligt tilldelad roll och behörighet. Inloggad via EFOS-kort, sessionen avslutas efter 30 minuters inaktivitet.",
+    benchmarkOverMonths: (n: number) => `över ${n} månader`,
     benchmarkKicker: "Referens i avtals- och medlarvyer",
     benchmarkLine: (period: string) => `Märket ${period}:`,
     benchmarkCostFrame: (v: string) => `Kostnadsram ${v}`,

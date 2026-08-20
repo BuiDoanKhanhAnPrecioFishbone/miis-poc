@@ -9,6 +9,7 @@
  */
 
 import { partiesShort } from "@/lib/domain/agreement";
+import { START_PAGE_ROWS } from "@/lib/domain/dashboard";
 import type { Dashboard, DashboardPanel, LogLine } from "@/lib/domain/dashboard";
 import { eventText } from "@/lib/domain/event";
 import { DEFAULT_LANG, t, type Lang } from "@/lib/domain/lang";
@@ -16,13 +17,14 @@ import { caseNumber, MEDIATION_TYPE_LABEL } from "@/lib/domain/mediation";
 import { NAV_HREF } from "@/lib/domain/nav";
 import { roleInfo, type Role } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
-import { listIncompleteAgreements, listRecentAgreements } from "./agreements";
+import { countAgreements, listIncompleteAgreements, listRecentAgreements } from "./agreements";
 import { getCurrentBenchmark } from "./benchmark";
 import { listEvents, listReminders, reminderCount } from "./events";
 import { listMediationCases, listMediators, listOngoingMediationCases } from "./mediation";
 
 export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promise<Dashboard> {
   const i18n = dictionary(lang);
+  const d = i18n;
   const s = i18n.start;
   const info = roleInfo(role, lang);
   const benchmark = await getCurrentBenchmark();
@@ -36,7 +38,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
 
   /** The two log panels share a shape; only their source differs. */
   async function eventPanel(): Promise<DashboardPanel> {
-    const events = await listEvents(2);
+    const events = await listEvents(START_PAGE_ROWS);
     return {
       kind: "log",
       title: s.events.title,
@@ -55,12 +57,13 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
 
   switch (role) {
     case "agreement-admin": {
-      const [reminders, total, incomplete, recent, events] = await Promise.all([
-        listReminders(),
+      const [reminders, total, incomplete, recent, events, agreementCount] = await Promise.all([
+        listReminders(START_PAGE_ROWS),
         reminderCount(),
         listIncompleteAgreements(),
-        listRecentAgreements(lang),
+        listRecentAgreements(lang, START_PAGE_ROWS),
         eventPanel(),
+        countAgreements(),
       ]);
 
       const panels: DashboardPanel[] = [
@@ -82,13 +85,14 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           kind: "list",
           title: s.incomplete.title,
           lead: s.incomplete.lead,
+          total: incomplete.length,
           reqTags: ["FA-021"],
           // Registrations still awaiting information come first — those are the
           // ones an agreement administrator has to chase (US-04).
           items: incomplete
             .slice()
             .sort((a, b) => Number(Boolean(a.signedDate)) - Number(Boolean(b.signedDate)))
-            .slice(0, 3)
+            .slice(0, START_PAGE_ROWS)
             .map((a) => ({
               text: `${a.name} – ${partiesShort(a)}`,
               badge: s.incomplete.badge,
@@ -105,6 +109,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
           kind: "agreement-table",
           title: s.recent.title,
           lead: s.recent.lead,
+          total: agreementCount,
           reqTags: ["FR-012"],
           rows: recent,
           emptyText: s.recent.empty,
@@ -115,6 +120,8 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
       return {
         ...base,
         primaryAction: { text: s.uploadProtocol, href: "/registrera" },
+        /* US-03 — a merger or a rename is the other thing this role does. */
+        secondaryActions: [{ text: d.parter.newParty.action, href: "/parter/ny" }],
         panels,
       };
     }
@@ -161,6 +168,8 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
       return {
         ...base,
         primaryAction: { text: s.uploadDgDecision, href: NAV_HREF.medling },
+        /* US-08 — party meetings are booked ahead of every round. */
+        secondaryActions: [{ text: d.partstraffar.register.create, href: "/partstraffar/ny" }],
         panels,
       };
     }
@@ -222,7 +231,13 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
         },
       ];
 
-      return { ...base, primaryAction: { text: s.newSearch, href: NAV_HREF.sok }, panels };
+      return {
+        ...base,
+        primaryAction: { text: s.newSearch, href: NAV_HREF.sok },
+        /* US-17 — the standard reports are this role's other daily errand. */
+        secondaryActions: [{ text: d.rapporter.title, href: NAV_HREF.rapporter }],
+        panels,
+      };
     }
 
     case "system-admin": {

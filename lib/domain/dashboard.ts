@@ -33,6 +33,22 @@ export interface PanelAction {
  *
  * If you cannot decide which one a sentence is, it is a rationale.
  */
+/**
+ * How many rows a start-page panel shows — FS-001.
+ *
+ * Three, everywhere, and the number is a rule rather than a preference. The
+ * start page is a place to notice things, not to work through them: its job is
+ * to say *whether* there is something waiting and let the officer leave for the
+ * register that owns it. Panels were showing three, three, four and five, which
+ * made the page read as four lists of arbitrary length and gave the eye no
+ * rhythm to scan down.
+ *
+ * A panel that has more than it shows says so — the count is on the way out, so
+ * "three of sixty-four" is legible and the remaining sixty-one are one click
+ * away rather than hidden.
+ */
+export const START_PAGE_ROWS = 3;
+
 export interface PanelProse {
   /**
    * A plain sentence the reader needs in order to know what the panel is.
@@ -42,6 +58,13 @@ export interface PanelProse {
    * the two.
    */
   lead?: string;
+  /**
+   * How many rows exist in total, when the panel shows fewer. Rendered as
+   * "showing 3 of 12" — the second half of the three-row rule: a panel that
+   * truncates has to say so, or three of sixty-four is indistinguishable from
+   * three of three.
+   */
+  total?: number;
   note?: string;
   rationale?: string;
 }
@@ -86,6 +109,20 @@ export interface Dashboard {
   heading: string;
   subheading: string;
   primaryAction?: { text: string; href: string };
+  /**
+   * Up to two more actions, and no more.
+   *
+   * A role's start page should offer the things it does *daily*, taken from its
+   * own scenarios rather than from the menu — an agreement administrator
+   * registers protocols (US-01) and parties (US-03); a mediation administrator
+   * registers GD decisions (US-07) and party meetings (US-08). One action for a
+   * role with three daily tasks makes the page a dashboard to read rather than
+   * a place to start work from.
+   *
+   * Two is the cap. A row of six is a second navigation, and the menu is
+   * already the navigation.
+   */
+  secondaryActions?: { text: string; href: string }[];
   /** FM-003 – benchmark shown wherever relevant. */
   benchmark?: Benchmark;
   panels: DashboardPanel[];
