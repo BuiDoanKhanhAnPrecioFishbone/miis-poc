@@ -55,6 +55,17 @@ export interface Party {
   employerGroup?: string;
   /** Employer orgs within Svenskt Näringsliv carry an industry code (FP-001). */
   industryCode?: string;
+  /**
+   * The confederation the party belongs to — Svenskt Näringsliv, LO, TCO, Saco.
+   *
+   * Not in FP-001's sentence, and in the model anyway: MI's own report selection
+   * screens offer *Centralorganisation* twice, once per side, and the
+   * Huvudrapport prints the chain the agreement sits in — "Almega · Svenskt
+   * Näringsliv · Privat" against "6F Fackförbund i samverkan · LO". A criterion
+   * MI selects six of its reports on is a property of the register whether or
+   * not the requirement table lists it.
+   */
+  centralOrganisation?: string;
   nameHistory: NameHistoryEntry[];
   contacts: ContactPerson[];
   active: boolean;

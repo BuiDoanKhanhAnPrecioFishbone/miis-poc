@@ -175,7 +175,38 @@ guides, plus the places our domain model still diverges from the information mod
    authentication in Försäkringskassan's IdP over SAML, so drawing a login page
    would claim we built the one thing we certainly did not. Signing *out* is
    different — NFL-001 logs it — so the header carries it.
+   **Users and role assignment are editable; the permission matrix is not.**
+   NFÅ-005 names exactly what MI administers without us — *"upplägg och
+   redigering av användare och rolltilldelning"* — so `/administration/anvandare`
+   has a user register with an add form, and the role × module matrix under it
+   stays read-only: NFÅ-003 defines access by the eight roles §3.1 writes down,
+   and a matrix an administrator could rearrange would describe a configuration
+   rather than MI's own document. A user is a *link* to an identity in
+   Försäkringskassan's IdP, so there is no password field and no account
+   creation. Users are deactivated, never deleted — NFL-001 logged their
+   sign-ins — and `mayDeactivate` refuses to let the last authorisation
+   administrator lock MI out, which is the one lock-out only the supplier could
+   repair.
 
+   **A report is a selection screen and a result, never a button.** Bilaga F
+   opens by saying so — *"För varje rapport visas urvalsbild och resultat"* — and
+   MI's own criteria differ per report: three for the single-agreement ones, nine
+   for the two population reports, three blocks for the pension report. The
+   catalogue is `REPORTS` in `lib/domain/report.ts`, read off MI's own W3D3
+   screens; `ReportRunner` draws it. The chosen criteria are printed as an
+   *Urvalskriterier* block at the head of the result, every criterion named and
+   the empty ones reading "Alla" — a reader has to be able to see that Sektor was
+   *not* narrowed. And **the criteria narrow the data**, except where the figures
+   are MI's own published population (Avtalskonstruktioner), where the screen
+   says so instead of pretending.
+   **A document template shows what it pre-filled.** FSD-001 and FSD-002 ask for
+   documents *"utifrån en dokumentmall, där förinmatad information från MIIS ska
+   kunna redigeras"* — both halves. `DocumentTemplate` lists each pre-filled
+   value with the register it came from, opens the body for editing, and names
+   the file it will produce. A disabled button with "skapas utifrån mall" beside
+   it states the requirement and demonstrates none of it. FSD-001's two variants
+   are a `SegmentedControl`, because *med varsel* and *utan varsel* are one
+   document with a property, not two documents.
    **A screen prints as a document, not as a screenshot.** `PrintHeader` gives it
    MI's mark and an *Utskriftsdatum* the way Bilaga F's six printouts do; the
    `@media print` block in `globals.css` drops the demo bar, the nav, the header
@@ -205,14 +236,21 @@ guides, plus the places our domain model still diverges from the information mod
    registreras manuellt"*). Both are tested.
    **The AI assistant is a drawer, and it is not a chatbot.** §4.1 asks for an
    *integrerat* AI-stöd and §4.3's system sketch carries AI-assisted registration
-   as a module in its own right, so it is reachable from the header on every
-   screen the role may act on — but it has no prompt box and nothing to converse
-   with. It answers four questions: what runs on this screen, what is waiting for
-   your approval (the queue FAI-002 implies must exist), what the AI can do at
-   all, and where it stops. The last section is the one a competitor will not
-   have. NFÅ-003 applies inside it: the queue is filtered by **write** access, so
-   an officer sees only work they can actually clear, and a role with no AI screen
-   gets no launcher.
+   as a module in its own right, so the launcher is fixed to the **bottom right**
+   of every screen the role may act on — not in the header, which is where a user
+   goes to leave. The drawer opens on the two things an officer acts on: **what
+   they can ask the AI to do here**, as controls, and **what is waiting for their
+   approval** (the queue FAI-002 implies must exist). The tasks are §4.1's four
+   functions applied to the current screen, which is what "ask the AI to do
+   something" means in a system whose AI *is* four named functions. **There is no
+   prompt box, and adding one would be the mistake** — an authority procures a
+   bounded set of behaviours, and a box that accepts any instruction is the
+   opposite of a bounded set. The catalogue, MI's own limits and the traceability
+   sit behind one *Om AI-stödet* toggle: they are the sections a competitor will
+   not have, and they are still reference material, which does not belong above
+   the work. NFÅ-003 applies inside it — the queue is filtered by **write**
+   access, so an officer sees only work they can actually clear, and a role with
+   no AI screen gets no launcher.
 8. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
    a royal crown over the shield. **MI supplied the official asset on 2026-08-18**, so
    the `MI` placeholder square is gone; `public/mi-mark-white.svg` is MI's own file with

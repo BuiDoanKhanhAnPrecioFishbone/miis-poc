@@ -11,7 +11,7 @@
  */
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ChangeEvent, ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
@@ -229,6 +229,7 @@ export function LinkButton({
   size = "md",
   iconStart,
   iconEnd,
+  fullWidth,
 }: {
   href: string;
   children: ReactNode;
@@ -236,11 +237,18 @@ export function LinkButton({
   size?: "md" | "sm";
   iconStart?: ReactNode;
   iconEnd?: ReactNode;
+  /** The same escape hatch `Button` has, for a narrow column of stacked actions. */
+  fullWidth?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className={[BUTTON_SHAPE, BUTTON_SIZE[size], BUTTON_VARIANT[variant]].join(" ")}
+      className={[
+        BUTTON_SHAPE,
+        BUTTON_SIZE[size],
+        BUTTON_VARIANT[variant],
+        fullWidth ? "w-full" : "",
+      ].join(" ")}
     >
       {iconStart}
       {children}
@@ -761,6 +769,8 @@ export function TextField({
   id,
   label,
   defaultValue,
+  value,
+  onChange,
   hint,
   type = "text",
   numeric,
@@ -770,6 +780,16 @@ export function TextField({
   id: string;
   label: string;
   defaultValue?: string;
+  /**
+   * Controlled mode, for the few forms that act on what was typed.
+   *
+   * Uncontrolled stays the default, because that is what lets a server-rendered
+   * page use this without becoming a client component. Passing `value` and
+   * `onChange` is what a client form does instead of reaching into the DOM for
+   * the value — which is what the mediator form was doing before this existed.
+   */
+  value?: string;
+  onChange?: (next: string) => void;
   hint?: string;
   type?: "text" | "date";
   /** Tabular figures, for amounts and percentages. */
@@ -802,7 +822,9 @@ export function TextField({
       <input
         id={id}
         type={type}
-        defaultValue={defaultValue}
+        {...(value === undefined
+          ? { defaultValue }
+          : { value, onChange: (e: ChangeEvent<HTMLInputElement>) => onChange?.(e.target.value) })}
         placeholder={placeholder}
         className={`field-input ${widthClass} ${numeric ? "tabular-nums" : ""}`}
       />

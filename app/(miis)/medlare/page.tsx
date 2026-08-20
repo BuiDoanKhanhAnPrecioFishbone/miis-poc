@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { NewMediator } from "@/components/miis/NewMediator";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { listMediators, mediatorStats } from "@/lib/data/mediators";

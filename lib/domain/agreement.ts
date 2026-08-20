@@ -90,6 +90,18 @@ export interface Agreement {
   signedDate?: string;
   validFrom?: string;
   validTo?: string;
+  /**
+   * How many employees the agreement covers — *Avtalets omfattning: Anställda*
+   * in MI's own Huvudrapport (Bilaga F, Rapport 4).
+   *
+   * Not a statistic we invented to have something to chart. MI's two population
+   * reports both count employees rather than agreements, because 604 agreements
+   * covering 3,8 million people are not 604 equal things: one Kommunal
+   * agreement outweighs thirty small ones, and a bargaining-round report that
+   * counted rows would say the opposite of what it means. Optional, because
+   * MI's own printouts show `¤` where the figure is missing.
+   */
+  employees?: number;
   /** Registration order, newest first when sorted descending. */
   registeredAt?: string;
   /** FA-015 / FA-016 */

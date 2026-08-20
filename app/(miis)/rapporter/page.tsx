@@ -1,19 +1,23 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
-import { PrintButton, PrintHeader } from "@/components/miis/Print";
 import { ConstructionsReport } from "@/components/miis/ConstructionsReport";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { PrintButton, PrintHeader } from "@/components/miis/Print";
+import { ReportRunner, type CriterionOptions } from "@/components/miis/ReportRunner";
 import { Badge, Button, PageHeading, Panel, Rationale, ReqTag } from "@/components/miis/primitives";
 import { ShortTermWageReport } from "@/components/miis/ShortTermWageReport";
+import { getConstructionsReport } from "@/lib/data/constructions";
+import { listAgreements } from "@/lib/data/agreements";
+import { listCooperationBodies, listParties } from "@/lib/data/parties";
 import {
   EXTRACT_PERIOD_END,
   LAST_EXPORT_DATE,
+  listBargainingYears,
   listMonitoredAgreements,
 } from "@/lib/data/reports";
-import { AGREEMENT_CONSTRUCTIONS } from "@/lib/domain/agreement";
-import { percent } from "@/lib/format";
-import { getConstructionsReport } from "@/lib/data/constructions";
+import { SECTOR_LABEL } from "@/lib/domain/agreement";
+import type { ReportAgreement } from "@/lib/domain/report";
 import { getSession } from "@/lib/session";
 
 const EXTRACT_PERIOD_START = "2027-06-01";
@@ -25,18 +29,100 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title, description, openGraph: { title, description } };
 }
 
+/**
+ * Reports — FR-005 to FR-014, and Bilaga F.
+ *
+ * The screen is built around the sentence Bilaga F opens with: *"För varje
+ * rapport visas urvalsbild och resultat."* So the top of the page is MI's own
+ * selection screen — choose the report, fill in the criteria that report takes,
+ * choose the format, generate — and the result appears under it with the
+ * criteria printed above it.
+ *
+ * Two reports are then always on the page below, because they are not really
+ * printouts: **Konjunkturlönerapporten** is a working view by FR-008's own
+ * wording, and the **scheduled extracts** (FR-014) are how the reports are
+ * actually delivered rather than a report themselves.
+ */
 export default async function RapporterPage() {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [rows, constructionsReport] = await Promise.all([
-    listMonitoredAgreements(lang),
-    getConstructionsReport(),
-  ]);
   const t = i18n.rapporter;
+
+  const [rows, constructionsReport, bargainingYears, agreements, parties, bodies] = await Promise.all([
+      listMonitoredAgreements(lang),
+      getConstructionsReport(),
+      listBargainingYears(),
+      listAgreements(),
+      listParties(),
+      listCooperationBodies(),
+    ]);
 
   const exportedCount = rows.filter((r) => r.lastExported).length;
 
+  /*
+    The option lists behind MI's criteria, taken from the register rather than
+    hard-coded — a selection screen offering an organisation the register does
+    not hold is a selection that can return nothing for a reason the user cannot
+    see. `Array.from(new Set(...))` because a party signs many agreements and
+    the list is of parties, not of rows.
+  */
+  const unique = (values: (string | undefined)[]) =>
+    [...new Set(values.filter((v): v is string => Boolean(v)))].sort((a, b) =>
+      a.localeCompare(b, lang === "sv" ? "sv" : "en"),
+    );
 
+  const criterionOptions: CriterionOptions = {
+    employers: unique(parties.filter((p) => p.type === "employer").map((p) => p.name)),
+    employees: unique(parties.filter((p) => p.type === "employee").map((p) => p.name)),
+    agreements: unique(agreements.map((a) => a.name)),
+    sectors: (["private", "state", "municipal"] as const).map((s) => ({
+      id: SECTOR_LABEL[lang][s],
+      label: SECTOR_LABEL[lang][s],
+    })),
+    industryCodes: unique(parties.map((p) => p.industryCode)),
+    centralOrgs: unique(parties.map((p) => p.centralOrganisation)),
+    employerGroups: unique(parties.map((p) => p.employerGroup)),
+    cooperationGroups: unique(bodies.map((b) => b.name)),
+    years: bargainingYears.years,
+    defaultYear: bargainingYears.busiest,
+    otherAgreementTypes: unique(agreements.map((a) => a.agreementType)),
+  };
+
+  /*
+    The register reduced to what a report selection compares against. Sector,
+    confederation, employer group and industry code live on the *party*, not on
+    the agreement (FP-001), so they are resolved here — the report screen asks
+    "agreements whose employer organisation is in the state sector", and that is
+    a join the seam should do once rather than the browser doing per keystroke.
+  */
+  const partyByName = new Map(parties.map((p) => [p.name, p]));
+  const reportAgreements: ReportAgreement[] = agreements.map((a) => {
+    const employer = partyByName.get(a.employerOrg.name);
+    const employee = partyByName.get(a.employeeOrg.name);
+    return {
+      id: a.id,
+      name: a.name,
+      ...(a.validTo ? { validTo: a.validTo } : {}),
+      ...(a.employees !== undefined ? { employees: a.employees } : {}),
+      ...(a.signedDate ? { signedDate: a.signedDate } : {}),
+      ...(a.mediationLinked ? { mediationLinked: true } : {}),
+      employerOrg: a.employerOrg.name,
+      employeeOrg: a.employeeOrg.name,
+      ...(employer?.sector ? { sector: SECTOR_LABEL[lang][employer.sector] } : {}),
+      ...(employer?.industryCode ? { industryCode: employer.industryCode } : {}),
+      ...(employer?.centralOrganisation
+        ? { employerCentralOrg: employer.centralOrganisation }
+        : {}),
+      ...(employee?.centralOrganisation
+        ? { employeeCentralOrg: employee.centralOrganisation }
+        : {}),
+      ...(employer?.employerGroup ? { employerGroup: employer.employerGroup } : {}),
+      ...(bodies.find((b) => b.members.includes(a.employeeOrg.id))
+        ? { cooperationGroup: bodies.find((b) => b.members.includes(a.employeeOrg.id))!.name }
+        : {}),
+      agreementType: a.agreementType,
+    };
+  });
 
   const scheduleColumns: Column[] = [
     { key: "report", header: t.scheduled.table.report, sortable: true },
@@ -74,31 +160,25 @@ export default async function RapporterPage() {
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}
-        tags={["FR-005", "FR-008", "FR-011", "NFP-002"]}
+        tags={["FR-005", "FR-006", "FR-007", "FR-011"]}
         action={<PrintButton lang={lang} />}
       />
 
-      {/*
-        A hub rather than four screens. The three reports MI calls prioritised
-        share a period, a selection and an export path, and the scheduled
-        extracts are how all three are actually delivered — splitting them apart
-        would mean building the same header three times.
-      */}
-      <nav aria-label={t.title} className="mb-6 flex flex-wrap gap-2">
-        {[t.tabs.shortTerm, t.tabs.bargainingRound, t.tabs.constructions, t.tabs.scheduled].map(
-          (tab, i) => (
-            <a
-              key={tab}
-              href={`#rapport-${i}`}
-              className="inline-flex min-h-11 items-center rounded-sm border-2 border-primary px-4 py-2 text-label font-bold text-primary transition-colors hover:bg-secondary"
-            >
-              {tab}
-            </a>
-          ),
-        )}
-      </nav>
+      <ReportRunner
+        lang={lang}
+        options={criterionOptions}
+        agreements={reportAgreements}
+        results={{
+          constructions: <ConstructionsReport report={constructionsReport} lang={lang} d={i18n} />,
+        }}
+      />
 
-      <div id="rapport-0" className="scroll-mt-4">
+      {/*
+        FR-008 puts this one on a screen rather than behind a selection: the
+        report "ska skrivas ut/exporteras från en vy som visar en lista med
+        bevakade avtal", so the list is the selection and it is always visible.
+      */}
+      <div id="konjunkturlon" className="mt-5 scroll-mt-4">
         <ShortTermWageReport
           rows={rows}
           lang={lang}
@@ -107,36 +187,7 @@ export default async function RapporterPage() {
         />
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 @3xl:grid-cols-2">
-        <div id="rapport-1" className="scroll-mt-4">
-          <Panel title={t.bargainingRound.heading} tags={["FR-006", "FR-012"]}>
-            <p className="text-table">{t.bargainingRound.intro}</p>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-table">
-              {t.bargainingRound.contents.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
-            <div className="mt-4">
-              <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{t.bargainingRound.generate}</Button>
-            </div>
-          </Panel>
-        </div>
-
-      </div>
-
-      {/*
-        MI's own report, full width. It carries a selection block, two figures,
-        two detail tables and a legend, so it does not belong in a half-width
-        column beside another report.
-      */}
-      <div id="rapport-2" className="mt-5 scroll-mt-24">
-        <ConstructionsReport report={constructionsReport} lang={lang} d={i18n} />
-      </div>
-
-      <div id="rapport-3" className="mt-5 scroll-mt-4">
+      <div className="mt-5">
         <Panel title={t.scheduled.heading} tags={["FR-014", "FE-001", "FE-002"]}>
           <p className="max-w-4xl text-table">{t.scheduled.intro}</p>
           <DataTable
@@ -148,10 +199,9 @@ export default async function RapporterPage() {
           />
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{t.scheduled.add}</Button>
+            <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+              {t.scheduled.add}
+            </Button>
             <ReqTag id="FE-003" />
           </div>
           <Rationale>{t.scheduled.logNote}</Rationale>

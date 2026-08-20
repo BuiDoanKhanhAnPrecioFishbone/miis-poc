@@ -13,6 +13,7 @@ import type { Watchword } from "@/lib/domain/watchword";
 import { addWatchword, encodeWatchwords, suggestTerm } from "@/lib/domain/watchword";
 
 import { dictionary } from "@/lib/i18n";
+import { DocumentTemplate } from "./DocumentTemplate";
 import { Stepper, type StepState } from "./Stepper";
 import {
   Badge,
@@ -331,24 +332,63 @@ export function PartyMeetingView({
               rather than merely convenient.
             */}
             <Rationale>{t.editableNote}</Rationale>
-            <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-              {meeting.templateDocument ? (
-                <>
-                  <Badge tone="ok">{t.before.documentCreated}</Badge>
-                  <span className="min-w-0 break-all font-semibold text-primary underline underline-offset-2">
-                    {meeting.templateDocument}
-                  </span>
-                </>
-              ) : (
-                <Button variant="secondary"
-        disabled
-        disabledReason={d.common.notInDemo}
-      >{t.before.createDocument}</Button>
-              )}
-              <ReqTag id="FSD-002" />
-            </div>
-            <Rationale>{t.before.templateNote}</Rationale>
           </Panel>
+        )}
+
+        {/*
+          FSD-002, as a workflow rather than a claim.
+
+          It was a disabled button with the note "Partsträffsdokument skapas
+          utifrån dokumentmall" beside it — which states the requirement and
+          demonstrates none of it. §4.1 asks for the document to come from a
+          template *"där förinmatad information från MIIS ska kunna redigeras"*,
+          and the pre-filling is the part worth showing: party, area, date,
+          participants and the agenda all arrive from the meeting record.
+        */}
+        {phase === "before" && (
+          <div className="mt-5">
+            <DocumentTemplate
+              lang={lang}
+              heading={t.before.createDocument}
+              intro={t.before.templateNote}
+              requirements={["FSD-002", "FH-001"]}
+              logNote={t.before.templateLogNote}
+              {...(meeting.templateDocument ? { created: meeting.templateDocument } : {})}
+              fields={[
+                { label: t.before.party, value: meeting.party, source: t.before.sourceMeeting },
+                {
+                  label: t.table.area,
+                  value: text(meeting.agreementArea, lang),
+                  source: t.before.sourceMeeting,
+                },
+                { label: t.before.date, value: meeting.date, source: t.before.sourceMeeting },
+                {
+                  label: t.before.participants,
+                  value: meeting.participants.join(", "),
+                  source: t.before.sourceMeeting,
+                },
+              ]}
+              variants={[
+                {
+                  id: "standard",
+                  label: t.before.createDocument,
+                  fileName: `Partstraff ${meeting.party} ${meeting.date}.docx`,
+                  body: [
+                    `${t.before.heading} – ${meeting.party}`,
+                    "",
+                    `${t.before.date}: ${meeting.date}`,
+                    `${t.before.location}: ${text(meeting.location, lang)}`,
+                    `${t.before.participants}: ${meeting.participants.join(", ")}`,
+                    "",
+                    `${t.before.purpose}: ${text(meeting.purpose, lang)}`,
+                    "",
+                    `${t.before.agenda}:`,
+                    ...meeting.agenda.map((a, i) => `${i + 1}. ${text(a, lang)}`),
+                  ].join("\n"),
+                },
+              ]}
+            />
+          </div>
         )}
 
         {phase === "during" && (

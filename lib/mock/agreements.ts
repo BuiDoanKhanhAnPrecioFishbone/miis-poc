@@ -30,6 +30,7 @@ const STANDARD_TYPE = "Löneavtal + Allmänna villkor";
 export const AGREEMENTS: Agreement[] = [
   {
     id: "A-001",
+    employees: 24500,
     agreementArea: "Stål och metall",
     name: "Stål- och metallindustrin",
     employerOrg: PARTIES.industriarbetsgivarna,
@@ -45,6 +46,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-002",
+    employees: 6200,
     agreementArea: "Spårtrafik",
     name: "Spårtrafik",
     employerOrg: PARTIES.tagforetagen,
@@ -61,6 +63,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-003",
+    employees: 2400,
     agreementArea: "Fastigheter",
     name: "Fastigheter",
     employerOrg: PARTIES.almega,
@@ -74,6 +77,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-004",
+    employees: 5000,
     agreementArea: "Apotek",
     name: "Apotek",
     employerOrg: PARTIES.almega,
@@ -89,6 +93,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-005",
+    employees: 16500,
     agreementArea: "Kommunikation",
     name: "Kommunikation",
     alternativeName: "Kommunikationsavtalet",
@@ -102,6 +107,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-006",
+    employees: 4700,
     agreementArea: "Utveckling och tjänster",
     name: "Utveckling och tjänster",
     employerOrg: PARTIES.almega,
@@ -114,6 +120,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-007",
+    employees: 500,
     agreementArea: "Spel",
     name: "Spel",
     employerOrg: PARTIES.almega,
@@ -126,6 +133,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-008",
+    employees: 1100,
     agreementArea: "Spårtrafik",
     name: "Spårtrafik",
     employerOrg: PARTIES.tagforetagen,
@@ -140,6 +148,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-009",
+    employees: 10,
     agreementArea: "Hemserviceföretag",
     name: "Hemserviceföretag",
     employerOrg: PARTIES.almega,
@@ -156,6 +165,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-010",
+    employees: 12000,
     agreementArea: "Bemanning",
     name: "Bemanning",
     employerOrg: PARTIES.kompetensforetagen,
@@ -172,6 +182,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-011",
+    employees: 9800,
     agreementArea: "Skola och utbildning",
     name: "Fristående skolor",
     employerOrg: PARTIES.fremia,
@@ -194,6 +205,7 @@ export const AGREEMENTS: Agreement[] = [
       became Sveriges Lärare. The party register must never rewrite it.
     */
     id: "A-012",
+    employees: 8900,
     agreementArea: "Skola och utbildning",
     name: "Fristående skolor 2018–2021",
     employerOrg: PARTIES.fremia,

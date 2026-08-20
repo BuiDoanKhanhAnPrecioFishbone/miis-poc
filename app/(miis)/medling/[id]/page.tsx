@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { DocumentTemplate } from "@/components/miis/DocumentTemplate";
 import { IconBack, IconForward } from "@/components/miis/icons";
 import {
   AiRegion,
@@ -61,6 +62,9 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
   const miAppoints = miAppointsMediators(mediationCase);
   const c = i18n.mediationCase;
   const ds = i18n.decisionSupport;
+  /* `number` reads "GD-beslut nr 12/2027" already, so the template heading and
+     the file name take the bare number rather than prefixing it a second time. */
+  const decisionNumber = mediationCase.dgDecision.number.replace(/^GD-beslut nr\s*/i, "");
 
   return (
     <AppShell role={session.role} requires="medling" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
@@ -222,18 +226,9 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
               : mediationCase.dgDecision.document}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{c.createWithNotice}</Button>
-            <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{c.createWithoutNotice}</Button>
-            <Button
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{c.finalise}</Button>
+            <Button disabled disabledReason={i18n.common.notInDemo}>
+              {c.finalise}
+            </Button>
             <ReqTag id="FE-001" />
             <span className="flex items-start gap-2 text-label text-muted-foreground">
               <span className="flex h-6 items-center">
@@ -244,6 +239,81 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           </div>
           <Rationale>{c.templateNote}</Rationale>
         </Panel>
+
+        {/*
+          FSD-001 — *"skapa GD-beslut om medling utifrån dokumentmallar, en
+          variant med varsel och en utan varsel"*.
+
+          One document with a variant, not two documents: it was two disabled
+          buttons side by side, which said the opposite and gave the officer no
+          way to see which of the two they were about to produce. Bilaga E is
+          MI's own example of the output, and its shape — decision number,
+          decider, presenter, the *Ärende: Medling* line, the mediators, the
+          copy list — is what the template fills in from the case.
+        */}
+        <DocumentTemplate
+          lang={lang}
+          heading={c.createDecision}
+          intro={c.templateNote}
+          requirements={["FSD-001", "FD-001", "FH-001"]}
+          logNote={c.decisionLogNote}
+          fields={[
+            {
+              label: c.registryNumber,
+              value: mediationCase.registryNumber ?? i18n.common.none,
+              source: c.sourceCase,
+            },
+            {
+              label: c.decisionNumber,
+              value: mediationCase.dgDecision.number,
+              source: c.sourceCase,
+            },
+            { label: c.decisionDate, value: mediationCase.dgDecision.date, source: c.sourceCase },
+            {
+              label: c.mediators,
+              value: mediationCase.mediators.map((m) => m.name).join(", "),
+              source: c.sourceRegister,
+            },
+          ]}
+          variants={[
+            {
+              id: "with-notice",
+              label: c.withNotice,
+              fileName: `GD-beslut ${decisionNumber.replace("/", "-")} med varsel.docx`,
+              body: [
+                c.decisionHeading(decisionNumber),
+                "",
+                `${c.decider}: Irene Wennemo`,
+                `${c.presenter}: Per Ewaldsson`,
+                "",
+                `${c.matter}: ${c.mediation}`,
+                "",
+                c.bodyWithNotice(
+                  mediationCase.name,
+                  mediationCase.mediators.map((m) => m.name).join(", "),
+                ),
+              ].join("\n"),
+            },
+            {
+              id: "without-notice",
+              label: c.withoutNotice,
+              fileName: `GD-beslut ${decisionNumber.replace("/", "-")}.docx`,
+              body: [
+                c.decisionHeading(decisionNumber),
+                "",
+                `${c.decider}: Irene Wennemo`,
+                `${c.presenter}: Per Ewaldsson`,
+                "",
+                `${c.matter}: ${c.mediation}`,
+                "",
+                c.bodyWithoutNotice(
+                  mediationCase.name,
+                  mediationCase.mediators.map((m) => m.name).join(", "),
+                ),
+              ].join("\n"),
+            },
+          ]}
+        />
 
         {mediationCase.outcome && (
           <Panel title={c.outcome} tags={["FF-010"]}>

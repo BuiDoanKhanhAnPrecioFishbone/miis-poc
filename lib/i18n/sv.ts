@@ -104,6 +104,12 @@ export const sv = {
         : `AI-stöd – ${n} förslag väntar på granskning`,
     title: "AI-assistenten",
     subtitle: "Integrerat AI-stöd för registreringsarbetet (Bilaga 1 §4.1)",
+    ask: "Be AI-stödet om hjälp",
+    askLead:
+      "Uppgifterna nedan är §4.1:s funktioner, körda på den skärm kravet placerar dem på. Varje körning ger förslag som en handläggare godkänner eller avvisar – ingenting sparas på vägen.",
+    askElsewhere:
+      "AI-stödet kör inte i den här vyn. Det här är vad du kan be det om, och var det görs.",
+    details: "Om AI-stödet",
     onThisScreen: "På den här sidan",
     onThisScreenNone:
       "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
@@ -125,6 +131,23 @@ export const sv = {
     readOnly:
       "Din roll läser AI-förslagen men godkänner dem inte. Godkännande hör till den roll som får registrera i respektive register (NFÅ-003).",
   },
+/* FSD-001 och FSD-002 – dokument ur Medlingsinstitutets egna mallar. */
+  documentTemplate: {
+    open: "Öppna dokumentmallen",
+    openNote:
+      "Mallen öppnas med information från MIIS redan ifylld. Ingenting skapas förrän handläggaren har granskat och tryckt Skapa dokument.",
+    variant: "Variant",
+    prefilled: "Förinmatat från MIIS",
+    body: "Dokumentets text",
+    bodyNote: "Texten kommer från mallen och kan ändras innan dokumentet skapas.",
+    editedNote: "Texten är ändrad av handläggaren. Ändringen följer med i dokumentet och i ändringsloggen.",
+    create: "Skapa dokument",
+    created: "Dokument skapat",
+    createdNote: "Dokumentet är skapat och kopplat till ärendet.",
+    reopen: "Öppna mallen igen",
+    fileNote: (name: string) => `Filen får namnet ${name}`,
+  },
+
   session: {
     title: "Din session håller på att gå ut",
     body: "Du har varit inaktiv en längre stund. Av säkerhetsskäl loggas du ut automatiskt vid 30 minuters inaktivitet.",
@@ -648,8 +671,23 @@ export const sv = {
     benchmarkMonths: (n: number) => `${n} månader`,
     benchmarkPeriod: (from: string, to: string) => `Perioden ${from} – ${to}`,
     documents: "Dokument och åtgärder",
-    createWithNotice: "Skapa GD-beslut – med varsel",
-    createWithoutNotice: "Skapa GD-beslut – utan varsel",
+    createDecision: "Skapa GD-beslut om medling",
+    withNotice: "Med varsel",
+    withoutNotice: "Utan varsel",
+    decisionNumber: "Beslutsnummer",
+    sourceCase: "Ur medlingsärendet",
+    sourceRegister: "Ur medlarregistret",
+    decisionHeading: (nr: string) => `Generaldirektörens beslut nr ${nr}`,
+    decider: "Beslutande",
+    presenter: "Föredragande",
+    matter: "Ärende",
+    mediation: "Medling",
+    bodyWithNotice: (area: string, mediators: string) =>
+      `Efter begäran från berörda parter och med anledning av varsel om stridsåtgärder förordnar Medlingsinstitutet om medling i tvisten mellan parterna om ett nytt kollektivavtal (${area}).\n\nTill medlare utses ${mediators}.`,
+    bodyWithoutNotice: (area: string, mediators: string) =>
+      `Efter samtycke från berörda parter förordnar Medlingsinstitutet om medling i tvisten mellan parterna om ett nytt kollektivavtal (${area}).\n\nTill medlare utses ${mediators}.`,
+    decisionLogNote:
+      "Beslutet kopplas till medlingsärendet och registreras i ändringsloggen med tidpunkt och användare. Bilaga E visar Medlingsinstitutets egna exempel på båda varianterna.",
     finalise: "Klarmarkera beslut",
     finaliseNote: "Notifierings-epost med länk skickas till medlaradministratör och loggas",
     templateNote:
@@ -725,16 +763,49 @@ export const sv = {
       markExportedNote:
         "Uttaget noteras per avtal, så nästa uttag visar vad som redan levererats till rapporten.",
     },
-    bargainingRound: {
-      heading: "Avtalsrörelserapporten",
+    runner: {
+      heading: "Rapportuttag",
       intro:
-        "Prioriterad befintlig rapport. Urvalet följer avtalsrörelsen och färgkodningen av avtalsstatus.",
-      generate: "Generera rapporten",
-      contents: [
-        "Tecknade avtal per avtalsområde och sektor",
-        "Avtal tecknade efter medling, med medlingsärende",
-        "Kvarstående avtal vid periodens slut",
-      ],
+        "Välj rapport, fyll i urvalet och generera. Urvalskriterierna skiljer sig mellan rapporterna och följer Medlingsinstitutets egna urvalsbilder; de kriterier som lämnas tomma skrivs ut som Alla.",
+      pick: "Välj rapport",
+      all: "Alla",
+      format: "Format",
+      needsServer: "kräver serverdrift",
+      formatNote: "Endast PDF körs i mockupen — övriga format kräver serverdrift.",
+      generate: "Generera rapport",
+      selectionHeading: "Urvalskriterier",
+      stage2: "Steg 2",
+      stage2Reason: "Rapporten är markerad som Steg 2 i Medlingsinstitutets egen kravtabell.",
+      bilagaF: (n: number) => `Bilaga F, rapport ${n}`,
+      noSelectionLabel: "Ingen urvalsbild",
+      noSelection:
+        "Konjunkturlönerapporten skrivs ut ur vyn med bevakade avtal — listan är urvalet. Det är den enda av rapporterna som fungerar så, och det följer av kravtexten (FR-008).",
+      onScreen:
+        "Rapporten är en utskrift av en vy som redan finns i MIIS. Öppna vyn och skriv ut den där, så följer utskriften samma sekretessregler som skärmen.",
+      openView: "Öppna vyn",
+      notBuilt: "Rapportens innehåll är inte byggt i mockupen.",
+      transcribedLabel: "Medlingsinstitutets egna siffror",
+      transcribed:
+        "Avtalskonstruktioner räknar anställda på hela den svenska arbetsmarknaden – 3 797 764 personer i Medlingsinstitutets egen utskrift. Siffrorna nedan är därför Medlingsinstitutets publicerade, med det urval de togs med (Arbetsgivarorg: Almega Tjänsteförbunden), och ändras inte av urvalet ovan. Avtalsrörelsen räknar registrets egna avtal och följer urvalet fullt ut.",
+      rationale:
+        "Bilaga F inleds med att det för varje rapport visas urvalsbild och resultat. Urvalet är alltså en del av rapporten, inte ett steg före den – därför skrivs kriterierna ut överst i resultatet.",
+    },
+    bargainingRound: {
+      title: (year: number) => `Avtalsrörelsen ${year}`,
+      intro:
+        "Avtal och anställda fördelade efter avtalens utlöpningstidpunkt, månad för månad. Färgerna är avtalsstatus enligt FR-012.",
+      month: "Månad",
+      sum: "Summa",
+      agreements: "Avtal",
+      employees: "Anställda",
+      byAgreement: "Antal avtal",
+      byAgreementIntro:
+        "Avtal som är kvarstående, nytecknade och nytecknade efter medling, fördelade efter utlöpningstidpunkt.",
+      byEmployee: "Antal anställda",
+      byEmployeeIntro:
+        "Anställda som omfattas av avtal som är kvarstående, nytecknade och nytecknade efter medling.",
+      derivedNote:
+        "Tabellerna härleds ur avtalsregistret vid uttaget, inte ur lagrade summor. Ett avtal utan uppgift om antal anställda räknas i avtalstabellen men inte i anställdatabellen – samma hål som Medlingsinstitutets egen rapport visar med ¤.",
     },
     constructions: {
       selectionHeading: "Urvalskriterier",
@@ -1174,8 +1245,12 @@ export const sv = {
       participants: "Deltagare",
       agenda: "Dagordning",
       agendaEmpty: "Ingen dagordning registrerad ännu.",
+      location: "Plats",
       createDocument: "Skapa partsträffsdokument från mall",
       documentCreated: "Dokument skapat",
+      templateLogNote:
+        "Dokumentet kopplas till partsträffen och registreras i ändringsloggen med tidpunkt och användare (FH-001).",
+      sourceMeeting: "Ur partsträffens registrering",
       templateNote:
         "Mallen förifylls med uppgifter ur MIIS – part, avtalsområde, datum och deltagare – så att handläggaren bara kompletterar det som är specifikt för träffen.",
     },
@@ -1254,6 +1329,28 @@ export const sv = {
       status: "Status",
       all: "Alla",
       clear: "Rensa filter",
+    },
+    add: {
+      heading: "Lägg till medlare",
+      intro:
+        "Registret är underlaget när Medlingsinstitutet utser medlare. En ny medlare läggs in med kontaktuppgifter och de medlingstyper hen tar uppdrag inom.",
+      open: "Lägg till medlare",
+      name: "Namn",
+      namePlaceholder: "T.ex. Gerald Lindberg",
+      phone: "Telefon",
+      email: "E-post",
+      types: "Tar uppdrag inom",
+      noTypes: "Ingen medlingstyp vald – välj minst en.",
+      typeCount: (n: number) => (n === 1 ? "1 medlingstyp vald" : `${n} medlingstyper valda`),
+      typeRequired: "Namn och minst en medlingstyp krävs.",
+      save: "Spara medlaren",
+      savedNote: (name: string) =>
+        `${name} finns nu i medlarregistret och kan utses till medlingsärenden.`,
+      addAnother: "Lägg till en medlare till",
+      historyNote:
+        "Uppdragshistoriken fylls inte i här. Den härleds ur de medlingsärenden medlaren utses till, så att statistiken per medlare (år, avtalsområde, ettan eller tvåan) aldrig kan säga något annat än ärendena själva – vilket är hela poängen med FF-009:s statistik.",
+      logNote:
+        "Kontaktuppgifter omfattas av Medlingsinstitutets gallringsrutiner (D-004). Registreringen loggas med tidpunkt och användare (FH-001).",
     },
     notify: {
       heading: "Notifiering",
@@ -1345,6 +1442,42 @@ export const sv = {
     },
   },
   anvandare: {
+    users: {
+      heading: "Användare och rolltilldelning",
+      intro:
+        "Medlingsinstitutets behörighetsadministratör lägger upp användare och tilldelar roller själv, utan leverantörens medverkan (NFÅ-005). Rollens innehåll ändras inte här – se behörighetsmatrisen nedan.",
+      add: "Lägg till användare",
+      name: "Namn",
+      namePlaceholder: "T.ex. Sara Lindström",
+      efos: "EFOS-identitet",
+      efosHint: "Identiteten hos Försäkringskassans IdP",
+      email: "E-post",
+      unit: "Enhet",
+      role: "Roll",
+      assigned: "Roll tilldelad",
+      assignedBy: (who: string) => `av ${who}`,
+      lastSignIn: "Senaste inloggning",
+      status: "Status",
+      action: "Åtgärd",
+      active: "Aktiv",
+      inactive: "Inaktiv",
+      deactivate: "Inaktivera",
+      reactivate: "Återaktivera",
+      lastAdminReason:
+        "Den sista aktiva behörighetsadministratören kan inte inaktiveras – då kan behörigheter bara återställas av leverantören, vilket är det NFÅ-005 ska förhindra.",
+      reactivateReason: "Ej aktiv i demon",
+      save: "Spara användaren",
+      nameRequired: "Namn krävs.",
+      savedNote: (name: string) =>
+        `${name} är upplagd och har fått sin roll. Tilldelningen är registrerad i ändringsloggen med tidpunkt och användare.`,
+      allRoles: "Alla roller",
+      allStatuses: "Alla",
+      noMatch: "Ingen användare matchar de valda filtren.",
+      noPasswordNote:
+        "MIIS håller inga lösenord och skapar inga konton. Autentiseringen ligger hos Försäkringskassans IdP via SAML 2.0 och EFOS-kort (NFÅ-001) – en användare här är en koppling mellan en identitet som redan finns där och en roll i MIIS.",
+      retentionNote:
+        "Användare inaktiveras, de tas inte bort. Inloggningar loggas (NFL-001) och sparas under gallringstiden (NFL-003), så loggen måste fortsätta att peka på en person även efter att hen slutat.",
+    },
     title: "Användare",
     epic: "Behörighetsadministration",
     subtitle: "Användare, roller och tilldelade behörigheter",
@@ -1353,12 +1486,17 @@ export const sv = {
       intro:
         "De åtta rollerna i Bilaga 1 §3.1. Rollen avgör både vad användaren får göra och vilka menyval som visas – rollväxlaren i demoläget byter roll för att göra just det synligt.",
       role: "Roll",
-      person: "Exempelanvändare",
+      held: "Användare",
+      unstaffed: "Ingen användare",
+      unstaffedNote: (roles: string) =>
+        `Följande roller har ingen aktiv användare: ${roles}. Delar av systemet är då inte bemannade – rollen finns men ingen kan nå den.`,
       permissions: "Behörighet",
       menu: "Menyval",
       level: { write: "Skriv", read: "Läs", none: "–" },
       matrixNote:
         "Läs betyder att rollen kan öppna vyn men inte ändra något i den. Skriv betyder registrera och redigera. Samma funktion styr menyn, åtkomsten till vyn och den här tabellen, så de kan inte säga emot varandra.",
+      readOnlyNote:
+        "Matrisen redigeras inte i systemet, och det är avsiktligt. NFÅ-003 definierar åtkomsten utifrån de åtta roller som Bilaga 1 §3.1 beskriver; om en administratör kunde flytta Skriv på Avtal mellan roller skulle tabellen beskriva en konfiguration i stället för Medlingsinstitutets eget dokument. Det NFÅ-005 lägger hos Medlingsinstitutet är användare och rolltilldelning – båda redigeras i panelen ovanför.",
     },
     auth: {
       heading: "Inloggning",

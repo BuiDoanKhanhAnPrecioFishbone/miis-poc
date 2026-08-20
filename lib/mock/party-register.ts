@@ -24,6 +24,7 @@ import type { CooperationBody, Party } from "@/lib/domain/party";
 export const PARTY_REGISTER: Party[] = [
   {
     id: "P-028",
+    centralOrganisation: "Saco",
     type: "employee",
     name: "Sveriges Lärare",
     /*
@@ -54,6 +55,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-016",
+    centralOrganisation: "Fristående",
     type: "employer",
     name: "Fremia",
     sector: "private",
@@ -82,6 +84,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-015",
+    centralOrganisation: "Svenskt Näringsliv",
     type: "employer",
     name: "Teknikföretagen",
     sector: "private",
@@ -98,6 +101,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-010",
+    centralOrganisation: "Svenskt Näringsliv",
     type: "employer",
     name: "Industriarbetsgivarna",
     sector: "private",
@@ -111,6 +115,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-012",
+    centralOrganisation: "Svenskt Näringsliv",
     type: "employer",
     name: "Almega Tjänsteförbunden",
     sector: "private",
@@ -124,6 +129,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-017",
+    centralOrganisation: "Fristående",
     type: "employer",
     name: "Sobona",
     sector: "municipal",
@@ -139,6 +145,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-020",
+    centralOrganisation: "LO",
     type: "employee",
     name: "IF Metall",
     nameHistory: [
@@ -152,6 +159,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-022",
+    centralOrganisation: "TCO",
     type: "employee",
     name: "Unionen",
     nameHistory: [
@@ -164,6 +172,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-021",
+    centralOrganisation: "LO",
     type: "employee",
     name: "Seko",
     nameHistory: [
@@ -177,6 +186,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-026",
+    centralOrganisation: "LO",
     type: "employee",
     name: "Kommunal",
     nameHistory: [{ name: "Kommunal", validFrom: "1910-01-01" }],
@@ -193,6 +203,7 @@ export const PARTY_REGISTER: Party[] = [
   */
   {
     id: "P-101",
+    centralOrganisation: "TCO",
     type: "employee",
     name: "Lärarförbundet",
     nameHistory: [{ name: "Lärarförbundet", validFrom: "1991-01-01", validTo: "2022-12-31" }],
@@ -202,6 +213,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-102",
+    centralOrganisation: "Saco",
     type: "employee",
     name: "Lärarnas Riksförbund",
     nameHistory: [{ name: "Lärarnas Riksförbund", validFrom: "1884-01-01", validTo: "2022-12-31" }],

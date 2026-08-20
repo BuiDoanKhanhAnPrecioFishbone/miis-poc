@@ -17,8 +17,8 @@ import {
 import { t as text, type Lang } from "@/lib/domain/lang";
 import type { RoleInfo } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
-import { IconAi, IconClose, IconForward } from "./icons";
-import { Badge, Button, LinkButton, ReqTags } from "./primitives";
+import { IconAi, IconChevronDown, IconClose, IconForward } from "./icons";
+import { Badge, LinkButton, ReqTags } from "./primitives";
 
 /**
  * The AI assistant — Appendix 1 §4.1, gathered into one place.
@@ -26,32 +26,26 @@ import { Badge, Button, LinkButton, ReqTags } from "./primitives";
  * §4.1 asks for *"ett integrerat AI-stöd"* and §4.3's system sketch carries
  * AI-assisted registration as a module of the system in its own right. Until
  * now MIIS answered that with two panels on two screens and no way to see the
- * whole of it, which is a fair reading of the requirement tables and a poor one
- * of the requirement: an officer could not find out what the AI does, where it
- * runs, what it is holding for them, or where it is not allowed to go.
+ * whole of it: an officer could not find out what the AI does, where it runs,
+ * what it is holding for them, or where it is not allowed to go.
  *
- * **It is not a chatbot, and refusing to build one is the argument.** There is
- * no prompt box and nothing to converse with. The drawer answers four questions
- * a case officer at a Swedish authority actually has about a machine that reads
- * their post:
+ * **It is interactive, and it is still not a chatbot.** The drawer opens on the
+ * two things an officer acts on — *what can I ask it to do here*, and *what is
+ * it holding for me* — and everything explanatory is folded behind one control.
+ * The tasks are real: each is one of §4.1's four functions, run on the screen
+ * §4.1 puts it on, producing a proposal FAI-002 then requires a human to
+ * approve. What there is no room for is a free prompt box, and refusing to
+ * build one is the argument rather than a limitation — an authority procuring
+ * AI is buying a bounded set of behaviours, and a box that accepts any
+ * instruction is the opposite of a bounded set.
  *
- * 1. *What is it doing on this screen?* — the §4.1 functions that run here,
- *    each named with the requirement it answers, and a way into the view.
- * 2. *What is it holding for me?* — the review queue. FAI-002 guarantees that
- *    nothing is saved before approval, which means a set of unapproved things
- *    exists; this is the first place in MIIS it can be seen.
- * 3. *What can it do at all?* — the four functions, in §4.1's own order.
- * 4. *Where does it stop?* — MI's two stated limits, plus the one this design
- *    adds. This is the section a competitor's demo will not have, and it is the
- *    one an authority buying AI has to see: a boundary the interface never
- *    states is a boundary the buyer takes on trust.
+ * The explanatory half is still here, one press away: the four functions, MI's
+ * own two limits on what the AI may not do, and where the traceability lands.
+ * That last section is what a competitor's demo will not have — a boundary an
+ * interface never states is a boundary the buyer takes on trust.
  *
- * Everything it shows is `AiRegion`'s four signals in drawer form — the band,
- * the letter-mark, the spine, the violet — so nothing about "this is
- * machine-generated and unapproved" depends on colour alone.
- *
- * NFÅ-003 applies inside it: the queue is filtered by what the role may reach,
- * and a role that may only read is told so instead of being offered approval.
+ * NFÅ-003 applies inside it: the queue is filtered by write access, a role that
+ * may only read is told so, and a role with no AI screen gets no launcher.
  */
 
 interface AiContextValue {
@@ -86,22 +80,33 @@ function useAi(): AiContextValue {
 }
 
 /**
- * The way in, in the application header.
+ * The way in — fixed to the bottom right of every screen the role may act on.
  *
- * Filled violet with the letter-mark, because `Badge tone="ai"` is the one
- * filled treatment in the system and the reason is the same here: the AI
- * surface has to be findable before it is read. The count is the number of
- * proposals waiting, and it is a number rather than a dot — "3" is actionable,
- * a dot is only anxiety.
+ * It was in the application header, between the signed-in name and Sign out,
+ * and it was findable only by someone already looking for it: the header is
+ * where a user goes to leave, not where they go for help with the screen in
+ * front of them. Down here it sits in the corner the eye returns to after
+ * reading, at a constant place across nineteen screens, and it is the one thing
+ * on the page whose position does not depend on what the page contains.
+ *
+ * It is a **labelled pill, not a bare circle.** A floating circle with a mark in
+ * it has to be learned; a control in a system a case officer uses every day for
+ * eight hours should be readable the first time and every time. The count is a
+ * number rather than a dot because "3" is actionable and a dot is only anxiety.
+ *
+ * `print-hide`, because it is chrome. And it steps out of the way of the
+ * session dialog by sitting below it in the stack.
  */
 export function AiAssistantLauncher({ lang, role }: { lang: Lang; role: RoleInfo }) {
-  const { queue, setOpen } = useAi();
+  const { queue, setOpen, open } = useAi();
   const t = dictionary(lang).ai;
   const mine = visibleQueue(queue, role);
   const waiting = queueTotal(mine);
 
   /* A role with no AI surface at all gets no launcher — NFÅ-003 in the chrome. */
   if (aiFunctionsForRole(role).length === 0) return null;
+  /* One AI surface at a time: the drawer replaces the launcher while it is up. */
+  if (open) return null;
 
   return (
     <button
@@ -109,14 +114,14 @@ export function AiAssistantLauncher({ lang, role }: { lang: Lang; role: RoleInfo
       onClick={() => setOpen(true)}
       aria-haspopup="dialog"
       aria-label={waiting > 0 ? t.launcherWaiting(waiting) : t.launcher}
-      className="inline-flex min-h-11 items-center gap-2 rounded-sm border-2 border-ai-solid bg-ai-solid px-3 py-2 text-label font-bold text-ai-solid-foreground transition-colors hover:bg-[var(--mi-ai-700)]"
+      className="print-hide fixed bottom-6 right-6 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-ai-solid bg-ai-solid px-5 py-3 text-table font-bold text-ai-solid-foreground shadow-lg transition-colors hover:bg-[var(--mi-ai-700)]"
     >
-      <IconAi size="sm" />
+      <IconAi />
       <span>{t.launcher}</span>
       {waiting > 0 && (
         <span
           aria-hidden
-          className="inline-flex min-w-6 justify-center rounded-full bg-ai-solid-foreground px-1.5 py-0.5 text-meta font-bold tabular-nums text-ai-solid"
+          className="inline-flex min-w-6 justify-center rounded-full bg-ai-solid-foreground px-1.5 py-0.5 text-label font-bold tabular-nums text-ai-solid"
         >
           {waiting}
         </span>
@@ -150,6 +155,7 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
   const t = d.ai;
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const [details, setDetails] = useState(false);
 
   const close = useCallback(() => setOpen(false), [setOpen]);
 
@@ -196,16 +202,17 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
   if (!open) return null;
 
   const here = aiFunctionsForPath(pathname).map((f) => aiFunctionInfo(f, lang));
+  const reachable = aiFunctionsForRole(role).map((f) => aiFunctionInfo(f, lang));
+  const elsewhere = reachable.filter((f) => !here.some((h) => h.id === f.id));
   const mine = visibleQueue(queue, role);
   const canReview = mayReviewAi(role);
-  const reachable = aiFunctionsForRole(role).map((f) => aiFunctionInfo(f, lang));
 
   return (
     <div className="print-hide fixed inset-0 z-[65] flex justify-end bg-[var(--mi-ink)]/50">
       {/*
         The scrim closes on click, and it is a plain div rather than a button:
         it is a convenience for a mouse, never the only way out. Escape and the
-        Stäng control are the ways the requirement is met.
+        Stäng control in the header are the ways the requirement is met.
       */}
       <div aria-hidden className="flex-1" onClick={close} />
       <div
@@ -213,14 +220,13 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="ai-assistant-title"
-        className="flex h-full w-full max-w-xl flex-col overflow-hidden border-l-[6px] border-ai-solid bg-card shadow-card"
+        className="flex h-full w-full max-w-lg flex-col overflow-hidden border-l-[6px] border-ai-solid bg-card shadow-card"
       >
-        {/* The same banded header the inline AI compartments carry. */}
         {/*
-          `nowrap` on the row, `shrink-0` on the control: the English title is
-          longer than the Swedish one and pushed Stäng onto a line of its own,
-          which left a close button floating under the heading like a second
-          action. The title block shrinks instead — it has room to.
+          The banded header the inline AI compartments carry, and the only Close
+          control. There used to be a second one in a footer, which put the way
+          out at both ends of a scrolling panel and made the last thing in the
+          drawer a dismissal rather than the content.
         */}
         <div className="ai-band flex flex-nowrap items-start justify-between gap-x-4 px-5 py-3">
           <div className="flex min-w-0 flex-wrap items-center gap-2.5">
@@ -231,15 +237,12 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
               <IconAi size="sm" />
               {d.common.aiMark}
             </span>
-            <div className="min-w-0">
-              <h2
-                id="ai-assistant-title"
-                className="font-display text-section font-semibold text-ai-solid-foreground"
-              >
-                {t.title}
-              </h2>
-              <p className="text-label text-ai-solid-foreground/90">{t.subtitle}</p>
-            </div>
+            <h2
+              id="ai-assistant-title"
+              className="min-w-0 font-display text-section font-semibold text-ai-solid-foreground"
+            >
+              {t.title}
+            </h2>
           </div>
           <button
             type="button"
@@ -257,32 +260,30 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
         </p>
 
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
-          <Section title={t.onThisScreen}>
-            {here.length === 0 ? (
+          {/*
+            What the officer can ask for, first and as controls.
+
+            This is the answer to "can the user ask the AI to do things": yes,
+            and the things are §4.1's four functions rather than free text. Each
+            takes them to the screen the function runs on, because that is where
+            the proposal appears and where FAI-002's approve and reject live.
+          */}
+          <Section title={t.ask} lead={here.length === 0 ? t.askElsewhere : t.askLead}>
+            <ul className="space-y-2">
+              {(here.length > 0 ? here : elsewhere).map((f) => (
+                <li key={f.id}>
+                  <LinkButton href={f.href} fullWidth iconEnd={<IconForward />}>
+                    {f.ask}
+                  </LinkButton>
+                </li>
+              ))}
+            </ul>
+            {reachable.length === 0 && (
               <p className="text-table text-muted-foreground">{t.onThisScreenNone}</p>
-            ) : (
-              <ul className="space-y-4">
-                {here.map((f) => (
-                  <li key={f.id}>
-                    <p className="font-semibold">{f.label}</p>
-                    <p className="mt-1 text-table">{f.what}</p>
-                    <p className="mt-1 text-label text-muted-foreground">
-                      <span className="font-bold">{t.where}: </span>
-                      {f.where}
-                    </p>
-                    <div className="mt-2">
-                      <ReqTags ids={f.requirements} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
             )}
           </Section>
 
-          <Section title={t.queue} lead={t.queueLead}>
-            {!canReview && (
-              <p className="mb-3 text-table text-muted-foreground">{t.readOnly}</p>
-            )}
+          <Section title={t.queue} lead={canReview ? t.queueLead : t.readOnly}>
             {mine.length === 0 ? (
               <p className="text-table text-muted-foreground">{t.queueEmpty}</p>
             ) : (
@@ -307,58 +308,80 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
             )}
           </Section>
 
-          <Section title={t.functions}>
-            <ul className="space-y-3">
-              {reachable.map((f) => (
-                <li key={f.id}>
-                  <p className="font-semibold">{f.label}</p>
-                  <p className="mt-1 text-table">{f.what}</p>
-                  <div className="mt-1">
-                    <ReqTags ids={f.requirements} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Section>
-
           {/*
-            The boundary, and the reason the drawer exists rather than a fifth
-            panel. §4.1 states two limits in MI's own words; the third is this
-            design's, and saying so is better than implying MI asked for it.
+            Everything explanatory, behind one control.
+
+            The drawer opened on five sections and the officer had to read past
+            three of them to reach the queue. What the AI can do, where it stops
+            and how it is logged are all still here — they are the sections a
+            competitor will not have — but they are reference material, and
+            reference material does not belong above the work.
           */}
-          <Section title={t.boundaries} lead={t.boundariesLead}>
-            <ul className="space-y-3">
-              {AI_BOUNDARIES.map((b) => (
-                <li key={b.id} className="border-l-4 border-ai-solid pl-3">
-                  <p className="text-table">{b.statement[lang]}</p>
-                  <div className="mt-1">
-                    <ReqTags ids={b.requirements} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Section>
-
-          <Section title={t.traceability}>
-            <p className="text-table">{t.traceabilityBody}</p>
-            <div className="mt-3">
-              <Link
-                href="/administration"
-                className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
+          <div className="border-t border-border pt-4">
+            <button
+              type="button"
+              onClick={() => setDetails((v) => !v)}
+              aria-expanded={details}
+              aria-controls="ai-details"
+              className="flex min-h-11 w-full items-center justify-between gap-3 text-left text-table font-bold text-primary"
+            >
+              {t.details}
+              <span
+                aria-hidden
+                className={`flex h-5 items-center transition-transform ${details ? "rotate-180" : ""}`}
               >
-                {t.traceabilityAction}
-              </Link>
-            </div>
-            <div className="mt-1">
-              <ReqTags ids={["FAI-002", "FH-001", "NFÅ-003"]} />
-            </div>
-          </Section>
-        </div>
+                <IconChevronDown />
+              </span>
+            </button>
 
-        <div className="border-t border-border px-5 py-3">
-          <Button variant="secondary" onClick={close} fullWidth>
-            {d.common.close}
-          </Button>
+            <div id="ai-details" className={`space-y-5 pt-3 ${details ? "block" : "hidden"}`}>
+              <Section title={t.functions}>
+                <ul className="space-y-3">
+                  {reachable.map((f) => (
+                    <li key={f.id}>
+                      <p className="font-semibold">{f.label}</p>
+                      <p className="mt-1 text-table">{f.what}</p>
+                      <p className="mt-1 text-label text-muted-foreground">
+                        <span className="font-bold">{t.where}: </span>
+                        {f.where}
+                      </p>
+                      <div className="mt-1">
+                        <ReqTags ids={f.requirements} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+
+              <Section title={t.boundaries} lead={t.boundariesLead}>
+                <ul className="space-y-3">
+                  {AI_BOUNDARIES.map((b) => (
+                    <li key={b.id} className="border-l-4 border-ai-solid pl-3">
+                      <p className="text-table">{b.statement[lang]}</p>
+                      <div className="mt-1">
+                        <ReqTags ids={b.requirements} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+
+              <Section title={t.traceability}>
+                <p className="text-table">{t.traceabilityBody}</p>
+                <div className="mt-3">
+                  <Link
+                    href="/administration"
+                    className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
+                  >
+                    {t.traceabilityAction}
+                  </Link>
+                </div>
+                <div className="mt-1">
+                  <ReqTags ids={["FAI-002", "FH-001", "NFÅ-003"]} />
+                </div>
+              </Section>
+            </div>
+          </div>
         </div>
       </div>
     </div>

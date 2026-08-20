@@ -197,21 +197,6 @@ export function AppShell({
                 {role.person} · {role.label}
               </div>
             </div>
-            {/*
-              The AI support, reachable from every screen it applies to.
-
-              §4.1 asks for an *integrated* AI support and §4.3 carries it as a
-              module of the system; two panels on two screens answered the
-              requirement tables but left an officer with no way to find out
-              what the machine does, what it is holding for them, or where it
-              stops. This is that, and it is deliberately not a chatbot — see
-              `AiAssistant`.
-
-              It sits before Sign out because it is the only control in the
-              header that is part of MIIS's own functionality; signing out ends
-              the session and belongs at the end of the row.
-            */}
-            <AiAssistantLauncher lang={lang} role={role} />
             <button
               type="button"
               onClick={() => setSessionWarning(true)}
@@ -308,6 +293,17 @@ export function AppShell({
         </main>
       </div>
 
+      {/*
+        The AI support, reachable from every screen the role may act on.
+
+        Fixed to the bottom right rather than in the header. §4.1 asks for an
+        *integrerat* AI-stöd and §4.3 carries AI-assisted registration as a
+        module of the system, so it has to be everywhere — but beside Sign out
+        it was findable only by someone already looking for it, because the
+        header is where a user goes to *leave*. The corner is the same place on
+        all nineteen screens and does not move with what the page contains.
+      */}
+      <AiAssistantLauncher lang={lang} role={role} />
       <AiAssistant lang={lang} role={role} />
 
       <SessionTimeoutWarning

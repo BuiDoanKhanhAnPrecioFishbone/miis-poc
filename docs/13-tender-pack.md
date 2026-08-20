@@ -170,17 +170,46 @@ added the third. The decisions are signed by MI's Director-General Irene Wennemo
 Per Ewaldsson, and copied to *Medlarna*, the employer organisation and each union
 separately.
 
-### Not done yet
+### All six read (2026-08-20)
 
-**Bilaga F, Rapport 2 — Avtalskonstruktioner.** MI's real report counts **employees**,
-not agreements, and splits every construction three ways — Privat / Offentlig / Alla
-sektorer, each as a count and a percent — and again by Arbetare / Tjänstemän. Our report
-counts agreements per construction, derived from the records, which is the right
-architecture but the wrong measure. Doing MI's version properly means giving an agreement
-an employee count, a sector and a worker/salaried split, and deriving the table from
-those — a domain change, not a data change. MI's own figures are in the PDF on page 41
-when it is done: construction 4 covers 893 047 employees across all sectors, 23,5 %,
-which is the largest.
+Pages 39–50 were extracted as images and read. What they settle:
 
-**Rapport 3–6** (Avtalsrörelse, Huvudrapport, Medlare, Pensionsavtal) have not been read
-in detail. `/rapporter` names them; their real layouts are on pages 43–50.
+**Every report is a selection screen and a result.** Bilaga F says so in its first line —
+*"För varje rapport visas urvalsbild och resultat"* — and each urvalsbild is a W3D3 form
+with **Typ**, **Välj rapport**, **Ärendeserie**, a format dropdown (PDF), the criteria,
+and *Generera rapport*. The criteria are **not the same per report**: Rapport 1, 4 and 5
+take three (AGO, ATO, Avtal); Rapport 2 and 3 take nine, with *Centralorganisation*
+appearing twice, once per side; Rapport 6 splits its criteria into three blocks. Every
+printout then repeats them as an **Urvalskriterier** block, with unset criteria reading
+*Alla*. That whole shape is now `REPORTS` in `lib/domain/report.ts` and `ReportRunner`.
+
+**Rapport 2 — Avtalskonstruktioner** was already built from MI's published figures
+(`lib/mock/constructions-report.ts`), against an earlier note in this file saying it was
+not. It counts employees, splits Privat / Offentlig / Alla sektorer and again by Arbetare
+/ Tjänstemän, and the figures are MI's own, not derived — the report covers 3 797 764
+employees across the whole labour market and could never come out of a sample. The screen
+now says so where the selection sits, instead of letting a criterion appear to narrow a
+transcription.
+
+**Rapport 3 — Avtalsrörelse** is agreements and employees by the **month the agreement
+expires**, split into kvarstående / nytecknade / nytecknade efter medling, as counts and
+percentages, with a bar chart per half. Now built and **derived** from the register
+(`bargainingRoundReport`), which is the opposite choice from Rapport 2 and for a stated
+reason: this one counts the agreements MI holds. It needed an employee count on the
+agreement, which MI's own Huvudrapport carries as *Avtalets omfattning: Anställda*.
+
+**Rapport 4 — Huvudrapport** is the complete record for **one** agreement: basfakta,
+omfattning, lön, arbetstid, pensionsavtal, ledighet, löneavtal, lönerevision. It has no FR
+of its own because it is the agreement view, printed — so the catalogue points it at
+`/avtal/[id]` rather than duplicating it. That closes the gap flagged on 2026-08-19.
+
+**Rapport 5 — Medlare** is *not* a mediator report. It is an agreement print for
+**mediators** — löptider, uppsägning, prolongering, linked protocols, plus "Övriga avtal
+som [AGO] tecknar". Together with Rapport 1 it is FR-011's two audiences.
+
+**Rapport 6 — Pensionsavtal och övriga avtal** lists agreements with their pension and
+other agreements, selected on the two sides separately.
+
+**Centralorganisation is a party property.** It is not in FP-001's sentence, but MI
+selects six of its reports on it and the Huvudrapport prints the chain — "Almega ·
+Svenskt Näringsliv · Privat" against "6F Fackförbund i samverkan · LO". Added to `Party`.

@@ -37,6 +37,16 @@ export interface AiFunctionDefinition {
   label: Text;
   /** What the function does, kept close to §4.1's own sentence. */
   what: Text;
+  /**
+   * The same function phrased as a request the officer makes.
+   *
+   * This is what "ask the AI to do something" means in a system whose AI is
+   * defined by four named functions: a short list of real tasks, not a prompt
+   * box. Each one runs a function §4.1 asks for, on the screen §4.1 puts it on,
+   * and produces a proposal FAI-002 then requires a human to approve — so the
+   * interaction is genuine and nothing is claimed that MI did not ask for.
+   */
+  ask: Text;
   /** Where the officer sees it — named so the drawer can send them there. */
   where: Text;
   requirements: readonly string[];
@@ -58,6 +68,10 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
       sv: "Läser det uppladdade protokollet, föreslår vilket befintligt avtal det rör och om ett nytt löneavtal eller avtal om allmänna villkor ska skapas, med teckningsdatum, löptid och eventuell uppsägningsmöjlighet.",
       en: "Reads the uploaded protocol, proposes which existing agreement it concerns and whether a new wage agreement or general terms agreement should be created, with signing date, validity period and any termination option.",
     },
+    ask: {
+      sv: "Tolka protokollet och föreslå avtal",
+      en: "Interpret the protocol and propose an agreement",
+    },
     where: { sv: "Steg 2 och 3 i Registrera avtalsprotokoll", en: "Steps 2 and 3 of Register agreement protocol" },
     requirements: ["FAI-001", "FAI-002", "FA-018"],
     routes: ["/registrera"],
@@ -70,6 +84,10 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
     what: {
       sv: "Markerar text i dokument utifrån bevakningsordstabellen, så att särskilt utvalda yrkanden — till exempel sådana som identifierats vid en partsträff — syns direkt i protokollet.",
       en: "Marks text in documents from the watchword table, so that particularly selected demands — for instance those identified at a party meeting — are visible directly in the protocol.",
+    },
+    ask: {
+      sv: "Markera bevakningsord i dokumentet",
+      en: "Mark watchwords in the document",
     },
     where: {
       sv: "I protokollvyn, och tabellen underhålls under Administration",
@@ -90,6 +108,10 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
       sv: "Söker i protokollet efter specifika skrivningar — jämställdhet, arbetstidsförkortning eller andra utpekade bestämmelser — och föreslår dem för registrering. Varje förslag pekar tillbaka på stycket det lästes ur.",
       en: "Searches the protocol for specific wordings — gender equality, working time reduction or other designated provisions — and proposes them for registration. Every proposal points back to the passage it was read from.",
     },
+    ask: {
+      sv: "Sök efter utpekade skrivningar i protokollet",
+      en: "Search the protocol for designated wordings",
+    },
     where: { sv: "Steg 4 i Registrera avtalsprotokoll", en: "Step 4 of Register agreement protocol" },
     requirements: ["FAI-001", "FAI-002", "FA-011"],
     routes: ["/registrera"],
@@ -102,6 +124,10 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
     what: {
       sv: "Vid inkommet generaldirektörsbeslut redovisas övriga parter på avtalsområdet, tidigare medlingar och eventuella spridningsrisker ur det MIIS redan känner till.",
       en: "On an incoming Director-General decision, the other parties in the agreement area, previous mediations and any contagion risks are set out from what MIIS already holds.",
+    },
+    ask: {
+      sv: "Ta fram beslutsstöd för ärendet",
+      en: "Draw up decision support for the case",
     },
     where: { sv: "På medlingsärendet", en: "On the mediation case" },
     requirements: ["FF-006", "FF-008"],
@@ -157,6 +183,7 @@ export interface AiFunctionInfo {
   id: AiFunctionId;
   label: string;
   what: string;
+  ask: string;
   where: string;
   requirements: readonly string[];
   href: string;
@@ -171,6 +198,7 @@ export function aiFunctionInfo(
     id: definition.id,
     label: definition.label[lang],
     what: definition.what[lang],
+    ask: definition.ask[lang],
     where: definition.where[lang],
     requirements: definition.requirements,
     href: definition.href,

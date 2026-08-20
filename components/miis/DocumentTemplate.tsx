@@ -1,0 +1,208 @@
+"use client";
+
+import { useId, useState } from "react";
+
+import type { Lang } from "@/lib/domain/lang";
+import { dictionary } from "@/lib/i18n";
+import { IconCheck, IconPlus, IconPrint } from "./icons";
+import { Badge, Button, Callout, Field, FormGrid, Panel, Rationale, ReqTags } from "./primitives";
+import { SegmentedControl } from "./Select";
+
+/**
+ * Creating a document from one of MI's templates — FSD-001 and FSD-002.
+ *
+ * §4.1's *Dokumentgenerering* is the sentence this is built from: the system
+ * shall create documents *"utifrån en dokumentmall, där förinmatad information
+ * från MIIS ska kunna redigeras"*. Both halves matter and only one of them had
+ * been drawn. MIIS knew the template existed and said so on a disabled button;
+ * what it never showed was the thing the requirement is actually about — that
+ * MI's own information arrives in the document already filled in, and that the
+ * officer can change it before the document is finished.
+ *
+ * So the control opens the draft rather than producing a file. The pre-filled
+ * fields are listed with where each one came from, the body is editable, and
+ * creating it names the file and logs who did it. That is the whole of FSD-001
+ * and FSD-002 as a workflow, and it is demonstrable in a fifteen-minute
+ * presentation, which a greyed-out button is not.
+ *
+ * **Variants are a `SegmentedControl`, not two buttons.** FSD-001 asks for a
+ * GD-beslut *"en variant med varsel och en utan varsel"* — that is one document
+ * with a property, not two documents. Two buttons said the opposite, and left
+ * the officer with no way to see which variant they were about to produce.
+ */
+
+export interface TemplateField {
+  label: string;
+  value: string;
+  /** Where MIIS took it from — the *förinmatad* half of the requirement. */
+  source: string;
+}
+
+export interface TemplateVariant {
+  id: string;
+  label: string;
+  /** The body as the template fills it, before the officer edits it. */
+  body: string;
+  /**
+   * The file the variant produces.
+   *
+   * A string on the variant rather than a `fileName(variant)` callback,
+   * because half the callers are server components and a function cannot cross
+   * that boundary — the mediation case failed to render at all until this was
+   * data instead of behaviour.
+   */
+  fileName: string;
+}
+
+export function DocumentTemplate({
+  lang,
+  heading,
+  intro,
+  fields,
+  variants,
+  requirements,
+  logNote,
+  created,
+}: {
+  lang: Lang;
+  heading: string;
+  intro: string;
+  fields: TemplateField[];
+  /** One variant, or the two FSD-001 asks for. */
+  variants: TemplateVariant[];
+  requirements: readonly string[];
+  logNote: string;
+  /** A document already produced for this case, if there is one. */
+  created?: string;
+}) {
+  const d = dictionary(lang);
+  const t = d.documentTemplate;
+  const bodyId = useId();
+
+  const [open, setOpen] = useState(false);
+  const [variantId, setVariantId] = useState(variants[0]!.id);
+  const [body, setBody] = useState(variants[0]!.body);
+  const [edited, setEdited] = useState(false);
+  const [saved, setSaved] = useState<string | null>(created ?? null);
+
+  const variant = variants.find((v) => v.id === variantId) ?? variants[0]!;
+
+  function chooseVariant(id: string) {
+    setVariantId(id);
+    /*
+      Switching variant reloads the template unless the officer has typed into
+      it. Discarding their edit silently would be the worse of the two failures,
+      so an edited draft keeps its text and says which variant it is now.
+    */
+    if (!edited) setBody(variants.find((v) => v.id === id)?.body ?? "");
+  }
+
+  if (saved) {
+    return (
+      <Panel title={heading} tags={requirements}>
+        <Callout tone="ok" live>
+          {t.createdNote}
+        </Callout>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Badge tone="ok">{t.created}</Badge>
+          <span className="min-w-0 break-all font-semibold">{saved}</span>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Button variant="secondary" onClick={() => window.print()} iconStart={<IconPrint />}>
+            {d.print.action}
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setSaved(null);
+              setOpen(true);
+            }}
+          >
+            {t.reopen}
+          </Button>
+        </div>
+        <Rationale>{logNote}</Rationale>
+      </Panel>
+    );
+  }
+
+  return (
+    <Panel title={heading} tags={requirements}>
+      <p className="max-w-4xl text-table">{intro}</p>
+
+      {!open ? (
+        <div className="mt-4">
+          <Button variant="secondary" onClick={() => setOpen(true)} iconStart={<IconPlus />}>
+            {t.open}
+          </Button>
+          <Rationale>{t.openNote}</Rationale>
+        </div>
+      ) : (
+        <div className="mt-4 space-y-5">
+          {variants.length > 1 && (
+            <div>
+              <p className="mb-2 text-label font-bold">{t.variant}</p>
+              <SegmentedControl
+                label={t.variant}
+                value={variantId}
+                onChange={chooseVariant}
+                options={variants.map((v) => ({ id: v.id, label: v.label }))}
+              />
+            </div>
+          )}
+
+          {/*
+            The *förinmatad* half, shown rather than implied. Each value names
+            where MIIS took it from, because a document generated from a
+            register is only trustworthy if the officer can see which register.
+          */}
+          <div>
+            <h3 className="mi-kicker mb-2 text-muted-foreground">{t.prefilled}</h3>
+            <FormGrid>
+              {fields.map((f) => (
+                <Field key={f.label} label={f.label} value={f.value} hint={f.source} />
+              ))}
+            </FormGrid>
+          </div>
+
+          {/*
+            And the editable half. A `textarea` rather than a rich editor: the
+            requirement is that the pre-filled information *can be edited*, and
+            a formatting toolbar would be a claim about the delivered document
+            pipeline that nothing in the specification supports.
+          */}
+          <div>
+            <label htmlFor={bodyId} className="mb-1 block text-label font-bold">
+              {t.body}
+            </label>
+            <textarea
+              id={bodyId}
+              value={body}
+              rows={10}
+              onChange={(e) => {
+                setBody(e.target.value);
+                setEdited(true);
+              }}
+              className="field-input min-h-48 w-full font-sans leading-relaxed"
+            />
+            <p className="mt-1 text-label text-muted-foreground">
+              {edited ? t.editedNote : t.bodyNote}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button onClick={() => setSaved(variant.fileName)} iconStart={<IconCheck />}>
+              {t.create}
+            </Button>
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              {d.common.close}
+            </Button>
+            <ReqTags ids={requirements} />
+          </div>
+          <p className="text-label text-muted-foreground">{t.fileNote(variant.fileName)}</p>
+        </div>
+      )}
+      <Rationale>{logNote}</Rationale>
+    </Panel>
+  );
+}

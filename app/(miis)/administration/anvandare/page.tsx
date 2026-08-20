@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { UserAdmin } from "@/components/miis/UserAdmin";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import type { NavId } from "@/lib/domain/nav";
 import { accessLevel, ROLES } from "@/lib/domain/role";
+import { unstaffedRoles, usersPerRole } from "@/lib/domain/user";
+import { listUsers } from "@/lib/data/users";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,6 +35,9 @@ export default async function AnvandarePage() {
   const session = await getSession();
   const { i18n, lang } = session;
   const t = i18n.anvandare;
+  const users = await listUsers();
+  const counts = usersPerRole(users);
+  const unstaffed = unstaffedRoles(users, ROLES);
 
   /*
     The matrix, screen by screen, rather than a sentence per role.
@@ -58,7 +64,16 @@ export default async function AnvandarePage() {
 
   const columns: Column[] = [
     { key: "role", header: t.roles.role, sortable: true },
-    { key: "person", header: t.roles.person, sortable: true },
+    /*
+      How many people hold the role, not an example of one.
+
+      The column read "Exempelanvändare" and carried a demo persona, which told
+      an evaluator that nobody had thought about who actually holds the role. A
+      count is the question an authorisation administrator has — and a role with
+      nobody in it is a part of the system nobody can reach, so zero is called
+      out rather than shown as a quiet 0.
+    */
+    { key: "held", header: t.roles.held, numeric: true, sortable: true },
     ...MODULES.map((m) => ({ key: m, header: i18n.nav[m] })),
   ];
 
@@ -85,7 +100,7 @@ export default async function AnvandarePage() {
         );
       }),
     ],
-    sort: [r.label[lang], r.person, ...MODULES.map((m) => accessLevel(r, m))],
+    sort: [r.label[lang], counts[r.id] ?? 0, ...MODULES.map((m) => accessLevel(r, m))],
   }));
 
   return (
@@ -96,17 +111,33 @@ export default async function AnvandarePage() {
         tags={["NFÅ-001", "NFÅ-003", "NFÅ-005"]}
       />
 
-      <Panel title={t.roles.heading} tags={["NFÅ-003", "NFÅ-005"]}>
-        <p className="mb-4 max-w-4xl text-table">{t.roles.intro}</p>
-        <p className="mb-4 max-w-4xl text-label text-muted-foreground">{t.roles.matrixNote}</p>
-        <DataTable
-          columns={columns}
-          rows={rows}
-          lang={lang}
-          caption={t.roles.heading}
-          minWidth="96rem"
-        />
-      </Panel>
+      <UserAdmin users={users} lang={lang} />
+
+      <div className="mt-5">
+        <Panel title={t.roles.heading} tags={["NFÅ-003"]}>
+          <p className="mb-4 max-w-4xl text-table">{t.roles.intro}</p>
+          <p className="mb-4 max-w-4xl text-label text-muted-foreground">{t.roles.matrixNote}</p>
+          <DataTable
+            columns={columns}
+            rows={rows}
+            lang={lang}
+            caption={t.roles.heading}
+            minWidth="96rem"
+          />
+          {unstaffed.length > 0 && (
+            <div className="mt-4">
+              <Callout tone="attention" label={t.roles.unstaffed}>
+                {t.roles.unstaffedNote(
+                  unstaffed
+                    .map((id) => ROLES.find((r) => r.id === id)?.label[lang] ?? id)
+                    .join(", "),
+                )}
+              </Callout>
+            </div>
+          )}
+          <Rationale>{t.roles.readOnlyNote}</Rationale>
+        </Panel>
+      </div>
 
       <div className="mt-5">
         <Panel title={t.auth.heading} tags={["NFÅ-001", "NFL-001"]}>

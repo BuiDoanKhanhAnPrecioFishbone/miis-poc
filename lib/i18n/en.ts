@@ -103,6 +103,12 @@ export const en: Dictionary = {
         : `AI support – ${n} proposals awaiting review`,
     title: "The AI assistant",
     subtitle: "Integrated AI support for the registration work (Appendix 1 §4.1)",
+    ask: "Ask the AI support for help",
+    askLead:
+      "The tasks below are §4.1's functions, run on the screen the requirement puts them on. Every run produces proposals a case officer approves or rejects — nothing is saved on the way.",
+    askElsewhere:
+      "The AI support does not run in this view. This is what you can ask it for, and where it happens.",
+    details: "About the AI support",
     onThisScreen: "On this screen",
     onThisScreenNone:
       "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
@@ -124,6 +130,22 @@ export const en: Dictionary = {
     readOnly:
       "Your role reads the AI proposals but does not approve them. Approval belongs to the role that may register in each register (NFÅ-003).",
   },
+  documentTemplate: {
+    open: "Open the document template",
+    openNote:
+      "The template opens with information from MIIS already filled in. Nothing is created until the case officer has reviewed it and pressed Create document.",
+    variant: "Variant",
+    prefilled: "Pre-filled from MIIS",
+    body: "Document text",
+    bodyNote: "The text comes from the template and can be changed before the document is created.",
+    editedNote: "The text has been changed by the case officer. The change follows into the document and into the change log.",
+    create: "Create document",
+    created: "Document created",
+    createdNote: "The document is created and linked to the case.",
+    reopen: "Open the template again",
+    fileNote: (name: string) => `The file will be named ${name}`,
+  },
+
   session: {
     title: "Your session is about to expire",
     body: "You have been inactive for some time. For security reasons you are signed out automatically after 30 minutes of inactivity.",
@@ -656,8 +678,23 @@ export const en: Dictionary = {
     benchmarkMonths: (n: number) => `${n} months`,
     benchmarkPeriod: (from: string, to: string) => `Period ${from} – ${to}`,
     documents: "Documents and actions",
-    createWithNotice: "Create DG decision – with industrial action notice",
-    createWithoutNotice: "Create DG decision – without notice",
+    createDecision: "Create a Director-General mediation decision",
+    withNotice: "With industrial action notice",
+    withoutNotice: "Without notice",
+    decisionNumber: "Decision number",
+    sourceCase: "From the mediation case",
+    sourceRegister: "From the mediator register",
+    decisionHeading: (nr: string) => `Director-General's decision no. ${nr}`,
+    decider: "Decided by",
+    presenter: "Presented by",
+    matter: "Matter",
+    mediation: "Mediation",
+    bodyWithNotice: (area: string, mediators: string) =>
+      `Following a request from the parties concerned, and in view of a notice of industrial action, Medlingsinstitutet orders mediation in the dispute between the parties over a new collective agreement (${area}).\n\nAppointed as mediators: ${mediators}.`,
+    bodyWithoutNotice: (area: string, mediators: string) =>
+      `With the consent of the parties concerned, Medlingsinstitutet orders mediation in the dispute between the parties over a new collective agreement (${area}).\n\nAppointed as mediators: ${mediators}.`,
+    decisionLogNote:
+      "The decision is linked to the mediation case and recorded in the change log with time and user. Appendix E holds Medlingsinstitutet's own examples of both variants.",
     finalise: "Finalise the decision",
     finaliseNote:
       "A notification e-mail with a link is sent to the mediator administrator and logged",
@@ -734,16 +771,49 @@ export const en: Dictionary = {
       markExportedNote:
         "The extract is noted per agreement, so the next extract shows what has already been delivered to the report.",
     },
-    bargainingRound: {
-      heading: "Avtalsrörelserapporten (Bargaining Round Report)",
+    runner: {
+      heading: "Report extract",
       intro:
-        "A prioritised existing report. The selection follows the bargaining round and the colour coding of agreement status.",
-      generate: "Generate the report",
-      contents: [
-        "Agreements signed, by agreement area and sector",
-        "Agreements signed after mediation, with the mediation case",
-        "Agreements remaining at the end of the period",
-      ],
+        "Choose the report, fill in the selection and generate. The criteria differ between reports and follow Medlingsinstitutet's own selection screens; criteria left empty are printed as All.",
+      pick: "Choose report",
+      all: "All",
+      format: "Format",
+      needsServer: "needs a server",
+      formatNote: "Only PDF runs in the mockup — the other formats need a server.",
+      generate: "Generate report",
+      selectionHeading: "Selection criteria",
+      stage2: "Stage 2",
+      stage2Reason: "The report is marked as Stage 2 in Medlingsinstitutet's own requirement table.",
+      bilagaF: (n: number) => `Appendix F, report ${n}`,
+      noSelectionLabel: "No selection screen",
+      noSelection:
+        "The Short-Term Wage Report is written out from the view of monitored agreements — the list is the selection. It is the only one of the reports that works that way, and that follows from the requirement text (FR-008).",
+      onScreen:
+        "The report is a printout of a view MIIS already has. Open the view and print it there, so the printout follows the same confidentiality rules as the screen.",
+      openView: "Open the view",
+      notBuilt: "The report's content is not built in the mockup.",
+      transcribedLabel: "Medlingsinstitutet's own figures",
+      transcribed:
+        "Agreement constructions counts employees across the whole Swedish labour market — 3,797,764 people in Medlingsinstitutet's own printout. The figures below are therefore Medlingsinstitutet's published ones, with the selection they were taken under (Employer org: Almega Tjänsteförbunden), and are not changed by the selection above. The bargaining round counts the register's own agreements and follows the selection in full.",
+      rationale:
+        "Appendix F opens by stating that for every report a selection screen and a result are shown. The selection is therefore part of the report rather than a step before it — which is why the criteria are printed at the head of the result.",
+    },
+    bargainingRound: {
+      title: (year: number) => `The ${year} bargaining round`,
+      intro:
+        "Agreements and employees distributed by the month the agreement expires. The colours are agreement status under FR-012.",
+      month: "Month",
+      sum: "Total",
+      agreements: "Agreements",
+      employees: "Employees",
+      byAgreement: "Number of agreements",
+      byAgreementIntro:
+        "Agreements that are remaining, newly signed and signed after mediation, distributed by expiry.",
+      byEmployee: "Number of employees",
+      byEmployeeIntro:
+        "Employees covered by agreements that are remaining, newly signed and signed after mediation.",
+      derivedNote:
+        "The tables are derived from the agreement register at the moment of extraction, not from stored totals. An agreement with no employee figure is counted in the agreement table and not in the employee one — the same hole Medlingsinstitutet's own report shows as ¤.",
     },
     constructions: {
       selectionHeading: "Selection criteria",
@@ -1186,7 +1256,11 @@ export const en: Dictionary = {
       participants: "Participants",
       agenda: "Agenda",
       agendaEmpty: "No agenda registered yet.",
+      location: "Location",
       createDocument: "Create a party meeting document from the template",
+      templateLogNote:
+        "The document is linked to the party meeting and recorded in the change log with time and user (FH-001).",
+      sourceMeeting: "From the party meeting's registration",
       documentCreated: "Document created",
       templateNote:
         "The template is pre-filled from MIIS – party, agreement area, date and participants – so the case officer only adds what is specific to this meeting.",
@@ -1266,6 +1340,28 @@ export const en: Dictionary = {
       status: "Status",
       all: "All",
       clear: "Clear filters",
+    },
+    add: {
+      heading: "Add a mediator",
+      intro:
+        "The register is the basis when Medlingsinstitutet appoints mediators. A new mediator is entered with contact details and the mediation types they take assignments in.",
+      open: "Add a mediator",
+      name: "Name",
+      namePlaceholder: "e.g. Gerald Lindberg",
+      phone: "Telephone",
+      email: "E-mail",
+      types: "Takes assignments in",
+      noTypes: "No mediation type selected – choose at least one.",
+      typeCount: (n: number) => (n === 1 ? "1 mediation type selected" : `${n} mediation types selected`),
+      typeRequired: "A name and at least one mediation type are required.",
+      save: "Save the mediator",
+      savedNote: (name: string) =>
+        `${name} is now in the mediator register and can be appointed to mediation cases.`,
+      addAnother: "Add another mediator",
+      historyNote:
+        "Assignment history is not entered here. It is derived from the mediation cases the mediator is appointed to, so the statistics per mediator (year, agreement area, first or second chair) can never say anything other than the cases themselves — which is the whole point of FF-009's statistics.",
+      logNote:
+        "Contact details fall under Medlingsinstitutet's retention routines (D-004). The registration is logged with time and user (FH-001).",
     },
     notify: {
       heading: "Notification",
@@ -1357,6 +1453,42 @@ export const en: Dictionary = {
     },
   },
   anvandare: {
+    users: {
+      heading: "Users and role assignment",
+      intro:
+        "Medlingsinstitutet's authorisation administrator sets up users and assigns roles themselves, without the supplier's involvement (NFÅ-005). What a role contains is not changed here — see the permission matrix below.",
+      add: "Add a user",
+      name: "Name",
+      namePlaceholder: "e.g. Sara Lindström",
+      efos: "EFOS identity",
+      efosHint: "The identity in Försäkringskassan's IdP",
+      email: "E-mail",
+      unit: "Unit",
+      role: "Role",
+      assigned: "Role assigned",
+      assignedBy: (who: string) => `by ${who}`,
+      lastSignIn: "Last sign-in",
+      status: "Status",
+      action: "Action",
+      active: "Active",
+      inactive: "Inactive",
+      deactivate: "Deactivate",
+      reactivate: "Reactivate",
+      lastAdminReason:
+        "The last active authorisation administrator cannot be deactivated — permissions could then only be restored by the supplier, which is what NFÅ-005 exists to prevent.",
+      reactivateReason: "Not active in the demo",
+      save: "Save the user",
+      nameRequired: "A name is required.",
+      savedNote: (name: string) =>
+        `${name} is set up and has been given their role. The assignment is recorded in the change log with time and user.`,
+      allRoles: "All roles",
+      allStatuses: "All",
+      noMatch: "No user matches the selected filters.",
+      noPasswordNote:
+        "MIIS holds no passwords and creates no accounts. Authentication sits with Försäkringskassan's IdP over SAML 2.0 with an EFOS card (NFÅ-001) — a user here is a link between an identity that already exists there and a role in MIIS.",
+      retentionNote:
+        "Users are deactivated, not deleted. Sign-ins are logged (NFL-001) and kept for the retention period (NFL-003), so the log has to go on pointing at a person after they have left.",
+    },
     title: "Users",
     epic: "Authorisation administration",
     subtitle: "Users, roles and assigned permissions",
@@ -1365,12 +1497,17 @@ export const en: Dictionary = {
       intro:
         "The eight roles in Appendix 1 §3.1. The role decides both what the user may do and which menu items appear — the role switcher in demo mode changes role in order to make exactly that visible.",
       role: "Role",
-      person: "Example user",
+      held: "Users",
+      unstaffed: "No user",
+      unstaffedNote: (roles: string) =>
+        `These roles have no active user: ${roles}. Parts of the system are then unstaffed — the role exists but nobody can reach it.`,
       permissions: "Permission",
       menu: "Menu items",
       level: { write: "Write", read: "Read", none: "–" },
       matrixNote:
         "Read means the role can open the view but change nothing in it. Write means register and edit. The same function governs the menu, access to the view and this table, so they cannot contradict each other.",
+      readOnlyNote:
+        "The matrix is not edited in the system, and that is deliberate. NFÅ-003 defines access by the eight roles Appendix 1 §3.1 describes; if an administrator could move Write on Agreements between roles, the table would describe a configuration rather than Medlingsinstitutet's own document. What NFÅ-005 places with Medlingsinstitutet is users and role assignment — both are edited in the panel above.",
     },
     auth: {
       heading: "Sign-in",

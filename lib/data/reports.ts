@@ -9,7 +9,13 @@
 
 import { partiesLabel, type WageAgreement } from "@/lib/domain/agreement";
 import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
-import { extractStatus, type MonitoredAgreementRow } from "@/lib/domain/report";
+import {
+  bargainingRoundReport,
+  extractStatus,
+  type BargainingRoundReport,
+  type MonitoredAgreementRow,
+} from "@/lib/domain/report";
+import { agreementStatus } from "@/lib/domain/status";
 import { getDataset } from "@/lib/mock";
 import { activeDataset } from "@/lib/session";
 
@@ -71,4 +77,40 @@ export async function listWageAgreements(): Promise<WageAgreement[]> {
 /** FR-007 – the constructions actually registered, for the distribution report. */
 export async function listRegisteredConstructions(): Promise<number[]> {
   return (await listWageAgreements()).map((w) => w.construction);
+}
+
+/**
+ * Avtalsrörelserapporten — FR-006, and Bilaga F's Rapport 3.
+ *
+ * Derived from the register rather than transcribed, which is the opposite
+ * choice from Avtalskonstruktioner and for a stated reason: MI's construction
+ * report counts the whole Swedish labour market, so it could never come out of
+ * a sample; the bargaining-round report counts *the agreements MI holds*, which
+ * is precisely what the register is.
+ */
+export async function getBargainingRoundReport(year: number): Promise<BargainingRoundReport> {
+  const data = getDataset(await activeDataset());
+  return bargainingRoundReport(data.agreements, year, (a) => agreementStatus(a));
+}
+
+/**
+ * The years the register has expiries in, newest first — the report's Årtal
+ * list — and the year the report should open on.
+ *
+ * The busiest year, not the newest. A bargaining round *is* the year most
+ * agreements fall due in, and opening the report on 2029 because one agreement
+ * runs that far produced twelve rows of zeros with a selection screen above
+ * them, which reads as a broken report rather than as an empty year.
+ */
+export async function listBargainingYears(): Promise<{ years: number[]; busiest: number }> {
+  const data = getDataset(await activeDataset());
+  const counts = new Map<number, number>();
+  for (const a of data.agreements) {
+    if (!a.validTo) continue;
+    const year = Number(a.validTo.slice(0, 4));
+    counts.set(year, (counts.get(year) ?? 0) + 1);
+  }
+  const years = [...counts.keys()].sort((a, b) => b - a);
+  const busiest = [...counts.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0]?.[0];
+  return { years, busiest: busiest ?? years[0] ?? 0 };
 }
