@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { PrintButton, PrintHeader } from "@/components/miis/Print";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { PublicShell } from "@/components/miis/PublicShell";
 import {
@@ -92,6 +93,7 @@ export default async function AllmanhetenPage() {
       role={session.role.id}
       reqTags={session.reqTags}
     >
+      <PrintHeader lang={lang} title={t.title} />
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}
@@ -188,10 +190,7 @@ export default async function AllmanhetenPage() {
               <DataTable columns={columns} rows={rows} lang={lang} caption={t.result.title} />
 
               <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-                <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{t.result.download}</Button>
+                <PrintButton lang={lang} variant="primary" />
                 <span className="text-label text-muted-foreground">{t.result.downloadNote}</span>
                 <ReqTags ids={["FR-011", "NFÅ-004"]} />
               </div>

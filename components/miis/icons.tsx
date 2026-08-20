@@ -7,6 +7,7 @@ import {
   ChevronUp,
   Lock,
   Plus,
+  Printer,
   Sparkles,
   TriangleAlert,
   X,
@@ -67,6 +68,8 @@ function icon(Component: LucideIcon, displayName: string) {
 export const IconCheck = icon(Check, "IconCheck");
 /** Add — the unpressed state of a toggle chip. */
 export const IconPlus = icon(Plus, "IconPlus");
+/** Print — the one export that runs without a server. */
+export const IconPrint = icon(Printer, "IconPrint");
 /** Remove a chip, dismiss, reject. */
 export const IconClose = icon(X, "IconClose");
 /** Attention — a `Callout` that needs reading before acting. */

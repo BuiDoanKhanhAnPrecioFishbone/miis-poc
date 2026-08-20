@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { PrintButton, PrintHeader } from "@/components/miis/Print";
 import { ConstructionsReport } from "@/components/miis/ConstructionsReport";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Button, PageHeading, Panel, Rationale, ReqTag } from "@/components/miis/primitives";
@@ -69,7 +70,13 @@ export default async function RapporterPage() {
 
   return (
     <AppShell role={session.role} requires="rapporter" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
-      <PageHeading title={t.title} subtitle={t.subtitle} tags={["FR-005", "FR-008", "NFP-002"]} />
+      <PrintHeader lang={lang} title={t.title} />
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FR-005", "FR-008", "FR-011", "NFP-002"]}
+        action={<PrintButton lang={lang} />}
+      />
 
       {/*
         A hub rather than four screens. The three reports MI calls prioritised

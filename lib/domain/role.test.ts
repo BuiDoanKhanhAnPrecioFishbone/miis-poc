@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { NAV_TREE } from "./nav";
-import { accessLevel, canAccess, canEdit, ROLES } from "./role";
+import { accessLevel, canAccess, canEdit, maySeeConfidential, ROLES } from "./role";
 
 /**
  * NFÅ-003 — *"rollbaserad behörighetsstyrning enligt de åtta användarrollerna"*.
@@ -100,5 +100,28 @@ describe("accessLevel — Appendix 1 §3.1", () => {
   it("keeps user administration away from the system administrator", () => {
     expect(canEdit(role("system-admin"), "anvandare")).toBe(false);
     expect(canEdit(role("permission-admin"), "anvandare")).toBe(true);
+  });
+});
+
+/**
+ * D-002 and FR-011 — a confidentiality-marked agreement's detail is withheld
+ * from mediators and the public, on screen and in a print alike.
+ */
+describe("maySeeConfidential — D-002, FR-011", () => {
+  it("withholds detail from the two roles the requirement names", () => {
+    expect(maySeeConfidential("public")).toBe(false);
+    expect(maySeeConfidential("mediator")).toBe(false);
+  });
+
+  it("shows it to MI's own case officers", () => {
+    expect(maySeeConfidential("agreement-admin")).toBe(true);
+    expect(maySeeConfidential("mediation-admin")).toBe(true);
+    expect(maySeeConfidential("statistics-user")).toBe(true);
+  });
+
+  /* The rule is about detail, not existence: a marked agreement still counts. */
+  it("applies to every role exactly once", () => {
+    const withheld = ROLES.filter((r) => !maySeeConfidential(r.id));
+    expect(withheld.map((r) => r.id).sort()).toEqual(["mediator", "public"]);
   });
 });

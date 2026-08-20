@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
+import { PrintButton, PrintHeader } from "@/components/miis/Print";
 import {
   Badge,
   Button,
@@ -131,6 +132,7 @@ export default async function AgreementDetailPage({
 
   return (
     <AppShell role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PrintHeader lang={lang} title={agreementTitle(agreement)} />
       <PageHeading
         title={agreementTitle(agreement)}
         back={
@@ -150,9 +152,12 @@ export default async function AgreementDetailPage({
             not have; the point is that the capability is visible and named
             rather than silently absent.
           */
-          <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
-            {t.edit}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <PrintButton lang={lang} />
+            <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+              {t.edit}
+            </Button>
+          </div>
         }
       />
 

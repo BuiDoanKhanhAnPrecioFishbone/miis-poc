@@ -83,6 +83,11 @@ export const sv = {
     anvandare: "Användare",
   },
 
+  print: {
+    action: "Skriv ut",
+    printedAt: "Utskriftsdatum",
+    withheld: "Uppgift utelämnad – sekretessmarkerat avtal",
+  },
   session: {
     title: "Din session håller på att gå ut",
     body: "Du har varit inaktiv en längre stund. Av säkerhetsskäl loggas du ut automatiskt vid 30 minuters inaktivitet.",

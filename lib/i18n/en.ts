@@ -85,6 +85,11 @@ export const en: Dictionary = {
     anvandare: "Users",
   },
 
+  print: {
+    action: "Print",
+    printedAt: "Printed",
+    withheld: "Information withheld – confidentiality-marked agreement",
+  },
   session: {
     title: "Your session is about to expire",
     body: "You have been inactive for some time. For security reasons you are signed out automatically after 30 minutes of inactivity.",

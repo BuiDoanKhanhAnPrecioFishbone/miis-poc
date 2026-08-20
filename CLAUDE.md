@@ -155,6 +155,16 @@ guides, plus the places our domain model still diverges from the information mod
    would claim we built the one thing we certainly did not. Signing *out* is
    different — NFL-001 logs it — so the header carries it.
 
+   **A screen prints as a document, not as a screenshot.** `PrintHeader` gives it
+   MI's mark and an *Utskriftsdatum* the way Bilaga F's six printouts do; the
+   `@media print` block in `globals.css` drops the demo bar, the nav, the header
+   and the requirement tags. Printing is the **only** export that runs without a
+   server, so it is wired while Excel, CSV and JSON stay dashed.
+   **FR-011 and D-002 are enforced in the markup, not the stylesheet.**
+   `maySeeConfidential(role)` is false for `public` and `mediator`; a value
+   hidden by CSS is still in the document, and a requirement about what may
+   leave the building cannot be met by not painting it.
+
 6. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off

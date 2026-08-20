@@ -240,3 +240,24 @@ export function accessLevel(
 export function canEdit(role: Pick<RoleDefinition, "nav" | "write">, screen: NavId): boolean {
   return accessLevel(role, screen) === "write";
 }
+
+/**
+ * D-002 and FR-011 — who may see the detail of a confidentiality-marked
+ * agreement.
+ *
+ * *"The system then hides the detailed information of the marked agreement from
+ * unauthorised users (mediators, the public) and in public reports"*, and
+ * *"when releasing protocols and agreement prints to mediators and the public,
+ * confidentiality-marked information is excluded"*.
+ *
+ * So it is the same rule on screen and on paper, which is why it lives here
+ * rather than in a print stylesheet: a value hidden by CSS is still in the
+ * markup, and a requirement about what may leave the building cannot be
+ * satisfied by not painting it.
+ *
+ * The marked agreement still counts in statistics — D-002 is about detail, not
+ * existence.
+ */
+export function maySeeConfidential(role: Role): boolean {
+  return role !== "public" && role !== "mediator";
+}

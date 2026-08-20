@@ -544,6 +544,11 @@ select.demo-select {
  * printed report is for MI's own reader, not for an evaluator tracing IDs.
  */
 @media print {
+  /* The letterhead exists only on paper. */
+  .print-only {
+    display: block !important;
+  }
+
   .print-hide,
   nav[aria-label],
   header {
