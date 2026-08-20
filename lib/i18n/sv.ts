@@ -441,6 +441,8 @@ export const sv = {
     terms: {
       title: "Allmänna villkor – egen giltighetsperiod",
       ownSignedDate: "Eget teckningsdatum",
+      ownValidFrom: "Egen giltighet från",
+      ownValidTo: "Egen giltighet till",
       ownValidity: "Egen giltighetsperiod",
       note: "Löptiderna för löneavtal och allmänna villkor behöver inte följas åt",
     },

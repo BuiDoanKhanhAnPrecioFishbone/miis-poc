@@ -129,7 +129,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
 
         {/* FP-001 scopes these to employer organisations. */}
         {type === "employer" && (
-          <div className="mt-4 grid grid-cols-1 gap-4 border-t border-border pt-4 @xl:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-4 border-t border-border pt-4 @xl:grid-cols-2 @3xl:grid-cols-3">
             <Select
               id="np-sector"
               label={t.sector}

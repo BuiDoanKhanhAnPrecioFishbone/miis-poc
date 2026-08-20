@@ -49,7 +49,7 @@ export function AgreementFilters({ lang, areas }: { lang: Lang; areas: string[] 
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-4 @xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3">
         <Select
           id="agreement-area"
           label={t.area}

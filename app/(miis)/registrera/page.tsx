@@ -191,14 +191,29 @@ export default async function RegistreraPage() {
                 type="date"
                 defaultValue="2025-07-15"
                 numeric
-              width="short"
+                width="short"
+              />
+              {/*
+                Two dates, not one string. "2025-08-01 – 2027-07-31" typed into
+                a free-text box cannot be validated, compared or sorted, and
+                lets a user type anything at all — which is what happened. Same
+                rule as everywhere else: one fact per field.
+              */}
+              <TextField
+                id="terms-valid-from"
+                label={t.terms.ownValidFrom}
+                type="date"
+                defaultValue="2025-08-01"
+                numeric
+                width="short"
               />
               <TextField
-                id="terms-validity"
-                label={t.terms.ownValidity}
-                defaultValue="2025-08-01 – 2027-07-31"
+                id="terms-valid-to"
+                label={t.terms.ownValidTo}
+                type="date"
+                defaultValue="2027-07-31"
                 numeric
-              width="short"
+                width="short"
               />
             </div>
             <Rationale>{t.terms.note}</Rationale>

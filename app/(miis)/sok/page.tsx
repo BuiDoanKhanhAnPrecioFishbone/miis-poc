@@ -39,7 +39,7 @@ export default async function SokPage() {
   const session = await getSession();
   const { i18n, lang } = session;
   const [rows, total, wageAgreements] = await Promise.all([
-    listRecentAgreements(lang, 6),
+    listRecentAgreements(lang, Number.MAX_SAFE_INTEGER),
     countAgreements(),
     listWageAgreements(),
   ]);
@@ -128,9 +128,14 @@ export default async function SokPage() {
           caption={t.results.title(total, decimal(RESPONSE_SECONDS, lang), SNAPSHOT_DATE)}
         />
 
-        <p className="mt-3 text-label text-muted-foreground">
-          {i18n.common.andMoreRows(Math.max(total - rows.length, 0))}
-        </p>
+        {/*
+          Every hit is in the table, which scrolls inside its own region past
+          ten rows. It used to render six and print "… 54 more rows", which is a
+          placeholder standing in front of data the system already had — and on
+          a screen whose whole argument is that the current system cannot get
+          data out, a result set that will not show itself is the wrong thing to
+          demonstrate.
+        */}
 
         <Rationale>
           {t.results.pointInTimeNote} · {t.results.stage2Note}{" "}

@@ -72,7 +72,7 @@ export function DemoBar({
   }
 
   return (
-    <div className="border-b-2 border-dashed border-demo-border bg-demo text-demo-foreground">
+    <div className="print-hide border-b-2 border-dashed border-demo-border bg-demo text-demo-foreground">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2 sm:px-8">
         {/*
           The strip has to stay unmistakably not-MIIS (CLAUDE.md), which is what

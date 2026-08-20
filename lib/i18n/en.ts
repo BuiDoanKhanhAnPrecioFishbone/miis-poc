@@ -449,6 +449,8 @@ export const en: Dictionary = {
     terms: {
       title: "General terms – its own validity period",
       ownSignedDate: "Own date signed",
+      ownValidFrom: "Own validity from",
+      ownValidTo: "Own validity to",
       ownValidity: "Own validity period",
       note: "The validity periods of the wage agreement and the general terms need not coincide",
     },

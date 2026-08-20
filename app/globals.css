@@ -526,3 +526,75 @@ select.demo-select {
   --select-chevron-gap: 1rem;
   --select-chevron-size: 0.75rem; /* 12px */
 }
+
+/*
+ * Print — FR-011, and the shape MI's own printouts take.
+ *
+ * Bilaga F is six reports "faktiska utskrifter från nuvarande system", and every
+ * one of them is a document: MI's mark, an Utskriftsdatum, a page number, then
+ * the data. Nothing in this application printed like that — a print produced the
+ * demo bar, the navigation rail and the application header, because no print
+ * stylesheet existed at all.
+ *
+ * The demo bar in particular must never reach paper. It is reviewer scaffolding
+ * that is not part of MIIS, and a printout carrying it would be evidence of a
+ * system that does not exist.
+ *
+ * Requirement tags are annotation about the interface, so they go too — a
+ * printed report is for MI's own reader, not for an evaluator tracing IDs.
+ */
+@media print {
+  .print-hide,
+  nav[aria-label],
+  header {
+    display: none !important;
+  }
+
+  .req-tag,
+  .rationale {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  /* A panel is a section of the document, not a card floating on a page. */
+  .card-panel {
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 0 1.25rem !important;
+    break-inside: avoid;
+  }
+
+  /* A table that scrolls on screen has to print whole. */
+  [role="region"] {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  table {
+    min-width: 0 !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  /* The address behind a link, since a printed link cannot be followed. */
+  a[href^="/"]::after {
+    content: " (miis.mi.se" attr(href) ")";
+    font-size: 0.85em;
+    color: #444;
+  }
+}
