@@ -84,12 +84,14 @@ export default async function RegistreraPage() {
                   label={t.wage.scope}
                   defaultValue={decimal(3.4, lang)}
                   numeric
+                width="short"
                 />
                 <TextField
                   id="wage-cost-frame"
                   label={t.wage.costFrame}
                   defaultValue={decimal(6.4, lang)}
                   numeric
+                width="short"
                 />
                 <Select
                   id="wage-individual-guarantee"
@@ -120,6 +122,7 @@ export default async function RegistreraPage() {
                   label={t.wage.workingTimeCost}
                   defaultValue={decimal(0.2, lang)}
                   numeric
+                width="short"
                 />
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
@@ -135,6 +138,7 @@ export default async function RegistreraPage() {
                   type="date"
                   defaultValue="2027-06-01"
                   numeric
+                width="short"
                 />
                 <TextField
                   id="wage-revision-percent"
@@ -142,12 +146,14 @@ export default async function RegistreraPage() {
                   defaultValue={decimal(3.4, lang)}
                   hint={t.wage.revisionHint}
                   numeric
+                width="short"
                 />
                 <TextField
                   id="wage-minimum"
                   label={t.wage.minimumWage}
                   defaultValue={decimal(25480, lang)}
                   numeric
+                width="short"
                 />
                 <TextField
                   id="wage-minimum-date"
@@ -156,6 +162,7 @@ export default async function RegistreraPage() {
                   defaultValue="2025-08-01"
                   hint={t.wage.minimumWageHint}
                   numeric
+                width="short"
                 />
               </div>
 
@@ -182,12 +189,14 @@ export default async function RegistreraPage() {
                 type="date"
                 defaultValue="2025-07-15"
                 numeric
+              width="short"
               />
               <TextField
                 id="terms-validity"
                 label={t.terms.ownValidity}
                 defaultValue="2025-08-01 – 2027-07-31"
                 numeric
+              width="short"
               />
             </div>
             <Rationale>{t.terms.note}</Rationale>

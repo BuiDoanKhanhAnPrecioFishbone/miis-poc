@@ -106,6 +106,11 @@ guides, plus the places our domain model still diverges from the information mod
    look alike.** A read-only value is text on a rule; anything boxed can be typed
    into or pressed. `Field`, `TextField` and `Select` share `FieldLabel` so a
    select never sits 8px below the field beside it.
+   **A field's width says what goes in it.** `TextField` takes
+   `width="short|medium|full"` — a date or a percentage is short, a name is
+   medium, free text is full. A box stretched to the column tells the reader
+   nothing and makes them track from label to caret across 700px for a
+   thirty-character name.
    **The unit goes in the label, the value stays a bare number** — `Löneutrymme
    (%)` with `3,4`, never a field reading `3,4 %`. A user typing into a box that
    already carries the sign has to decide whether to keep it, and `"3,4 %"` is a

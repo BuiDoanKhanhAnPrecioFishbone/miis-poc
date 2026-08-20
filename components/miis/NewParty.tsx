@@ -6,7 +6,19 @@ import { SECTOR_LABEL, type Sector } from "@/lib/domain/agreement";
 import type { Lang } from "@/lib/domain/lang";
 import { PARTY_TYPE_LABEL, type Party, type PartyType } from "@/lib/domain/party";
 import { dictionary } from "@/lib/i18n";
-import { Badge, Button, Callout, Chip, Panel, Rationale, ReqTag, ReqTags } from "./primitives";
+import { IconForward, IconPlus } from "./icons";
+import {
+  Badge,
+  Button,
+  Callout,
+  Chip,
+  FieldLabel,
+  LinkButton,
+  Panel,
+  Rationale,
+  ReqTag,
+  ReqTags,
+} from "./primitives";
 import { Select } from "./Select";
 
 /**
@@ -77,17 +89,20 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
               { id: "employer", label: PARTY_TYPE_LABEL[lang].employer },
             ]}
           />
+          {/*
+            `FieldLabel`, not a hand-rolled label. Its row reserves 28px so a
+            select and a text field line up; a `mb-1 block` label is 20px, which
+            is why the name sat above the type beside it.
+          */}
           <div>
-            <label htmlFor="np-name" className="mb-1 block text-label font-bold">
-              {t.name}
-            </label>
+            <FieldLabel htmlFor="np-name">{t.name}</FieldLabel>
             <input
               id="np-name"
               type="text"
               value={name}
               placeholder={t.namePlaceholder}
               onChange={(e) => setName(e.target.value)}
-              className="field-input"
+              className="field-input max-w-[26rem]"
             />
           </div>
         </div>
@@ -99,15 +114,13 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
         */}
         <div className="mt-4 grid grid-cols-1 gap-4 @xl:grid-cols-2">
           <div>
-            <label htmlFor="np-from" className="mb-1 block text-label font-bold">
-              {t.validFrom}
-            </label>
+            <FieldLabel htmlFor="np-from">{t.validFrom}</FieldLabel>
             <input
               id="np-from"
               type="date"
               value={validFrom}
               onChange={(e) => setValidFrom(e.target.value)}
-              className="field-input tabular-nums"
+              className="field-input max-w-[12rem] tabular-nums"
             />
             <p className="mt-1 text-label text-muted-foreground">{t.validFromHint}</p>
           </div>
@@ -149,16 +162,14 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
             {/* The industry code exists only inside Svenskt Näringsliv (FP-001). */}
             {group === "Svenskt Näringsliv" && (
               <div>
-                <label htmlFor="np-code" className="mb-1 block text-label font-bold">
-                  {t.industryCode}
-                </label>
+                <FieldLabel htmlFor="np-code">{t.industryCode}</FieldLabel>
                 <input
                   id="np-code"
                   type="text"
                   value={industryCode}
                   placeholder={t.industryCodePlaceholder}
                   onChange={(e) => setIndustryCode(e.target.value)}
-                  className="field-input"
+                  className="field-input max-w-[26rem]"
                 />
               </div>
             )}
@@ -198,18 +209,53 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
       <div className="mt-5">
         <Panel title={t.save} tags={["FP-001", "FH-001"]}>
           {saved ? (
-            <Callout tone="ok" live tags={["FP-002", "FH-001"]}>
-              {t.savedNote(saved, predecessors.length)}
-            </Callout>
+            <>
+              <Callout tone="ok" live tags={["FP-002", "FH-001"]}>
+                {t.savedNote(saved, predecessors.length)}
+              </Callout>
+              {/*
+                A confirmation is not an ending. The officer registered a party
+                in order to use it — so the way on is to the register that now
+                holds it, and the way to repeat the task is beside it.
+              */}
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <LinkButton href="/parter" iconEnd={<IconForward />}>
+                  {t.openRegister}
+                </LinkButton>
+                <Button variant="secondary" onClick={() => setSaved(null)} iconStart={<IconPlus />}>
+                  {t.registerAnother}
+                </Button>
+              </div>
+            </>
           ) : (
-            <div className="flex flex-wrap items-center gap-3">
-              <Button onClick={save} disabled={name.trim().length === 0}>
-                {t.saveAction}
-              </Button>
-              <Badge tone="neutral">{PARTY_TYPE_LABEL[lang][type]}</Badge>
-              <span className="text-label text-muted-foreground">{t.saveHint}</span>
-              <ReqTags ids={["FP-001", "FH-001"]} />
-            </div>
+            <>
+              {/*
+                What will be saved, above the control that saves it. The type
+                badge and the note used to sit *beside* the button, which read
+                as a second and third action and left the row unbalanced.
+              */}
+              <dl className="mb-4 flex flex-wrap items-center gap-x-8 gap-y-2 text-table">
+                <div className="flex items-center gap-2">
+                  <dt className="text-label font-bold">{t.type}</dt>
+                  <dd>
+                    <Badge tone="neutral">{PARTY_TYPE_LABEL[lang][type]}</Badge>
+                  </dd>
+                </div>
+                <div className="flex items-center gap-2">
+                  <dt className="text-label font-bold">{t.name}</dt>
+                  <dd className={name.trim() ? "" : "text-muted-foreground"}>
+                    {name.trim() || d.common.none}
+                  </dd>
+                </div>
+              </dl>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button onClick={save} disabled={name.trim().length === 0}>
+                  {t.saveAction}
+                </Button>
+                <ReqTags ids={["FP-001", "FH-001"]} />
+              </div>
+              <p className="mt-2 text-label text-muted-foreground">{t.saveHint}</p>
+            </>
           )}
           <Rationale>{t.logNote}</Rationale>
           <ReqTag id="FP-006" />

@@ -1004,6 +1004,8 @@ export const en: Dictionary = {
       mergerNote:
         "A merger is registered as a new party with links to its predecessors, not as a name change. The predecessors stay in the register because older agreements still reference them.",
       save: "Save the party",
+      openRegister: "Open the party register",
+      registerAnother: "Register another party",
       saveAction: "Register the party",
       saveHint: "Contact people are added after registration",
       savedNote: (name: string, predecessors: number) =>

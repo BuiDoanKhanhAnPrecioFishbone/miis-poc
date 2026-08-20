@@ -678,6 +678,7 @@ export function TextField({
   type = "text",
   numeric,
   placeholder,
+  width = "medium",
 }: {
   id: string;
   label: string;
@@ -687,7 +688,18 @@ export function TextField({
   /** Tabular figures, for amounts and percentages. */
   numeric?: boolean;
   placeholder?: string;
+  /**
+   * How wide the box is allowed to get, matched to what goes in it.
+   *
+   * A field stretched to the full column tells the reader nothing about what it
+   * wants and makes them track a long way from the label to the caret — a party
+   * name is thirty characters in a 720px box. Width is a cue: short for a date
+   * or a percentage, medium for a name, full only for free text.
+   */
+  width?: "short" | "medium" | "full";
 }) {
+  const widthClass =
+    width === "short" ? "max-w-[12rem]" : width === "full" ? "" : "max-w-[26rem]";
   return (
     /*
       Top-aligned: label, then the control immediately under it.
@@ -705,9 +717,9 @@ export function TextField({
         type={type}
         defaultValue={defaultValue}
         placeholder={placeholder}
-        className={`field-input ${numeric ? "tabular-nums" : ""}`}
+        className={`field-input ${widthClass} ${numeric ? "tabular-nums" : ""}`}
       />
-      {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
+      {hint && <p className="mt-1 max-w-[26rem] text-label text-muted-foreground">{hint}</p>}
     </div>
   );
 }

@@ -263,7 +263,12 @@ function Prose({ panel }: { panel: DashboardPanel }) {
           */}
           {/* Stacked by default, side by side once there is room: at 375 the hero
               and the detail grid together needed 367px of a 335px column. */}
-          <div className="mt-4 flex flex-col gap-5 border-t border-border pt-4 @xl:flex-row @xl:flex-wrap @xl:items-end @xl:gap-x-10">
+          {/*
+            One grid, evenly divided, rather than a hero and a two-column list
+            side by side — that arrangement left two lakes of empty space
+            between the clusters at desktop width, and the eye had to jump them.
+          */}
+          <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-border pt-4 @xl:grid-cols-2 @3xl:grid-cols-[auto_repeat(4,minmax(0,1fr))] @3xl:items-end">
             <div className="min-w-0">
               <p className="font-display text-[2.25rem] leading-none font-bold tabular-nums text-[var(--mi-slate-900)] @xl:text-[2.75rem]">
                 {percent(benchmark.costFramePercent, lang)}
@@ -274,28 +279,28 @@ function Prose({ panel }: { panel: DashboardPanel }) {
               </p>
             </div>
 
-            <dl className="grid min-w-0 flex-1 grid-cols-1 gap-x-8 gap-y-3 @xl:grid-cols-2">
-              <div>
-                <dt className="text-label font-bold">{i18n.market.current.periodisation}</dt>
-                <dd className="text-table tabular-nums">{benchmark.periodisation}</dd>
-              </div>
-              <div>
-                <dt className="text-label font-bold">{i18n.market.current.period}</dt>
-                <dd className="text-table tabular-nums">
-                  {benchmark.validFrom} – {benchmark.validTo}
-                </dd>
-              </div>
-              {benchmark.supplementaryAgreements.length > 0 && (
-                <div>
-                  <dt className="text-label font-bold">{i18n.market.current.supplementary}</dt>
-                  <dd className="text-table">{benchmark.supplementaryAgreements.join(" · ")}</dd>
-                </div>
-              )}
-              <div>
-                <dt className="text-label font-bold">{i18n.market.current.registered}</dt>
-                <dd className="text-table tabular-nums">{benchmark.registeredDate}</dd>
-              </div>
-            </dl>
+            <div className="min-w-0">
+              <p className="text-label font-bold">{i18n.market.current.periodisation}</p>
+              <p className="text-table tabular-nums">{benchmark.periodisation}</p>
+            </div>
+            <div className="min-w-0">
+              <p className="text-label font-bold">{i18n.market.current.period}</p>
+              <p className="text-table tabular-nums">
+                {benchmark.validFrom} – {benchmark.validTo}
+              </p>
+            </div>
+            <div className="min-w-0">
+              <p className="text-label font-bold">{i18n.market.current.supplementary}</p>
+              <p className="text-table">
+                {benchmark.supplementaryAgreements.length > 0
+                  ? benchmark.supplementaryAgreements.join(" · ")
+                  : i18n.common.none}
+              </p>
+            </div>
+            <div className="min-w-0">
+              <p className="text-label font-bold">{i18n.market.current.registered}</p>
+              <p className="text-table tabular-nums">{benchmark.registeredDate}</p>
+            </div>
           </div>
         </div>
       )}

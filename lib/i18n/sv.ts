@@ -990,6 +990,8 @@ export const sv = {
       mergerNote:
         "En sammanslagning registreras som en ny part med koppling till sina föregångare, inte som ett namnbyte. Föregångarna ligger kvar i registret eftersom äldre avtal fortfarande hänvisar till dem.",
       save: "Spara parten",
+      openRegister: "Öppna partsregistret",
+      registerAnother: "Registrera ytterligare en part",
       saveAction: "Registrera parten",
       saveHint: "Kontaktpersoner läggs till efter registreringen",
       savedNote: (name: string, predecessors: number) =>
