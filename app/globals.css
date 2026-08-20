@@ -86,8 +86,13 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: Arial, Helvetica, sans-serif;
-  --font-display: Arial, Helvetica, sans-serif;
+  /*
+    Public Sans, self-hosted (see `app/layout.tsx` for why, and for NFA-001).
+    Arial stays behind it: MI's real brand font is still unverified, so the
+    stack has to degrade to something every machine has.
+  */
+  --font-sans: var(--font-public-sans), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-public-sans), Arial, Helvetica, sans-serif;
   --shadow-card: 0 1px 2px rgba(23, 37, 44, 0.1);
 
   /*

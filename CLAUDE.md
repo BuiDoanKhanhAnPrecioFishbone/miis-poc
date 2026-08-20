@@ -41,7 +41,15 @@ guides, plus the places our domain model still diverges from the information mod
    a product feature. No user-facing string is hard-coded in a component; all text comes
    from `lib/i18n/sv.ts` and `lib/i18n/en.ts`. Identifiers stay English; route paths stay
    Swedish.
-2. **No hard-coded colours.** Use the tokens in `app/globals.css` (`bg-primary`,
+2. **The typeface is Public Sans, self-hosted from `app/fonts/`.** NFA-001 forbids
+   dependencies on external cloud services and names Google Cloud, so no CDN and
+   not `next/font/google` either — the two `.woff2` files are in the repository
+   and nothing leaves MI's environment at build or run. It is drawn for
+   government forms, its figures are tabular by default (measured: `2027-04-01`
+   and `1111-11-11` both 121.69px) and it separates 1/l/I where Arial does not.
+   Arial stays as the fallback because MI's own brand font is still unverified.
+
+3. **No hard-coded colours.** Use the tokens in `app/globals.css` (`bg-primary`,
    `text-muted-foreground`, `var(--mi-sand-500)`, …). The palette is derived from
    Medlingsinstitutet's identity — see `docs/design-system/`.
    **`--status-green/red/blue` belong to FR-012 and to nothing else.** In MIIS red is a
@@ -68,7 +76,7 @@ guides, plus the places our domain model still diverges from the information mod
    is "machine-generated, not yet approved". The gradient (`ai-band`) belongs on
    the `AiRegion` header and nowhere else: a gradient has no single contrast
    ratio, so text may only sit on one whose lightest stop still clears 4.5:1.
-3. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
+4. **WCAG 2.1 AA is a requirement (NFUI-003), not a nice-to-have.** Every interactive
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —
    the green/red/blue agreement status coding (FR-012) must always have a text label too.
@@ -86,7 +94,7 @@ guides, plus the places our domain model still diverges from the information mod
    colour, shape and label together, so a legend would repeat what every row already
    says; the only place `StatusLegend` still earns its keep is `/registrera`, where a
    single status is shown and the other two need explaining.
-4. **No emoji, and no glyph used as an icon.** Every icon comes from
+5. **No emoji, and no glyph used as an icon.** Every icon comes from
    `components/miis/icons.tsx`, which wraps `lucide-react` — already a dependency
    via shadcn. A padlock typed as `🔒` is a colour emoji on one machine and a flat
    outline on another, `✦` has no emoji form at all, and a screen reader may read
@@ -130,20 +138,20 @@ guides, plus the places our domain model still diverges from the information mod
    a tinted box with a border — sand also carries `Ofullständig` and watchword
    hits, so the form has to say "reference" where the hue cannot.
 
-5. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
+6. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off
    by default** (`miis_reqtags`), so the plain product view exists too — every new ID
    also needs its sentence in `lib/domain/requirements.ts`, which is what the hover
    tooltip reads.
-6. **AI proposals are never applied automatically (FAI-002).** Anything AI-suggested is
+7. **AI proposals are never applied automatically (FAI-002).** Anything AI-suggested is
    labelled `AI-FÖRSLAG` and needs an explicit human approve/reject control. Every
    proposal is **source-linked**: selecting it highlights the passage in the protocol it
    was read from (FAI-001, FAI-004). Show the rejected path too — a demo of only the
    happy path asserts human review instead of demonstrating it.
    AI belongs where a requirement puts it. There is no general assistant: the only
    free-standing AI surface is the §4.1 decision-support panel on a mediation case.
-7. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
+8. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
    a royal crown over the shield. **MI supplied the official asset on 2026-08-18**, so
    the `MI` placeholder square is gone; `public/mi-mark-white.svg` is MI's own file with
    its paths untouched. Never generate, redraw, recolour or "improve" it, and never
@@ -153,7 +161,7 @@ guides, plus the places our domain model still diverges from the information mod
    White on the dark header is MI's intended treatment — every path in the source is
    `#FFFFFF`. `public/icon.svg` is the same artwork as the tab icon, with a fill rule so
    it survives a dark browser theme; `public/favicon.ico` is MI's file verbatim.
-8. **Never rewrite pushed git history** (no force-push, rebase, amend or squash of
+9. **Never rewrite pushed git history** (no force-push, rebase, amend or squash of
    pushed commits). Others review from this history and from deployed builds of it.
 
 ## Stack
