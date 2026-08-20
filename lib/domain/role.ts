@@ -33,6 +33,12 @@ export interface RoleDefinition {
   permissions: Text;
   /** The menu items this role sees (NFÅ-003). */
   nav: readonly NavId[];
+  /**
+   * The subset of `nav` this role may change. Everything else it reaches is
+   * read-only — Appendix 1 §3.1 gives the statistics user "read, data extract"
+   * and the public computer and mediator "specific reports".
+   */
+  write: readonly NavId[];
 }
 
 /** A role resolved into one language — what screens and components receive. */
@@ -42,6 +48,7 @@ export interface RoleInfo {
   person: string;
   permissions: string;
   nav: readonly NavId[];
+  write: readonly NavId[];
 }
 
 export const ROLES: readonly RoleDefinition[] = [
@@ -54,6 +61,7 @@ export const ROLES: readonly RoleDefinition[] = [
       en: "Registers and edits agreement information",
     },
     nav: ["start", "avtal", "parter", "forhandlingar", "dokument", "rapporter", "sok", "market"],
+    write: ["avtal", "parter", "forhandlingar", "dokument"],
   },
   {
     id: "mediation-admin",
@@ -74,6 +82,7 @@ export const ROLES: readonly RoleDefinition[] = [
       "sok",
       "market",
     ],
+    write: ["medling", "partstraffar", "dokument"],
   },
   {
     id: "mediator-admin",
@@ -85,6 +94,7 @@ export const ROLES: readonly RoleDefinition[] = [
     },
     // Reaches Mediation only as the container for the mediator register.
     nav: ["start", "medlare", "sok"],
+    write: ["medlare"],
   },
   {
     id: "statistics-user",
@@ -95,6 +105,7 @@ export const ROLES: readonly RoleDefinition[] = [
       en: "Reads and exports data for statistical purposes",
     },
     nav: ["start", "rapporter", "sok"],
+    write: [],
   },
   {
     id: "system-admin",
@@ -118,6 +129,7 @@ export const ROLES: readonly RoleDefinition[] = [
       "market",
       "administration",
     ],
+    write: ["avtal", "parter", "forhandlingar", "medling", "partstraffar", "medlare", "dokument", "market", "administration"],
   },
   {
     id: "permission-admin",
@@ -129,6 +141,7 @@ export const ROLES: readonly RoleDefinition[] = [
     },
     // Reaches Administration only as the container for user administration.
     nav: ["start", "anvandare"],
+    write: ["anvandare"],
   },
   {
     id: "public",
@@ -140,6 +153,7 @@ export const ROLES: readonly RoleDefinition[] = [
     },
     // Separate entrance — /allmanheten carries its own reduced navigation.
     nav: [],
+    write: [],
   },
   {
     id: "mediator",
@@ -150,6 +164,7 @@ export const ROLES: readonly RoleDefinition[] = [
       en: "Access to mediation-related information (option, step 2)",
     },
     nav: ["start", "medling", "dokument", "market"],
+    write: [],
   },
 ] as const;
 
@@ -170,6 +185,7 @@ export function roleInfo(role: Role, lang: Lang = DEFAULT_LANG): RoleInfo {
     person: d.person,
     permissions: d.permissions[lang],
     nav: d.nav,
+    write: d.write,
   };
 }
 
@@ -195,4 +211,32 @@ export function isRole(value: string | undefined): value is Role {
  */
 export function canAccess(role: Pick<RoleDefinition, "nav">, screen: NavId): boolean {
   return role.nav.includes(screen);
+}
+
+/**
+ * What a role may do on a screen — NFÅ-003 and Appendix 1 §3.1.
+ *
+ * Access is not one bit. MI's own table gives each role a *verb*, and the
+ * verbs differ: the agreement administrator has "read, write, edit", the
+ * statistics user has "read, data extract", the public computer and the
+ * mediator have "specific reports". A model that only asked "can this role open
+ * the screen" answered the first half of the requirement and silently invented
+ * the second — it would have let a statistics user edit an agreement, which
+ * §3.1 does not permit.
+ *
+ * `write` is therefore a separate list, and it is a subset of `nav`: a role
+ * cannot write to a screen it cannot reach.
+ */
+export type AccessLevel = "none" | "read" | "write";
+
+export function accessLevel(
+  role: Pick<RoleDefinition, "nav" | "write">,
+  screen: NavId,
+): AccessLevel {
+  if (!role.nav.includes(screen)) return "none";
+  return role.write.includes(screen) ? "write" : "read";
+}
+
+export function canEdit(role: Pick<RoleDefinition, "nav" | "write">, screen: NavId): boolean {
+  return accessLevel(role, screen) === "write";
 }

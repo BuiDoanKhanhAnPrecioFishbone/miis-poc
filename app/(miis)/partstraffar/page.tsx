@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconPlus } from "@/components/miis/icons";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
-import { Badge, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { Badge, LinkButton, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { listPartyMeetings } from "@/lib/data/party-meetings";
 import { t as text } from "@/lib/domain/lang";
 import { MEETING_STATE_LABEL } from "@/lib/domain/party-meeting";
@@ -75,12 +76,9 @@ export default async function PartstraffarPage() {
         subtitle={t.subtitle}
         tags={["FF-004", "FF-005", "FSD-002"]}
         action={
-          <Link
-            href="/partstraffar/ny"
-            className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
+          <LinkButton href="/partstraffar/ny" iconStart={<IconPlus />}>
             {t.register.create}
-          </Link>
+          </LinkButton>
         }
       />
 

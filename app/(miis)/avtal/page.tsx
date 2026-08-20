@@ -3,8 +3,10 @@ import Link from "next/link";
 
 import { AgreementFilters } from "@/components/miis/AgreementFilters";
 import { AppShell } from "@/components/miis/AppShell";
+import { IconPlus } from "@/components/miis/icons";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import {
+  LinkButton,
   Badge,
   ConfidentialityMarker,
   PageHeading,
@@ -114,12 +116,9 @@ export default async function AvtalPage() {
             register is where an officer stands when the next protocol arrives,
             and it had no way to begin one.
           */
-          <Link
-            href="/registrera"
-            className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
+          <LinkButton href="/registrera" iconStart={<IconPlus />}>
             {i18n.registrera.title}
-          </Link>
+          </LinkButton>
         }
       />
 

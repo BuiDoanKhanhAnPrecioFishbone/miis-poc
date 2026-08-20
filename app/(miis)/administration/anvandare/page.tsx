@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
-import { Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
-import { ROLES } from "@/lib/domain/role";
+import { Badge, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import type { NavId } from "@/lib/domain/nav";
+import { accessLevel, ROLES } from "@/lib/domain/role";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,30 +33,60 @@ export default async function AnvandarePage() {
   const { i18n, lang } = session;
   const t = i18n.anvandare;
 
+  /*
+    The matrix, screen by screen, rather than a sentence per role.
+
+    §3.1 gives each role a verb — "read, write, edit", "read, data extract",
+    "specific reports" — and a prose column cannot be checked against a screen.
+    A column per module can: every cell is `accessLevel` for that role and that
+    menu item, the same function the shell asks before it renders anything.
+  */
+  const MODULES: NavId[] = [
+    "avtal",
+    "parter",
+    "forhandlingar",
+    "medling",
+    "partstraffar",
+    "medlare",
+    "dokument",
+    "rapporter",
+    "sok",
+    "market",
+    "administration",
+    "anvandare",
+  ];
+
   const columns: Column[] = [
     { key: "role", header: t.roles.role, sortable: true },
     { key: "person", header: t.roles.person, sortable: true },
-    { key: "permissions", header: t.roles.permissions },
-    { key: "menu", header: t.roles.menu },
+    ...MODULES.map((m) => ({ key: m, header: i18n.nav[m] })),
   ];
 
-  const rows: Row[] = ROLES.map((r) => {
-    const menu = r.nav.map((id) => i18n.nav[id]).join(", ");
-    return {
-      key: r.id,
-      cells: [
-        <span key="r" className="font-semibold">
-          {r.label[lang]}
-        </span>,
-        r.person,
-        r.permissions[lang],
-        <span key="m" className="text-muted-foreground">
-          {menu}
-        </span>,
-      ],
-      sort: [r.label[lang], r.person, r.permissions[lang], menu],
-    };
-  });
+  const LEVEL_TONE = { write: "ok", read: "neutral", none: "neutral" } as const;
+
+  const rows: Row[] = ROLES.map((r) => ({
+    key: r.id,
+    cells: [
+      <span key="r" className="font-semibold">
+        {r.label[lang]}
+      </span>,
+      r.person,
+      ...MODULES.map((m) => {
+        const level = accessLevel(r, m);
+        /* An em dash for "none": an empty cell reads as data we did not have. */
+        return level === "none" ? (
+          <span key={m} className="text-muted-foreground">
+            {i18n.common.none}
+          </span>
+        ) : (
+          <Badge key={m} tone={LEVEL_TONE[level]}>
+            {t.roles.level[level]}
+          </Badge>
+        );
+      }),
+    ],
+    sort: [r.label[lang], r.person, ...MODULES.map((m) => accessLevel(r, m))],
+  }));
 
   return (
     <AppShell role={session.role} requires="anvandare" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
@@ -67,12 +98,13 @@ export default async function AnvandarePage() {
 
       <Panel title={t.roles.heading} tags={["NFÅ-003", "NFÅ-005"]}>
         <p className="mb-4 max-w-4xl text-table">{t.roles.intro}</p>
+        <p className="mb-4 max-w-4xl text-label text-muted-foreground">{t.roles.matrixNote}</p>
         <DataTable
           columns={columns}
           rows={rows}
           lang={lang}
           caption={t.roles.heading}
-          minWidth="72rem"
+          minWidth="96rem"
         />
       </Panel>
 

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconForward, IconPlus } from "@/components/miis/icons";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import {
+  LinkButton,
   Button,
   Badge,
   ConfidentialityMarker,
@@ -43,7 +45,22 @@ function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Diction
         <ul className="divide-y divide-border">
           {panel.items.map((item) => (
             <li key={item.id} className="py-2.5 text-table">
-              <span className="tabular-nums text-muted-foreground">{item.when}</span> · {item.text}
+              <span className="tabular-nums text-muted-foreground">{item.when}</span> ·{" "}
+              {/*
+                An event names an agreement, so it links to it. The panel's job
+                is to be the way in — "mediation started on Spårtrafik" is only
+                useful if the next click is Spårtrafik.
+              */}
+              {item.agreementId ? (
+                <Link
+                  href={`/avtal/${item.agreementId}`}
+                  className="text-primary underline underline-offset-2"
+                >
+                  {item.text}
+                </Link>
+              ) : (
+                item.text
+              )}
             </li>
           ))}
         </ul>
@@ -88,7 +105,18 @@ function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Diction
           cells: [
             <StatusDot key="s" status={status} showLabel />,
             <span key="n" className="flex flex-wrap items-center gap-2">
-              {row.name}
+              {/*
+                A row that leads somewhere. The panel's value is that the
+                officer can go straight from "what did I register yesterday" to
+                the agreement itself; a list of names that cannot be opened is
+                a report, not a work list.
+              */}
+              <Link
+                href={`/avtal/${row.id}`}
+                className="font-semibold text-primary underline underline-offset-2"
+              >
+                {row.name}
+              </Link>
               {row.confidential && (
                 <ConfidentialityMarker
                   compact
@@ -170,35 +198,68 @@ function Prose({ panel }: { panel: DashboardPanel }) {
         tags={["FS-001", "NFÅ-003", "NFUI-001", "NFUI-002", "NFUI-003"]}
         action={
           page.primaryAction ? (
-            <Link
-              href={page.primaryAction.href}
-              className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 text-table font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-            >
+            <LinkButton href={page.primaryAction.href} iconStart={<IconPlus />}>
               {page.primaryAction.text}
-            </Link>
+            </LinkButton>
           ) : undefined
         }
       />
 
+      {/*
+          A reference, not an alert.
+
+          The figures were in a filled sand block with a border — the shape of a
+          warning — and sand is also what an Ofullständig badge and a watchword
+          hit wear, so the banner read as something wrong. The hue stays,
+          because sand *is* Märket's colour; the form changes: a card with a
+          sand spine, a kicker naming what it is, and the figures as labelled
+          values rather than one sentence strung together with separators.
+      */}
       {benchmark && (
-        <div className="mb-5 flex flex-wrap items-start gap-3 rounded-lg border border-sand-border bg-sand px-5 py-4">
-          <div className="min-w-0 flex-1">
-            <p className="text-table text-sand-foreground">
-              <span className="font-bold">{i18n.start.benchmarkLine(benchmark.period)}</span>{" "}
-              {i18n.start.benchmarkCostFrame(percent(benchmark.costFramePercent, lang))} ·{" "}
-              {i18n.start.benchmarkPeriodisation(benchmark.periodisation)}
-              {benchmark.supplementaryAgreements.length > 0 &&
-                ` · ${i18n.start.benchmarkSupplementary(benchmark.supplementaryAgreements.join(", "))}`}
-            </p>
-            <p className="mt-1 text-label text-sand-foreground">
-              {i18n.start.benchmarkValidity(
-                benchmark.validFrom,
-                benchmark.validTo,
-                benchmark.registeredDate,
-              )}
-            </p>
+        <div className="card-panel mb-5 border-l-4 border-l-sand-border p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="mi-kicker text-sand-foreground">{i18n.start.benchmarkKicker}</p>
+              <p className="mt-1 font-display text-section font-semibold text-[var(--mi-slate-900)]">
+                {i18n.common.benchmarkTerm} {benchmark.period}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <LinkButton href="/market" variant="secondary" size="sm" iconEnd={<IconForward />}>
+                {i18n.market.title}
+              </LinkButton>
+              <ReqTag id="FM-003" />
+            </div>
           </div>
-          <ReqTag id="FM-003" />
+
+          <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 @xl:grid-cols-3">
+            <div>
+              <dt className="text-label font-bold">{i18n.market.current.costFrame}</dt>
+              <dd className="text-body tabular-nums">
+                {percent(benchmark.costFramePercent, lang)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-label font-bold">{i18n.market.current.periodisation}</dt>
+              <dd className="text-body tabular-nums">{benchmark.periodisation}</dd>
+            </div>
+            <div>
+              <dt className="text-label font-bold">{i18n.market.current.period}</dt>
+              <dd className="text-body tabular-nums">
+                {benchmark.validFrom} – {benchmark.validTo}
+              </dd>
+            </div>
+            {benchmark.supplementaryAgreements.length > 0 && (
+              <div className="@xl:col-span-2">
+                <dt className="text-label font-bold">{i18n.market.current.supplementary}</dt>
+                <dd className="text-body">{benchmark.supplementaryAgreements.join(" · ")}</dd>
+              </div>
+            )}
+            <div>
+              <dt className="text-label font-bold">{i18n.market.current.registered}</dt>
+              <dd className="text-body tabular-nums">{benchmark.registeredDate}</dd>
+            </div>
+          </dl>
         </div>
       )}
 
@@ -218,12 +279,9 @@ function Prose({ panel }: { panel: DashboardPanel }) {
                   because the reader believes it.
                 */}
                 {panel.action.href ? (
-                  <Link
-                    href={panel.action.href}
-                    className="inline-flex min-h-12 items-center rounded-sm border-2 border-primary px-5 py-3 text-table font-bold text-primary transition-colors hover:bg-secondary"
-                  >
+                  <LinkButton href={panel.action.href} variant="secondary" iconEnd={<IconForward />}>
                     {panel.action.text}
-                  </Link>
+                  </LinkButton>
                 ) : (
                   <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
                     {panel.action.text}

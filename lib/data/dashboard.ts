@@ -45,6 +45,8 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
         id: e.id,
         when: e.timestamp,
         text: eventText(e, lang),
+        /* Not every event names an agreement; those that do become a link. */
+        ...(e.agreementId ? { agreementId: e.agreementId } : {}),
       })),
       emptyText: s.events.empty,
       note: s.events.footnote,

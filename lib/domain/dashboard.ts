@@ -52,6 +52,8 @@ export interface LogLine {
   /** Date or timestamp — ISO in both languages. */
   when: string;
   text: string;
+  /** The agreement the event concerns, so the line can be a way in to it. */
+  agreementId?: string;
 }
 
 export type DashboardPanel =

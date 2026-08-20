@@ -10,6 +10,7 @@
  * A raw <button> outside components/ fails `npm run lint` — see eslint.config.mjs.
  */
 
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
@@ -107,6 +108,18 @@ const BUTTON_VARIANT: Record<ButtonVariant, string> = {
 };
 
 /**
+ * Two sizes, defined once. `md` is 48px and `sm` is 44px — both clear the
+ * 44×44 target minimum, so an in-row action can be compact without failing it.
+ */
+const BUTTON_SIZE = {
+  md: "min-h-12 px-5 py-3 text-table",
+  sm: "min-h-11 px-3 py-2 text-label",
+} as const;
+
+/** Shape and weight, shared so a link that acts cannot drift from a button. */
+const BUTTON_SHAPE = "inline-flex items-center justify-center gap-2 rounded-sm border-2 font-bold transition-colors";
+
+/**
  * The one button.
  *
  * `md` is 48px and `sm` is 44px — both clear the 44×44 target minimum, so an
@@ -124,6 +137,8 @@ export function Button({
   onClick,
   disabled,
   disabledReason,
+  iconStart,
+  iconEnd,
   fullWidth,
   pressed,
   ariaLabel,
@@ -131,6 +146,16 @@ export function Button({
   children: ReactNode;
   variant?: ButtonVariant;
   size?: "md" | "sm";
+  /**
+   * An icon before the label, for an action that **creates** something — the
+   * `+` that used to be typed into the copy ("+ Ladda upp avtalsprotokoll").
+   * A character in a translated string is a glyph doing an icon's job: it
+   * cannot be styled, it is read aloud, and it went out of step between
+   * languages.
+   */
+  iconStart?: ReactNode;
+  /** An icon after the label, for an action that **goes somewhere**. */
+  iconEnd?: ReactNode;
   type?: "button" | "submit";
   /** Only passed from client components; server pages leave it out. */
   onClick?: () => void;
@@ -140,8 +165,7 @@ export function Button({
   pressed?: boolean;
   ariaLabel?: string;
 }) {
-  const sizeClass =
-    size === "sm" ? "min-h-11 px-3 py-2 text-label" : "min-h-12 px-5 py-3 text-table";
+  const sizeClass = BUTTON_SIZE[size];
 
   /*
     Disabled replaces the variant rather than fading it.
@@ -172,17 +196,55 @@ export function Button({
       aria-pressed={pressed}
       aria-label={ariaLabel}
       title={disabled ? disabledReason : undefined}
-      className={[
-        "rounded-sm border-2 font-bold transition-colors",
-        sizeClass,
-        look,
-        fullWidth ? "w-full" : "",
-      ]
+      className={[BUTTON_SHAPE, sizeClass, look, fullWidth ? "w-full" : ""]
         .filter(Boolean)
         .join(" ")}
     >
+      {iconStart}
       {children}
+      {iconEnd}
     </button>
+  );
+}
+
+/**
+ * A link that looks and behaves like a button — for an action whose result is
+ * a different screen.
+ *
+ * Seven screens were hand-rolling this, and the classes had drifted: `rounded-sm`
+ * against `rounded-md`, `min-h-11` against `min-h-12`, `bg-primary` against
+ * `border-primary`, so the same action was a different size and shape depending
+ * on which page you met it on. It shares `BUTTON_SHAPE`, `BUTTON_SIZE` and
+ * `BUTTON_VARIANT` with `Button`, so they cannot diverge again.
+ *
+ * It stays an `<a>`. A button that navigates cannot be opened in a new tab,
+ * does not show its destination on hover and is announced as the wrong thing —
+ * the element follows what it does, not what it looks like.
+ */
+export function LinkButton({
+  href,
+  children,
+  variant = "primary",
+  size = "md",
+  iconStart,
+  iconEnd,
+}: {
+  href: string;
+  children: ReactNode;
+  variant?: ButtonVariant;
+  size?: "md" | "sm";
+  iconStart?: ReactNode;
+  iconEnd?: ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className={[BUTTON_SHAPE, BUTTON_SIZE[size], BUTTON_VARIANT[variant]].join(" ")}
+    >
+      {iconStart}
+      {children}
+      {iconEnd}
+    </Link>
   );
 }
 

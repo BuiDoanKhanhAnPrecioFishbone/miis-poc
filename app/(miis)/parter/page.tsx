@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { IconPlus } from "@/components/miis/icons";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { PartyFilters } from "@/components/miis/PartyFilters";
-import { Badge, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { Badge, LinkButton, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { listCooperationBodies, listParties } from "@/lib/data/parties";
 import { SECTOR_LABEL } from "@/lib/domain/agreement";
 import {
@@ -116,12 +117,9 @@ export default async function ParterPage() {
         subtitle={t.subtitle}
         tags={["FP-001", "FP-002", "FP-005", "FP-006"]}
         action={
-          <Link
-            href="/parter/ny"
-            className="inline-flex min-h-12 items-center rounded-sm border-2 border-transparent bg-primary px-5 py-3 font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
+          <LinkButton href="/parter/ny" iconStart={<IconPlus />}>
             {t.newParty.action}
-          </Link>
+          </LinkButton>
         }
       />
 

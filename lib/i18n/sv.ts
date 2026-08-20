@@ -108,6 +108,7 @@ export const sv = {
     heading: (role: string) => `Startsida – ${role}`,
     subheading:
       "Rollanpassat innehåll enligt tilldelad roll och behörighet. Inloggad via EFOS-kort, sessionen avslutas efter 30 minuters inaktivitet.",
+    benchmarkKicker: "Referens i avtals- och medlarvyer",
     benchmarkLine: (period: string) => `Märket ${period}:`,
     benchmarkCostFrame: (v: string) => `Kostnadsram ${v}`,
     benchmarkPeriodisation: (v: string) => `Periodisering ${v}`,
@@ -123,8 +124,8 @@ export const sv = {
       registrationStatus: "Reg.status",
     },
 
-    uploadProtocol: "+ Ladda upp avtalsprotokoll",
-    uploadDgDecision: "+ Ladda upp GD-beslut",
+    uploadProtocol: "Ladda upp avtalsprotokoll",
+    uploadDgDecision: "Ladda upp GD-beslut",
     newSearch: "Ny sökning",
 
     reminders: {
@@ -489,8 +490,8 @@ export const sv = {
       joinExplain:
         "Villkor inom en grupp kombineras med gruppens operator. Grupperna kombineras med varandra. Det gör (A ELLER B) OCH C uttryckbart – dagens sökbyggare klarar bara en platt lista.",
       expression: "Uttryck:",
-      addCondition: "+ Lägg till villkor",
-      addGroup: "+ Lägg till grupp",
+      addCondition: "Lägg till villkor",
+      addGroup: "Lägg till grupp",
       removeCondition: (label: string) => `Ta bort villkoret ${label}`,
       removeGroup: (n: number) => `Ta bort grupp ${n}`,
       fieldAria: (group: number, row: number) => `Fält, villkor ${row} i grupp ${group}`,
@@ -571,11 +572,11 @@ export const sv = {
     type: "Typ",
     dgDecisionDocument: "GD-beslut (dokument)",
     linkedAgreements: (n: number) => `Kopplade avtal (${n})`,
-    linkAgreement: "+ Koppla avtal",
+    linkAgreement: "Koppla avtal",
     linkedNote:
       "Röd markering = koppling till medling. Ett medlingsärende kan kopplas till flera avtal.",
     mediators: "Medlare (ur medlarregistret)",
-    addMediator: "+ Lägg till medlare",
+    addMediator: "Lägg till medlare",
     noMediators:
       "Inga medlare tillsatta – parterna medlar i egen regi enligt förhandlingsordningsavtal.",
     previousAssignments: (n: number) => `${n} tidigare uppdrag`,
@@ -729,7 +730,7 @@ export const sv = {
       },
       active: "Aktivt",
       paused: "Pausat",
-      add: "+ Nytt schemalagt uttag",
+      add: "Nytt schemalagt uttag",
       logNote: "Skickad e-post loggas i händelseloggen med tidpunkt, mottagare och bilaga.",
       items: [
         {
@@ -760,7 +761,7 @@ export const sv = {
   dokument: {
     title: "Dokument",
     subtitle: "Protokoll, avtal, GD-beslut, medlarrapporter och partsträffsdokumentation",
-    upload: "+ Ladda upp dokument",
+    upload: "Ladda upp dokument",
     empty: "Inga dokument uppladdade i denna datamängd.",
     table: {
       fileName: "Fil",
@@ -960,7 +961,7 @@ export const sv = {
       logNote: "Ändringar registreras i ändringsloggen med tidpunkt och användare.",
     },
     newParty: {
-      action: "+ Ny part",
+      action: "Ny part",
       title: "Registrera part",
       subtitle: "Ny arbetsgivar- eller arbetstagarorganisation i partsregistret",
       identity: "Uppgifter om parten",
@@ -1076,7 +1077,7 @@ export const sv = {
       heading: "Partsträffar",
       intro:
         "Medlingsinstitutet träffar en part i taget för att stämma av förhandlingsläget, identifiera konfliktrisker och bedöma behovet av medling.",
-      create: "+ Ny partsträff",
+      create: "Ny partsträff",
       onePartyNote:
         "Parterna möts aldrig varandra vid en partsträff, och en partsträff är inte en förhandling (Bilaga 1 §4.2). Det är förutsättningen för att parten ska kunna tala öppet.",
     },
@@ -1284,6 +1285,9 @@ export const sv = {
       person: "Exempelanvändare",
       permissions: "Behörighet",
       menu: "Menyval",
+      level: { write: "Skriv", read: "Läs", none: "–" },
+      matrixNote:
+        "Läs betyder att rollen kan öppna vyn men inte ändra något i den. Skriv betyder registrera och redigera. Samma funktion styr menyn, åtkomsten till vyn och den här tabellen, så de kan inte säga emot varandra.",
     },
     auth: {
       heading: "Inloggning",

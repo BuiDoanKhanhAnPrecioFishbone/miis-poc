@@ -112,6 +112,7 @@ export const en: Dictionary = {
     heading: (role: string) => `Start page – ${role}`,
     subheading:
       "Content adapted to the assigned role and its authorisation. Signed in with an EFOS card; the session ends after 30 minutes of inactivity.",
+    benchmarkKicker: "Reference in agreement and mediator views",
     benchmarkLine: (period: string) => `Märket ${period}:`,
     benchmarkCostFrame: (v: string) => `Cost frame ${v}`,
     benchmarkPeriodisation: (v: string) => `Periodisation ${v}`,
@@ -127,8 +128,8 @@ export const en: Dictionary = {
       registrationStatus: "Reg. status",
     },
 
-    uploadProtocol: "+ Upload agreement protocol",
-    uploadDgDecision: "+ Upload Director-General decision",
+    uploadProtocol: "Upload agreement protocol",
+    uploadDgDecision: "Upload Director-General decision",
     newSearch: "New search",
 
     reminders: {
@@ -497,8 +498,8 @@ export const en: Dictionary = {
       joinExplain:
         "Conditions inside a group are combined with the group's operator. The groups are then combined with each other. That makes (A OR B) AND C expressible – today's query builder only manages a flat list.",
       expression: "Expression:",
-      addCondition: "+ Add condition",
-      addGroup: "+ Add group",
+      addCondition: "Add condition",
+      addGroup: "Add group",
       removeCondition: (label: string) => `Remove the condition ${label}`,
       removeGroup: (n: number) => `Remove group ${n}`,
       fieldAria: (group: number, row: number) => `Field, condition ${row} in group ${group}`,
@@ -581,11 +582,11 @@ export const en: Dictionary = {
     type: "Type",
     dgDecisionDocument: "DG decision (document)",
     linkedAgreements: (n: number) => `Linked agreements (${n})`,
-    linkAgreement: "+ Link an agreement",
+    linkAgreement: "Link an agreement",
     linkedNote:
       "Red marking = linked to mediation. One mediation case can be linked to several agreements.",
     mediators: "Mediators (from the mediator register)",
-    addMediator: "+ Add a mediator",
+    addMediator: "Add a mediator",
     noMediators:
       "No mediators appointed – the parties mediate under their own procedure per a negotiation procedure agreement.",
     previousAssignments: (n: number) => `${n} previous assignments`,
@@ -742,7 +743,7 @@ export const en: Dictionary = {
       },
       active: "Active",
       paused: "Paused",
-      add: "+ New scheduled extract",
+      add: "New scheduled extract",
       logNote: "Sent e-mail is recorded in the event log with time, recipients and attachment.",
       items: [
         {
@@ -774,7 +775,7 @@ export const en: Dictionary = {
     title: "Documents",
     subtitle:
       "Protocols, agreements, Director-General decisions, mediator reports and party meeting documentation",
-    upload: "+ Upload a document",
+    upload: "Upload a document",
     empty: "No documents uploaded in this data set.",
     table: {
       fileName: "File",
@@ -974,7 +975,7 @@ export const en: Dictionary = {
       logNote: "Changes are recorded in the change log with time and user.",
     },
     newParty: {
-      action: "+ New party",
+      action: "New party",
       title: "Register a party",
       subtitle: "A new employer or employee organisation in the party register",
       identity: "Party details",
@@ -1091,7 +1092,7 @@ export const en: Dictionary = {
       heading: "Party meetings",
       intro:
         "The Mediation Office meets one party at a time to gauge the state of negotiations, identify risks of conflict and assess the need for mediation.",
-      create: "+ New party meeting",
+      create: "New party meeting",
       onePartyNote:
         "The parties never meet each other at a party meeting, and a party meeting is not a negotiation (Bilaga 1 §4.2). That is what allows the party to speak candidly.",
     },
@@ -1299,6 +1300,9 @@ export const en: Dictionary = {
       person: "Example user",
       permissions: "Permission",
       menu: "Menu items",
+      level: { write: "Write", read: "Read", none: "–" },
+      matrixNote:
+        "Read means the role can open the view but change nothing in it. Write means register and edit. The same function governs the menu, access to the view and this table, so they cannot contradict each other.",
     },
     auth: {
       heading: "Sign-in",

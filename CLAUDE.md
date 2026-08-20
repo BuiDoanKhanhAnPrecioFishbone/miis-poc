@@ -72,6 +72,11 @@ guides, plus the places our domain model still diverges from the information mod
    element needs a visible focus state, a ≥44×44px hit area, a real `<label>`, correct
    heading order and a text alternative. Colour is never the only carrier of meaning —
    the green/red/blue agreement status coding (FR-012) must always have a text label too.
+   **Authorisation is read *or* write, per screen (NFÅ-003).** Appendix 1 §3.1
+   gives each role a verb, and they differ — the statistics user has "read, data
+   extract", the public computer "specific reports". `accessLevel(role, screen)`
+   in `lib/domain/role.ts` is the one answer; the menu, the screen guard and the
+   matrix on `/administration/anvandare` all ask it, so they cannot disagree.
    **`StatusDot` is for FR-012 and nothing else; `Badge` is for every other
    state word.** FR-012 is the only status whose colours MI specified, so it gets
    the reserved hues and a mark-plus-label form — a filled red pill would read as
@@ -97,6 +102,15 @@ guides, plus the places our domain model still diverges from the information mod
    (%)` with `3,4`, never a field reading `3,4 %`. A user typing into a box that
    already carries the sign has to decide whether to keep it, and `"3,4 %"` is a
    string no report can sum. **One fact per field**: `Ja · 0,2 %` was two.
+   **`Button` and `LinkButton` share one size scale and one shape.** A control
+   that navigates is a `LinkButton` (an `<a>`, so it opens in a new tab and
+   shows its destination); one that acts is a `Button`. Seven screens hand-rolled
+   the first and the classes drifted — `rounded-sm` against `rounded-md`,
+   `min-h-11` against `min-h-12`.
+   **Icons on a control follow one rule**: `iconStart` for an action that
+   *creates* (`IconPlus`), `iconEnd` for one that *goes somewhere*
+   (`IconForward`), and nothing otherwise. Never type a `+` into the copy —
+   ten labels carried one, in two languages, out of step.
    **A control that does nothing is `disabled` with a `disabledReason`.** Never
    leave a `<Button>` without `onClick`, and never style a `<span>` as a link —
    a control that looks live and is not teaches an evaluator that the whole
@@ -111,6 +125,11 @@ guides, plus the places our domain model still diverges from the information mod
    two states used to be two pale tints measuring 1.01:1 against each other, and
    `tone` read `selected` while the toggle variant set `pressed` — so a pressed
    chip changed nothing but its glyph.
+   **Sand is Märket's colour, but a filled sand block is an alert's *shape*.**
+   The start page's Märket banner is a card with a sand spine and a kicker, not
+   a tinted box with a border — sand also carries `Ofullständig` and watchword
+   hits, so the form has to say "reference" where the hue cannot.
+
 5. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a
    large part of why this mockup scores. The tags render **behind a toggle that is off
