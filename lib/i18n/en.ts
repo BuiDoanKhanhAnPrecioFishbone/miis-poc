@@ -455,6 +455,11 @@ export const en: Dictionary = {
     link: {
       title: "Link the negotiation and the protocol",
       negotiation: "Registered negotiation",
+      linkedAgreement: "Agreement",
+      linkedWage: "Wage agreement",
+      linkedNegotiation: "Negotiation",
+      documentLinkedToHint:
+        "Follows from what the registration creates — a protocol establishing only general terms produces no wage agreement to link to.",
       documentLinkedTo: "Document is linked to",
       documentLinkedToValue: "Agreement + wage agreement + negotiation",
     },
@@ -885,6 +890,21 @@ export const en: Dictionary = {
       signedDate: "Date signed",
       validity: "Validity period",
       registration: "Registration status",
+      workingGroups: "Working groups and subject areas",
+      workingGroupsIntro:
+        "Questions the parties handed to a joint working group instead of settling in the agreement. An agreement with open working groups is not finished business.",
+      groupName: "Working group",
+      subjectAreas: "Subject areas",
+      reportsBy: "Reports by",
+      noWorkingGroups: "No working groups registered on the agreement.",
+      eventLog: "Event log for the agreement",
+      eventLogIntro:
+        "High-level events linked to the agreement — signed, terminated, mediation started. The log is written by the system and cannot be edited.",
+      eventTime: "Time",
+      eventType: "Event",
+      eventDetail: "Concerns",
+      noEvents: "No events registered on the agreement yet.",
+      edit: "Edit the agreement",
       statusHeading: "Status and validity",
       wageAgreements: "Wage agreements by bargaining round",
       wageIntro:

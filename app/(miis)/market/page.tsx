@@ -101,12 +101,17 @@ export default async function MarketPage() {
     <AppShell role={session.role} requires="market" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FM-001", "FM-002", "FM-003"]} />
 
-      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+      {/*
+        The alarm is one sentence, so it is a strip under the figures rather than
+        a half-width panel holding a single callout with an empty half beside
+        it. FM-002 is a state, not a section.
+      */}
+      <div className="grid grid-cols-1 gap-5">
         <Panel title={t.current.heading} tags={["FM-001", "FM-003"]} tone="sand">
           {current ? (
             <>
               <p className="mb-4 max-w-3xl text-table text-sand-foreground">{t.current.intro}</p>
-              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3">
                 <Field label={t.current.period} value={current.period} />
                 <Field label={t.current.costFrame} value={percent(current.costFramePercent, lang)} />
                 <Field label={t.current.periodisation} value={current.periodisation} />

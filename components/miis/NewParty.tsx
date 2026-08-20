@@ -72,6 +72,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
         <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
           <Select
             id="np-type"
+            width="medium"
             label={t.type}
             value={type}
             onChange={(v) => {

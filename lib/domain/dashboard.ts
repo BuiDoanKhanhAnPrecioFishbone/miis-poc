@@ -65,6 +65,17 @@ export interface PanelProse {
    * three of three.
    */
   total?: number;
+  /**
+   * Whether the panel is **work waiting** or **context**.
+   *
+   * Every panel looked identical, so a page with two things needing a decision
+   * and two things worth knowing gave them equal weight and the officer had to
+   * read all four to find out which was which. An action panel carries its
+   * count in the heading; a reference panel does not. The hierarchy is carried
+   * by information rather than by decoration — a number beside "Ofullständiga
+   * registreringar" says how much is waiting, which is the thing being ranked.
+   */
+  emphasis?: "action" | "reference";
   note?: string;
   rationale?: string;
 }

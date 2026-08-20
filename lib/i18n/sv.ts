@@ -447,6 +447,11 @@ export const sv = {
     link: {
       title: "Koppla förhandling och protokoll",
       negotiation: "Registrerad förhandling",
+      linkedAgreement: "Avtal",
+      linkedWage: "Löneavtal",
+      linkedNegotiation: "Förhandling",
+      documentLinkedToHint:
+        "Följer av vad registreringen skapar – ett protokoll som bara etablerar allmänna villkor ger inget löneavtal att koppla till.",
       documentLinkedTo: "Dokument kopplas till",
       documentLinkedToValue: "Avtal + löneavtal + förhandling",
     },
@@ -871,6 +876,21 @@ export const sv = {
       signedDate: "Teckningsdatum",
       validity: "Löptid",
       registration: "Registreringsstatus",
+      workingGroups: "Arbetsgrupper och frågeområden",
+      workingGroupsIntro:
+        "Frågor som parterna sköt till en partsgemensam arbetsgrupp i stället för att lösa i avtalet. Ett avtal med öppna arbetsgrupper är inte färdigförhandlat.",
+      groupName: "Arbetsgrupp",
+      subjectAreas: "Frågeområden",
+      reportsBy: "Redovisar senast",
+      noWorkingGroups: "Inga arbetsgrupper registrerade på avtalet.",
+      eventLog: "Händelselogg för avtalet",
+      eventLogIntro:
+        "Övergripande händelser kopplade till avtalet – tecknat, uppsagt, medling inledd. Loggen skrivs av systemet och kan inte redigeras.",
+      eventTime: "Tidpunkt",
+      eventType: "Händelse",
+      eventDetail: "Avser",
+      noEvents: "Inga händelser registrerade på avtalet ännu.",
+      edit: "Redigera avtalet",
       statusHeading: "Status och löptid",
       wageAgreements: "Löneavtal per avtalsrörelse",
       wageIntro:

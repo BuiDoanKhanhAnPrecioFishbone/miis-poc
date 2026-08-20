@@ -116,6 +116,28 @@ export interface WageAgreement {
   minimumWages?: MinimumWage[];
 }
 
+/**
+ * FA-014 — *"Registrering av arbetsgrupper med frågeområden."*
+ *
+ * This is where Bilaga B's `Särskilda frågor` goes. The current system keeps it
+ * as a document type of its own; MI's requirement folds it into the working
+ * group that owns it, because a subject area with no group behind it is a note,
+ * and what MI needs to answer later is *which group is looking at what*.
+ *
+ * A settlement routinely defers questions it could not close — working time,
+ * pensions, the wage model — to a joint group reporting before the next round.
+ * Those groups are why an agreement that looks finished is not.
+ */
+export interface WorkingGroup {
+  id: string;
+  agreementId: string;
+  name: string;
+  /** The questions the parties handed to it. */
+  subjectAreas: string[];
+  /** When it is due to report, where the protocol says so. */
+  reportsBy?: string;
+}
+
 /** FA-013 – minimum wages grouped by occupational group. */
 export interface MinimumWage {
   occupationalGroup: string;

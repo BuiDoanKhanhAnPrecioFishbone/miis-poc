@@ -7,6 +7,7 @@ import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
 import {
   Badge,
+  Button,
   Callout,
   ConfidentialityMarker,
   Field,
@@ -22,6 +23,7 @@ import {
   registrationStatusLabel,
   validityLabel,
 } from "@/lib/domain/agreement";
+import { EVENT_TYPE_LABEL } from "@/lib/domain/event";
 import { agreementStatus } from "@/lib/domain/status";
 import { amount, percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
@@ -65,7 +67,7 @@ export default async function AgreementDetailPage({
   const detail = await getAgreementDetail(id);
   if (!detail) notFound();
 
-  const { agreement, wageAgreements } = detail;
+  const { agreement, wageAgreements, workingGroups, events } = detail;
   const t = i18n.avtal.detail;
   const status = agreementStatus(agreement, lang);
   const latest = wageAgreements[0];
@@ -140,6 +142,18 @@ export default async function AgreementDetailPage({
           </Link>
         }
         tags={["FA-001", "FA-002", "FR-012"]}
+        action={
+          /*
+            FA-001 is "registrera och redigera avtalsinformation" — the detail
+            showed only the first half, so an agreement could be read and never
+            corrected. Inert here because editing needs a store the mockup does
+            not have; the point is that the capability is visible and named
+            rather than silently absent.
+          */
+          <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+            {t.edit}
+          </Button>
+        }
       />
 
       <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
@@ -173,6 +187,35 @@ export default async function AgreementDetailPage({
                 caption={t.wageAgreements}
                 minWidth="46rem"
               />
+            )}
+          </Panel>
+
+          {/*
+            FA-014. This is also where Bilaga B's `Särskilda frågor` lands: the
+            current system keeps it as a document type of its own, and MI's
+            requirement folds it into the group that owns the question.
+          */}
+          <Panel title={t.workingGroups} tags={["FA-014"]}>
+            <p className="mb-3 max-w-4xl text-table">{t.workingGroupsIntro}</p>
+            {workingGroups.length === 0 ? (
+              <p className="text-table text-muted-foreground">{t.noWorkingGroups}</p>
+            ) : (
+              <ul className="space-y-4">
+                {workingGroups.map((g) => (
+                  <li key={g.id} className="border-t border-border pt-3 first:border-t-0 first:pt-0">
+                    <p className="font-semibold">{g.name}</p>
+                    <p className="mt-1 text-table">
+                      <span className="text-label font-bold">{t.subjectAreas}: </span>
+                      {g.subjectAreas.join(" · ")}
+                    </p>
+                    {g.reportsBy && (
+                      <p className="mt-1 text-label text-muted-foreground">
+                        {t.reportsBy} <span className="tabular-nums">{g.reportsBy}</span>
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
             )}
           </Panel>
 
@@ -253,6 +296,30 @@ export default async function AgreementDetailPage({
             <Rationale>{i18n.avtal.register.areaNote}</Rationale>
           </Panel>
         </div>
+      </div>
+
+      {/*
+        FH-002 — *"an event log for high-level events linked to an agreement"*.
+        Mandatory, Stage 1, and the mediation case had one while the agreement
+        it concerns did not.
+      */}
+      <div className="mt-5">
+        <Panel title={t.eventLog} tags={["FH-002"]}>
+          <p className="mb-3 max-w-4xl text-table">{t.eventLogIntro}</p>
+          {events.length === 0 ? (
+            <p className="text-table text-muted-foreground">{t.noEvents}</p>
+          ) : (
+            <ul className="divide-y divide-border">
+              {events.map((e) => (
+                <li key={e.id} className="flex flex-wrap gap-x-3 py-2.5 text-table">
+                  <span className="tabular-nums text-muted-foreground">{e.timestamp}</span>
+                  <span className="font-semibold">{EVENT_TYPE_LABEL[lang][e.type]}</span>
+                  <span className="min-w-0">{e.detail}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
       </div>
     </AppShell>
   );

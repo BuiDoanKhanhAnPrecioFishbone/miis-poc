@@ -95,6 +95,7 @@ export default async function RegistreraPage() {
                 />
                 <Select
                   id="wage-individual-guarantee"
+                  width="short"
                   label={t.wage.individualGuarantee}
                   defaultValue="no"
                   options={[
@@ -110,6 +111,7 @@ export default async function RegistreraPage() {
                 */}
                 <Select
                   id="wage-working-time"
+                  width="short"
                   label={t.wage.workingTimeFlag}
                   defaultValue="yes"
                   options={[
@@ -216,7 +218,21 @@ export default async function RegistreraPage() {
                   { id: "fo-204", label: "FÖ-2025/204 – Stål- och metallindustrin, 2025-06-02" },
                 ]}
               />
-              <Field label={t.link.documentLinkedTo} value={t.link.documentLinkedToValue} />
+              {/*
+                Derived, not a constant. FD-001 links the document to whatever
+                the registration produced, and that varies: a protocol that
+                establishes only general terms creates no wage agreement, and a
+                registration with no negotiation chosen links to none. It was a
+                fixed string reading "Avtal + löneavtal + förhandling" whatever
+                had happened, which is the kind of detail an evaluator checks.
+              */}
+              <Field
+                label={t.link.documentLinkedTo}
+                value={[t.link.linkedAgreement, t.link.linkedWage, t.link.linkedNegotiation].join(
+                  " + ",
+                )}
+                hint={t.link.documentLinkedToHint}
+              />
             </div>
           </Panel>
         </div>

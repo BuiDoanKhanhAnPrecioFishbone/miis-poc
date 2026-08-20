@@ -61,6 +61,7 @@ export function Select({
   hint,
   badge,
   srOnlyLabel,
+  width = "full",
 }: {
   id: string;
   label: string;
@@ -73,6 +74,15 @@ export function Select({
   badge?: ReactNode;
   /** For the query builder, where the row already reads as a sentence. */
   srOnlyLabel?: boolean;
+  /**
+   * Width matched to the longest option, the same rule `TextField` follows.
+   *
+   * Narrowing the text inputs and leaving the selects full-column made the
+   * forms *worse*, not better: a row of short boxes beside full-width ones
+   * reads as broken alignment rather than as deliberate sizing. A Ja/Nej select
+   * is `short`; a list of party names or the seven constructions is `full`.
+   */
+  width?: "short" | "medium" | "full";
 }) {
   const [internal, setInternal] = useState(defaultValue ?? options[0]?.id ?? "");
   const current = value ?? internal;
@@ -98,7 +108,11 @@ export function Select({
         the edge. `pointer-events-none` so clicking the mark still opens the
         list; `aria-hidden` because the select already announces itself.
       */}
-      <div className="relative">
+      <div
+        className={`relative ${
+          width === "short" ? "max-w-[12rem]" : width === "medium" ? "max-w-[26rem]" : ""
+        }`}
+      >
         {/*
           `title` carries the full value. A native select clips a long option
           rather than ellipsising it, and the constructions MI defines run to 56

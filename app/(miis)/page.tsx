@@ -168,6 +168,19 @@ export default async function DashboardPage() {
   const fullWidth = page.panels.filter((p) => !isHalfWidth(p));
 
   /** The sentence the reader needs, above the panel's own content. */
+/**
+ * The count of what is waiting, in the heading of a panel that carries work.
+ *
+ * A reference panel does not get one: "Senast registrerade avtal" has a number
+ * too, but nobody is being asked to do anything about it, and a badge there
+ * would flatten the very hierarchy this exists to create.
+ */
+function PanelCount({ panel }: { panel: DashboardPanel }) {
+  if (!("emphasis" in panel) || panel.emphasis !== "action") return null;
+  if (!("total" in panel) || !panel.total) return null;
+  return <Badge tone="attention">{String(panel.total)}</Badge>;
+}
+
 /** "Visar 3 av 12" — only when there is more than the panel shows. */
 function ShownOf({ panel, shown, i18n }: { panel: DashboardPanel; shown: number; i18n: Dictionary }) {
   if (!("total" in panel) || !panel.total || panel.total <= shown) return null;
@@ -269,7 +282,13 @@ function Prose({ panel }: { panel: DashboardPanel }) {
             between the clusters at desktop width, and the eye had to jump them.
           */}
           <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-5 border-t border-border pt-4 @xl:grid-cols-2 @3xl:grid-cols-[auto_repeat(4,minmax(0,1fr))] @3xl:items-end">
-            <div className="min-w-0">
+            {/*
+              A rule and a wider gap after the hero. Its caption ("Cost frame /
+              over 24 months") sat one gap-width from the next column's label,
+              so the two read as one pair — proximity is what groups things, and
+              6px of extra gap cannot outvote 8px of adjacency.
+            */}
+            <div className="min-w-0 @3xl:mr-4 @3xl:border-r @3xl:border-border @3xl:pr-8">
               <p className="font-display text-[2.25rem] leading-none font-bold tabular-nums text-[var(--mi-slate-900)] @xl:text-[2.75rem]">
                 {percent(benchmark.costFramePercent, lang)}
               </p>
@@ -307,7 +326,12 @@ function Prose({ panel }: { panel: DashboardPanel }) {
 
       <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-2">
         {halfWidth.map((panel) => (
-          <Panel key={panel.title} title={panel.title} tags={panel.reqTags}>
+          <Panel
+            key={panel.title}
+            title={panel.title}
+            tags={panel.reqTags}
+            action={<PanelCount panel={panel} />}
+          >
             <Lead panel={panel} />
             <PanelBody panel={panel} i18n={i18n} lang={lang} />
             <ShownOf panel={panel} shown={START_PAGE_ROWS} i18n={i18n} />
@@ -339,7 +363,7 @@ function Prose({ panel }: { panel: DashboardPanel }) {
 
       {fullWidth.map((panel) => (
         <div key={panel.title} className="mt-5">
-          <Panel title={panel.title} tags={panel.reqTags}>
+          <Panel title={panel.title} tags={panel.reqTags} action={<PanelCount panel={panel} />}>
             <Lead panel={panel} />
             <PanelBody panel={panel} i18n={i18n} lang={lang} />
             <ShownOf panel={panel} shown={START_PAGE_ROWS} i18n={i18n} />

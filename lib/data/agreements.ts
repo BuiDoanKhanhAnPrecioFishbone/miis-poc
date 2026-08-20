@@ -16,7 +16,9 @@ import {
   type AgreementRow,
   type RegistrationStatus,
   type WageAgreement,
+  type WorkingGroup,
 } from "@/lib/domain/agreement";
+import type { AuditEvent } from "@/lib/domain/event";
 import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import { agreementStatus } from "@/lib/domain/status";
 import { getDataset } from "@/lib/mock";
@@ -98,12 +100,34 @@ export async function listWageAgreements(agreementId: string): Promise<WageAgree
 }
 
 /** Everything one agreement's detail view needs, in one read. */
-export async function getAgreementDetail(
-  id: string,
-): Promise<{ agreement: Agreement; wageAgreements: WageAgreement[] } | null> {
+/** FA-014 — the working groups a settlement handed its open questions to. */
+export async function listWorkingGroups(agreementId: string): Promise<WorkingGroup[]> {
+  return getDataset(await activeDataset()).workingGroups.filter(
+    (g) => g.agreementId === agreementId,
+  );
+}
+
+/** FH-002 — the high-level events on one agreement, newest first. */
+export async function listAgreementEvents(agreementId: string): Promise<AuditEvent[]> {
+  return getDataset(await activeDataset())
+    .events.filter((e) => e.agreementId === agreementId)
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+}
+
+export async function getAgreementDetail(id: string): Promise<{
+  agreement: Agreement;
+  wageAgreements: WageAgreement[];
+  workingGroups: WorkingGroup[];
+  events: AuditEvent[];
+} | null> {
   const agreement = await getAgreement(id);
   if (!agreement) return null;
-  return { agreement, wageAgreements: await listWageAgreements(id) };
+  const [wageAgreements, workingGroups, events] = await Promise.all([
+    listWageAgreements(id),
+    listWorkingGroups(id),
+    listAgreementEvents(id),
+  ]);
+  return { agreement, wageAgreements, workingGroups, events };
 }
 
 /** The distinct agreement areas present in the data — FA-001, and /avtal's filter. */
