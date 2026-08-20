@@ -111,6 +111,15 @@ guides, plus the places our domain model still diverges from the information mod
    medium, free text is full. A box stretched to the column tells the reader
    nothing and makes them track from label to caret across 700px for a
    thirty-character name.
+   **A form row is a `FormGrid`, never a hand-written `grid-cols-N`.** Its
+   columns come from the *field* (`--form-col`, 12rem) rather than from a
+   fraction of the panel, so width becomes a span — short is one column, medium
+   two, free text the row. Writing the grid by hand produced all three faults
+   reported together: ragged rows (five fields in a three-column grid is 3 then
+   2), two different gaps in one panel (two fields across a two-column grid sit
+   300px apart, three across a three-column grid sit 24px apart), and boxes that
+   do not line up down the form. A hint does **not** widen a field; a hint that
+   will not fit under a date is a `Rationale` wearing a hint's clothes.
    **The unit goes in the label, the value stays a bare number** — `Löneutrymme
    (%)` with `3,4`, never a field reading `3,4 %`. A user typing into a box that
    already carries the sign has to decide whether to keep it, and `"3,4 %"` is a
@@ -138,6 +147,18 @@ guides, plus the places our domain model still diverges from the information mod
    two states used to be two pale tints measuring 1.01:1 against each other, and
    `tone` read `selected` while the toggle variant set `pressed` — so a pressed
    chip changed nothing but its glyph.
+   **A filter chip is an outline, and every register draws it with `FilterChips`.**
+   A filled chip is `Chip`'s *selected* state — one of a set of options, chosen.
+   A filter chip is not one of a set: it is a criterion already applied, and the
+   only thing it offers is removal, so filling it puts the loudest treatment in
+   the system on the control the reader is least likely to press. The two
+   registers had built this twice and disagreed on all of it — filled vs outline,
+   count vs no count, "Rensa filter" vs "Rensa alla".
+   **A filter filters.** The controls own the register's `DataTable` and narrow
+   it through `Row.facets`; a filter that changes the chips and leaves the rows
+   in place is a control that looks live and is not, which is the same failure as
+   a `<Button>` with no `onClick`. An empty result is a sentence, never an empty
+   table with a header on it.
    **Sand is Märket's colour, but a filled sand block is an alert's *shape*.**
    The start page's Märket banner is a card with a sand spine and a kicker, not
    a tinted box with a border — sand also carries `Ofullständig` and watchword
@@ -176,8 +197,22 @@ guides, plus the places our domain model still diverges from the information mod
    proposal is **source-linked**: selecting it highlights the passage in the protocol it
    was read from (FAI-001, FAI-004). Show the rejected path too — a demo of only the
    happy path asserts human review instead of demonstrating it.
-   AI belongs where a requirement puts it. There is no general assistant: the only
-   free-standing AI surface is the §4.1 decision-support panel on a mediation case.
+   AI belongs where a requirement puts it, and **`lib/domain/ai.ts` is where that
+   list lives** — §4.1's four functions, no fifth. `AI_FUNCTIONS` says what each
+   one does, which requirement it answers and which routes it runs on;
+   `AI_BOUNDARIES` says what the AI must *not* do, in MI's own words
+   (*"alla förslag … ska granskas och godkännas"*, *"Helt nya avtal … ska alltid
+   registreras manuellt"*). Both are tested.
+   **The AI assistant is a drawer, and it is not a chatbot.** §4.1 asks for an
+   *integrerat* AI-stöd and §4.3's system sketch carries AI-assisted registration
+   as a module in its own right, so it is reachable from the header on every
+   screen the role may act on — but it has no prompt box and nothing to converse
+   with. It answers four questions: what runs on this screen, what is waiting for
+   your approval (the queue FAI-002 implies must exist), what the AI can do at
+   all, and where it stops. The last section is the one a competitor will not
+   have. NFÅ-003 applies inside it: the queue is filtered by **write** access, so
+   an officer sees only work they can actually clear, and a role with no AI screen
+   gets no launcher.
 8. **Do not touch the logo.** The MI mark contains a protected Swedish state emblem —
    a royal crown over the shield. **MI supplied the official asset on 2026-08-18**, so
    the `MI` placeholder square is gone; `public/mi-mark-white.svg` is MI's own file with

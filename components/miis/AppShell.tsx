@@ -9,6 +9,7 @@ import type { Lang } from "@/lib/domain/lang";
 import { isHeadingOnly, navFor, NAV_HREF, type NavId } from "@/lib/domain/nav";
 import { canAccess, type RoleInfo } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
+import { AiAssistant, AiAssistantLauncher } from "./AiAssistant";
 import { DemoBar } from "./DemoBar";
 import { Callout } from "./primitives";
 import { SessionTimeoutWarning } from "./SessionTimeoutWarning";
@@ -16,10 +17,13 @@ import { SessionTimeoutWarning } from "./SessionTimeoutWarning";
 /**
  * The application shell: demo bar, header, role-filtered navigation, content.
  *
- * There is no assistant panel here any more. The only free-standing AI surface
- * in MIIS is the §4.1 decision-support panel on a mediation case, which is what
- * the requirements actually describe; a general chatbot on all eleven screens
- * was functionality nobody asked for, on a bid partly scored on demonstrated
+ * The header carries the AI support launcher. §4.1 asks for an *integrerat
+ * AI-stöd* and §4.3's system sketch lists AI-assisted registration as a module
+ * of the system in its own right, so it is reachable from every screen the role
+ * may act on. What it opens is a catalogue of §4.1's four functions, the queue
+ * of proposals waiting for approval and a statement of the limits — not a
+ * chatbot. An assistant that answers questions nobody asked is still
+ * functionality nobody asked for, on a bid partly scored on demonstrated
  * understanding of the assignment.
  */
 
@@ -172,13 +176,42 @@ export function AppShell({
             and it had no control anywhere except inside the session-timeout
             dialog, which a user only sees if they wait.
           */}
-          <div className="flex flex-wrap items-center justify-end gap-4">
+          {/*
+            `grow`, and it is the fix for the header's right edge on a narrow
+            screen.
+
+            The row is `justify-between`, which only positions items that share
+            a line. Once the identity block wraps below the logo it is a lone
+            flex item on its own line, so `justify-between` puts it at the
+            *start* — while its own `justify-end` right-aligns its contents
+            inside its content-width box. The result was a right-aligned block
+            floating in the middle of the header with 140px of dead space beyond
+            it, which reads as a broken right margin rather than as a choice.
+            Growing it to fill the line makes `justify-end` land on the header's
+            real padding edge, wrapped or not.
+          */}
+          <div className="flex grow flex-wrap items-center justify-end gap-4">
             <div className="text-right text-label leading-tight">
               <div className="opacity-90">{t.common.loggedInVia}</div>
               <div className="font-semibold">
                 {role.person} · {role.label}
               </div>
             </div>
+            {/*
+              The AI support, reachable from every screen it applies to.
+
+              §4.1 asks for an *integrated* AI support and §4.3 carries it as a
+              module of the system; two panels on two screens answered the
+              requirement tables but left an officer with no way to find out
+              what the machine does, what it is holding for them, or where it
+              stops. This is that, and it is deliberately not a chatbot — see
+              `AiAssistant`.
+
+              It sits before Sign out because it is the only control in the
+              header that is part of MIIS's own functionality; signing out ends
+              the session and belongs at the end of the row.
+            */}
+            <AiAssistantLauncher lang={lang} role={role} />
             <button
               type="button"
               onClick={() => setSessionWarning(true)}
@@ -274,6 +307,8 @@ export function AppShell({
           )}
         </main>
       </div>
+
+      <AiAssistant lang={lang} role={role} />
 
       <SessionTimeoutWarning
         lang={lang}

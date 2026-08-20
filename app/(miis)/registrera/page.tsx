@@ -11,6 +11,7 @@ import {
   ConfidentialityMarker,
   Field,
   FieldLabel,
+  FormGrid,
   TextField,
   StatusDot,
   StatusLegend,
@@ -49,49 +50,63 @@ export default async function RegistreraPage() {
       <ProtocolReview proposals={proposals} lang={lang} watchwords={watchwords}>
         <div id="steg-loneavtal" className="scroll-mt-24">
           <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
-            <div className="space-y-4">
-              <Select
-                id="wage-construction"
-                label={t.wage.construction}
-                defaultValue="2"
-                hint={t.wage.constructionHint}
-                options={([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
-                  id: String(n),
-                  label: `${n}. ${AGREEMENT_CONSTRUCTIONS[lang][n]}`,
-                }))}
-              />
+            {/*
+              The panel's title names the thing, and the sentence explains it.
+              It read "Löneavtal 2027 – ny rad för avtalsrörelsen": a heading
+              with a clause of prose attached, which no register in MI's own
+              printouts does, and which cannot be reused as a breadcrumb, a
+              print title or a table caption.
+            */}
+            <p className="mb-4 max-w-4xl text-table">{t.wage.intro}</p>
 
+            <div className="space-y-5">
               {/*
-                These are the officer's to register (FA-008 to FA-010), so they
-                are inputs. They were `Field` — display only — and read as
-                editable purely because `Field` was borrowing the input styling.
+                One form row, one set of columns.
+
+                This was three grids in a column — three-across, then two, then
+                two — so the panel showed a row of three, a row of two, and two
+                more rows of two, with the gap changing between them. `FormGrid`
+                fits as many field-width columns as the panel has, and each
+                field claims one or two of them, so every box lines up with the
+                one above it whatever the panel is wide.
               */}
-              {/*
-                Three columns, not four. At four, "Kostnad för
-                arbetstidsförkortning (%)" is wider than its column — the label
-                is the longest string on this screen and it decides the grid,
-                not the other way round.
-              */}
-              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3">
+              <FormGrid>
+                <Select
+                  id="wage-construction"
+                  label={t.wage.construction}
+                  defaultValue="2"
+                  hint={t.wage.constructionHint}
+                  width="full"
+                  options={([1, 2, 3, 4, 5, 6, 7] as const).map((n) => ({
+                    id: String(n),
+                    label: `${n}. ${AGREEMENT_CONSTRUCTIONS[lang][n]}`,
+                  }))}
+                />
+
                 {/*
+                  These are the officer's to register (FA-008 to FA-010), so
+                  they are inputs. They were `Field` — display only — and read
+                  as editable purely because `Field` was borrowing the input
+                  styling.
+
                   The unit lives in the label and the field holds a bare number.
                   A user typing into a box that already reads "3,4 %" has to
-                  decide whether to keep the sign, and a stored value of
-                  "3,4 %" is a string that no report can sum.
+                  decide whether to keep the sign, and a stored value of "3,4 %"
+                  is a string that no report can sum.
                 */}
                 <TextField
                   id="wage-scope"
                   label={t.wage.scope}
                   defaultValue={decimal(3.4, lang)}
                   numeric
-                width="short"
+                  width="short"
                 />
                 <TextField
                   id="wage-cost-frame"
                   label={t.wage.costFrame}
                   defaultValue={decimal(6.4, lang)}
                   numeric
-                width="short"
+                  width="short"
                 />
                 <Select
                   id="wage-individual-guarantee"
@@ -124,23 +139,15 @@ export default async function RegistreraPage() {
                   label={t.wage.workingTimeCost}
                   defaultValue={decimal(0.2, lang)}
                   numeric
-                width="short"
+                  width="short"
                 />
-              </div>
-              <div className="flex flex-wrap items-center justify-end gap-2">
-                <ReqTag id="FA-008" />
-                <ReqTag id="FA-009" />
-                <ReqTag id="FA-010" />
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
                 <TextField
                   id="wage-revision-date"
                   label={t.wage.revisionDate}
                   type="date"
                   defaultValue="2027-06-01"
                   numeric
-                width="short"
+                  width="short"
                 />
                 <TextField
                   id="wage-revision-percent"
@@ -148,14 +155,14 @@ export default async function RegistreraPage() {
                   defaultValue={decimal(3.4, lang)}
                   hint={t.wage.revisionHint}
                   numeric
-                width="short"
+                  width="short"
                 />
                 <TextField
                   id="wage-minimum"
                   label={t.wage.minimumWage}
                   defaultValue={decimal(25480, lang)}
                   numeric
-                width="short"
+                  width="short"
                 />
                 <TextField
                   id="wage-minimum-date"
@@ -164,11 +171,22 @@ export default async function RegistreraPage() {
                   defaultValue="2025-08-01"
                   hint={t.wage.minimumWageHint}
                   numeric
-                width="short"
+                  width="short"
                 />
+              </FormGrid>
+
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <ReqTag id="FA-008" />
+                <ReqTag id="FA-009" />
+                <ReqTag id="FA-010" />
               </div>
 
-              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+              {/*
+                The two flags are switches, not fields, so they stay out of the
+                form row — a `switch` in a column of boxes reads as a third kind
+                of input.
+              */}
+              <div className="flex flex-wrap gap-x-8 gap-y-4">
                 <div className="flex flex-wrap items-start gap-2">
                   <Toggle id="flag-equality" label={t.wage.equalityFlag} lang={lang} defaultOn />
                   <ReqTag id="FA-011" />
@@ -184,7 +202,8 @@ export default async function RegistreraPage() {
 
         <div className="grid grid-cols-1 gap-5 @5xl:grid-cols-2">
           <Panel title={t.terms.title} tags={["FA-003", "FA-004"]}>
-            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+            <p className="mb-4 max-w-4xl text-table">{t.terms.intro}</p>
+            <FormGrid>
               <TextField
                 id="terms-signed"
                 label={t.terms.ownSignedDate}
@@ -215,12 +234,12 @@ export default async function RegistreraPage() {
                 numeric
                 width="short"
               />
-            </div>
+            </FormGrid>
             <Rationale>{t.terms.note}</Rationale>
           </Panel>
 
           <Panel title={t.link.title} tags={["FF-002", "FD-001"]}>
-            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+            <FormGrid>
               {/*
                 FF-002 links the protocol to a negotiation that already exists,
                 so this is a choice from a register rather than free text.
@@ -228,6 +247,7 @@ export default async function RegistreraPage() {
               <Select
                 id="link-negotiation"
                 label={t.link.negotiation}
+                width="full"
                 options={[
                   { id: "fo-218", label: "FÖ-2025/218 – Kommunikation, 2025-07-15" },
                   { id: "fo-204", label: "FÖ-2025/204 – Stål- och metallindustrin, 2025-06-02" },
@@ -243,12 +263,13 @@ export default async function RegistreraPage() {
               */}
               <Field
                 label={t.link.documentLinkedTo}
+                width="full"
                 value={[t.link.linkedAgreement, t.link.linkedWage, t.link.linkedNegotiation].join(
                   " + ",
                 )}
                 hint={t.link.documentLinkedToHint}
               />
-            </div>
+            </FormGrid>
           </Panel>
         </div>
 

@@ -13,6 +13,7 @@ import {
   Callout,
   Chip,
   FieldLabel,
+  FormGrid,
   LinkButton,
   Panel,
   Rationale,
@@ -20,6 +21,9 @@ import {
   ReqTags,
 } from "./primitives";
 import { Select } from "./Select";
+
+/** The date a new registration starts from, and the value "register another" returns to. */
+const INITIAL_VALID_FROM = "2027-07-01";
 
 /**
  * Registering a party — FP-001, FP-002, FP-006, and US-03's merger.
@@ -49,7 +53,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
 
   const [type, setType] = useState<PartyType>("employee");
   const [name, setName] = useState("");
-  const [validFrom, setValidFrom] = useState("2027-07-01");
+  const [validFrom, setValidFrom] = useState(INITIAL_VALID_FROM);
   const [sector, setSector] = useState<Sector | "">("");
   const [group, setGroup] = useState("");
   const [industryCode, setIndustryCode] = useState("");
@@ -66,10 +70,44 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
     setSaved(value);
   }
 
+  /*
+    "Registrera en part till" has to give back an empty form.
+
+    It only cleared the confirmation, so the officer was returned to a screen
+    still holding the party they had just registered — same name in the box,
+    same predecessors ticked — and the next Spara would have looked like a
+    duplicate. Everything the form holds goes back to its initial value, the
+    page returns to the top, and focus lands on the first control, because a
+    reset the user has to scroll up to find is a reset they will miss.
+  */
+  function registerAnother() {
+    setSaved(null);
+    setType("employee");
+    setName("");
+    setValidFrom(INITIAL_VALID_FROM);
+    setSector("");
+    setGroup("");
+    setIndustryCode("");
+    setPredecessors([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("np-type")?.focus();
+  }
+
   return (
     <>
       <Panel title={t.identity} tags={["FP-001", "FP-002"]}>
-        <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
+        {/*
+          One form row for the whole panel.
+
+          It was three grids — a two-column one for type and name, a two-column
+          one holding a single date, and a three-column one for the employer
+          properties. Three grids is three column widths, so the gap between
+          "Typ av part" and "Namn på parten" was nothing like the gap between
+          "Sektor" and "Arbetsgivargrupp", and no box lined up with the box two
+          rows below it. `FormGrid` fits field-width columns to the panel once,
+          and everything sits on them.
+        */}
+        <FormGrid>
           <Select
             id="np-type"
             width="medium"
@@ -95,7 +133,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
             select and a text field line up; a `mb-1 block` label is 20px, which
             is why the name sat above the type beside it.
           */}
-          <div>
+          <div data-span="2">
             <FieldLabel htmlFor="np-name">{t.name}</FieldLabel>
             <input
               id="np-name"
@@ -106,14 +144,12 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
               className="field-input max-w-[26rem]"
             />
           </div>
-        </div>
 
-        {/*
-          FP-004 works because a name is always dated. Registering one without a
-          validity date would create a party whose first name could never be
-          superseded correctly.
-        */}
-        <div className="mt-4 grid grid-cols-1 gap-4 @xl:grid-cols-2">
+          {/*
+            FP-004 works because a name is always dated. Registering one without
+            a validity date would create a party whose first name could never be
+            superseded correctly.
+          */}
           <div>
             <FieldLabel htmlFor="np-from">{t.validFrom}</FieldLabel>
             <input
@@ -125,13 +161,21 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
             />
             <p className="mt-1 text-label text-muted-foreground">{t.validFromHint}</p>
           </div>
-        </div>
+        </FormGrid>
+        {/*
+          Why the date is asked for at all, rather than what to type into it.
+          It was the field's hint, at which length it broke to five lines under
+          a 190px box and pushed the row below it down; it is an argument about
+          FP-004 rather than an instruction, which is what `Rationale` is for.
+        */}
+        <Rationale>{t.validFromNote}</Rationale>
 
         {/* FP-001 scopes these to employer organisations. */}
         {type === "employer" && (
-          <div className="mt-4 grid grid-cols-1 gap-4 border-t border-border pt-4 @xl:grid-cols-2 @3xl:grid-cols-3">
+          <FormGrid className="mt-4 border-t border-border pt-4">
             <Select
               id="np-sector"
+              width="medium"
               label={t.sector}
               value={sector}
               onChange={(v) => setSector(v as Sector | "")}
@@ -144,6 +188,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
             />
             <Select
               id="np-group"
+              width="medium"
               label={t.group}
               value={group}
               onChange={setGroup}
@@ -162,7 +207,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
             />
             {/* The industry code exists only inside Svenskt Näringsliv (FP-001). */}
             {group === "Svenskt Näringsliv" && (
-              <div>
+              <div data-span="2">
                 <FieldLabel htmlFor="np-code">{t.industryCode}</FieldLabel>
                 <input
                   id="np-code"
@@ -174,7 +219,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
                 />
               </div>
             )}
-          </div>
+          </FormGrid>
         )}
         <Rationale>{t.scopeNote}</Rationale>
       </Panel>
@@ -223,7 +268,7 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
                 <LinkButton href="/parter" iconEnd={<IconForward />}>
                   {t.openRegister}
                 </LinkButton>
-                <Button variant="secondary" onClick={() => setSaved(null)} iconStart={<IconPlus />}>
+                <Button variant="secondary" onClick={registerAnother} iconStart={<IconPlus />}>
                   {t.registerAnother}
                 </Button>
               </div>

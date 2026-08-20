@@ -52,6 +52,10 @@ export const en: Dictionary = {
     notAuthorisedFor: (screen: string, role: string) =>
       `${screen} is not part of the permissions for the role ${role}. Switch role in demo mode to see the view. In MIIS this is governed by the authorisation administrator (NFÅ-003).`,
     notInDemo: "Not active in the demo",
+    filtersNone: "No filters selected",
+    filtersCount: (n: number) => (n === 1 ? "1 filter" : `${n} filters`),
+    filterRemove: (label: string) => `Remove the filter ${label}`,
+    filtersClearAll: "Clear all",
     requirementUnknown: "No requirement text is registered for this ID.",
   },
 
@@ -89,6 +93,36 @@ export const en: Dictionary = {
     action: "Print",
     printedAt: "Printed",
     withheld: "Information withheld – confidentiality-marked agreement",
+  },
+
+  ai: {
+    launcher: "AI support",
+    launcherWaiting: (n: number) =>
+      n === 1
+        ? "AI support – 1 proposal awaiting review"
+        : `AI support – ${n} proposals awaiting review`,
+    title: "The AI assistant",
+    subtitle: "Integrated AI support for the registration work (Appendix 1 §4.1)",
+    onThisScreen: "On this screen",
+    onThisScreenNone:
+      "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
+    where: "Where",
+    goThere: "Open the view",
+    queue: "Awaiting your review",
+    queueLead:
+      "None of this is saved. The list is what the AI support has interpreted and no case officer has approved yet.",
+    queueEmpty: "Nothing is awaiting review right now.",
+    queueCount: (n: number) => (n === 1 ? "1 proposal" : `${n} proposals`),
+    functions: "What the AI support does",
+    boundaries: "What it does not do",
+    boundariesLead:
+      "The limits are stated in §4.1 and are part of what is being procured – a case officer who cannot see where the machine stops cannot review it.",
+    traceability: "Traceability",
+    traceabilityBody:
+      "Both the AI's proposal and the officer's change are recorded in the change log with old value, new value, time and user (FH-001).",
+    traceabilityAction: "Open the change log",
+    readOnly:
+      "Your role reads the AI proposals but does not approve them. Approval belongs to the role that may register in each register (NFÅ-003).",
   },
   session: {
     title: "Your session is about to expire",
@@ -434,7 +468,9 @@ export const en: Dictionary = {
         "Both the AI proposal and the officer's change are recorded in the change log with time and user.",
     },
     wage: {
-      title: "Wage agreement 2027 – new row for the bargaining round",
+      title: "Wage agreement 2027",
+      intro:
+        "The 2027 bargaining round gives the agreement a new row. The previous wage agreement stays unchanged in the agreement view.",
       construction: "Agreement construction (1–7)",
       constructionHint: "Seven MI-defined constructions",
       scope: "Wage scope (%)",
@@ -452,7 +488,9 @@ export const en: Dictionary = {
       benchmarkFlag: "Industry benchmark (norm-setting agreement)",
     },
     terms: {
-      title: "General terms – its own validity period",
+      title: "General terms",
+      intro:
+        "Registered only where the terms run to a different period than the wage agreement. Leave the fields empty where the periods follow each other.",
       ownSignedDate: "Own date signed",
       ownValidFrom: "Own validity from",
       ownValidTo: "Own validity to",
@@ -885,7 +923,7 @@ export const en: Dictionary = {
       registration: "Registration status",
       status: "Agreement status",
       all: "All",
-      clear: "Clear filters",
+      noMatch: "No agreement matches the selected filters.",
     },
     detail: {
       identity: "The agreement",
@@ -974,10 +1012,7 @@ export const en: Dictionary = {
       sectorHint: "Applies to employer organisations",
       group: "Employer group",
       all: "All",
-      none: "No filters selected",
-      count: (n: number) => (n === 1 ? "1 filter" : `${n} filters`),
-      remove: (label: string) => `Remove the filter ${label}`,
-      clearAll: "Clear all",
+      noMatch: "No party matches the selected filters.",
     },
     bodies: {
       heading: "Cooperation bodies",
@@ -1013,7 +1048,9 @@ export const en: Dictionary = {
       name: "Name of the party",
       namePlaceholder: "e.g. Sveriges Lärare",
       validFrom: "The name applies from",
-      validFromHint: "The name goes into the name history with this date, so that a future name change can be bounded correctly.",
+      validFromHint: "The date the name starts to apply",
+      validFromNote:
+        "The name goes into the name history with this date, so that a future name change can be bounded correctly (FP-004).",
       sector: "Sector",
       group: "Employer group",
       industryCode: "Industry code",

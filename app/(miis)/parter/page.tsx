@@ -71,6 +71,12 @@ export default async function ParterPage() {
         p.employerGroup ?? "",
         former,
       ],
+      /* FP-005's "vissa egenskaper", as plain values the filter can compare. */
+      facets: {
+        type: p.type,
+        sector: p.sector ?? "",
+        group: p.employerGroup ?? "",
+      },
     };
   });
 
@@ -125,11 +131,14 @@ export default async function ParterPage() {
 
       <Panel title={t.register.heading} tags={["FP-001", "FP-002", "FP-005"]}>
         <p className="mb-4 max-w-4xl text-table">{t.register.intro}</p>
-        {/* FP-005 — the properties are the ones FP-001 gives a party. */}
-        <PartyFilters lang={lang} />
-        <div className="mt-4">
-          <DataTable columns={columns} rows={rows} lang={lang} caption={t.register.heading} />
-        </div>
+        {/* FP-005 — the properties are the ones FP-001 gives a party, and the
+            controls own the table so choosing one actually narrows it. */}
+        <PartyFilters
+          lang={lang}
+          columns={columns}
+          rows={rows}
+          caption={t.register.heading}
+        />
         <Rationale>{t.register.sectorNote}</Rationale>
       </Panel>
 

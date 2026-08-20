@@ -6,7 +6,8 @@ import { SECTOR_LABEL, type Sector } from "@/lib/domain/agreement";
 import type { Lang } from "@/lib/domain/lang";
 import { PARTY_TYPE_LABEL, type PartyType } from "@/lib/domain/party";
 import { dictionary } from "@/lib/i18n";
-import { Button, Chip } from "./primitives";
+import { DataTable, matchesFacets, type Column, type Row } from "./DataTable";
+import { FilterChips } from "./primitives";
 import { Select } from "./Select";
 
 /**
@@ -20,8 +21,25 @@ import { Select } from "./Select";
  * The chips below the controls are the criteria as a sentence, the same
  * treatment `/sok` uses, so a filter is visible and removable rather than
  * hidden inside a control the reader has to go and inspect.
+ *
+ * It owns the register's table for the same reason `AgreementFilters` does: a
+ * filter that changes the chips and not the rows is a control that looks live
+ * and is not. The rows come in already rendered from the server, each with the
+ * plain values the criteria compare against.
  */
-export function PartyFilters({ lang }: { lang: Lang }) {
+export function PartyFilters({
+  lang,
+  columns,
+  rows,
+  caption,
+  minWidth,
+}: {
+  lang: Lang;
+  columns: Column[];
+  rows: Row[];
+  caption: string;
+  minWidth?: string;
+}) {
   const d = dictionary(lang);
   const t = d.parter.filters;
   const [type, setType] = useState("");
@@ -46,6 +64,8 @@ export function PartyFilters({ lang }: { lang: Lang }) {
   if (group) {
     active.push({ key: "group", label: `${t.group}: ${group}`, clear: () => setGroup("") });
   }
+
+  const visible = rows.filter((row) => matchesFacets(row, { type, sector, group }));
 
   return (
     <div>
@@ -91,20 +111,25 @@ export function PartyFilters({ lang }: { lang: Lang }) {
         />
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span aria-live="polite" className="text-label text-muted-foreground">
-          {active.length === 0 ? t.none : t.count(active.length)}
-        </span>
-        {active.map((f) => (
-          <Chip key={f.key} onRemove={f.clear} removeLabel={t.remove(f.label)}>
-            {f.label}
-          </Chip>
-        ))}
-        {active.length > 0 && (
-          <Button variant="ghost" size="sm" onClick={() => { setType(""); setSector(""); setGroup(""); }}>
-            {t.clearAll}
-          </Button>
-        )}
+      <FilterChips
+        active={active}
+        lang={lang}
+        onClearAll={() => {
+          setType("");
+          setSector("");
+          setGroup("");
+        }}
+      />
+
+      <div className="mt-4">
+        <DataTable
+          columns={columns}
+          rows={visible}
+          lang={lang}
+          caption={caption}
+          minWidth={minWidth}
+          empty={t.noMatch}
+        />
       </div>
     </div>
   );

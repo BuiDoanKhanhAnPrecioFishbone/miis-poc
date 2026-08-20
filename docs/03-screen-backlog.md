@@ -52,8 +52,13 @@ concreteness, feasibility*.
   zero layout shift when toggling.
 - ~~Session timeout (NFÅ-002)~~ — modal at 28 minutes, keyboard-trapped, announced, with a
   manual trigger in the demo bar for the presentation.
-- ~~The general AI assistant~~ — removed. The only free-standing AI surface is now the
-  §4.1 decision-support panel on a mediation case, which the requirements describe.
+- ~~The AI assistant~~ — built, as §4.1 describes it rather than as a chatbot. A drawer
+  from the header carrying the four functions §4.1 names, the queue of proposals waiting
+  for approval (which FAI-002 implies must exist and which nothing showed before), and
+  MI's own stated limits on what the AI may not do. `lib/domain/ai.ts` is the catalogue
+  and it is tested; NFÅ-003 filters the queue by write access, and a role with no AI
+  screen gets no launcher. The earlier general assistant — a prompt box on eleven
+  screens — stays removed: it is the thing this replaces, not the thing it restores.
 - ~~Accessibility evidence~~ — see `docs/accessibility/`. axe-core, zero violations.
 - ~~Screenshots~~ — `npm run screenshots`, generated from the running app at 1440 px, in
   both languages and with requirement tags on and off.

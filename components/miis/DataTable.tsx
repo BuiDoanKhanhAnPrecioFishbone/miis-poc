@@ -38,6 +38,21 @@ export interface Row {
   cells: ReactNode[];
   /** Parallel to `columns`. Only read for sortable columns. */
   sort?: (string | number)[];
+  /**
+   * The row's own values for the properties a register may be filtered by —
+   * `{ area: "Apotek", registration: "complete" }`.
+   *
+   * Plain strings rather than the rendered cell, because by the time a filter
+   * sees a cell it is a `ReactNode` and cannot be compared. The filter
+   * components read these; `DataTable` never does, which keeps the table a
+   * table.
+   */
+  facets?: Record<string, string>;
+}
+
+/** Rows whose facets match every stated criterion. An empty criterion matches all. */
+export function matchesFacets(row: Row, criteria: Record<string, string>): boolean {
+  return Object.entries(criteria).every(([key, value]) => !value || row.facets?.[key] === value);
 }
 
 type Direction = "asc" | "desc";
@@ -51,6 +66,7 @@ export function DataTable({
   lang,
   caption,
   minWidth = "52rem",
+  empty,
 }: {
   columns: Column[];
   rows: Row[];
@@ -58,6 +74,8 @@ export function DataTable({
   /** Names the scroll region for assistive technology. */
   caption: string;
   minWidth?: string;
+  /** Shown instead of the table when nothing is left to show. */
+  empty?: string;
 }) {
   const t = dictionary(lang).common;
   const [sortBy, setSortBy] = useState<number | null>(null);
@@ -84,6 +102,20 @@ export function DataTable({
   }
 
   const scrolls = rows.length > ROWS_BEFORE_STICKY;
+
+  /*
+    An empty result is a sentence, not an empty table. A header row with nothing
+    under it reads as a table that failed to load; "no agreement matches the
+    selected filters" is the answer the user's own filter produced. `aria-live`
+    because the change happens without navigating.
+  */
+  if (rows.length === 0) {
+    return (
+      <p aria-live="polite" className="py-3 text-table text-muted-foreground">
+        {empty ?? t.empty}
+      </p>
+    );
+  }
 
   return (
     <div

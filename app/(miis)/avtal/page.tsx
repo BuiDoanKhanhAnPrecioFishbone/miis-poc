@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AgreementFilters } from "@/components/miis/AgreementFilters";
 import { AppShell } from "@/components/miis/AppShell";
 import { IconPlus } from "@/components/miis/icons";
-import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { type Column, type Row } from "@/components/miis/DataTable";
 import {
   LinkButton,
   Badge,
@@ -100,6 +100,16 @@ export default async function AvtalPage() {
         registrationStatusLabel(a.registrationStatus, lang),
         wageCounts[i] ?? 0,
       ],
+      /*
+        What FA-005 and FA-006 let the register be narrowed by, as plain values
+        the filter can compare. They are the row's own properties, not its
+        rendered cells — a cell is a `ReactNode` by the time the filter sees it.
+      */
+      facets: {
+        area: a.agreementArea,
+        registration: a.registrationStatus,
+        status: status.code,
+      },
     };
   });
 
@@ -124,16 +134,19 @@ export default async function AvtalPage() {
 
       <Panel title={t.register.heading} tags={["FA-001", "FA-021", "FR-012"]}>
         <p className="mb-4 max-w-4xl text-table">{t.register.intro}</p>
-        <AgreementFilters lang={lang} areas={areas} />
-        <div className="mt-4">
-          <DataTable
-            columns={columns}
-            rows={rows}
-            lang={lang}
-            caption={t.register.heading}
-            minWidth="62rem"
-          />
-        </div>
+        {/*
+          The filters own the table. They used to sit above one the page
+          rendered itself, so choosing an agreement area changed the chips and
+          nothing else.
+        */}
+        <AgreementFilters
+          lang={lang}
+          areas={areas}
+          columns={columns}
+          rows={rows}
+          caption={t.register.heading}
+          minWidth="62rem"
+        />
         <Rationale>{t.register.areaNote}</Rationale>
       </Panel>
     </AppShell>

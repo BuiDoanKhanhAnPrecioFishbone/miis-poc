@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 
-import { FieldLabel } from "./primitives";
+import { fieldSpan, FieldLabel } from "./primitives";
 
 /**
  * A closed list of options.
@@ -88,7 +88,7 @@ export function Select({
   const current = value ?? internal;
 
   return (
-    <div>
+    <div data-span={fieldSpan(width)}>
       {srOnlyLabel ? (
         <label htmlFor={id} className="sr-only">
           {label}
@@ -108,8 +108,15 @@ export function Select({
         the edge. `pointer-events-none` so clicking the mark still opens the
         list; `aria-hidden` because the select already announces itself.
       */}
+      {/*
+        `field-control` is what lets a form row take the width back. Inside a
+        `FormGrid` the column is already the field's width, so a second cap here
+        would leave the select short of its own column while the text field
+        beside it filled one — the "these are not aligned" fault, one component
+        deep. Outside a form row the cap is still doing its job.
+      */}
       <div
-        className={`relative ${
+        className={`field-control relative ${
           width === "short" ? "max-w-[12rem]" : width === "medium" ? "max-w-[26rem]" : ""
         }`}
       >

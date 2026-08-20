@@ -6,7 +6,8 @@ import { registrationStatusLabel, type RegistrationStatus } from "@/lib/domain/a
 import type { Lang } from "@/lib/domain/lang";
 import { statusInfo, type StatusCode } from "@/lib/domain/status";
 import { dictionary } from "@/lib/i18n";
-import { Button, Chip } from "./primitives";
+import { DataTable, matchesFacets, type Column, type Row } from "./DataTable";
+import { FilterChips } from "./primitives";
 import { Select } from "./Select";
 
 /**
@@ -22,8 +23,31 @@ import { Select } from "./Select";
  * The chips restate the criteria as a sentence, the same treatment `/sok` and
  * `/parter` use — a filter should be visible and removable, not hidden inside a
  * control the reader has to go and inspect.
+ *
+ * **It owns the table, and that is a fix rather than a structure preference.**
+ * The controls used to sit above a `DataTable` the page rendered separately, so
+ * choosing an agreement area changed the chips and left all seven rows exactly
+ * where they were. A control that looks live and is not teaches an evaluator
+ * that the whole prototype is a picture, which is the one thing this mockup
+ * cannot afford. The rows still arrive already rendered from the server — each
+ * carrying a small map of plain values to compare against — so the filtering
+ * happens in the browser without moving a single cell off the server.
  */
-export function AgreementFilters({ lang, areas }: { lang: Lang; areas: string[] }) {
+export function AgreementFilters({
+  lang,
+  areas,
+  columns,
+  rows,
+  caption,
+  minWidth,
+}: {
+  lang: Lang;
+  areas: string[];
+  columns: Column[];
+  rows: Row[];
+  caption: string;
+  minWidth?: string;
+}) {
   const d = dictionary(lang);
   const t = d.avtal.filters;
   const [area, setArea] = useState("");
@@ -46,6 +70,8 @@ export function AgreementFilters({ lang, areas }: { lang: Lang; areas: string[] 
       clear: () => setStatus(""),
     });
   }
+
+  const visible = rows.filter((row) => matchesFacets(row, { area, registration, status }));
 
   return (
     <div>
@@ -85,26 +111,26 @@ export function AgreementFilters({ lang, areas }: { lang: Lang; areas: string[] 
         />
       </div>
 
-      {active.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          {active.map((c) => (
-            <Chip key={c.key} onRemove={c.clear} removeLabel={c.label} selected>
-              {c.label}
-            </Chip>
-          ))}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setArea("");
-              setRegistration("");
-              setStatus("");
-            }}
-          >
-            {t.clear}
-          </Button>
-        </div>
-      )}
+      <FilterChips
+        active={active}
+        lang={lang}
+        onClearAll={() => {
+          setArea("");
+          setRegistration("");
+          setStatus("");
+        }}
+      />
+
+      <div className="mt-4">
+        <DataTable
+          columns={columns}
+          rows={visible}
+          lang={lang}
+          caption={caption}
+          minWidth={minWidth}
+          empty={t.noMatch}
+        />
+      </div>
     </div>
   );
 }

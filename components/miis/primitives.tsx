@@ -14,6 +14,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
+import { dictionary } from "@/lib/i18n";
 
 import { IconAi, IconAlert, IconCheck, IconClose, IconLock, IconPlus } from "./icons";
 import { REQUIREMENTS } from "@/lib/domain/requirements";
@@ -539,9 +540,95 @@ export function Chip({
   );
 }
 
+/**
+ * The criteria a register is currently filtered by, as removable chips.
+ *
+ * One component because the two registers that had this had built it twice and
+ * disagreed on every part: the agreement register drew **filled** chips with no
+ * count and a "Rensa filter", the party register drew **outline** chips with a
+ * count and a "Rensa alla". A reader moving between the two saw the same control
+ * in two liveries and had to work out whether the difference meant anything.
+ *
+ * Outline is the correct one of the two, and that is the fix rather than a
+ * coin toss. A filled chip is `Chip`'s *selected* state — one of a set of
+ * options, chosen (the unions backing a demand). A filter chip is not one of a
+ * set; it is a criterion that is already applied, and the only thing it offers
+ * is removal. Filling it would put the loudest treatment in the system on the
+ * thing the reader is least likely to want to press.
+ *
+ * The count is not decoration either: with three chips wrapped onto two lines,
+ * "2 filter" is what tells a screen-reader user — and anyone who has scrolled —
+ * how narrow the list they are looking at actually is. It is `aria-live`, so
+ * removing one is announced.
+ */
+export function FilterChips({
+  active,
+  onClearAll,
+  lang,
+}: {
+  active: readonly { key: string; label: string; clear: () => void }[];
+  onClearAll: () => void;
+  lang: Lang;
+}) {
+  const t = dictionary(lang).common;
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-2">
+      <span aria-live="polite" className="text-label text-muted-foreground">
+        {active.length === 0 ? t.filtersNone : t.filtersCount(active.length)}
+      </span>
+      {active.map((f) => (
+        <Chip key={f.key} onRemove={f.clear} removeLabel={t.filterRemove(f.label)}>
+          {f.label}
+        </Chip>
+      ))}
+      {active.length > 0 && (
+        <Button variant="ghost" size="sm" onClick={onClearAll}>
+          {t.filtersClearAll}
+        </Button>
+      )}
+    </div>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /* Layout                                                                       */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * A row of form fields, laid out from the fields rather than from the panel.
+ *
+ * Wrap `TextField`, `Select` and `Field` in this instead of writing
+ * `grid-cols-2` by hand. Each child claims columns from its own `width` — short
+ * is one, medium two, full the whole row — so a form never shows two different
+ * gaps, never leaves a 12rem box adrift in a 350px column, and never ends a
+ * three-across row with two fields and a hole. The rules are in `globals.css`
+ * under `.form-grid`; the container name is what makes the column count follow
+ * the panel and not `main`.
+ */
+/**
+ * How many form columns a field of this width claims.
+ *
+ * The same three-step scale everywhere: a date or a percentage is one column, a
+ * name is two, free text is the row. `undefined` is one column — the default —
+ * and is left off the element so the markup stays readable.
+ *
+ * A hint does *not* widen the field. It was tried: a hinted short field claimed
+ * two columns so its sentence had room, which in a two-column panel is the whole
+ * row — so a percentage box ended up 590px wide to make space for four words
+ * under it. A hint that will not fit under a date is a hint that is too long, or
+ * a `Rationale` wearing a hint's clothes.
+ */
+export function fieldSpan(width: "short" | "medium" | "full"): "2" | "full" | undefined {
+  return width === "full" ? "full" : width === "medium" ? "2" : undefined;
+}
+
+export function FormGrid({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`@container/form ${className ?? ""}`}>
+      <div className="form-grid">{children}</div>
+    </div>
+  );
+}
 
 export function Panel({
   title,
@@ -710,7 +797,7 @@ export function TextField({
       fields side by side, one with a hint and one without, put their inputs at
       different heights, and the eye follows the inputs, not the hints.
     */
-    <div>
+    <div data-span={fieldSpan(width)}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <input
         id={id}
@@ -733,6 +820,7 @@ export function Field({
   masked,
   maskedText,
   maskedReason,
+  width = "medium",
 }: {
   label: string;
   value: string;
@@ -742,9 +830,11 @@ export function Field({
   masked?: boolean;
   maskedText?: string;
   maskedReason?: string;
+  /** How many `FormGrid` columns the value claims — the same scale as `TextField`. */
+  width?: "short" | "medium" | "full";
 }) {
   return (
-    <div>
+    <div data-span={fieldSpan(width)}>
       {(label || ai) && (
         <FieldLabel badge={ai && aiLabel ? <Badge tone="ai">{aiLabel}</Badge> : undefined}>
           {label}

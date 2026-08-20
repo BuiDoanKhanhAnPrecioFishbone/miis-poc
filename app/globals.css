@@ -483,6 +483,29 @@
   box-shadow: var(--shadow-card);
 }
 
+/*
+  MI's own small-label treatment, from `docs/design-system/mi-design-system.css`.
+
+  Three places in the app already asked for `.mi-kicker` — the start page's
+  Märket kicker, the constructions report's selection heading and the AI
+  assistant's section headings — and none of them got it: the rule lives in the
+  design-system stylesheet, which the application does not import, so the class
+  resolved to nothing and those three headings quietly rendered as ordinary
+  text. It is defined here because `Badge` applies the same treatment inline and
+  the two must not drift.
+
+  Casing is presentation. `Ofullständig` is what goes in the dictionary; the
+  capitals happen in CSS, so a screen reader is handed the natural word rather
+  than a shouted string it may try to spell out.
+*/
+@utility mi-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: var(--text-meta);
+  line-height: var(--text-meta--line-height);
+  font-weight: 700;
+}
+
 @utility field-input {
   display: block;
   width: 100%;
@@ -525,6 +548,75 @@ select.demo-select {
   */
   --select-chevron-gap: 1rem;
   --select-chevron-size: 0.75rem; /* 12px */
+
+  /*
+    One form column, and everything about a form row is derived from it.
+
+    A field's width is a cue about its content (CLAUDE.md rule 5), so the column
+    has to be the *field's* width rather than a fraction of whatever panel it
+    landed in. Twelve rem holds a date, a percentage or an amount with room to
+    spare, which is the smallest thing a column ever has to carry.
+  */
+  --form-col: 12rem;
+  --form-gap: 1.5rem;
+}
+
+/*
+ * A form row whose columns come from the fields, not from the panel.
+ *
+ * Every form in MIIS was a `grid-cols-N` of equal fractions with the fields
+ * capped inside it, and that produces the three faults reported together:
+ *
+ * - **ragged rows** — five fields in a three-column grid is 3 then 2, and the
+ *   next block of four is 2 then 2, so one panel showed four different row
+ *   shapes;
+ * - **two gaps in one panel** — two fields in a two-column grid sit ~300px
+ *   apart, three in a three-column grid sit ~24px apart, and the reader is
+ *   asked to believe that distance means something;
+ * - **fields that do not line up** — a 12rem box inside a 350px column starts
+ *   at the column edge and ends nowhere near the box below it.
+ *
+ * `repeat(auto-fill, minmax(var(--form-col), 1fr))` fixes all three at once:
+ * the browser fits as many field-width columns as the panel has room for, every
+ * gap is `--form-gap`, and a field fills its column so left *and* right edges
+ * align down the form. Width becomes a span — short is one column, medium two,
+ * free text the whole row — which is the same three-step scale `TextField` and
+ * `Select` already take.
+ *
+ * The wrapper is the query container, so the columns are counted against the
+ * panel the form is in and not against `main`. A form inside the registration
+ * screen's narrow right-hand pane gets two columns while the same markup on a
+ * full-width screen gets four, with no breakpoint written anywhere.
+ */
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem var(--form-gap);
+  align-items: start;
+}
+
+.form-grid > [data-span="full"] {
+  grid-column: 1 / -1;
+}
+
+@container form (min-width: 27rem) {
+  .form-grid {
+    grid-template-columns: repeat(auto-fill, minmax(var(--form-col), 1fr));
+  }
+
+  .form-grid > [data-span="2"] {
+    grid-column: span 2;
+  }
+}
+
+/*
+  Inside a form row the column is the width, so the component's own cap comes
+  off. Outside one — a field standing alone in a panel — the cap is still what
+  keeps a thirty-character name out of a 700px box.
+*/
+.form-grid .field-input,
+.form-grid .field-control {
+  max-width: none;
 }
 
 /*

@@ -50,6 +50,12 @@ export const sv = {
     notAuthorisedFor: (screen: string, role: string) =>
       `${screen} ingår inte i behörigheten för rollen ${role}. Byt roll i demoläget för att se vyn. I MIIS styrs detta av behörighetsadministratören (NFÅ-003).`,
     notInDemo: "Ej aktiv i demon",
+    /* One vocabulary for the filter chips, so two registers cannot describe the
+       same control in two ways. */
+    filtersNone: "Inga filter valda",
+    filtersCount: (n: number) => (n === 1 ? "1 filter" : `${n} filter`),
+    filterRemove: (label: string) => `Ta bort filtret ${label}`,
+    filtersClearAll: "Rensa alla",
     requirementUnknown: "Kravtexten finns inte registrerad för detta id.",
   },
 
@@ -87,6 +93,37 @@ export const sv = {
     action: "Skriv ut",
     printedAt: "Utskriftsdatum",
     withheld: "Uppgift utelämnad – sekretessmarkerat avtal",
+  },
+
+  /* AI-assistenten – Bilaga 1 §4.1. */
+  ai: {
+    launcher: "AI-stöd",
+    launcherWaiting: (n: number) =>
+      n === 1
+        ? "AI-stöd – 1 förslag väntar på granskning"
+        : `AI-stöd – ${n} förslag väntar på granskning`,
+    title: "AI-assistenten",
+    subtitle: "Integrerat AI-stöd för registreringsarbetet (Bilaga 1 §4.1)",
+    onThisScreen: "På den här sidan",
+    onThisScreenNone:
+      "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
+    where: "Var",
+    goThere: "Öppna vyn",
+    queue: "Väntar på din granskning",
+    queueLead:
+      "Ingenting av det här är sparat. Listan är det som AI-stödet har tolkat och som ännu inte har godkänts av en handläggare.",
+    queueEmpty: "Ingenting väntar på granskning just nu.",
+    queueCount: (n: number) => (n === 1 ? "1 förslag" : `${n} förslag`),
+    functions: "Det här gör AI-stödet",
+    boundaries: "Det här gör det inte",
+    boundariesLead:
+      "Gränserna står i §4.1 och är en del av det som upphandlas – en handläggare som inte ser var maskinen slutar kan inte granska den.",
+    traceability: "Spårbarhet",
+    traceabilityBody:
+      "Både AI:ns förslag och handläggarens ändring registreras i ändringsloggen med gammalt värde, nytt värde, tidpunkt och användare (FH-001).",
+    traceabilityAction: "Öppna ändringsloggen",
+    readOnly:
+      "Din roll läser AI-förslagen men godkänner dem inte. Godkännande hör till den roll som får registrera i respektive register (NFÅ-003).",
   },
   session: {
     title: "Din session håller på att gå ut",
@@ -426,7 +463,9 @@ export const sv = {
         "Både AI:ns förslag och handläggarens ändring registreras i ändringsloggen med tidpunkt och användare.",
     },
     wage: {
-      title: "Löneavtal 2027 – ny rad för avtalsrörelsen",
+      title: "Löneavtal 2027",
+      intro:
+        "Avtalsrörelsen 2027 ger avtalet en ny rad. Föregående löneavtal ligger kvar oförändrat i avtalsvyn.",
       construction: "Avtalskonstruktion (1–7)",
       constructionHint: "Sju MI-definierade konstruktioner",
       scope: "Löneutrymme (%)",
@@ -444,7 +483,9 @@ export const sv = {
       benchmarkFlag: "Industrimärke (märkessättande avtal)",
     },
     terms: {
-      title: "Allmänna villkor – egen giltighetsperiod",
+      title: "Allmänna villkor",
+      intro:
+        "Registreras bara när villkoren har en annan löptid än löneavtalet. Lämna fälten tomma om löptiderna följs åt.",
       ownSignedDate: "Eget teckningsdatum",
       ownValidFrom: "Egen giltighet från",
       ownValidTo: "Egen giltighet till",
@@ -871,7 +912,7 @@ export const sv = {
       registration: "Registreringsstatus",
       status: "Avtalsstatus",
       all: "Alla",
-      clear: "Rensa filter",
+      noMatch: "Inget avtal matchar de valda filtren.",
     },
     detail: {
       identity: "Avtalet",
@@ -960,10 +1001,7 @@ export const sv = {
       sectorHint: "Gäller arbetsgivarorganisationer",
       group: "Arbetsgivargrupp",
       all: "Alla",
-      none: "Inga filter valda",
-      count: (n: number) => (n === 1 ? "1 filter" : `${n} filter`),
-      remove: (label: string) => `Ta bort filtret ${label}`,
-      clearAll: "Rensa alla",
+      noMatch: "Ingen part matchar de valda filtren.",
     },
     bodies: {
       heading: "Samverkansorgan",
@@ -999,7 +1037,9 @@ export const sv = {
       name: "Partens namn",
       namePlaceholder: "T.ex. Sveriges Lärare",
       validFrom: "Namnet gäller från",
-      validFromHint: "Namnet läggs in i namnhistoriken med detta datum, så att ett framtida namnbyte kan avgränsas korrekt.",
+      validFromHint: "Datum då namnet börjar gälla",
+      validFromNote:
+        "Namnet läggs in i namnhistoriken med det här datumet, så att ett framtida namnbyte kan avgränsas korrekt (FP-004).",
       sector: "Sektor",
       group: "Arbetsgivargrupp",
       industryCode: "Branschkod",
