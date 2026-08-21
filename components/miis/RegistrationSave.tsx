@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { createContext, useContext, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { canRegister, type RegistrationStage } from "@/lib/domain/upload";
 import { dictionary } from "@/lib/i18n";
 import { IconForward } from "./icons";
-import { Button, Callout, FieldLabel, ReqTag } from "./primitives";
+import { Button, Callout, FieldLabel, LinkButton, ReqTag } from "./primitives";
 
 /**
  * The registration's stage, shared between the stepper and the save panel.
@@ -93,14 +92,19 @@ export function RegistrationSave({ lang }: { lang: Lang }) {
           "Protokollet är registrerat och kopplat" and pushed the page 57px wide
           at 375.
         */}
+        {/*
+          `LinkButton`, not a hand-rolled `<a>`. This was the eighth screen to
+          draw its own, and it had drifted the way the others did: `rounded-sm`
+          against `Button`'s shape and `px-5 py-3` against its size scale, so
+          the two controls in this pair — one primary, one secondary, on the
+          same row — rendered at two different heights and two different corner
+          radii. A size difference between two adjacent buttons reads as a
+          hierarchy nobody intended.
+        */}
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <Link
-            href="/avtal"
-            className="inline-flex min-h-12 items-center gap-2 rounded-sm border-2 border-transparent bg-primary px-5 py-3 font-bold text-primary-foreground transition-colors hover:bg-[var(--mi-slate-900)]"
-          >
+          <LinkButton href="/avtal" iconEnd={<IconForward />}>
             {t.registeredNext}
-            <IconForward />
-          </Link>
+          </LinkButton>
           <Button variant="secondary" onClick={() => ctx?.setRegistered(false)}>
             {t.reopen}
           </Button>

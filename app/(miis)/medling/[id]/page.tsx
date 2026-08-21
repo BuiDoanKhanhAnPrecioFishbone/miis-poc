@@ -84,7 +84,7 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
         }
       />
 
-      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <div className="print-stack grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <div className="space-y-5">
           <Panel title={c.uploaded(mediationCase.dgDecision.number)} tags={["FF-007"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">

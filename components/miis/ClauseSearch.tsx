@@ -76,6 +76,23 @@ export function ClauseSearch({
       regionLabel={d.common.aiRegionLabel}
       tags={["FAI-001", "FAI-002", "FA-011"]}
     >
+      {/*
+        *Frivilligt steg*, said before anything else.
+
+        The screen it sits on is a five-step flow with a stepper at the top, and
+        this region has a heading, a numbered look and its own controls — so it
+        was being read as a sixth step, one the officer had to complete before
+        saving. It is not: it runs §4.1's third function on demand, between the
+        agreement match above it and the save below, and a registration is
+        finished whether or not anyone opens it. The badge says so, and the
+        sentence under it says what the step is *for*, which the intro never
+        did — it described the mechanism and left the officer to work out when
+        they would ever want it.
+      */}
+      <p className="mb-3">
+        <Badge>{t.optional}</Badge>
+      </p>
+      <p className="mb-2 max-w-4xl text-table">{t.purpose}</p>
       <p className="mb-4 max-w-4xl text-table">{t.intro}</p>
 
       <div className="flex flex-wrap items-end gap-3">
@@ -139,8 +156,15 @@ export function ClauseSearch({
                         {t.showSource}
                       </Button>
                       {isRegistered ? (
+                        /*
+                          Where it went, not just that it went.
+                          "Godkänt och registrerat" told the officer the press
+                          had landed and nothing about the record it landed in,
+                          so the one question the control raises — *where do I
+                          find this now* — was the one it did not answer.
+                        */
                         <Callout tone="ok" live tags={["FAI-002"]}>
-                          {t.registered}
+                          {t.registered} {t.registeredWhere}
                         </Callout>
                       ) : isRejected ? (
                         <Callout tone="attention" live tags={["FAI-002"]}>

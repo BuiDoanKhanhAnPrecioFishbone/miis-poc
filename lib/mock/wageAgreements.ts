@@ -100,4 +100,31 @@ export const WAGE_AGREEMENTS: WageAgreement[] = [
     validFrom: "2027-05-01",
     validTo: "2029-04-30",
   },
+  /*
+    Teknikavtalet IF Metall is the agreement that sets Märket, and it is where
+    Bilaga 2 §3.5's Scenario 3 ends — the member of the public opens it, reads
+    it and downloads it. It had no wage agreement at all, so the public page
+    printed a validity period at the top and "Ingen löptid registrerad" three
+    panels below it, which is the register contradicting itself in front of the
+    one visitor who cannot ask anyone what it means.
+  */
+  {
+    id: "LA-007",
+    agreementId: "A-013",
+    construction: 3,
+    wageScopePercent: 3.2,
+    costFramePercent: 6.4,
+    individualGuarantee: false,
+    workingTimeReduction: { costPercent: 0.2 },
+    genderEqualityFlag: true,
+    industryBenchmark: true,
+    signedDate: "2027-03-31",
+    validFrom: "2027-04-01",
+    validTo: "2029-03-31",
+    wageRevision: { date: "2027-04-01", percent: 3.2 },
+    minimumWages: [
+      { occupationalGroup: "Yrkesvana", amountSekPerMonth: 28460, revisionDate: "2027-04-01" },
+      { occupationalGroup: "Nyanställda", amountSekPerMonth: 25120, revisionDate: "2027-04-01" },
+    ],
+  },
 ];

@@ -245,10 +245,27 @@ export function SegmentedControl({
 }
 
 /**
- * FR-002's information type, as the four pill tabs the US-11 sketch draws.
+ * Which panel is shown — a tab strip, and now shaped like one.
+ *
+ * It used to be a row of filled pills, which made it identical to
+ * `SegmentedControl` and to a selected `Chip`. Three controls that mean three
+ * different things — *which panel is shown*, *which value is set*, *which
+ * option is chosen* — cannot all be a dark filled rounded rectangle; an
+ * officer learns the shape, not the ARIA role, and there was nothing to learn.
+ *
+ * A tab now sits **on a rule and breaks it**: the selected one carries a 3px
+ * mark in the primary colour and the page's own text weight, the rest are
+ * quiet labels on the same baseline. That is the one tab convention every
+ * reader already has, it survives greyscale and a projector because the
+ * carrier is a shape rather than a fill, and it can never be mistaken for a
+ * button — which is exactly what the filled pill was being mistaken for.
  *
  * Roving tabindex and arrow keys, so the group is one tab stop rather than
- * four, and `aria-selected` carries the state — the fill alone would not.
+ * four, and `aria-selected` carries the state — the mark alone would not.
+ *
+ * `Home` and `End` jump to the ends, which WAI-ARIA's tabs pattern expects and
+ * which matters more here than it looks: the drawer's queue is the last tab and
+ * the one an officer reaches for most.
  */
 export function Tabs({
   label,
@@ -257,7 +274,16 @@ export function Tabs({
   onChange,
 }: {
   label: string;
-  tabs: { id: string; label: string }[];
+  /**
+   * `count` rides on the tab rather than being written into the label.
+   *
+   * The drawer was building `"Väntar (3)"` by string concatenation, which meant
+   * the number could not be styled, could not be given its own accessible name
+   * and was announced as part of the tab's title. Here it is a pill the eye
+   * finds before it reads, and the tab's `aria-label` says what the number
+   * counts instead of leaving a screen reader to guess at a bare digit.
+   */
+  tabs: { id: string; label: string; count?: number; countLabel?: string }[];
   value: string;
   onChange: (id: string) => void;
 }) {
@@ -267,15 +293,36 @@ export function Tabs({
   );
 
   function onKeyDown(e: React.KeyboardEvent) {
-    const delta = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
-    if (delta === 0) return;
+    const target =
+      e.key === "ArrowRight"
+        ? index + 1
+        : e.key === "ArrowLeft"
+          ? index - 1
+          : e.key === "Home"
+            ? 0
+            : e.key === "End"
+              ? tabs.length - 1
+              : null;
+    if (target === null) return;
     e.preventDefault();
-    const next = tabs[(index + delta + tabs.length) % tabs.length];
+    const next = tabs[(target + tabs.length) % tabs.length];
     if (next) onChange(next.id);
   }
 
   return (
-    <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className="flex flex-wrap gap-2">
+    /*
+      The rule belongs to the strip, and each tab breaks it with `-mb-[2px]`.
+      Wrapping is allowed — four tabs at 375px do not fit on one line — and a
+      wrapped row keeps its own marks, which is legible even though the shared
+      baseline is gone. Scrolling the strip instead would hide a tab behind a
+      gesture, and a hidden tab is a hidden section.
+    */
+    <div
+      role="tablist"
+      aria-label={label}
+      onKeyDown={onKeyDown}
+      className="flex flex-wrap items-end gap-x-1 gap-y-0 border-b-2 border-border"
+    >
       {tabs.map((t) => {
         const selected = t.id === value;
         return (
@@ -284,15 +331,30 @@ export function Tabs({
             type="button"
             role="tab"
             aria-selected={selected}
+            aria-label={
+              t.count !== undefined && t.countLabel ? `${t.label} – ${t.countLabel}` : undefined
+            }
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(t.id)}
-            className={`min-h-11 rounded-md border-2 px-5 py-2 text-label transition-colors ${
+            className={`-mb-[2px] inline-flex min-h-11 items-center gap-2 border-b-[3px] px-3 py-2 text-table transition-colors ${
               selected
-                ? "border-primary bg-primary font-bold text-primary-foreground"
-                : "border-transparent bg-secondary font-semibold text-secondary-foreground hover:bg-accent"
+                ? "border-primary font-bold text-foreground"
+                : "border-transparent font-semibold text-muted-foreground hover:border-input hover:text-foreground"
             }`}
           >
             {t.label}
+            {t.count !== undefined && t.count > 0 && (
+              <span
+                aria-hidden
+                className={`inline-flex min-w-5 justify-center rounded-full px-1.5 py-0.5 text-meta font-bold tabular-nums ${
+                  selected
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground"
+                }`}
+              >
+                {t.count}
+              </span>
+            )}
           </button>
         );
       })}

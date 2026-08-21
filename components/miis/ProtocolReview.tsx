@@ -10,6 +10,7 @@ import type { Watchword } from "@/lib/domain/watchword";
 import { countHits } from "@/lib/domain/watchword";
 import { UPLOAD_PIPELINE, registrationSteps, type RegistrationStage } from "@/lib/domain/upload";
 import { dictionary, type Dictionary } from "@/lib/i18n";
+import { useAiQueueReview } from "./AiAssistant";
 import { ProtocolUpload } from "./ProtocolUpload";
 import { RegistrationProvider } from "./RegistrationSave";
 import { ClauseSearch } from "./ClauseSearch";
@@ -359,6 +360,7 @@ export function ProtocolReview({
     Object.fromEntries(proposals.map((p) => [p.id, initialValue(p)])),
   );
   const [approved, setApproved] = useState(false);
+  const { clearQueueItem, restoreQueueItem } = useAiQueueReview();
   const [registered, setRegistered] = useState(false);
   const [incomplete, setIncomplete] = useState(false);
   const [file, setFile] = useState<UploadedFile | null>(resume ?? null);
@@ -830,6 +832,7 @@ export function ProtocolReview({
                       onClick={() => {
                         setApproved(false);
                         setRegistered(false);
+                        restoreQueueItem("registration");
                       }}
                     >
                       {t.review.reopen}
@@ -837,7 +840,22 @@ export function ProtocolReview({
                   </>
                 ) : (
                   <>
-                    <Button onClick={() => setApproved(true)}>{t.review.approve}</Button>
+                    {/*
+                      Approving here is what empties the AI drawer's review
+                      queue — the count on the launcher is the number of
+                      machine-made proposals no human has accepted, and this is
+                      the human accepting them. Without the call the badge went
+                      on saying nine after the officer had cleared all nine,
+                      which reads as a number that is decoration.
+                    */}
+                    <Button
+                      onClick={() => {
+                        setApproved(true);
+                        clearQueueItem("registration");
+                      }}
+                    >
+                      {t.review.approve}
+                    </Button>
                     <span className="text-label text-muted-foreground">
                       {t.review.nothingSaved}
                     </span>

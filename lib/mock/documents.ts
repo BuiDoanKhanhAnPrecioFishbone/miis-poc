@@ -123,4 +123,31 @@ export const DOCUMENTS: StoredDocument[] = [
     confidential: false,
     agreementId: "A-010",
   },
+  /*
+    The two documents Scenario 3's last bullet needs — *"öppnar och laddar ned
+    avtal"*. Without them the public page offered a download control over an
+    empty list, which demonstrates the opposite of the bullet.
+
+    An *avtalstryck* beside the protocol on purpose: FR-011 releases both to
+    the public, and they are different things — the protocol is what the
+    parties signed, the tryck is the agreement as it is published.
+  */
+  {
+    id: "DOK-013",
+    fileName: "Avtalsprotokoll_Teknikavtalet_IF_Metall_2027.pdf",
+    type: "protocol",
+    uploadedDate: "2027-04-05",
+    linkedTo: "Teknikavtalet IF Metall – Teknikföretagen / IF Metall",
+    confidential: false,
+    agreementId: "A-013",
+  },
+  {
+    id: "DOK-014",
+    fileName: "Avtalstryck_Teknikavtalet_IF_Metall_2027-2029.pdf",
+    type: "agreement",
+    uploadedDate: "2027-04-06",
+    linkedTo: "Teknikavtalet IF Metall – Teknikföretagen / IF Metall",
+    confidential: false,
+    agreementId: "A-013",
+  },
 ];

@@ -678,6 +678,128 @@ select.demo-select {
     display: block !important;
   }
 
+  /*
+    A two-column screen is a screen. Paper is one column.
+
+    The agreement view and the mediation case put a sidebar of short facts
+    beside the content, which is right at 1440px and wrong on A4: the sidebar
+    ran out after four rows and left a third of every printed page blank down
+    the right-hand side while the content carried on underneath it. A reader
+    handed that sees a screenshot of a browser window, which is exactly what
+    Bilaga F's six printouts are not.
+  */
+  .print-stack {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .print-stack > * + * {
+    margin-top: 1rem;
+  }
+
+  /*
+    The sidebar leads on paper. It holds the facts a reader needs before the
+    detail — FR-012's status, the validity period, the Märket marking — and
+    stacking put them after three pages of wage agreements, where a reader who
+    only wanted to know whether the agreement was signed had to go looking.
+    On screen they sit beside the content and are read first anyway.
+  */
+  .print-stack > .print-first {
+    order: -1;
+  }
+
+  /*
+    A control is not part of a document.
+
+    CLAUDE.md has said so since the report screen was built, and it was being
+    enforced one screen at a time — so every screen added since brought its own
+    buttons back onto the paper. The agreement printout carried *Redigera
+    avtalet*, *Visa som allmänheten ser det* and six sortable column headers,
+    and that is the whole of the report that printing produces the screen
+    rather than the document.
+
+    Three exceptions, and each one is a control that carries a **value** rather
+    than an action:
+
+      - a sortable column header, which is a heading wearing a button;
+      - a switch, whose Ja/Nej word already sits beside it — Bilaga 3 §7 states
+        MI's own rule, *"Markerad kryssruta skrivs ut som Ja"*;
+      - the chosen option of a radiogroup, which is data the reader needs and
+        the unchosen ones are not.
+  */
+  main button {
+    display: none !important;
+  }
+
+  main :where(th, thead) button {
+    display: inline !important;
+    border: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    font: inherit !important;
+    color: inherit !important;
+  }
+
+  /* The sort mark is an invitation to press, and paper cannot be pressed. */
+  main :where(th, thead) button svg {
+    display: none !important;
+  }
+
+  main [role="radiogroup"] {
+    border: 0 !important;
+  }
+
+  /*
+    A field prints its **value**, not its box — which is how a register's
+    filter row becomes Bilaga F's *Urvalskriterier* without a second component
+    to keep in step. Bilaga F opens by saying every report shows *"urvalsbild
+    och resultat"*, and the selection is the criteria a reader has to be able
+    to check: a printed table headed by three empty dropdowns reading "Alla"
+    tells them nothing about whether Sektor was narrowed, because it looks like
+    a control they are expected to use.
+
+    Stripped to text, the label above each one is already doing the work —
+    *Avtalsområde: Alla* — and a narrowed register prints its filter chips,
+    which say the same thing in the same place.
+  */
+  main :where(select, input, textarea, .field-input) {
+    border: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    font: inherit !important;
+    color: inherit !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+  }
+
+  /* The mark that says a list can be opened. Paper has no list to open. */
+  main .field-control > span[aria-hidden] {
+    display: none !important;
+  }
+
+  /*
+    Bilaga 3 §7, in MI's own words: *"Markerad kryssruta skrivs ut som Ja."*
+
+    A tick in a box is a control's rendering of a value, and on paper it is
+    also indistinguishable from a box someone is meant to tick by hand — which
+    on a report listing which agreements go into Konjunkturlönerapporten is
+    worse than useless. The box goes; the word beside it, which the component
+    supplies print-only, stays.
+  */
+  main input[type="checkbox"] {
+    display: none !important;
+  }
+
+  main [role="radio"][aria-checked="true"] {
+    display: inline !important;
+    border: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    color: inherit !important;
+  }
+
   /* A table that scrolls on screen has to print whole. */
   [role="region"] {
     max-height: none !important;
@@ -696,8 +818,15 @@ select.demo-select {
     break-inside: avoid;
   }
 
-  /* The address behind a link, since a printed link cannot be followed. */
-  a[href^="/"]::after {
+  /*
+    The address behind a link, since a printed link cannot be followed — but
+    not inside a table. A register prints one link per row, so this rule turned
+    a twelve-row result into twelve rows each carrying a URL longer than the
+    agreement name beside it, and the column it was in had to grow to hold it.
+    In prose the address is the only way to follow the reference; in a table
+    the identifier in the next column already is.
+  */
+  main a[href^="/"]:not(td a, th a)::after {
     content: " (miis.mi.se" attr(href) ")";
     font-size: 0.85em;
     color: #444;

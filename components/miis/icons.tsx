@@ -6,6 +6,7 @@ import {
   ChevronsUpDown,
   ChevronUp,
   FileText,
+  Flag,
   Lock,
   Plus,
   Printer,
@@ -73,6 +74,9 @@ export const IconPlus = icon(Plus, "IconPlus");
 export const IconPrint = icon(Printer, "IconPrint");
 /** Remove a chip, dismiss, reject. */
 export const IconClose = icon(X, "IconClose");
+
+/** Reporting an answer as wrong — never an FR-012 status, never an error. */
+export const IconFlag = icon(Flag, "IconFlag");
 /** Attention — a `Callout` that needs reading before acting. */
 export const IconAlert = icon(TriangleAlert, "IconAlert");
 /** A stored file in a list of them — a protocol, an agreement print. */

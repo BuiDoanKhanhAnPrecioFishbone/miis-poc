@@ -140,6 +140,19 @@ reviewer to a screen its own role would be refused.
    Rapporter — so the picker offered a report whose only outcome was the
    authorisation notice. `ReportResult.kind` is `"screen"` only when the
    audience has that screen.
+   **The public view's reader has never seen the vocabulary.** Same data, same
+   requirements, different reader — so `/allmanheten` orders and words itself
+   for a visitor with no training and one attempt. The **agreement name leads**
+   the result table and FR-012's status follows it: an officer triages by how
+   the agreement came about, a visitor arrived with an industry or a union in
+   their head and *Nytecknat utan medling* told them nothing about which row was
+   theirs. *Arbetsgivarorganisation* and *Arbetstagarorganisation* differ by four
+   letters inside a twenty-four-letter compound, so each carries a hint naming a
+   real organisation — Teknikföretagen, IF Metall — because recognising one is
+   faster than parsing the word. And the agreement the scenario lands on has to
+   have something in every panel: A-013 printed a validity period at the top and
+   *"Ingen löptid registrerad"* three panels below it, which is the register
+   contradicting itself in front of the one reader who cannot ask anyone.
    **`StatusDot` is for FR-012 and nothing else; `Badge` is for every other
    state word.** FR-012 is the only status whose colours MI specified, so it gets
    the reserved hues and a mark-plus-label form — a filled red pill would read as
@@ -194,12 +207,17 @@ reviewer to a screen its own role would be refused.
    prototype is a picture. Disabled is a **dashed** border, because a solid
    outline in a paler colour is still an outlined button and leaves the page's
    real priority unreadable.
-   **A required field says so in a word.** `TextField`, `Select` and
-   `FieldLabel` take `required`, which prints *Obligatoriskt* beside the label
-   and sets `aria-required` on the control. Not an asterisk: a star has to be
-   explained somewhere else on the page, is read aloud as "star" or skipped, and
-   at 13px is four pixels of ink carrying the rule about whether the officer can
-   finish. A form with required fields carries `common.requiredLegend` once,
+   **A required field says so in a word, and the word is a tag.** `TextField`,
+   `Select` and `FieldLabel` take `required`, which prints *Obligatoriskt*
+   beside the label and sets `aria-required` on the control. Not an asterisk: a
+   star has to be explained somewhere else on the page, is read aloud as "star"
+   or skipped, and at 13px is four pixels of ink carrying the rule about whether
+   the officer can finish. As bare letter-spaced text it measured **11:1** and
+   still lost — the label next to it is the same size and *darker*, and the eye
+   reads weight before contrast, so the thing carrying the rule was the quietest
+   thing on the row. A sand tint and a border make it an object with edges.
+   Sand is not a sixth meaning here: *Obligatoriskt* **is** the attention
+   meaning. A form with required fields carries `common.requiredLegend` once,
    above them.
    **A screen whose sections are separate jobs is `SectionTabs`.** Stacking is
    right when the parts are one subject read in order — an agreement's identity,
@@ -210,10 +228,16 @@ reviewer to a screen its own role would be refused.
    by a *class*, never the `hidden` attribute, because Chrome's UA stylesheet
    declares `[hidden] { display: none !important }` and author CSS cannot reach
    past it.
-   **Three "pick one" controls, kept apart on purpose.** `Toggle` is a `switch`
-   (a flag on or off). `Tabs` is a `tablist` (which panel is shown).
-   `SegmentedControl` is a `radiogroup` (a value that is part of the data, like
-   the OCH/ELLER operator). Do not build a fourth by hand.
+   **Three "pick one" controls, kept apart on purpose — and now they look it.**
+   `Toggle` is a `switch` (a flag on or off). `Tabs` is a `tablist` (which panel
+   is shown). `SegmentedControl` is a `radiogroup` (a value that is part of the
+   data, like the OCH/ELLER operator). Do not build a fourth by hand. **A tab
+   sits on a rule and breaks it** — a 3px mark in the primary colour under the
+   selected one — because as a filled pill it was the same object as a segmented
+   control and as a selected chip, and a reader learns the shape rather than the
+   ARIA role. The carrier is a shape, so it survives greyscale and a projector.
+   A count on a tab is `count`/`countLabel`, never concatenated into the label:
+   `"Väntar (3)"` cannot be styled and hands a screen reader a bare digit.
    **A selected chip is filled, an unselected one is an outline on card.** The
    two states used to be two pale tints measuring 1.01:1 against each other, and
    `tone` read `selected` while the toggle variant set `pressed` — so a pressed
@@ -290,10 +314,35 @@ reviewer to a screen its own role would be refused.
    are a `SegmentedControl`, because *med varsel* and *utan varsel* are one
    document with a property, not two documents.
    **A screen prints as a document, not as a screenshot.** `PrintHeader` gives it
-   MI's mark and an *Utskriftsdatum* the way Bilaga F's six printouts do; the
-   `@media print` block in `globals.css` drops the demo bar, the nav, the header
-   and the requirement tags. Printing is the **only** export that runs without a
-   server, so it is wired while Excel, CSV and JSON stay dashed.
+   MI's mark and an *Utskriftsdatum* — **date and time**, which is what Bilaga 3
+   §7 names for MI's own report header — the way Bilaga F's six printouts do;
+   the `@media print` block in `globals.css` drops the demo bar, the nav, the
+   header and the requirement tags. Printing is the **only** export that runs
+   without a server, so it is wired while Excel, CSV and JSON stay dashed.
+   The stamp is set in an effect **and** on `beforeprint`: `beforeprint` does
+   not fire under a print-preview harness, so the header printed the label with
+   nothing under it — a document dated by a blank.
+   **"A control is not part of the document" is enforced in the stylesheet, not
+   screen by screen.** `main button` is hidden in print, with three exceptions,
+   each a control that carries a *value* rather than an action: a sortable
+   column header (a heading wearing a button, minus its sort mark), a switch
+   (whose Ja/Nej word is beside it), and the *chosen* option of a radiogroup.
+   It was being done per screen, so every screen added since brought its buttons
+   back onto the paper.
+   **A field prints its value, not its box** — which is how a register's filter
+   row becomes Bilaga F's *Urvalskriterier* with no second component to keep in
+   step. `select`, `input`, `textarea` and `.field-input` lose their border and
+   padding, the select's chevron goes, and the label above each one does the
+   rest: *Avtalsområde: Alla*. And Bilaga 3 §7 in MI's own words — *"Markerad
+   kryssruta skrivs ut som Ja"* — so `input[type=checkbox]` is dropped and the
+   component supplies a `print-only` Ja/Nej. An empty box on paper reads as
+   something the reader is meant to tick.
+   **A two-column screen is one column on paper.** `print-stack` on the page
+   grid, and `print-first` on the sidebar of short facts so the status and the
+   validity period lead rather than following three pages of wage agreements.
+   **A printed link carries its address, except in a table** — a register prints
+   one link per row, and a URL after every agreement name is longer than the
+   name.
    **The letterhead is `AppShell`'s, not the page's**, and it carries no title —
    the page's own `<h1>` follows it and *is* the title. Sixteen screens had been
    printing with no mark and no date because a page had to remember to ask; the
@@ -353,9 +402,27 @@ reviewer to a screen its own role would be refused.
    *integrerat* AI-stöd and §4.3's system sketch carries AI-assisted registration
    as a module in its own right, so the launcher is fixed to the **bottom right**
    of every screen the role may act on — not in the header, which is where a user
-   goes to leave. The drawer opens on the two things an officer acts on: **what
-   they can ask the AI to do here**, as controls, and **what is waiting for their
-   approval** (the queue FAI-002 implies must exist). The tasks are §4.1's four
+   goes to leave.
+   **Four tabs, and three of them are one loop: Fråga · Starta · Granska · Om.**
+   Verbs, because each names something the officer does — ask, set the machine
+   going, judge what it produced (FAI-002's own word). *Uppgifter* was the worst
+   label in the system: in a register it reads as **data**, so the tab offering
+   things the AI could *do* was named after the things it holds, and it was
+   reported as having no clear purpose. *Om* is a tab rather than a disclosure
+   under the content — the catalogue, MI's limits and the traceability are
+   reference material, and reference material sits beside the work, not beneath
+   it. Each tab states in one plain sentence what it is for; that sentence is
+   needed to use the screen, so it is a paragraph and not a `Rationale`.
+   **The count on Granska has to fall.** It is FAI-002's guarantee as a number —
+   *this many machine-made proposals exist and no human has accepted them* — and
+   it did not move when the officer approved the extraction three screens away,
+   because the queue is derived on the server and approval lived in a
+   component's own state. `useAiQueueReview()` closes that loop, and reopening
+   the form restores the item: a count that only ever falls stops describing
+   anything.
+   **The queue is not personal, and the tab says so.** It is every unapproved
+   proposal in the registers this role may *write* to, so two agreement
+   administrators see the same list and either can clear it. The tasks are §4.1's four
    functions applied to the current screen, which is what "ask the AI to do
    something" means in a system whose AI *is* four named functions. **On a screen
    where none of them runs, the drawer says so and offers one way to the nearest
@@ -370,9 +437,34 @@ reviewer to a screen its own role would be refused.
    skrivningar"*. One term, one protocol, and every hit a source-linked proposal
    that becomes a *Särskild fråga* only if the officer approves it. That is the
    box to type into, and it is the answer whenever someone asks for one.
+   **It is a frivilligt steg and says so, and an approved hit says where it
+   went.** It has a heading and its own controls on a screen with a five-step
+   stepper, so it was read as a sixth step the officer had to finish before
+   saving; the badge and a sentence about *when you would want it* fix that. And
+   *"Godkänt och registrerat"* answered the press, not the question the press
+   raises — the confirmation now names Särskilda frågor on the agreement.
    **Asking MIIS a question is the drawer's first panel** (`AssistantChat`), and
    it answers by **running a query the register already supports** — a sentence,
-   the rows it counted, and a link to the screen they live on. Nothing is
+   the rows it counted, and a link to the screen they live on.
+   **It is shaped as a conversation.** The composer is pinned to the bottom and
+   the transcript scrolls above it; the officer's turn is a plain bubble on the
+   right, the machine's is a bordered compartment on the left carrying the `AI`
+   mark. The violet **frames** it and never tints the rows inside, which are
+   MI's own register being read back. A suggestion is **spent** once used —
+   pressing it again produces an identical second bubble, which teaches the
+   officer the assistant is not listening — and the suggestions live in the
+   empty state, not permanently above the composer, where four of them took
+   190px of a 512px panel. The link to the register appears **only when the
+   answer was cut short**: every row already opens its own record, so *"öppna
+   vyn med hela svaret"* beside six visible rows was a duplicate of the thing
+   above it.
+   **The feedback row is not FAI-002's approve and reject, and is worded so it
+   cannot be mistaken for it.** FAI-002 governs proposals that will be *saved*;
+   those live in the four functions and keep *Godkänn* and *Avvisa*. Nothing in
+   the chat is saved, so what is rated is whether the question was understood —
+   *Blev frågan rätt uppfattad? Ja · Nej · Rapportera*. An approve control on a
+   read-only answer would spend the guarantee's words on something that never
+   needed one. Nothing is
    composed: an authority cannot publish an answer it cannot account for, and a
    reply *written* about a collective agreement would be a new statement about
    the labour market with no record behind it. Asking is reading, so nothing

@@ -112,29 +112,38 @@ export const en: Dictionary = {
       "The tasks below are §4.1's functions, run on the screen the requirement puts them on. Every run produces proposals a case officer approves or rejects — nothing is saved on the way.",
     askElsewhere:
       "The AI support does not run in this view. This is what you can ask it for, and where it happens.",
-    details: "About the AI support",
-    onThisScreen: "On this screen",
+    tabAbout: "About",
     onThisScreenNone:
       "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
     where: "Where",
     goThere: "Review the proposals",
     tabsLabel: "Parts of the AI support",
     tabAsk: "Ask",
-    tabTasks: "Tasks",
-    tabQueue: "Waiting",
-    askQuestion: "Ask about the agreements",
-    askQuestionLead:
-      "The answer is taken from the register and shows the records it counted. Nothing is composed and nothing is saved — asking is reading.",
+    /* Verbs, because each tab is something the officer does. */
+    tabTasks: "Start",
+    tabQueue: "Review",
+    tasksLead:
+      "These are the things you can set going from here. Each one opens the part of the page where the AI support works, and what it produces are proposals you approve or reject.",
     chat: {
       label: "Your question",
       placeholder: "E.g. Which agreements expire within 90 days?",
       ask: "Ask",
       empty: "Type a question first.",
-      youAsked: (q: string) => `You asked: ${q}`,
       notAuthorised: "Not authorised",
-      openScreen: "Open the screen with the full answer",
+      seeAllIn: (screen: string) => `See all in ${screen}`,
       clear: "Clear the conversation",
-      notStored: "The conversation stays while this tab is open and is not stored in the system.",
+      notStored: "The conversation is not stored.",
+      openingLead:
+        "Ask a question about the agreements, the mediation cases or Märket (industry benchmark). The answer is fetched from the register and shows the records it counted - you can open each record straight from here.",
+      feedback: {
+        prompt: "Was the question understood correctly?",
+        good: "Yes",
+        bad: "No",
+        report: "Report",
+        thanks: "Thank you - the feedback is carried in the event log.",
+        reported:
+          "Reported. The question and the query that was run are carried in the event log for system management to follow up.",
+      },
       refused: (screen: string) =>
         `${screen} is not part of your authorisation, so the question is not answered here. Access follows your role and is administered by the authorisation administrator.`,
       none: (what: string) => `No ${what} at the moment.`,
@@ -166,6 +175,8 @@ export const en: Dictionary = {
     queue: "Awaiting your review",
     queueLead:
       "None of this is saved. The list is what the AI support has interpreted and no case officer has approved yet.",
+    queueWhat:
+      "The number is how many proposals the AI support has produced that nobody has approved yet. The list is shared by everyone who may register in the registers concerned - it is not personal - and it empties as the proposals are approved or rejected.",
     queueEmpty: "Nothing is awaiting review right now.",
     queueCount: (n: number) => (n === 1 ? "1 to review" : `${n} to review`),
     functions: "What the AI support does",
@@ -507,6 +518,9 @@ export const en: Dictionary = {
       */
       clauseSearch: {
         title: "Search the protocol for a provision",
+        optional: "Optional step",
+        purpose:
+          "Use it when the protocol carries wording that belongs in no field of its own — gender equality, working-time reduction, part-time pensions. Approved hits land under Särskilda frågor (special questions) on the agreement, with the protocol's own wording as the agreement text.",
         intro:
           "Type what you are looking for and the AI support searches the protocol and proposes the hits for registration. Nothing is saved until you approve it, and every proposal points back to the passage it was read from.",
         label: "Search term",
@@ -521,7 +535,8 @@ export const en: Dictionary = {
         wouldRegister: (question: string) =>
           `Registered as a special question: ${question}. The passage becomes the agreement text, unedited.`,
         showSource: "Show in the protocol",
-        registered: "Approved and registered as a special question.",
+        registered: "Approved. The provision is registered as a special question on the agreement.",
+        registeredWhere: "It is found under Särskilda frågor once the agreement is saved.",
         rejected: "Rejected. Nothing was registered.",
         boundedNote:
           "This is the free-text search §4.1 asks for, bounded the way the requirement bounds it: one term, one protocol, and a proposal of a known shape. A box that accepts any instruction has no defined output and therefore nothing to review — and FAI-002 is a guarantee about review.",
@@ -1096,12 +1111,18 @@ export const en: Dictionary = {
       text: "Search",
       textPlaceholder: "e.g. Apotek, Unionen or Spårtrafik",
       textHint: "Searches the agreement name, the agreement area and both parties",
-      narrow: "Narrow the selection",
+      narrow: "Or choose from the lists",
       industryCode: "Industry",
+      industryCodeHint: "Industry by SNI code, e.g. retail or manufacturing",
       employerOrg: "Employer organisation",
+      /* A visitor at the kiosk does not know one from the other. Naming a real
+         organisation is faster than defining the word. */
+      employerOrgHint: "The employers' association, e.g. Teknikföretagen",
       employeeOrg: "Employee organisation",
+      employeeOrgHint: "The trade union, e.g. IF Metall or Unionen",
       agreement: "Agreement",
-      period: "Valid at",
+      period: "Was in force on a given date",
+      periodHint: "Shows agreements in force on that day. Leave empty for all.",
       all: "All",
       search: "Show report",
       reset: "Start over",

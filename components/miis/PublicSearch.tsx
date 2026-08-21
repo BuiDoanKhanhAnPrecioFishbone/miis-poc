@@ -170,6 +170,7 @@ export function PublicSearch({
               id="pub-bransch"
               width="medium"
               label={t.selection.industryCode}
+              hint={t.selection.industryCodeHint}
               value={industryCode}
               onChange={setIndustryCode}
               options={[
@@ -177,10 +178,21 @@ export function PublicSearch({
                 ...industryCodes.map((c) => ({ id: c, label: c })),
               ]}
             />
+            {/*
+              A hint naming a real organisation, on both of these.
+
+              *Arbetsgivarorganisation* and *Arbetstagarorganisation* differ by
+              four letters in the middle of a twenty-four-letter compound, and
+              a visitor with no training has to tell them apart on the first
+              read. Teknikföretagen and IF Metall are recognisable in a way the
+              words are not — this is the one screen in MIIS whose reader has
+              never seen the vocabulary before.
+            */}
             <Select
               id="pub-ago"
               width="medium"
               label={t.selection.employerOrg}
+              hint={t.selection.employerOrgHint}
               value={employerOrgId}
               onChange={setEmployerOrgId}
               options={[
@@ -192,6 +204,7 @@ export function PublicSearch({
               id="pub-ato"
               width="medium"
               label={t.selection.employeeOrg}
+              hint={t.selection.employeeOrgHint}
               value={employeeOrgId}
               onChange={setEmployeeOrgId}
               options={[
@@ -211,9 +224,17 @@ export function PublicSearch({
               ]}
             />
             {/* FA-020 — "visa avtalet som det gällde vid ett angivet datum". */}
+            {/*
+              FA-020 — *"visa avtalet som det gällde vid ett angivet datum"*.
+              It stays, and it is last, and it says what it does: *Giltigt vid
+              tidpunkt* is the register's own phrase for it and reads to a
+              visitor as a condition they might be failing rather than a filter
+              they may leave alone.
+            */}
             <TextField
               id="pub-datum"
               label={t.selection.period}
+              hint={t.selection.periodHint}
               type="date"
               width="short"
               numeric

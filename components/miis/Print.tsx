@@ -29,15 +29,31 @@ export function PrintHeader({ lang, title }: { lang: Lang; title?: string }) {
   const [printed, setPrinted] = useState("");
 
   /*
-    Stamped when the print dialog opens, not when the page renders.
+    Date **and time** — Bilaga 3 §7 names both for MI's own report header, and
+    two printouts of the same agreement taken an hour apart are two different
+    documents when the register has moved in between.
 
-    A server-rendered date would be the day the deployment was built — wrong by
-    however long it has been up — and setting it on mount would be both a
-    hydration mismatch and a value that goes stale in a tab left open
-    overnight. `beforeprint` is the moment the date actually means something.
+    Stamped after mount and again when the print dialog opens. It cannot be
+    server-rendered: that would be the moment the page was built, wrong by
+    however long the deployment has been up, and it would differ between the
+    server's render and the browser's. Setting it in an effect is safe because
+    both renders agree on the empty string; `beforeprint` then refreshes it, so
+    a tab left open overnight does not print yesterday.
+
+    The effect matters on its own. `beforeprint` does not fire under a
+    print-preview harness or a headless PDF render, so the header carried the
+    label *Utskriftsdatum* with nothing under it — a document dated by a blank.
   */
   useEffect(() => {
-    const stamp = () => setPrinted(new Date().toISOString().slice(0, 10));
+    const stamp = () => {
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, "0");
+      setPrinted(
+        `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +
+          `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+      );
+    };
+    stamp();
     window.addEventListener("beforeprint", stamp);
     return () => window.removeEventListener("beforeprint", stamp);
   }, []);

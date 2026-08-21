@@ -202,7 +202,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
         inside its own region, which is the overflow guard working rather than
         columns collapsing to slivers.
       */}
-      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="print-stack grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-5">
           <Panel title={t.identity} tags={["FA-001", "FA-005"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
@@ -218,8 +218,20 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
             </div>
           </Panel>
 
-          {/* Bilaga 2 §3.5, Scenario 2: add or update information, and publish. */}
-          <AgreementAdmin agreement={agreement} lang={lang} />
+          {/*
+            Bilaga 2 §3.5, Scenario 2: add or update information, and publish.
+
+            `print-hide` in full, and for the same reason the report picker and
+            the query builder are: the top half of this panel is a *control*.
+            It printed a form with the agreement's name in it beside the record
+            that already states the agreement's name, plus two buttons — so the
+            printed document carried its own subject twice and invited the
+            reader to press something. What was registered is above; this is
+            how it gets changed.
+          */}
+          <div className="print-hide">
+            <AgreementAdmin agreement={agreement} lang={lang} />
+          </div>
 
           <AgreementScopePanel agreement={agreement} lang={lang} />
 
@@ -301,7 +313,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
           )}
         </div>
 
-        <div className="space-y-5">
+        <div className="print-first space-y-5">
           {/*
             FR-012 leads the sidebar because it is the one fact every other view
             of this agreement shows too — the register, the search results and

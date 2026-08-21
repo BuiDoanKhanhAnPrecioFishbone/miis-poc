@@ -60,12 +60,23 @@ export default async function AllmanhetenPage() {
   ].sort((a, b) => a.localeCompare(b, "sv"));
   const t = i18n.allmanheten;
 
+  /*
+    The agreement's name leads, and the status follows it.
+
+    On the internal register FR-012's status is the first thing an officer
+    needs — how the agreement came about is what they are triaging by. A member
+    of the public standing at the computer in MI's lobby is not triaging: they
+    arrived with the name of an industry or a union in their head, and the first
+    column was *Nytecknat utan medling*, a phrase from MI's own vocabulary that
+    tells them nothing about which row is theirs. Same data, same requirement,
+    different reader — so the thing they came for goes first.
+  */
   const columns: Column[] = [
-    { key: "status", header: t.result.table.status, sortable: true },
     { key: "agreement", header: t.result.table.agreement, sortable: true },
     { key: "ago", header: t.result.table.employerOrg, sortable: true },
     { key: "ato", header: t.result.table.employeeOrg, sortable: true },
     { key: "validity", header: t.result.table.validity, sortable: true },
+    { key: "status", header: t.result.table.status, sortable: true },
   ];
 
   const rowFor: Record<string, Row> = {};
@@ -74,7 +85,6 @@ export default async function AllmanhetenPage() {
     rowFor[a.id] = {
       key: a.id,
       cells: [
-        <StatusDot key="s" status={status} showLabel />,
         <span key="a" className="flex flex-wrap items-center gap-2">
           {a.confidential ? (
             a.name
@@ -109,13 +119,16 @@ export default async function AllmanhetenPage() {
             {validityLabel(a, lang)}
           </span>
         ),
+        <StatusDot key="s" status={status} showLabel />,
       ],
+      /* Same order as the cells above — a sort array out of step with its
+         columns sorts the table by the wrong field, silently. */
       sort: [
-        status.label,
         a.name,
         a.employerOrg.name,
         a.employeeOrg.name,
         a.confidential ? "" : validityLabel(a, lang),
+        status.label,
       ],
     };
   }

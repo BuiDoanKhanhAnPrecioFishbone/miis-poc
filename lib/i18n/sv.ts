@@ -113,30 +113,39 @@ export const sv = {
       "Uppgifterna nedan är §4.1:s funktioner, körda på den skärm kravet placerar dem på. Varje körning ger förslag som en handläggare godkänner eller avvisar – ingenting sparas på vägen.",
     askElsewhere:
       "AI-stödet kör inte i den här vyn. Det här är vad du kan be det om, och var det görs.",
-    details: "Om AI-stödet",
-    onThisScreen: "På den här sidan",
+    tabAbout: "Om",
     onThisScreenNone:
       "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
     where: "Var",
     goThere: "Granska förslagen",
     tabsLabel: "AI-stödets delar",
     tabAsk: "Fråga",
-    tabTasks: "Uppgifter",
-    tabQueue: "Väntar",
-    askQuestion: "Fråga om avtalen",
-    askQuestionLead:
-      "Svaret hämtas ur registret och visar de poster det räknade. Ingenting formuleras och ingenting sparas – att fråga är att läsa.",
+    /* Verbs, because each tab is something the officer does. "Uppgifter" meant
+       both *tasks* and *data*, and in a register it reads as the second. */
+    tabTasks: "Starta",
+    tabQueue: "Granska",
+    tasksLead:
+      "Det här kan du sätta i gång härifrån. Varje uppgift öppnar den del av sidan där AI-stödet arbetar, och resultatet blir förslag som du godkänner eller avvisar.",
     chat: {
       label: "Din fråga",
       placeholder: "T.ex. Vilka avtal löper ut inom 90 dagar?",
       ask: "Fråga",
       empty: "Skriv en fråga först.",
-      youAsked: (q: string) => `Du frågade: ${q}`,
       notAuthorised: "Behörighet saknas",
-      openScreen: "Öppna vyn med hela svaret",
+      openingLead:
+        "Ställ en fråga om avtalen, medlingsärendena eller Märket. Svaret hämtas ur registret och visar de poster det räknade – du kan öppna varje post direkt härifrån.",
+      seeAllIn: (screen: string) => `Visa alla i ${screen}`,
       clear: "Rensa samtalet",
-      notStored:
-        "Samtalet ligger kvar så länge fliken är öppen och sparas inte i systemet.",
+      notStored: "Samtalet sparas inte.",
+      feedback: {
+        prompt: "Blev frågan rätt uppfattad?",
+        good: "Ja",
+        bad: "Nej",
+        report: "Rapportera",
+        thanks: "Tack – återkopplingen följer med i händelseloggen.",
+        reported:
+          "Rapporterad. Frågan och det körda urvalet följer med i händelseloggen för systemförvaltningens uppföljning.",
+      },
       refused: (screen: string) =>
         `${screen} ingår inte i din behörighet, så frågan besvaras inte här. Behörigheten styrs av din roll och administreras av behörighetsadministratören.`,
       none: (what: string) => `Inga ${what} just nu.`,
@@ -171,6 +180,8 @@ export const sv = {
     queue: "Väntar på din granskning",
     queueLead:
       "Ingenting av det här är sparat. Listan är det som AI-stödet har tolkat och som ännu inte har godkänts av en handläggare.",
+    queueWhat:
+      "Siffran är antalet förslag som AI-stödet har tagit fram och som ingen har godkänt än. Listan är gemensam för alla som får registrera i respektive register – inte personlig – och tömns när förslagen godkänns eller avvisas.",
     queueEmpty: "Ingenting väntar på granskning just nu.",
     queueCount: (n: number) => (n === 1 ? "1 att granska" : `${n} att granska`),
     functions: "Det här gör AI-stödet",
@@ -506,8 +517,11 @@ export const sv = {
       */
       clauseSearch: {
         title: "Sök efter en skrivning i protokollet",
+        optional: "Frivilligt steg",
         intro:
           "Skriv vad du letar efter, så söker AI-stödet igenom protokollet och föreslår träffarna för registrering. Ingenting sparas förrän du godkänner det, och varje förslag pekar tillbaka på stycket det lästes ur.",
+        purpose:
+          "Använd den när protokollet innehåller en skrivning som inte hör hemma i något fält – jämställdhet, arbetstidsförkortning, deltidspension. Godkända träffar hamnar under Särskilda frågor på avtalet, med protokollets egen text som avtalstext.",
         label: "Sökord",
         placeholder: "T.ex. jämställdhet",
         search: "Sök i protokollet",
@@ -520,7 +534,8 @@ export const sv = {
         wouldRegister: (question: string) =>
           `Registreras som särskild fråga: ${question}. Stycket blir avtalstexten, oredigerat.`,
         showSource: "Visa i protokollet",
-        registered: "Godkänt och registrerat som särskild fråga.",
+        registered: "Godkänt. Skrivningen registreras som särskild fråga på avtalet.",
+        registeredWhere: "Den hittas under Särskilda frågor när avtalet är sparat.",
         rejected: "Avvisat. Ingenting registrerades.",
         boundedNote:
           "Det här är den fritextsökning §4.1 begär, och den är avgränsad som kravet avgränsar den: ett sökord, ett protokoll, och ett förslag av en känd form. En ruta som tar emot vilken instruktion som helst har ingen definierad utdata och därmed ingenting att granska – och FAI-002 är en garanti om granskning.",
@@ -1091,12 +1106,18 @@ export const sv = {
       text: "Sök",
       textPlaceholder: "T.ex. Apotek, Unionen eller Spårtrafik",
       textHint: "Söker i avtalets namn, avtalsområde och båda parterna",
-      narrow: "Avgränsa urvalet",
+      narrow: "Eller välj i listorna",
       industryCode: "Bransch",
+      industryCodeHint: "Näringsgren enligt SNI, t.ex. handel eller tillverkning",
       employerOrg: "Arbetsgivarorganisation",
+      /* A visitor at the kiosk does not know AGO from ATO. Naming a real
+         organisation is faster than defining the word. */
+      employerOrgHint: "Arbetsgivarnas förbund, t.ex. Teknikföretagen",
       employeeOrg: "Arbetstagarorganisation",
+      employeeOrgHint: "Fackförbundet, t.ex. IF Metall eller Unionen",
       agreement: "Avtal",
-      period: "Giltigt vid tidpunkt",
+      period: "Gällde ett visst datum",
+      periodHint: "Visar avtal som gällde den dagen. Lämna tomt för alla.",
       all: "Alla",
       search: "Visa rapport",
       reset: "Börja om",

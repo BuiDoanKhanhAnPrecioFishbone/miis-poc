@@ -744,6 +744,15 @@ export function FieldLabel({
    * altogether, and at 13px it is four pixels of ink carrying a rule about
    * whether the officer can finish. `aria-required` on the control says the
    * same thing to a screen reader; this says it to everyone else.
+   *
+   * **It is a tag, not a whisper.** As bare letter-spaced text it measured
+   * 11:1 against the panel — so it passed NFUI-003 and still lost, because the
+   * label beside it is the same size and *darker*, and the eye reads weight
+   * before it reads contrast. The thing carrying the rule was the quietest
+   * thing on the row. A tint and a border make it an object with edges, which
+   * is what gets found in a scan of a twelve-field form; sand is the hue this
+   * system already uses for "something here needs attention", so it is the
+   * meaning the officer has met before rather than a sixth one.
    */
   required?: boolean;
   /** Needed only when `required` is set — the word is translated. */
@@ -758,7 +767,7 @@ export function FieldLabel({
   */
   const text = "min-w-0 hyphens-auto text-label font-bold text-foreground";
   const mark = required ? (
-    <span className="mi-kicker shrink-0 text-attention-foreground">
+    <span className="mi-kicker shrink-0 rounded-sm border border-attention-border bg-attention px-1.5 py-0.5 text-attention-foreground">
       {dictionary(lang ?? DEFAULT_LANG).common.required}
     </span>
   ) : null;

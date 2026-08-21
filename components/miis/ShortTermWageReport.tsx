@@ -85,6 +85,18 @@ export function ShortTermWageReport({
           onChange={() => setSelected((s) => ({ ...s, [r.id]: !s[r.id] }))}
           className="size-5 accent-[var(--primary)]"
         />
+        {/*
+          Bilaga 3 §7 states MI's rule for its own printouts — *"Markerad
+          kryssruta skrivs ut som Ja"* — and the reason is plain on this table:
+          an empty box on paper reads as something the reader is being asked to
+          fill in, on a column that records a decision already taken. The box
+          is dropped by the print stylesheet and this word takes its place.
+          `Nej` rather than a blank, because a blank cell cannot be told apart
+          from a value nobody entered.
+        */}
+        <span aria-hidden className="print-only hidden tabular-nums">
+          {selected[r.id] ? d.common.yes : d.common.no}
+        </span>
         <span className="sr-only">
           {t.table.select}: {r.name}
         </span>
@@ -178,7 +190,13 @@ export function ShortTermWageReport({
         </div>
       )}
 
-      <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+      {/*
+        `print-hide` in full. The print rule drops the two buttons, which left
+        the sentence that describes them — *Word · Excel · PDF* — standing alone
+        under a horizontal rule at the end of the report, naming formats the
+        paper is not one of.
+      */}
+      <div className="print-hide mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
         <Button
         disabled
         disabledReason={d.common.notInDemo}
