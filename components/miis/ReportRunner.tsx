@@ -222,7 +222,14 @@ export function ReportRunner({
           middle of an empty row in the product view.
         */}
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            {report.bilagaF && <Badge tone="neutral">{t.bilagaF(report.bilagaF)}</Badge>}
+            {/* Which of MI's own printouts this is. Traceability rather than
+                product copy, so it rides the requirement-ID layer with the
+                tags beside it. */}
+            {report.bilagaF && (
+              <span className="req-tag">
+                <Badge tone="neutral">{t.bilagaF(report.bilagaF)}</Badge>
+              </span>
+            )}
             <ReqTags ids={report.requirements} />
           </div>
 

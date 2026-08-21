@@ -133,8 +133,8 @@ export const SYSTEM_SETTINGS: readonly SystemSetting[] = [
     requirements: ["NFL-003"],
     editable: false,
     fixedReason: {
-      sv: "NFL-003 säger att loggar ska lagras i minst 24 månader och inte ska kunna ändras eller raderas av vanliga användare eller systemadministratörer. Systemadministratören nämns i kravet, så ett fält som gick att korta här skulle motsäga meningen som skapade det.",
-      en: "NFL-003 says logs shall be stored for at least 24 months and shall not be alterable or deletable by ordinary users or system administrators. This role is named in the requirement, so a field that could shorten it here would contradict the sentence that created it.",
+      sv: "Loggar bevaras i minst 24 månader och kan varken ändras eller raderas – inte heller av systemadministratören. Gallringstiden ändras därför inte här.",
+      en: "Logs are retained for at least 24 months and can neither be altered nor deleted — not by the system administrator either. The retention period is therefore not changed here.",
     },
   },
   {

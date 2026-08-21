@@ -69,7 +69,11 @@ async function uploadProtocol(page) {
  * in at least one shot or the reader never sees it.
  */
 async function openAiAssistant(page) {
-  await page.getByRole("button", { name: /AI-stöd|AI support/ }).first().click();
+  // The launcher is client-rendered, so wait for it rather than for the load
+  // event — a shot taken on a screen with no upload step arrives before it.
+  const launcher = page.locator("[data-ai-launcher]").first();
+  await launcher.waitFor({ state: "visible", timeout: 15000 });
+  await launcher.click();
   await page.waitForTimeout(250);
 }
 
@@ -149,6 +153,23 @@ const SHOTS = [
     },
     fullPage: false,
     scrollTo: 1600,
+  },
+  /*
+    The assistant answering a question. The drawer's other shot is taken on
+    /registrera where three functions run; this one is taken where none does,
+    because that is where "ask MIIS a question" is the whole of what it offers.
+  */
+  {
+    name: "ai-fraga",
+    path: "/rapporter",
+    role: "agreement-admin",
+    prepare: async (page) => {
+      await openAiAssistant(page);
+      await page.fill("#ai-question", "Vilka registreringar är ofullständiga?");
+      await page.locator(".fixed.inset-0").getByRole("button", { name: /^Fråga$|^Ask$/ }).click();
+      await page.waitForTimeout(300);
+    },
+    fullPage: false,
   },
   {
     name: "ai-assistenten",
@@ -236,7 +257,7 @@ async function main() {
         report — and in a tender document that reads as a defect rather than as
         a control. It stays only in the shot whose subject it is.
       */
-      if (shot.name !== "ai-assistenten") {
+      if (!["ai-assistenten", "ai-fraga"].includes(shot.name)) {
         await page.addStyleTag({ content: "[data-ai-launcher]{display:none !important}" });
       }
 

@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import { AiAssistantProvider } from "@/components/miis/AiAssistant";
 import { listAiQueue } from "@/lib/data/ai";
+import { getAssistantFacts } from "@/lib/data/assistant";
+import { activeLang } from "@/lib/session";
 
 /**
  * The authenticated group's layout, and it exists for one thing: the AI review
@@ -16,6 +18,14 @@ import { listAiQueue } from "@/lib/data/ai";
  * FR-011's public view has no proposals to approve.
  */
 export default async function MiisLayout({ children }: { children: ReactNode }) {
-  const queue = await listAiQueue();
-  return <AiAssistantProvider queue={queue}>{children}</AiAssistantProvider>;
+  const lang = await activeLang();
+  /* The same argument covers the assistant's facts: one read per question it
+     can answer, fetched once here, so a question can be asked from any screen
+     without nineteen pages knowing about it. */
+  const [queue, facts] = await Promise.all([listAiQueue(), getAssistantFacts(lang)]);
+  return (
+    <AiAssistantProvider queue={queue} facts={facts}>
+      {children}
+    </AiAssistantProvider>
+  );
 }

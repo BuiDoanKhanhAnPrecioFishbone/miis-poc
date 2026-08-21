@@ -116,8 +116,44 @@ export const en: Dictionary = {
       "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
     where: "Where",
     goThere: "Review the proposals",
+    askQuestion: "Ask about the agreements",
+    askQuestionLead:
+      "The answer is taken from the register and shows the records it counted. Nothing is composed and nothing is saved — asking is reading.",
+    chat: {
+      label: "Your question",
+      placeholder: "E.g. Which agreements expire within 90 days?",
+      ask: "Ask",
+      empty: "Type a question first.",
+      youAsked: (q: string) => `You asked: ${q}`,
+      notAuthorised: "Not authorised",
+      openScreen: "Open the screen with the full answer",
+      refused: (screen: string) =>
+        `${screen} is not part of your authorisation, so the question is not answered here. Access follows your role and is administered by the authorisation administrator.`,
+      none: (what: string) => `No ${what} at the moment.`,
+      found: (n: number, what: string) => `${n} ${what}:`,
+      unmatched:
+        "I cannot answer that. I answer by fetching records from the register rather than by composing anything — this is what I can fetch:",
+      capabilities: "This is what I can fetch from the register:",
+      what: {
+        expiring: {
+          one: "agreement expires within 90 days",
+          many: "agreements expire within 90 days",
+        },
+        incomplete: { one: "incomplete registration", many: "incomplete registrations" },
+        unpublished: {
+          one: "agreement is complete but unpublished",
+          many: "agreements are complete but unpublished",
+        },
+        mediations: { one: "ongoing mediation case", many: "ongoing mediation cases" },
+        benchmark: { one: "registered benchmark", many: "registered benchmarks" },
+        agreements: { one: "agreement matches", many: "agreements match" },
+        capabilities: { one: "question", many: "questions" },
+      },
+      boundedNote:
+        "The assistant runs a query against the register and shows the records. It composes no answers about collective agreements, because such an answer would be a new statement about the labour market with no record behind it. Authorisation applies to typed questions too — a role that may not read a register is not answered about it.",
+    },
     notHere:
-      "The AI support does not work on this screen. Per §4.1 it is four named functions that run where the registration happens — not an assistant answering questions anywhere.",
+      "The AI support works where the registration happens. From here you can ask a question about the agreements, or go to the screen where the support runs.",
     goWhereItWorks: (where: string) => `Go to ${where}`,
     queue: "Awaiting your review",
     queueLead:
@@ -608,7 +644,7 @@ export const en: Dictionary = {
       registrationStatus: "Registration status",
       statusFromAction:
         "Set by the choice below: Approve and link gives the status Complete, Save as incomplete gives the status Incomplete.",
-      agreementStatus: "Agreement status (FR-012)",
+      agreementStatus: "Agreement status",
       statusKey: "How the status appears in agreement lists and reports:",
       approveAndLink: "Approve and link the protocol",
       approveFirst: "Approve the AI proposals first — nothing can be linked before they are reviewed.",
@@ -1163,7 +1199,7 @@ export const en: Dictionary = {
       heading: "The agreement",
       manualLabel: "Registered manually",
       manualNote:
-        "Wholly new agreements, with no previous counterpart in the system, are always registered manually (Appendix 1 §4.1). The AI support reads an incoming protocol against an agreement MIIS already holds — for a first-time agreement there is nothing to match against and therefore nothing to propose.",
+        "An agreement with no previous counterpart in the system is always registered by hand. The AI support reads an incoming protocol against an agreement that already exists — for a first-time agreement there is nothing to match against, and therefore nothing to propose.",
       name: "Agreement name",
       namePlaceholder: "E.g. Bemanningsavtalet",
       area: "Agreement area",
@@ -1273,7 +1309,7 @@ export const en: Dictionary = {
       edit: "Edit the agreement",
       administration: "Edit and publish",
       administrationIntro:
-        "FA-001 is to register *and edit* agreement information. The change happens on the values themselves — the officer is looking at the record being corrected.",
+        "Correct details directly in the record. The change is saved to the change log with the time and the user.",
       agreementName: "Agreement name",
       nameRequired: "The agreement must have a name.",
       editSaved: (date: string) =>
@@ -1301,7 +1337,7 @@ export const en: Dictionary = {
       revision: "Wage revision",
       period: "Period",
       minimumWages: "Minimum wages by occupational group",
-      minimumWagesIntro: "Grouped by occupational group with a revision date (FA-013).",
+      minimumWagesIntro: "Grouped by occupational group, with the date the amount was last revised.",
       occupationalGroup: "Occupational group",
       amount: "Amount",
       revisionDate: "Revision date",
@@ -1451,7 +1487,7 @@ export const en: Dictionary = {
       intro:
         "A negotiation is either a bargaining round, which belongs to an agreement, or another negotiation, which can stand alone with direct links to the parties.",
       standaloneNote:
-        "A standalone negotiation has no agreement — FF-003 links it directly to the parties. An empty column here is therefore a fact, not a gap.",
+        "A standalone negotiation has no agreement — it is linked directly to the parties. An empty agreement column here is therefore a fact, not a gap.",
     },
     table: {
       id: "Registry number",
@@ -1672,7 +1708,7 @@ export const en: Dictionary = {
     sources: {
       heading: "Norm-setting agreements",
       intro:
-        "The agreements carrying the industry benchmark flag (FA-012). The cost frame in Märket has to match them.",
+        "The agreements marked as benchmark-setting. The cost frame in Märket has to match them.",
       name: "Agreement",
       parties: "Parties",
       period: "Period",
@@ -1691,7 +1727,7 @@ export const en: Dictionary = {
     settings: {
       heading: "System settings",
       intro:
-        "The system administrator has full access including system configuration, but not permissions (Appendix 1 §3.1). Two of the settings below can be changed here; two cannot, and the requirement that decides it is on the row.",
+        "The system administrator has full access to the system configuration, but not to permissions. Two of the settings below can be changed here; two cannot, and the reason is on the row.",
       editable: "Can be changed",
       fixed: "Fixed by requirement",
       timeoutLabel: "Time limit (minutes)",
@@ -1756,7 +1792,7 @@ export const en: Dictionary = {
     users: {
       heading: "Users and role assignment",
       intro:
-        "Medlingsinstitutet's authorisation administrator sets up users and assigns roles themselves, without the supplier's involvement (NFÅ-005). What a role contains is not changed here — see the permission matrix below.",
+        "The authorisation administrator sets up users and assigns roles. What a role may do is not changed here — that is shown in the permission matrix below.",
       add: "Add a user",
       name: "Name",
       namePlaceholder: "e.g. Sara Lindström",
@@ -1805,7 +1841,7 @@ export const en: Dictionary = {
     roles: {
       heading: "Roles and permissions",
       intro:
-        "The eight roles in Appendix 1 §3.1. The role decides both what the user may do and which menu items appear — the role switcher in demo mode changes role in order to make exactly that visible.",
+        "The system's eight roles. The role decides both what the user may do and which menu items appear.",
       role: "Role",
       held: "Users",
       unstaffed: "No user",

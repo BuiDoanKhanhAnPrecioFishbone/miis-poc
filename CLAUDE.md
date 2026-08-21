@@ -354,9 +354,23 @@ reviewer to a screen its own role would be refused.
    skrivningar"*. One term, one protocol, and every hit a source-linked proposal
    that becomes a *Särskild fråga* only if the officer approves it. That is the
    box to type into, and it is the answer whenever someone asks for one.
-   **A free prompt box is still the mistake** — an authority procures a bounded
-   set of behaviours; a box that accepts any instruction has no defined output,
-   so there is nothing for FAI-002 to review. The catalogue, MI's own limits and the traceability
+   **Asking MIIS a question is the drawer's first panel** (`AssistantChat`), and
+   it answers by **running a query the register already supports** — a sentence,
+   the rows it counted, and a link to the screen they live on. Nothing is
+   composed: an authority cannot publish an answer it cannot account for, and a
+   reply *written* about a collective agreement would be a new statement about
+   the labour market with no record behind it. Asking is reading, so nothing
+   there writes; the four functions that write keep their approve and reject.
+   **NFÅ-003 applies to a typed question too** — a question about a register the
+   role may not read is refused with the reason, because the assistant must not
+   be the way around the menu. An unmatched question says so and lists what can
+   be answered; guessing would be indistinguishable from answering.
+   **No requirement text in the product view.** Requirement IDs, § references
+   and appendix names belong on the `miis_reqtags` layer or in a `Rationale` —
+   never in a label, a paragraph, a callout or an empty state. A system MI will
+   actually use does not argue with its user about the specification. There is a
+   render-time check for this: load every route with the tags off and scan the
+   visible text; it must be zero. The catalogue, MI's own limits and the traceability
    sit behind one *Om AI-stödet* toggle: they are the sections a competitor will
    not have, and they are still reference material, which does not belong above
    the work. NFÅ-003 applies inside it — the queue is filtered by **write**

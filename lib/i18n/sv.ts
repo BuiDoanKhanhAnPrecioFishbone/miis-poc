@@ -117,8 +117,47 @@ export const sv = {
       "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
     where: "Var",
     goThere: "Granska förslagen",
+    askQuestion: "Fråga om avtalen",
+    askQuestionLead:
+      "Svaret hämtas ur registret och visar de poster det räknade. Ingenting formuleras och ingenting sparas – att fråga är att läsa.",
+    chat: {
+      label: "Din fråga",
+      placeholder: "T.ex. Vilka avtal löper ut inom 90 dagar?",
+      ask: "Fråga",
+      empty: "Skriv en fråga först.",
+      youAsked: (q: string) => `Du frågade: ${q}`,
+      notAuthorised: "Behörighet saknas",
+      openScreen: "Öppna vyn med hela svaret",
+      refused: (screen: string) =>
+        `${screen} ingår inte i din behörighet, så frågan besvaras inte här. Behörigheten styrs av din roll och administreras av behörighetsadministratören.`,
+      none: (what: string) => `Inga ${what} just nu.`,
+      found: (n: number, what: string) => `${n} ${what}:`,
+      unmatched:
+        "Den frågan kan jag inte svara på. Jag svarar genom att hämta uppgifter ur registret, inte genom att formulera något – det här är vad jag kan hämta:",
+      capabilities: "Det här kan jag hämta ur registret:",
+      what: {
+        expiring: {
+          one: "avtal löper ut inom 90 dagar",
+          many: "avtal löper ut inom 90 dagar",
+        },
+        incomplete: {
+          one: "ofullständig registrering",
+          many: "ofullständiga registreringar",
+        },
+        unpublished: {
+          one: "avtal är klart men opublicerat",
+          many: "avtal är klara men opublicerade",
+        },
+        mediations: { one: "pågående medlingsärende", many: "pågående medlingsärenden" },
+        benchmark: { one: "registrerat märke", many: "registrerade märken" },
+        agreements: { one: "avtal matchar", many: "avtal matchar" },
+        capabilities: { one: "fråga", many: "frågor" },
+      },
+      boundedNote:
+        "Assistenten kör en fråga mot registret och visar posterna. Den formulerar inga svar om kollektivavtal, eftersom ett sådant svar vore ett nytt påstående om arbetsmarknaden utan en post bakom sig. Behörigheten gäller även när frågan skrivs – en roll som inte får läsa ett register får inte heller svar om det.",
+    },
     notHere:
-      "AI-stödet arbetar inte på den här skärmen. Enligt §4.1 är det fyra namngivna funktioner som körs där registreringen sker – inte en assistent som svarar på frågor var som helst.",
+      "AI-stödet arbetar där registreringen sker. Härifrån kan du ställa en fråga om avtalen, eller gå till den skärm där stödet arbetar.",
     goWhereItWorks: (where: string) => `Gå till ${where}`,
     queue: "Väntar på din granskning",
     queueLead:
@@ -605,7 +644,7 @@ export const sv = {
       registrationStatus: "Registreringsstatus",
       statusFromAction:
         "Sätts av valet nedan: Godkänn och koppla ger status Klar, Spara som ofullständig ger status Ofullständig.",
-      agreementStatus: "Avtalets status (FR-012)",
+      agreementStatus: "Avtalets status",
       statusKey: "Så visas statusen i avtalslistor och rapporter:",
       approveAndLink: "Godkänn och koppla protokoll",
       approveFirst: "Godkänn AI-förslagen först — inget kan kopplas innan de är granskade.",
@@ -1153,7 +1192,7 @@ export const sv = {
       heading: "Avtalet",
       manualLabel: "Registreras manuellt",
       manualNote:
-        "Helt nya avtal, som inte har någon tidigare motsvarighet i systemet, ska alltid registreras manuellt (Bilaga 1 §4.1). AI-stödet läser ett inkommet protokoll mot ett avtal som MIIS redan har – för ett förstagångsavtal finns ingenting att matcha mot och därmed inget att föreslå.",
+        "Ett avtal utan tidigare motsvarighet i systemet registreras alltid för hand. AI-stödet läser ett inkommet protokoll mot ett avtal som redan finns – för ett förstagångsavtal finns ingenting att matcha mot, och därmed ingenting att föreslå.",
       name: "Avtalsnamn",
       namePlaceholder: "T.ex. Bemanningsavtalet",
       area: "Avtalsområde",
@@ -1263,7 +1302,7 @@ export const sv = {
       edit: "Redigera avtalet",
       administration: "Redigera och publicera",
       administrationIntro:
-        "FA-001 är att registrera *och redigera* avtalsinformation. Ändringen sker på värdena själva – handläggaren tittar på posten som ska rättas.",
+        "Rätta uppgifter direkt i posten. Ändringen sparas med tidpunkt och användare i ändringsloggen.",
       agreementName: "Avtalsnamn",
       nameRequired: "Avtalet måste ha ett namn.",
       editSaved: (date: string) =>
@@ -1291,7 +1330,7 @@ export const sv = {
       revision: "Lönerevision",
       period: "Period",
       minimumWages: "Lägstalöner per yrkesgrupp",
-      minimumWagesIntro: "Grupperade per yrkesgrupp med revisionsdatum (FA-013).",
+      minimumWagesIntro: "Grupperade per yrkesgrupp, med det datum beloppet senast reviderades.",
       occupationalGroup: "Yrkesgrupp",
       amount: "Belopp",
       revisionDate: "Revisionsdatum",
@@ -1441,7 +1480,7 @@ export const sv = {
       intro:
         "En förhandling är antingen en avtalsrörelse, som hör till ett avtal, eller en övrig förhandling, som kan stå för sig själv med direkta kopplingar till parterna.",
       standaloneNote:
-        "En fristående förhandling har inget avtal – FF-003 kopplar den direkt till parterna. Tom kolumn är alltså en uppgift, inte en lucka.",
+        "En fristående förhandling har inget avtal – den är kopplad direkt till parterna. Tom avtalskolumn är alltså en uppgift, inte en lucka.",
     },
     table: {
       id: "Diarienummer",
@@ -1661,7 +1700,7 @@ export const sv = {
     sources: {
       heading: "Märkessättande avtal",
       intro:
-        "Avtalen med industrimärke-flaggan (FA-012). Kostnadsramen i märket ska stämma med dem.",
+        "Avtalen som är märkta som märkessättande. Kostnadsramen i märket ska stämma med dem.",
       name: "Avtal",
       parties: "Parter",
       period: "Period",
@@ -1680,7 +1719,7 @@ export const sv = {
     settings: {
       heading: "Systeminställningar",
       intro:
-        "Systemadministratören har full åtkomst inklusive systemkonfiguration, men inte behörigheter (Bilaga 1 §3.1). Två av inställningarna nedan går att ändra här; två gör det inte, och kravet som avgör det står på raden.",
+        "Systemadministratören har full åtkomst till systemkonfigurationen, men inte till behörigheter. Två av inställningarna nedan går att ändra här; två gör det inte, och skälet står på raden.",
       editable: "Kan ändras",
       fixed: "Låst av krav",
       timeoutLabel: "Tidsgräns (minuter)",
@@ -1746,7 +1785,7 @@ export const sv = {
     users: {
       heading: "Användare och rolltilldelning",
       intro:
-        "Medlingsinstitutets behörighetsadministratör lägger upp användare och tilldelar roller själv, utan leverantörens medverkan (NFÅ-005). Rollens innehåll ändras inte här – se behörighetsmatrisen nedan.",
+        "Behörighetsadministratören lägger upp användare och tilldelar roller. Vad en roll får göra ändras inte här – det framgår av behörighetsmatrisen nedan.",
       add: "Lägg till användare",
       name: "Namn",
       namePlaceholder: "T.ex. Sara Lindström",
@@ -1795,7 +1834,7 @@ export const sv = {
     roles: {
       heading: "Roller och behörigheter",
       intro:
-        "De åtta rollerna i Bilaga 1 §3.1. Rollen avgör både vad användaren får göra och vilka menyval som visas – rollväxlaren i demoläget byter roll för att göra just det synligt.",
+        "Systemets åtta roller. Rollen avgör både vad användaren får göra och vilka menyval som visas.",
       role: "Roll",
       held: "Användare",
       unstaffed: "Ingen användare",

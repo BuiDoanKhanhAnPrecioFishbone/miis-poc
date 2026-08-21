@@ -17,8 +17,10 @@ import {
 } from "@/lib/domain/ai";
 import { t as text, type Lang } from "@/lib/domain/lang";
 import type { RoleInfo } from "@/lib/domain/role";
+import type { AssistantFacts } from "@/lib/domain/assistant";
 import { dictionary } from "@/lib/i18n";
 import { IconAi, IconChevronDown, IconClose, IconForward } from "./icons";
+import { AssistantChat } from "./AssistantChat";
 import { Badge, LinkButton, Rationale, ReqTags } from "./primitives";
 
 /**
@@ -51,9 +53,20 @@ import { Badge, LinkButton, Rationale, ReqTags } from "./primitives";
 
 interface AiContextValue {
   queue: readonly AiQueueItem[];
+  facts: AssistantFacts;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
+
+/** Nothing to answer from — the shape, so the drawer never has to null-check. */
+const NO_FACTS: AssistantFacts = {
+  expiring: [],
+  incomplete: [],
+  unpublished: [],
+  mediations: [],
+  benchmark: [],
+  agreements: [],
+};
 
 const AiContext = createContext<AiContextValue | null>(null);
 
@@ -67,17 +80,23 @@ const AiContext = createContext<AiContextValue | null>(null);
  */
 export function AiAssistantProvider({
   queue,
+  facts,
   children,
 }: {
   queue: readonly AiQueueItem[];
+  facts: AssistantFacts;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  return <AiContext.Provider value={{ queue, open, setOpen }}>{children}</AiContext.Provider>;
+  return (
+    <AiContext.Provider value={{ queue, facts, open, setOpen }}>{children}</AiContext.Provider>
+  );
 }
 
 function useAi(): AiContextValue {
-  return useContext(AiContext) ?? { queue: [], open: false, setOpen: () => {} };
+  return (
+    useContext(AiContext) ?? { queue: [], facts: NO_FACTS, open: false, setOpen: () => {} }
+  );
 }
 
 /**
@@ -167,7 +186,7 @@ function Section({
 }
 
 export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
-  const { queue, open, setOpen } = useAi();
+  const { queue, facts, open, setOpen } = useAi();
   const pathname = usePathname();
   const d = dictionary(lang);
   const t = d.ai;
@@ -278,6 +297,19 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
         </p>
 
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
+          {/*
+            The question, first and on every screen.
+
+            An officer with a question in their head should not have to work out
+            which screen answers it — that translation is the system's job, and
+            this is where it happens. What comes back is a query MIIS could
+            already run, with the rows it counted and a way to the screen they
+            live on; nothing here is composed, and nothing here writes.
+          */}
+          <Section title={t.askQuestion} lead={t.askQuestionLead}>
+            <AssistantChat lang={lang} role={role} facts={facts} onNavigate={close} />
+          </Section>
+
           {/*
             What the officer can ask for, first and as controls.
 
