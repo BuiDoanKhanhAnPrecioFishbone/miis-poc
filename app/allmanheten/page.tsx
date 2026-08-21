@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { PrintHeader } from "@/components/miis/Print";
 import { type Column, type Row } from "@/components/miis/DataTable";
@@ -11,8 +12,8 @@ import {
   Rationale,
   StatusDot,
 } from "@/components/miis/primitives";
-import { listAgreements } from "@/lib/data/agreements";
-import { listEmployeeOrgs, listEmployerOrgs } from "@/lib/data/parties";
+import { listPublicAgreements } from "@/lib/data/public";
+import { listEmployeeOrgs, listEmployerOrgs, listParties } from "@/lib/data/parties";
 import { validityLabel } from "@/lib/domain/agreement";
 import type { PublicSearchable } from "@/lib/domain/public-search";
 import { agreementStatus } from "@/lib/domain/status";
@@ -42,11 +43,21 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AllmanhetenPage() {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [agreements, employerOrgs, employeeOrgs] = await Promise.all([
-    listAgreements(),
+  const [agreements, employerOrgs, employeeOrgs, parties] = await Promise.all([
+    /* Only what MI has published — Bilaga 2 §3.5, Scenario 2's fourth bullet
+       seen from the other end. An agreement nobody released is in the register
+       and not here. */
+    listPublicAgreements(),
     listEmployerOrgs(),
     listEmployeeOrgs(),
+    listParties(),
   ]);
+  /* Bransch lives on the employer organisation (FP-001), so it is joined once
+     here rather than looked up per row in the browser. */
+  const industryOf = new Map(parties.map((p) => [p.name, p.industryCode]));
+  const industryCodes = [
+    ...new Set(parties.map((p) => p.industryCode).filter((c): c is string => Boolean(c))),
+  ].sort((a, b) => a.localeCompare(b, "sv"));
   const t = i18n.allmanheten;
 
   const columns: Column[] = [
@@ -65,7 +76,16 @@ export default async function AllmanhetenPage() {
       cells: [
         <StatusDot key="s" status={status} showLabel />,
         <span key="a" className="flex flex-wrap items-center gap-2">
-          {a.name}
+          {a.confidential ? (
+            a.name
+          ) : (
+            <Link
+              href={`/allmanheten/${a.id}`}
+              className="font-semibold text-primary underline underline-offset-2"
+            >
+              {a.name}
+            </Link>
+          )}
           {/*
             D-002: a marked agreement is still listed and still counted. What is
             withheld is the detail, and the row says so rather than leaving a blank.
@@ -107,6 +127,9 @@ export default async function AllmanhetenPage() {
     agreementArea: a.agreementArea,
     employerOrg: { id: a.employerOrg.id, name: a.employerOrg.name },
     employeeOrg: { id: a.employeeOrg.id, name: a.employeeOrg.name },
+    ...(industryOf.get(a.employerOrg.name)
+      ? { industryCode: industryOf.get(a.employerOrg.name)! }
+      : {}),
     ...(a.validFrom ? { validFrom: a.validFrom } : {}),
     ...(a.validTo ? { validTo: a.validTo } : {}),
   }));
@@ -135,6 +158,7 @@ export default async function AllmanhetenPage() {
         agreements={searchable}
         employerOrgs={employerOrgs.map((p) => ({ id: p.id, name: p.name }))}
         employeeOrgs={employeeOrgs.map((p) => ({ id: p.id, name: p.name }))}
+        industryCodes={industryCodes}
         lang={lang}
         columns={columns}
         rowFor={rowFor}

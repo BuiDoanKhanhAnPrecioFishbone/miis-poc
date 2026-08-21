@@ -56,12 +56,12 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
     role: "agreement-admin",
     scenario: "US-01",
     title: {
-      sv: "Registrera ett inkommet avtalsprotokoll",
-      en: "Register an incoming agreement protocol",
+      sv: "Registrera, uppdatera och publicera ett kollektivavtal",
+      en: "Register, update and publish a collective agreement",
     },
     taskAndGoal: {
-      sv: "Ett undertecknat avtalsprotokoll kommer in till Medlingsinstitutet, oftast som en inskannad PDF. Handläggaren ska få in det i registret: identifiera vilket avtal det gäller, registrera löneavtalet och de allmänna villkoren, och koppla dokumentet. Målet är en korrekt, komplett och spårbar registrering — allt nedströms läser det handläggaren skriver in, från Konjunkturlönerapporten till Medlingsinstitutets årsrapport.",
-      en: "A signed agreement protocol arrives at Medlingsinstitutet, normally as a scanned PDF. The case officer has to get it into the register: identify which agreement it concerns, register the wage agreement and the general terms, and link the document. The goal is a correct, complete and traceable registration — everything downstream reads what the officer types, from the Short-Term Wage Report to Medlingsinstitutet's annual report.",
+      sv: "Ett kollektivavtal ska in i registret, hållas aktuellt och till slut lämnas ut. Det kommer två vägar: som ett helt nytt avtal utan tidigare motsvarighet, vilket alltid registreras manuellt (§4.1), eller som ett undertecknat avtalsprotokoll — oftast en inskannad PDF — om ett avtal systemet redan har. Därefter ska uppgifterna gå att komplettera och rätta, varje avtalsrörelse ska lägga sin egen rad, och avtalet ska publiceras när registreringen är klar. Målet är en korrekt, komplett och spårbar post: allt nedströms läser det handläggaren skriver in, från Konjunkturlönerapporten till Medlingsinstitutets årsrapport och den publika datorn.",
+      en: "A collective agreement has to get into the register, be kept current, and finally be released. It arrives two ways: as a wholly new agreement with no previous counterpart, which is always registered manually (§4.1), or as a signed agreement protocol — normally a scanned PDF — about an agreement the system already holds. After that the details have to be correctable, every bargaining round adds its own row, and the agreement is published once the registration is complete. The goal is a correct, complete and traceable record: everything downstream reads what the officer types, from the Short-Term Wage Report to Medlingsinstitutet's annual report and the public computer.",
     },
     usability: {
       sv: "Protokollet står kvar bredvid formuläret medan handläggaren scrollar, så en kontroll är en blick i stället för en scroll fram och tillbaka. Fältets bredd säger vad som ska stå i det, enheten står i etiketten och värdet är ett rent tal. Fem steg — Medlingsinstitutets egna, inga påhittade. En ofullständig registrering går att spara och ger en påminnelse, så ett protokoll med en lucka inte blockerar kön. WCAG 2.1 AA verifieras automatiskt vid varje ändring: 0 fel, ingen horisontell scroll mellan 375 och 1920 pixlar, och FR-012:s status bärs alltid av färg, form och ord tillsammans.",
@@ -69,14 +69,17 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
     },
     steps: [
       {
-        label: { sv: "Startsidan", en: "The start page" },
+        label: {
+          sv: "Registrera ett nytt kollektivavtal",
+          en: "Register a new collective agreement",
+        },
         detail: {
-          sv: "Rollanpassat innehåll: påminnelser, ofullständiga registreringar och Märket som referens. Registrering är en åtgärd, inte ett menyval — den börjar med den primära knappen här.",
-          en: "Role-adapted content: reminders, incomplete registrations and Märket as a reference. Registration is an action rather than a menu item — it begins with the primary button here.",
+          sv: "Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår.",
+          en: "An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains.",
         },
         role: "agreement-admin",
-        href: "/",
-        requirements: ["FS-001", "FA-021", "FA-022"],
+        href: "/avtal/ny",
+        requirements: ["FA-001", "FA-005", "FAI-002"],
       },
       {
         label: { sv: "Registrera avtalsprotokoll", en: "Register the agreement protocol" },
@@ -99,14 +102,40 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         requirements: ["FA-005", "FA-006", "FR-012"],
       },
       {
-        label: { sv: "Avtalet i sin helhet", en: "One agreement in full" },
+        label: {
+          sv: "Lägg till eller uppdatera information",
+          en: "Add or update information",
+        },
         detail: {
-          sv: "Bilaga F:s Rapport 4, Huvudrapporten, på skärm: basfakta, löneavtal per avtalsrörelse, arbetsgrupper, lägstlöner, livscykel och händelselogg.",
-          en: "Appendix F's Report 4, the Main Report, on screen: base facts, wage agreements per bargaining round, working groups, minimum wages, lifecycle and event log.",
+          sv: "FA-001 är att registrera *och redigera* avtalsinformation. Ändringen sker på värdena själva i stället för på en andra skärm — handläggaren tittar på posten som ska rättas — och den skrivs till ändringsloggen med tidpunkt och användare. Resten av skärmen är Bilaga F:s Rapport 4: omfattning, basfakta, arbetsgrupper, särskilda frågor, lägstlöner och händelselogg.",
+          en: "FA-001 is to register *and edit* agreement information. The change happens on the values themselves rather than on a second screen — the officer is looking at the record being corrected — and it is written to the change log with the time and the user. The rest of the screen is Appendix F's Report 4: scope, base facts, working groups, special questions, minimum wages and the event log.",
         },
         role: "agreement-admin",
         href: "/avtal/A-001",
-        requirements: ["FA-001", "FA-002", "FA-014", "FH-002"],
+        requirements: ["FA-001", "FA-014", "FH-001"],
+      },
+      {
+        label: {
+          sv: "Versioner och ändringar av avtalet",
+          en: "Versions and changes to the agreement",
+        },
+        detail: {
+          sv: "Ett avtal har ingen versionslista utan en rad per avtalsrörelse: FA-002 ger varje omförhandling ett eget löneavtal med sin egen konstruktion, sitt utrymme och sin kostnadsram, så jämförelsen mot förra ronden är tabellen. Vad som ändrats *inom* en period står i händelseloggen, med gammalt och nytt värde (FH-001).",
+          en: "An agreement has no version list but a row per bargaining round: FA-002 gives every renegotiation its own wage agreement with its own construction, scope and cost frame, so the comparison against the last round *is* the table. What changed *within* a period is in the event log, with the old and the new value (FH-001).",
+        },
+        role: "agreement-admin",
+        href: "/avtal/A-001",
+        requirements: ["FA-002", "FH-001", "FH-002"],
+      },
+      {
+        label: { sv: "Publicera avtalet", en: "Publish the agreement" },
+        detail: {
+          sv: "Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Efteråt går det att öppna avtalet som allmänheten ser det.",
+          en: "Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. Afterwards the agreement can be opened as the public sees it.",
+        },
+        role: "agreement-admin",
+        href: "/avtal/A-010",
+        requirements: ["FR-009", "FR-011", "FH-001"],
       },
       {
         label: { sv: "Rapportuttag", en: "Report extract" },
@@ -126,27 +155,60 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
     role: "system-admin",
     scenario: "US-13",
     title: {
-      sv: "Granska loggar och underhålla systemkonfigurationen",
-      en: "Review logs and maintain system configuration",
+      sv: "Användare, roller, behörigheter och systemets förvaltning",
+      en: "Users, roles, permissions and the system's administration",
     },
     taskAndGoal: {
-      sv: "Systemadministratören svarar för systemet, inte för handläggningen i det. Frågan är: vad har systemet gjort, och kan Medlingsinstitutet svara för det utan att kontakta leverantören? När en siffra i en publicerad rapport ifrågasätts ska det gå att rekonstruera vem som ändrade den, när, och vad den var innan. Inför en avtalsrörelse ska bevakningsordstabellen vara aktuell.",
-      en: "The system administrator answers for the system rather than for the case work in it. The question is: what has this system done, and can Medlingsinstitutet answer for it without contacting the supplier? When a figure in a published report is questioned, it must be possible to reconstruct who changed it, when, and what it was before. Ahead of a bargaining round the watchword table has to be current.",
+      sv: "Systemadministratören svarar för systemet, inte för handläggningen i det: vem som har åtkomst, som vad, och vad systemet har gjort. Målet är att Medlingsinstitutet ska kunna lägga upp en ny medarbetare, ge, ändra och återkalla behörighet, och svara för en ifrågasatt siffra i en publicerad rapport — allt utan att kontakta leverantören. Scenariot går över två roller, och det är avsiktligt: Bilaga 1 §3.1 ger systemadministratören full åtkomst inklusive systemkonfiguration men uttryckligen inte behörigheter, och lägger användare och rolltilldelning hos behörighetsadministratören. Uppdelningen är ansvarsfördelning — den som konfigurerar systemet är inte den som ger åtkomst till det — och genomgången byter roll där §3.1 kräver det i stället för att vidga en behörighet som myndigheten har skrivit en parentes för att begränsa.",
+      en: "The system administrator answers for the system rather than for the case work in it: who has access, as what, and what the system has done. The goal is that Medlingsinstitutet can add a new colleague, grant, change and revoke access, and answer for a questioned figure in a published report — all without contacting the supplier. The scenario spans two roles, deliberately: Appendix 1 §3.1 gives the system administrator full access including system configuration but explicitly not permissions, and places users and role assignment with the authorisation administrator. The split is separation of duties — whoever configures the system is not whoever grants access to it — and the walkthrough switches role where §3.1 requires it rather than widening a permission the authority wrote a parenthesis to limit.",
     },
     usability: {
-      sv: "En skärm svarar på rollens fråga, eftersom de två loggarna, stödtabellen och inställningarna är fyra delar av samma sak. Långa tabeller fäster sin rubrikrad och scrollar i en egen, namngiven region som går att nå med tangentbord. Loggen säger med egna ord att den skrivs av systemet och inte kan redigeras härifrån. En inställning som nekas säger åt vilket håll den är fel och vilken gräns som gäller, så administratören inte behöver gissa.",
-      en: "One screen answers the role's question, because the two logs, the support table and the settings are four parts of one subject. Long tables pin their header row and scroll inside their own named region, reachable by keyboard. The log states in its own words that it is written by the system and cannot be edited from here. A setting that is refused says which way it is wrong and what the limit is, so the administrator does not have to guess.",
+      sv: "Behörighetsregistret svarar på rollens fyra frågor i den ordning de ställs — vem har åtkomst, som vad, sedan när och av vem, och är personen kvar. Rollbytet sker i raden, så handläggaren har personen, den nuvarande rollen och vem som tilldelade den framför sig när den ändras. En åtgärd som nekas säger varför på sig själv: den sista behörighetsadministratören går varken att flytta eller inaktivera, eftersom det är den utelåsning bara leverantören kan reparera. Ingen post raderas — inloggningarna ligger i loggen och måste gå att härleda (NFL-001). Långa tabeller fäster sin rubrikrad och scrollar i en egen namngiven region som går att nå med tangentbord, och en inställning som nekas säger åt vilket håll den är fel och vilken gräns som gäller.",
+      en: "The authorisation register answers the role's four questions in the order they are asked — who has access, as what, since when and granted by whom, and are they still here. The role change happens in the row, so the officer has the person, the current role and who assigned it in front of them while changing it. A refused action says why on itself: the last authorisation administrator can neither be moved nor deactivated, because that is the lock-out only the supplier could repair. Nothing is deleted — the sign-ins are in the log and have to stay resolvable (NFL-001). Long tables pin their header row and scroll inside their own named region, reachable by keyboard, and a setting that is refused says which way it is wrong and what the limit is.",
     },
     steps: [
       {
-        label: { sv: "Startsidan", en: "The start page" },
-        detail: {
-          sv: "Samma system, en annan roll: menyn och innehållet följer behörigheten (NFÅ-003). Byt roll i demoraden och se skillnaden.",
-          en: "The same system, a different role: the menu and the content follow the authorisation (NFÅ-003). Switch role in the demo bar and see the difference.",
+        label: {
+          sv: "Överblick över användare, roller och behörigheter",
+          en: "Overview of users, roles and permissions",
         },
-        role: "system-admin",
-        href: "/",
-        requirements: ["FS-001", "NFÅ-003"],
+        detail: {
+          sv: "Vem som har åtkomst, som vad, sedan när och av vem. Under registret ligger behörighetsmatrisen, som visar vad varje roll får göra i varje modul — den läses och ändras inte, eftersom NFÅ-003 definierar åtkomsten utifrån §3.1:s åtta roller och en matris som gick att flytta om skulle beskriva en konfiguration i stället för myndighetens eget dokument.",
+          en: "Who has access, as what, since when and granted by whom. Under the register is the permission matrix showing what each role may do in each module — read, not edited, because NFÅ-003 defines access by §3.1's eight roles and a matrix an administrator could rearrange would describe a configuration rather than the authority's own document.",
+        },
+        role: "permission-admin",
+        href: "/administration/anvandare",
+        requirements: ["NFÅ-005", "NFÅ-003", "FH-001"],
+      },
+      {
+        label: { sv: "Skapa en ny användare", en: "Create a new user" },
+        detail: {
+          sv: "Namn, EFOS-identitet, e-post och roll. Inget lösenordsfält och ingen kontoskapande åtgärd: NFÅ-001 lägger autentiseringen i Försäkringskassans IdP över SAML med EFOS-kort, så en användare i MIIS är en länk till en identitet som redan finns — att rita ett kontoformulär vore att påstå att vi byggt en identitetsleverantör.",
+          en: "Name, EFOS identity, e-mail and role. No password field and no account creation: NFÅ-001 puts authentication in Försäkringskassan's IdP over SAML with an EFOS card, so a user in MIIS is a link to an identity that already exists — drawing an account form would claim we had built an identity provider.",
+        },
+        role: "permission-admin",
+        href: "/administration/anvandare",
+        requirements: ["NFÅ-005", "NFÅ-001"],
+      },
+      {
+        label: { sv: "Tilldela roll och behörighet", en: "Assign role and permission" },
+        detail: {
+          sv: "Rollen är behörigheten: §3.1 ger varje roll ett verb, och det är rollen som avgör vad personen ser och får göra. Tilldelningen stämplas med datum och vem som gjorde den, vilket är FH-001-halvan av NFÅ-005.",
+          en: "The role is the permission: §3.1 gives each role a verb, and it is the role that decides what the person sees and may do. The assignment is stamped with the date and who made it, which is the FH-001 half of NFÅ-005.",
+        },
+        role: "permission-admin",
+        href: "/administration/anvandare",
+        requirements: ["NFÅ-005", "NFÅ-003"],
+      },
+      {
+        label: { sv: "Ändra eller återkalla behörighet", en: "Change or revoke a permission" },
+        detail: {
+          sv: "Ändra rollen i raden, eller återkalla åtkomsten. Båda skrivs till ändringsloggen. Pröva den sista behörighetsadministratören: både flytten och inaktiveringen nekas, och kontrollen säger varför på sig själv — det är den utelåsning NFÅ-005 finns för att förhindra. Ingen användare raderas, eftersom inloggningarna i loggen måste gå att härleda.",
+          en: "Change the role in the row, or revoke access. Both are written to the change log. Try the last authorisation administrator: both the move and the deactivation are refused, and the control says why on itself — that is the lock-out NFÅ-005 exists to prevent. No user is deleted, because the sign-ins in the log have to stay resolvable.",
+        },
+        role: "permission-admin",
+        href: "/administration/anvandare",
+        requirements: ["NFÅ-005", "FH-001", "NFL-001"],
       },
       {
         label: { sv: "Systeminställningar", en: "System settings" },
@@ -161,22 +223,12 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Ändrings- och händelselogg", en: "Change log and event log" },
         detail: {
-          sv: "FH-001 kräver gammalt och nytt värde — skillnaden mellan en logg som registrerar att något ändrades och en som kan rekonstruera vad det var. Det är också det som gör FAI-002:s garanti kontrollerbar i efterhand. Utskriften är NFL-004:s exportfunktion som faktiskt körs.",
-          en: "FH-001 requires the old and the new value — the difference between a log that records that something changed and one that can reconstruct what it was. It is also what makes FAI-002's guarantee checkable after the fact. The print is NFL-004's export function, and it runs.",
+          sv: "Den övriga administration som gör att myndigheten kan svara för systemet själv. FH-001 kräver gammalt och nytt värde — skillnaden mellan en logg som registrerar att något ändrades och en som kan rekonstruera vad det var, och det som gör FAI-002:s garanti kontrollerbar i efterhand. Utskriften är NFL-004:s exportfunktion som faktiskt körs.",
+          en: "The other administration that lets the authority answer for the system itself. FH-001 requires the old and the new value — the difference between a log that records that something changed and one that can reconstruct what it was, and what makes FAI-002's guarantee checkable after the fact. The print is NFL-004's export function, and it runs.",
         },
         role: "system-admin",
         href: "/administration",
         requirements: ["FH-001", "FH-002", "NFL-003", "NFL-004"],
-      },
-      {
-        label: { sv: "Behörighetsmatrisen", en: "The authorisation matrix" },
-        detail: {
-          sv: "Läses av den här rollen men ändras inte: §3.1 ger systemadministratören systemkonfiguration men uttryckligen inte behörigheter. Användare och rolltilldelning administreras av behörighetsadministratören (NFÅ-005).",
-          en: "Read by this role but not changed: §3.1 gives the system administrator system configuration but explicitly not permissions. Users and role assignment are administered by the authorisation administrator (NFÅ-005).",
-        },
-        role: "permission-admin",
-        href: "/administration/anvandare",
-        requirements: ["NFÅ-003", "NFÅ-005"],
       },
     ],
   },
@@ -209,14 +261,47 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         requirements: ["NFÅ-006", "FR-011"],
       },
       {
-        label: { sv: "Sök, avgränsa och skriv ut", en: "Search, narrow and print" },
+        label: {
+          sv: "Sök efter avtal på bransch eller avtalsområde",
+          en: "Search for an agreement by industry or agreement area",
+        },
         detail: {
-          sv: "Skriv ett ord så smalnar listan av medan du skriver. Under det ligger Medlingsinstitutets egna tre kriterier ur Bilaga F:s Rapport 1, och ett datum för vad som gällde vid en viss tidpunkt. Sekretessmarkerade avtal syns i listan och räknas med — det som utelämnas är deras uppgifter, och det utelämnas i markupen, inte i stilmallen.",
-          en: "Type a word and the list narrows as you type. Below it are Medlingsinstitutet's own three criteria from Appendix F's Report 1, and a date for what applied at a given point. Confidentiality-marked agreements appear in the list and are counted — what is withheld is their detail, and it is withheld in the markup rather than in the stylesheet.",
+          sv: "Skriv ett ord så smalnar listan av medan du skriver. Under fritexten ligger bransch först — en besökare tänker i branscher långt innan hen tänker i arbetsgivarorganisationer — och sedan Medlingsinstitutets egna tre kriterier ur Bilaga F:s Rapport 1 och ett datum för vad som gällde vid en viss tidpunkt.",
+          en: "Type a word and the list narrows as you type. Under the free text comes industry first — a visitor thinks in industries long before they think in employer organisations — then Medlingsinstitutet's own three criteria from Appendix F's Report 1 and a date for what applied at a given point.",
         },
         role: "public",
         href: "/allmanheten",
-        requirements: ["FR-001", "FR-003", "FR-011", "D-002"],
+        requirements: ["FR-001", "FR-003", "FR-011"],
+      },
+      {
+        label: { sv: "Avgränsa träfflistan", en: "Narrow the result" },
+        detail: {
+          sv: "Varje valt kriterium blir en chip som går att ta bort ett i taget, och tabellen smalnar av på riktigt. Sekretessmarkerade avtal står kvar i listan och räknas med — det som utelämnas är deras uppgifter, och de utelämnas i markupen, inte i stilmallen. Bara publicerade avtal finns här: ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.",
+          en: "Every chosen criterion becomes a chip that can be removed one at a time, and the table genuinely narrows. Confidentiality-marked agreements stay in the list and are counted — what is withheld is their detail, and it is withheld in the markup rather than in the stylesheet. Only published agreements are here: a half-registered agreement on the public computer would be the authority publishing a draft.",
+        },
+        role: "public",
+        href: "/allmanheten",
+        requirements: ["FR-003", "FR-011", "D-002"],
+      },
+      {
+        label: { sv: "Ta del av avtalet", en: "Read the agreement" },
+        detail: {
+          sv: "Bilaga F:s Rapport 1 i sin helhet: parter, avtalsområde, bransch, löptider per avtalsrörelse, uppsägning och prolongering, och de länkade handlingarna. Inga löneuppgifter — kostnadsram och löneutrymme är myndighetens arbetsmaterial, och det här är utlämnandet.",
+          en: "Appendix F's Report 1 in full: parties, agreement area, industry, validity periods per bargaining round, termination and prolongation, and the linked documents. No wage figures — the cost frame and the wage scope are the authority's working material, and this is the release.",
+        },
+        role: "public",
+        href: "/allmanheten/A-013",
+        requirements: ["FR-011", "D-002", "FA-002"],
+      },
+      {
+        label: { sv: "Öppna och ladda ned", en: "Open and download" },
+        detail: {
+          sv: "Två uttag, och båda körs. Utskriften får Medlingsinstitutets brevhuvud och ett utskriftsdatum och kan sparas som PDF i webbläsaren; nedladdningen skriver en riktig CSV-fil ur uppgifterna på skärmen, utan serverdrift (FR-013). Besökarens uppgift slutar med att svaret följer med hem, och en streckad knapp hade avslutat det bedömda scenariot på en kontroll som inte gör något.",
+          en: "Two exports, and both of them run. The printout carries Medlingsinstitutet's letterhead and a print date and can be saved as PDF in the browser; the download writes a real CSV file from the details on screen, with no server behind it (FR-013). The visitor's task ends with the answer going home with them, and a dashed button would have ended the scored scenario on a control that does nothing.",
+        },
+        role: "public",
+        href: "/allmanheten/A-013",
+        requirements: ["FR-011", "FR-013"],
       },
     ],
   },
@@ -317,33 +402,14 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       },
     ],
   },
-  {
-    id: "permission-admin",
-    scored: false,
-    role: "permission-admin",
-    scenario: "US-12",
-    title: { sv: "Användare och rolltilldelning", en: "Users and role assignment" },
-    taskAndGoal: {
-      sv: "Behörighetsadministratören lägger upp användare och tilldelar roller — det NFÅ-005 uttryckligen lägger hos Medlingsinstitutet, utan leverantörens medverkan.",
-      en: "The authorisation administrator sets up users and assigns roles — what NFÅ-005 explicitly places with Medlingsinstitutet, without the supplier's involvement.",
-    },
-    usability: {
-      sv: "Inget lösenordsfält och ingen kontoskapning: autentiseringen ligger hos Försäkringskassans IdP, så en användare här är en koppling till en identitet som redan finns.",
-      en: "No password field and no account creation: authentication sits with Försäkringskassan's IdP, so a user here is a link to an identity that already exists.",
-    },
-    steps: [
-      {
-        label: { sv: "Användare och behörigheter", en: "Users and permissions" },
-        detail: {
-          sv: "Användarregistret går att ändra; behörighetsmatrisen under det gör det inte, eftersom NFÅ-003 definierar åtkomsten utifrån §3.1:s åtta roller.",
-          en: "The user register is editable; the permission matrix under it is not, because NFÅ-003 defines access by §3.1's eight roles.",
-        },
-        role: "permission-admin",
-        href: "/administration/anvandare",
-        requirements: ["NFÅ-005", "NFÅ-001", "FH-001"],
-      },
-    ],
-  },
+  /*
+    US-12, the authorisation administrator, used to be a supporting scenario of
+    its own. Bilaga 2 §3.5 moved that work into the *scored* system
+    administrator scenario — MI's Scenario 1 is overview, create, assign, change
+    and revoke — so the four steps live there now, performed as the role §3.1
+    gives them to. Keeping a supporting scenario that repeated them would show
+    an evaluator the same screen twice and say nothing new the second time.
+  */
 ] as const;
 
 /** The criterion's three, in the order it names them. */

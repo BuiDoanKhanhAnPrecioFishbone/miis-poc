@@ -56,7 +56,21 @@ describe("the scored scenarios", () => {
     expect(supporting).toContain("mediation-admin");
     expect(supporting).toContain("statistics-user");
     expect(supporting).toContain("mediator-admin");
-    expect(supporting).toContain("permission-admin");
+  });
+
+  /*
+    All eight §3.1 roles still appear, and the authorisation administrator now
+    appears inside the *scored* system administrator scenario rather than in a
+    supporting one of its own — that is where Bilaga 2 §3.5 puts the work, and a
+    supporting scenario repeating it would show an evaluator the same screen
+    twice.
+  */
+  it("performs some scored steps as the authorisation administrator", () => {
+    const roles = WALKTHROUGH.flatMap((s) => s.steps.map((step) => step.role));
+    expect(roles).toContain("permission-admin");
+    expect(
+      scoredScenarios().flatMap((s) => s.steps.map((step) => step.role)),
+    ).toContain("permission-admin");
   });
 });
 
@@ -94,7 +108,9 @@ describe("every step is reachable by the role it names", () => {
     "/": "start",
     "/registrera": "avtal",
     "/avtal": "avtal",
+    "/avtal/ny": "avtal",
     "/avtal/A-001": "avtal",
+    "/avtal/A-010": "avtal",
     "/rapporter": "rapporter",
     "/administration": "administration",
     "/administration/anvandare": "anvandare",
@@ -104,10 +120,14 @@ describe("every step is reachable by the role it names", () => {
     "/medlare": "medlare",
   };
 
+  /* Everything under `/allmanheten` is outside the app shell and has no menu
+     item: NFÅ-006 puts that role on a whitelisted machine with no sign-in, so
+     there is nothing for `accessLevel` to answer about. */
+  const isPublicRoute = (href: string) => href === "/allmanheten" || href.startsWith("/allmanheten/");
+
   it("covers every route the walkthrough uses", () => {
     for (const href of walkthroughRoutes()) {
-      /* The public entrance is outside the app shell and has no menu item. */
-      if (href === "/allmanheten") continue;
+      if (isPublicRoute(href)) continue;
       expect(OWNER[href], `no owner mapped for ${href}`).toBeDefined();
     }
   });
@@ -115,7 +135,7 @@ describe("every step is reachable by the role it names", () => {
   it("never sends a role somewhere it would be refused", () => {
     for (const scenario of WALKTHROUGH) {
       for (const step of scenario.steps) {
-        if (step.href === "/allmanheten") {
+        if (isPublicRoute(step.href)) {
           expect(step.role, "the public entrance is the public role's").toBe("public");
           continue;
         }
@@ -133,7 +153,7 @@ describe("every step is reachable by the role it names", () => {
     for (const href of walkthroughRoutes()) {
       const base = href.split("/").slice(0, 2).join("/") || "/";
       expect(
-        known.has(href) || known.has(base) || href === "/allmanheten" || href === "/registrera",
+        known.has(href) || known.has(base) || isPublicRoute(href) || href === "/registrera",
         `${href} is not a route the navigation knows`,
       ).toBe(true);
     }
@@ -191,5 +211,57 @@ describe("the walkthrough cursor", () => {
   it("counts every step, so the guide can state the total up front", () => {
     expect(totalSteps()).toBe(WALKTHROUGH.reduce((n, s) => n + s.steps.length, 0));
     expect(totalSteps()).toBeGreaterThan(10);
+  });
+});
+
+/**
+ * Bilaga 2 §3.5 prescribes the steps, and it is the only document that does.
+ *
+ * The walkthrough was cut from our own US-* scenarios before §3.5 arrived, and
+ * it did not match: the system administrator's scenario was logs and settings
+ * where MI asks for users, roles and permissions first. These assertions are
+ * about the **shape** of the scored scenarios rather than their wording, so a
+ * step can be rewritten and a bullet cannot quietly go missing.
+ */
+describe("the scored scenarios follow Bilaga 2 §3.5", () => {
+  const scored = scoredScenarios();
+
+  it("names MI's three roles, in MI's order", () => {
+    expect(scored.map((s) => s.role)).toEqual(["agreement-admin", "system-admin", "public"]);
+  });
+
+  /*
+    §3.5 Scenario 1 has five bullets, and four of them are the authorisation
+    administrator's under Bilaga 1 §3.1. The scenario spanning two roles is the
+    answer to that contradiction, not an oversight — so it is asserted rather
+    than left to be noticed.
+  */
+  it("covers Scenario 1's five bullets, across the two roles §3.1 separates", () => {
+    const s = scored.find((x) => x.role === "system-admin")!;
+    expect(s.steps).toHaveLength(6);
+    const users = s.steps.filter((step) => step.href === "/administration/anvandare");
+    expect(users, "overview, create, assign, change/revoke").toHaveLength(4);
+    for (const step of users) expect(step.role).toBe("permission-admin");
+    const settings = s.steps.filter((step) => step.href === "/administration");
+    expect(settings.length).toBeGreaterThanOrEqual(1);
+    for (const step of settings) expect(step.role).toBe("system-admin");
+  });
+
+  it("covers Scenario 2's four bullets — register, update, versions, publish", () => {
+    const s = scored.find((x) => x.role === "agreement-admin")!;
+    const routes = s.steps.map((step) => step.href);
+    expect(routes, "a wholly new agreement, registered manually").toContain("/avtal/ny");
+    expect(routes, "the AI-assisted protocol path").toContain("/registrera");
+    expect(routes.filter((r) => r.startsWith("/avtal/A-")).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("covers Scenario 3's four bullets — search, narrow, read, download", () => {
+    const s = scored.find((x) => x.role === "public")!;
+    const routes = s.steps.map((step) => step.href);
+    expect(routes.filter((r) => r === "/allmanheten").length).toBeGreaterThanOrEqual(2);
+    expect(
+      routes.some((r) => r.startsWith("/allmanheten/") && r !== "/allmanheten"),
+      "opening one agreement, which is where the download lives",
+    ).toBe(true);
   });
 });

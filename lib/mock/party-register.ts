@@ -55,6 +55,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-016",
+    industryCode: "85 Utbildning",
     centralOrganisation: "Fristående",
     type: "employer",
     name: "Fremia",
@@ -129,6 +130,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-017",
+    industryCode: "36–39 Vatten, avlopp och avfall",
     centralOrganisation: "Fristående",
     type: "employer",
     name: "Sobona",
@@ -223,6 +225,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-103",
+    industryCode: "87–88 Vård och omsorg",
     type: "employer",
     name: "Arbetsgivarföreningen KFO",
     sector: "private",
@@ -236,6 +239,7 @@ export const PARTY_REGISTER: Party[] = [
   },
   {
     id: "P-104",
+    industryCode: "94 Intresseorganisationer",
     type: "employer",
     name: "Idea",
     sector: "private",

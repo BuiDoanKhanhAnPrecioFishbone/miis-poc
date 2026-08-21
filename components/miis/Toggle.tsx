@@ -26,6 +26,8 @@ export function Toggle({
   label,
   lang,
   defaultOn = false,
+  checked,
+  onChange,
   onLabel,
   offLabel,
   children,
@@ -34,6 +36,16 @@ export function Toggle({
   label: string;
   lang: Lang;
   defaultOn?: boolean;
+  /**
+   * Controlled mode, the same escape hatch `TextField` has.
+   *
+   * A flag whose value the surrounding form has to read — the report selection
+   * on a new agreement decides what the confirmation says — cannot live only
+   * inside the switch. Uncontrolled stays the default, because most of these
+   * are a demonstration of a setting rather than an input to one.
+   */
+  checked?: boolean;
+  onChange?: (next: boolean) => void;
   /** Defaults to Ja/Nej — override where the flag reads better another way. */
   onLabel?: string;
   offLabel?: string;
@@ -41,8 +53,15 @@ export function Toggle({
   children?: ReactNode;
 }) {
   const common = dictionary(lang).common;
-  const [on, setOn] = useState(defaultOn);
+  const [internal, setInternal] = useState(defaultOn);
+  const on = checked ?? internal;
   const stateText = on ? (onLabel ?? common.yes) : (offLabel ?? common.no);
+
+  function toggle() {
+    const next = !on;
+    if (checked === undefined) setInternal(next);
+    onChange?.(next);
+  }
 
   return (
     <div>
@@ -60,7 +79,7 @@ export function Toggle({
           role="switch"
           aria-checked={on}
           aria-labelledby={`${id}-label`}
-          onClick={() => setOn((v) => !v)}
+          onClick={toggle}
           className={`flex h-8 w-14 shrink-0 items-center rounded-full border-2 px-1 transition-colors ${
             on ? "border-[var(--status-green)] bg-status-green" : "border-input bg-secondary"
           }`}

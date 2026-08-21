@@ -122,6 +122,12 @@ reviewer to a screen its own role would be refused.
    width; the content column takes the rest. **And a date never breaks inside
    itself**: nowrap each value and let the wrap fall on the separator, because
    `2027-04-` over `01 · 3,2 %` is not a date anyone can read.
+   **Publication is an act, not a property.** `isPublished` gates the public
+   interface, and `mayPublish` refuses a registration that is not complete and
+   signed — MI decides when an agreement is released, and a half-registered
+   record on the public computer would be the authority publishing a draft.
+   `reportSelection.website` is adjacent and is not the same thing: it is which
+   *reports* the agreement is drawn into once it is out.
    **A report a role may run has to produce something that role may read.**
    *Avtal – Medlare* pointed at `/avtal`, and §3.1 gives Medlare Start and
    Rapporter — so the picker offered a report whose only outcome was the

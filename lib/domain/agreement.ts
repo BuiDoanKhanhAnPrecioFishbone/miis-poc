@@ -180,11 +180,53 @@ export interface Agreement {
   negotiationOrderRef?: string;
   /** Absent means neither section is restricted. */
   informationLimits?: InformationLimits;
+  /**
+   * *Publicerar avtalet så att det blir tillgängligt för användare med åtkomst
+   * till publicerad information* — Bilaga 2 §3.5, Scenario 2's fourth bullet.
+   *
+   * Publication is an **act**, with a date and a person, not a property that
+   * follows from the record being complete. That is the distinction the bullet
+   * turns on: MI decides when an agreement is released, and until they do it
+   * exists in the register and not in the public interface. A half-registered
+   * agreement reaching the public computer would be MI publishing a draft.
+   *
+   * `reportSelection.website` is adjacent and is not the same thing — it is
+   * which *reports* the agreement is drawn into once it is out.
+   */
+  published?: { date: string; by: string };
   /** Registration order, newest first when sorted descending. */
   registeredAt?: string;
   /** FA-015 / FA-016 */
   expiresWithoutRenewal?: boolean;
   earlyTermination?: { date: string; party: string };
+}
+
+/**
+ * Whether the agreement has been released to the public interface.
+ *
+ * Two conditions, and both are MI's own: it has to have been published, and it
+ * must not be confidentiality-marked (D-002). Publication does not override a
+ * sekretessmarkering — an agreement can be published and later marked, and the
+ * marking is what the public view then honours.
+ */
+export function isPublished(
+  a: Pick<Agreement, "published" | "confidential">,
+): boolean {
+  return Boolean(a.published) && !a.confidential;
+}
+
+/**
+ * Whether an agreement is ready to be published.
+ *
+ * MI publishes a finished record: the registration is marked complete and the
+ * agreement has been signed. Offering the control on a half-registered
+ * agreement would let an officer release a draft with one click, which is the
+ * mistake the bullet exists to show being prevented.
+ */
+export function mayPublish(
+  a: Pick<Agreement, "registrationStatus" | "signedDate" | "published">,
+): boolean {
+  return !a.published && a.registrationStatus === "complete" && Boolean(a.signedDate);
 }
 
 /**

@@ -1026,6 +1026,7 @@ export const en: Dictionary = {
       textPlaceholder: "e.g. Apotek, Unionen or Spårtrafik",
       textHint: "Searches the agreement name, the agreement area and both parties",
       narrow: "Narrow the selection",
+      industryCode: "Industry",
       employerOrg: "Employer organisation",
       employeeOrg: "Employee organisation",
       agreement: "Agreement",
@@ -1055,6 +1056,40 @@ export const en: Dictionary = {
       downloadNote:
         "The print contains protocols and agreement prints without confidentiality-marked agreement information.",
     },
+    detail: {
+      subtitle:
+        "The agreement as released to the public. Confidentiality-marked information is not included.",
+      heading: "Agreement details",
+      name: "Agreement",
+      area: "Agreement area",
+      type: "Agreement type",
+      employerOrg: "Employer organisation",
+      employeeOrg: "Employee organisation",
+      industryCode: "Industry (SNI)",
+      signedDate: "Signed",
+      validity: "Validity period",
+      period: "Period",
+      periods: "Validity periods per bargaining round",
+      periodsIntro:
+        "One period per bargaining round, most recently signed first. Wage figures are not part of what is released to the public.",
+      signedOn: (date: string) => `Signed ${date}`,
+      noPeriods: "No validity period registered on the agreement.",
+      lifecycle: "Termination and prolongation",
+      expires: "Expires without renewal",
+      earlyTermination: "Early termination",
+      noLifecycle: "Nothing registered about expiry or early termination.",
+      documents: "Linked documents",
+      document: "Document",
+      documentsIntro: "Protocols and agreement prints linked to the agreement.",
+      noDocuments: "No documents are linked to the agreement.",
+      documentsNote:
+        "The files come from the document archive in the delivered system. The mockup shows file names and dates — a button that downloaded an empty or invented PDF would be worse than saying where the file comes from.",
+      print: "Print",
+      download: "Download the details",
+      exportNote:
+        "The printout carries Medlingsinstitutet's letterhead and a print date and can be saved as PDF in the browser. The download writes a CSV file from the details on screen and works with no server behind it (FR-013).",
+    },
+
     help: {
       title: "About the information",
       items: [
@@ -1097,6 +1132,53 @@ export const en: Dictionary = {
       all: "All",
       noMatch: "No agreement matches the selected filters.",
     },
+    newAgreement: {
+      title: "Register a new collective agreement",
+      subtitle: "An agreement with no previous counterpart in MIIS — registered manually",
+      heading: "The agreement",
+      manualLabel: "Registered manually",
+      manualNote:
+        "Wholly new agreements, with no previous counterpart in the system, are always registered manually (Appendix 1 §4.1). The AI support reads an incoming protocol against an agreement MIIS already holds — for a first-time agreement there is nothing to match against and therefore nothing to propose.",
+      name: "Agreement name",
+      namePlaceholder: "E.g. Bemanningsavtalet",
+      area: "Agreement area",
+      areaHint: (examples: string) => `Existing areas in the register: ${examples} …`,
+      employerOrg: "Employer organisation",
+      employeeOrg: "Employee organisation",
+      type: "Agreement type",
+      sector: "Sector",
+      signedDate: "Signed",
+      validFrom: "Valid from",
+      validTo: "Valid to",
+      publishing: "Confidentiality and report selection",
+      publishingIntro:
+        "What the agreement is included in once registered. Publication to the public interface is an act of its own, performed on the agreement when the registration is complete.",
+      confidential: "Confidentiality marking",
+      confidentialHint:
+        "The details are withheld from mediators and the public. The agreement is still listed and still counted (D-002).",
+      reportWebsite: "MI's website",
+      reportShortTermWage: "Short-Term Wage Report",
+      reportMinimumWage: "Minimum wages",
+      reportEurofound: "Eurofound",
+      save: "Save the agreement",
+      requiredReason: "Agreement name, agreement area and both parties must be filled in.",
+      incompleteNote:
+        "The agreement is saved as incomplete and unpublished. A new agreement with no wage agreement under it is not a finished record, and the registration gets a reminder (FA-021).",
+      savedHeading: "The agreement is registered",
+      savedNote: (name: string) =>
+        `${name} is registered as incomplete. The registration is written to the change log with the time and user (FH-001).`,
+      nextSteps: "This remains before the agreement can be published:",
+      nextStepList: [
+        "Register the wage agreement for the bargaining round — construction, wage scope and cost frame.",
+        "Register the general terms with their own validity period.",
+        "Fill in the agreement's scope: employees, annual workers, union members and average wage.",
+        "Link the protocol and the agreement print.",
+        "Mark the registration complete and publish the agreement.",
+      ],
+      toRegister: "To the agreement register",
+      another: "Register another agreement",
+    },
+
     detail: {
       identity: "The agreement",
       area: "Agreement area",
@@ -1164,6 +1246,25 @@ export const en: Dictionary = {
       eventDetail: "Concerns",
       noEvents: "No events registered on the agreement yet.",
       edit: "Edit the agreement",
+      administration: "Edit and publish",
+      administrationIntro:
+        "FA-001 is to register *and edit* agreement information. The change happens on the values themselves — the officer is looking at the record being corrected.",
+      agreementName: "Agreement name",
+      nameRequired: "The agreement must have a name.",
+      editSaved: (date: string) =>
+        `Change saved ${date}. It is written to the change log with the time and user (FH-001).`,
+      publication: "Publication",
+      publishedLabel: "Published",
+      publishedNote: (date: string, by: string) =>
+        `Published ${date} by ${by}. The agreement is available in the public interface.`,
+      notPublished:
+        "The agreement is registered but not published. It appears in the register and not in the public interface.",
+      publish: "Publish the agreement",
+      publishBlocked:
+        "Publishing requires the registration to be marked complete and the agreement to be signed.",
+      viewPublic: "View as the public sees it",
+      publicationNote:
+        "Publication is an act with a date and a person, not a consequence of the record being complete. Medlingsinstitutet decides when an agreement is released — a half-registered agreement on the public computer would be the authority publishing a draft.",
       statusHeading: "Status and validity",
       wageAgreements: "Wage agreements by bargaining round",
       wageIntro:
@@ -1648,6 +1749,16 @@ export const en: Dictionary = {
       inactive: "Inactive",
       deactivate: "Deactivate",
       reactivate: "Reactivate",
+      changeRole: "Change role",
+      newRole: "New role",
+      saveRole: "Save the role",
+      sameRoleReason: "The role is already the one selected.",
+      lastAdminChangeReason:
+        "This is the last active authorisation administrator. Assign the role to somebody else first.",
+      changedNote: (what: string) =>
+        `Role changed: ${what}. The change is written to the change log with the time and who made it (FH-001).`,
+      revokedNote: (name: string) =>
+        `Access revoked for ${name}. The account remains as inactive — the sign-ins are in the log and have to stay resolvable (NFL-001).`,
       lastAdminReason:
         "The last active authorisation administrator cannot be deactivated — permissions could then only be restored by the supplier, which is what NFÅ-005 exists to prevent.",
       reactivateReason: "Not active in the demo",

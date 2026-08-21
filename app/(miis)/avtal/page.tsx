@@ -127,9 +127,19 @@ export default async function AvtalPage() {
             register is where an officer stands when the next protocol arrives,
             and it had no way to begin one.
           */
-          <LinkButton href="/registrera" iconStart={<IconPlus />}>
-            {i18n.registrera.title}
-          </LinkButton>
+          <div className="flex flex-wrap items-center gap-3">
+            <LinkButton href="/registrera" iconStart={<IconPlus />}>
+              {i18n.registrera.title}
+            </LinkButton>
+            {/*
+              Two ways in, because they are two tasks. A protocol arrives about
+              an agreement MIIS already holds; a wholly new agreement has no
+              protocol to read and, by §4.1, is always registered by hand.
+            */}
+            <LinkButton href="/avtal/ny" variant="secondary" iconStart={<IconPlus />}>
+              {i18n.avtal.newAgreement.title}
+            </LinkButton>
+          </div>
         }
       />
 

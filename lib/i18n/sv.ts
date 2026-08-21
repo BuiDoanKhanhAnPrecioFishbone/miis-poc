@@ -1017,6 +1017,7 @@ export const sv = {
       textPlaceholder: "T.ex. Apotek, Unionen eller Spårtrafik",
       textHint: "Söker i avtalets namn, avtalsområde och båda parterna",
       narrow: "Avgränsa urvalet",
+      industryCode: "Bransch",
       employerOrg: "Arbetsgivarorganisation",
       employeeOrg: "Arbetstagarorganisation",
       agreement: "Avtal",
@@ -1045,6 +1046,40 @@ export const sv = {
       downloadNote:
         "Utskriften innehåller protokoll och avtalsutskrifter utan sekretessmarkerad avtalsinformation.",
     },
+    detail: {
+      subtitle:
+        "Avtalet som det lämnas ut till allmänheten. Sekretessmarkerad information ingår inte.",
+      heading: "Uppgifter om avtalet",
+      name: "Avtal",
+      area: "Avtalsområde",
+      type: "Avtalstyp",
+      employerOrg: "Arbetsgivarorganisation",
+      employeeOrg: "Arbetstagarorganisation",
+      industryCode: "Bransch (SNI)",
+      signedDate: "Teckningsdatum",
+      validity: "Löptid",
+      period: "Löptid",
+      periods: "Löptider per avtalsrörelse",
+      periodsIntro:
+        "En löptid per avtalsrörelse, senast tecknade först. Löneuppgifter ingår inte i det som lämnas ut till allmänheten.",
+      signedOn: (date: string) => `Tecknat ${date}`,
+      noPeriods: "Ingen löptid registrerad på avtalet.",
+      lifecycle: "Uppsägning och prolongering",
+      expires: "Löper ut utan förnyelse",
+      earlyTermination: "Förtida uppsägning",
+      noLifecycle: "Inget registrerat om utlöpande eller förtida uppsägning.",
+      documents: "Länkade handlingar",
+      document: "Handling",
+      documentsIntro: "Protokoll och avtalstryck som är kopplade till avtalet.",
+      noDocuments: "Inga handlingar är kopplade till avtalet.",
+      documentsNote:
+        "Filerna hämtas ur dokumentarkivet i det levererade systemet. I mockupen visas filnamn och datum – en knapp som laddade ned en tom eller påhittad PDF vore sämre än att säga var filen kommer ifrån.",
+      print: "Skriv ut",
+      download: "Ladda ned uppgifterna",
+      exportNote:
+        "Utskriften får Medlingsinstitutets brevhuvud och ett utskriftsdatum och kan sparas som PDF i webbläsaren. Nedladdningen skapar en CSV-fil ur uppgifterna på skärmen och fungerar utan serverdrift (FR-013).",
+    },
+
     help: {
       title: "Om uppgifterna",
       items: [
@@ -1087,6 +1122,53 @@ export const sv = {
       all: "Alla",
       noMatch: "Inget avtal matchar de valda filtren.",
     },
+    newAgreement: {
+      title: "Registrera nytt kollektivavtal",
+      subtitle: "Ett avtal utan tidigare motsvarighet i MIIS – registreras manuellt",
+      heading: "Avtalet",
+      manualLabel: "Registreras manuellt",
+      manualNote:
+        "Helt nya avtal, som inte har någon tidigare motsvarighet i systemet, ska alltid registreras manuellt (Bilaga 1 §4.1). AI-stödet läser ett inkommet protokoll mot ett avtal som MIIS redan har – för ett förstagångsavtal finns ingenting att matcha mot och därmed inget att föreslå.",
+      name: "Avtalsnamn",
+      namePlaceholder: "T.ex. Bemanningsavtalet",
+      area: "Avtalsområde",
+      areaHint: (examples: string) => `Befintliga områden i registret: ${examples} …`,
+      employerOrg: "Arbetsgivarorganisation",
+      employeeOrg: "Arbetstagarorganisation",
+      type: "Avtalstyp",
+      sector: "Sektor",
+      signedDate: "Teckningsdatum",
+      validFrom: "Löptid från",
+      validTo: "Löptid till",
+      publishing: "Sekretess och rapporturval",
+      publishingIntro:
+        "Vad avtalet ingår i när det är registrerat. Publicering till gränssnittet för allmänheten är en egen handling och görs på avtalet när registreringen är klar.",
+      confidential: "Sekretessmarkering",
+      confidentialHint:
+        "Detaljerna utelämnas för medlare och allmänhet. Avtalet listas och räknas ändå (D-002).",
+      reportWebsite: "MI:s webbplats",
+      reportShortTermWage: "Konjunkturlönerapporten",
+      reportMinimumWage: "Lägstlöner",
+      reportEurofound: "Eurofound",
+      save: "Spara avtalet",
+      requiredReason: "Avtalsnamn, avtalsområde och båda parterna måste vara ifyllda.",
+      incompleteNote:
+        "Avtalet sparas som ofullständigt och opublicerat. Ett nytt avtal utan löneavtal under sig är ingen färdig post, och registreringen får en påminnelse (FA-021).",
+      savedHeading: "Avtalet är registrerat",
+      savedNote: (name: string) =>
+        `${name} är registrerat som ofullständigt. Registreringen skrivs till ändringsloggen med tidpunkt och användare (FH-001).`,
+      nextSteps: "Det här återstår innan avtalet kan publiceras:",
+      nextStepList: [
+        "Registrera löneavtalet för avtalsrörelsen – konstruktion, löneutrymme och kostnadsram.",
+        "Registrera allmänna villkor med sin egen löptid.",
+        "Fyll i avtalets omfattning: anställda, årsarbetare, fackmedlemmar och medellön.",
+        "Koppla protokollet och avtalstrycket.",
+        "Markera registreringen som klar och publicera avtalet.",
+      ],
+      toRegister: "Till avtalsregistret",
+      another: "Registrera ytterligare ett avtal",
+    },
+
     detail: {
       identity: "Avtalet",
       area: "Avtalsområde",
@@ -1154,6 +1236,25 @@ export const sv = {
       eventDetail: "Avser",
       noEvents: "Inga händelser registrerade på avtalet ännu.",
       edit: "Redigera avtalet",
+      administration: "Redigera och publicera",
+      administrationIntro:
+        "FA-001 är att registrera *och redigera* avtalsinformation. Ändringen sker på värdena själva – handläggaren tittar på posten som ska rättas.",
+      agreementName: "Avtalsnamn",
+      nameRequired: "Avtalet måste ha ett namn.",
+      editSaved: (date: string) =>
+        `Ändringen sparad ${date}. Den skrivs till ändringsloggen med tidpunkt och användare (FH-001).`,
+      publication: "Publicering",
+      publishedLabel: "Publicerat",
+      publishedNote: (date: string, by: string) =>
+        `Publicerat ${date} av ${by}. Avtalet är tillgängligt i gränssnittet för allmänheten.`,
+      notPublished:
+        "Avtalet är registrerat men inte publicerat. Det syns i registret och inte i gränssnittet för allmänheten.",
+      publish: "Publicera avtalet",
+      publishBlocked:
+        "Publicering kräver att registreringen är markerad som klar och att avtalet är tecknat.",
+      viewPublic: "Visa som allmänheten ser det",
+      publicationNote:
+        "Publicering är en handling med datum och person, inte en följd av att posten är komplett. Medlingsinstitutet avgör när ett avtal lämnas ut – ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.",
       statusHeading: "Status och löptid",
       wageAgreements: "Löneavtal per avtalsrörelse",
       wageIntro:
@@ -1638,6 +1739,16 @@ export const sv = {
       inactive: "Inaktiv",
       deactivate: "Inaktivera",
       reactivate: "Återaktivera",
+      changeRole: "Ändra roll",
+      newRole: "Ny roll",
+      saveRole: "Spara rollen",
+      sameRoleReason: "Rollen är redan den valda.",
+      lastAdminChangeReason:
+        "Det här är den sista aktiva behörighetsadministratören. Tilldela rollen till någon annan först.",
+      changedNote: (what: string) =>
+        `Rollen ändrad: ${what}. Ändringen skrivs till ändringsloggen med tidpunkt och vem som gjorde den (FH-001).`,
+      revokedNote: (name: string) =>
+        `Behörigheten återkallad för ${name}. Kontot finns kvar som inaktivt – inloggningarna ligger i loggen och måste gå att härleda (NFL-001).`,
       lastAdminReason:
         "Den sista aktiva behörighetsadministratören kan inte inaktiveras – då kan behörigheter bara återställas av leverantören, vilket är det NFÅ-005 ska förhindra.",
       reactivateReason: "Ej aktiv i demon",

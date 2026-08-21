@@ -30,6 +30,7 @@ const STANDARD_TYPE = "Löneavtal + Allmänna villkor";
 export const AGREEMENTS: Agreement[] = [
   {
     id: "A-001",
+    published: { date: "2027-04-03", by: "Anna Andersson" },
     employees: 24500,
     annualWorkers: 23800,
     unionMembers: 19100,
@@ -52,6 +53,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-002",
+    published: { date: "2027-05-14", by: "Anna Andersson" },
     employees: 6200,
     annualWorkers: 5900,
     unionMembers: 4500,
@@ -175,6 +177,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-009",
+    published: { date: "2027-04-30", by: "Anna Andersson" },
     employees: 9400,
     annualWorkers: 6100,
     unionMembers: 3900,
@@ -197,6 +200,12 @@ export const AGREEMENTS: Agreement[] = [
     registeredAt: "2027-04-29",
   },
   {
+    /*
+      Complete, signed and deliberately **not** published — the one agreement in
+      the sample that Bilaga 2 §3.5's publish bullet can actually be performed
+      on. Without it the control would be correct and never live, which
+      demonstrates the rule and not the act.
+    */
     id: "A-010",
     employees: 12000,
     annualWorkers: 9400,
@@ -220,6 +229,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-011",
+    published: { date: "2027-05-06", by: "Anna Andersson" },
     employees: 9800,
     annualWorkers: 9100,
     unionMembers: 7800,
@@ -253,6 +263,7 @@ export const AGREEMENTS: Agreement[] = [
       became Sveriges Lärare. The party register must never rewrite it.
     */
     id: "A-012",
+    published: { date: "2018-04-16", by: "Maria Molin" },
     employees: 8900,
     annualWorkers: 8400,
     unionMembers: 6900,
@@ -273,5 +284,126 @@ export const AGREEMENTS: Agreement[] = [
     validFrom: "2018-05-01",
     validTo: "2021-04-30",
     registeredAt: "2018-04-13",
+  },
+  /*
+    Five agreements that are complete, signed and published.
+
+    Bilaga 2 §3.5's Scenario 3 turns on a public register a visitor can actually
+    filter — search by bransch, narrow the result, open one. Publication is now
+    the gate it should be, and most of the sample above is deliberately
+    unsigned or half-registered to demonstrate FA-021's reminders, so the public
+    view had four rows and Bransch had three answers. These five are ordinary
+    finished agreements across five industries, which is what MI's register
+    mostly holds.
+  */
+  {
+    id: "A-013",
+    published: { date: "2027-04-06", by: "Anna Andersson" },
+    employees: 88000,
+    annualWorkers: 85500,
+    unionMembers: 62000,
+    employeesUpdated: "2027-04-06",
+    averageWageSek: 39800,
+    averageWageUpdated: "2027-02-28",
+    agreementArea: "Teknikindustri",
+    name: "Teknikavtalet IF Metall",
+    employerOrg: PARTIES.teknikforetagen,
+    employeeOrg: PARTIES.ifMetall,
+    agreementType: STANDARD_TYPE,
+    registrationStatus: "complete",
+    confidential: false,
+    reportSelection: ALL_REPORTS,
+    signedDate: "2027-03-31",
+    validFrom: "2027-04-01",
+    validTo: "2029-03-31",
+    registeredAt: "2027-04-05",
+  },
+  {
+    id: "A-014",
+    published: { date: "2027-04-06", by: "Anna Andersson" },
+    employees: 41000,
+    annualWorkers: 40100,
+    unionMembers: 24600,
+    employeesUpdated: "2027-04-06",
+    averageWageSek: 48200,
+    averageWageUpdated: "2027-02-28",
+    agreementArea: "Teknikindustri",
+    name: "Teknikavtalet Unionen/Sveriges Ingenjörer",
+    employerOrg: PARTIES.teknikforetagen,
+    employeeOrg: PARTIES.unionen,
+    agreementType: STANDARD_TYPE,
+    registrationStatus: "complete",
+    confidential: false,
+    reportSelection: { ...BASIC_REPORTS, eurofound: true },
+    signedDate: "2027-03-31",
+    validFrom: "2027-04-01",
+    validTo: "2029-03-31",
+    registeredAt: "2027-04-05",
+  },
+  {
+    id: "A-015",
+    published: { date: "2027-05-20", by: "Erik Ohlsson" },
+    employees: 14200,
+    annualWorkers: 13600,
+    unionMembers: 9800,
+    employeesUpdated: "2027-05-20",
+    averageWageSek: 34100,
+    averageWageUpdated: "2027-02-28",
+    agreementArea: "Energi, vatten och avfall",
+    name: "Energi- och miljöavtalet",
+    employerOrg: PARTIES.sobona,
+    employeeOrg: PARTIES.kommunal,
+    agreementType: STANDARD_TYPE,
+    registrationStatus: "complete",
+    confidential: false,
+    reportSelection: { ...BASIC_REPORTS, minimumWage: true },
+    signedDate: "2027-05-18",
+    validFrom: "2027-06-01",
+    validTo: "2029-05-31",
+    registeredAt: "2027-05-19",
+  },
+  {
+    id: "A-016",
+    published: { date: "2027-05-08", by: "Anna Andersson" },
+    employees: 6400,
+    annualWorkers: 5900,
+    unionMembers: 4300,
+    employeesUpdated: "2027-05-08",
+    averageWageSek: 33500,
+    averageWageUpdated: "2027-02-28",
+    agreementArea: "Skola och utbildning",
+    name: "Fristående förskolor",
+    employerOrg: PARTIES.fremia,
+    employeeOrg: PARTIES.sverigesLarare,
+    agreementType: STANDARD_TYPE,
+    registrationStatus: "complete",
+    confidential: false,
+    reportSelection: BASIC_REPORTS,
+    signedDate: "2027-05-04",
+    validFrom: "2027-05-01",
+    validTo: "2029-04-30",
+    registeredAt: "2027-05-07",
+  },
+  {
+    id: "A-017",
+    published: { date: "2027-04-20", by: "Anna Andersson" },
+    employees: 31500,
+    annualWorkers: 30800,
+    unionMembers: 17200,
+    employeesUpdated: "2027-04-20",
+    averageWageSek: 52400,
+    averageWageUpdated: "2027-02-28",
+    agreementArea: "IT och telekom",
+    name: "IT-avtalet",
+    employerOrg: PARTIES.almega,
+    employeeOrg: PARTIES.unionen,
+    agreementType: STANDARD_TYPE,
+    registrationStatus: "complete",
+    confidential: false,
+    reportSelection: { ...BASIC_REPORTS, eurofound: true },
+    signedDate: "2027-04-16",
+    validFrom: "2027-04-01",
+    validTo: "2029-03-31",
+    registeredAt: "2027-04-19",
   },
 ];

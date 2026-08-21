@@ -9,13 +9,13 @@ import {
   ReportSelectionPanel,
   SpecialQuestionsPanel,
 } from "@/components/miis/AgreementRecord";
+import { AgreementAdmin } from "@/components/miis/AgreementAdmin";
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
 import { PrintButton } from "@/components/miis/Print";
 import {
   Badge,
-  Button,
   Callout,
   ConfidentialityMarker,
   Field,
@@ -182,12 +182,10 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
             not have; the point is that the capability is visible and named
             rather than silently absent.
           */
-          <div className="flex flex-wrap items-center gap-3">
-            <PrintButton lang={lang} />
-            <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
-              {t.edit}
-            </Button>
-          </div>
+          /* The edit lives with the values it changes, in the panel below —
+             a header button that opened a second screen would make the officer
+             remember what the record said. */
+          <PrintButton lang={lang} />
         }
       />
 
@@ -219,6 +217,9 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
               <Field label={t.signedDate} value={agreement.signedDate ?? i18n.common.none} />
             </div>
           </Panel>
+
+          {/* Bilaga 2 §3.5, Scenario 2: add or update information, and publish. */}
+          <AgreementAdmin agreement={agreement} lang={lang} />
 
           <AgreementScopePanel agreement={agreement} lang={lang} />
 

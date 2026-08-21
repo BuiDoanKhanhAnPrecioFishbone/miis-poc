@@ -37,6 +37,19 @@ export interface PublicSearchCriteria {
   employerOrgId?: string;
   employeeOrgId?: string;
   agreementId?: string;
+  /**
+   * Bransch — and MI names it **first** in Bilaga 2 §3.5's Scenario 3:
+   * *"söker fram ett kollektivavtal utifrån exempelvis bransch, avtalsområde
+   * eller annan relevant sökparameter."*
+   *
+   * It is the employer organisation's SNI code (FP-001), so it lives on the
+   * party and is joined onto the searchable record rather than stored on the
+   * agreement. A visitor thinks in industries — *telecom*, *steel* — long before
+   * they think in employer organisations, which is why MI put it first and why
+   * offering only AGO/ATO/avtal made the precise criteria useless to anyone who
+   * did not already know the answer.
+   */
+  industryCode?: string;
   /** FA-020 — narrow to agreements whose period covers this date. */
   validAt?: string;
 }
@@ -48,6 +61,8 @@ export interface PublicSearchable {
   agreementArea: string;
   employerOrg: { id: string; name: string };
   employeeOrg: { id: string; name: string };
+  /** The employer organisation's SNI code, joined on in `lib/data/`. */
+  industryCode?: string;
   validFrom?: string;
   validTo?: string;
 }
@@ -79,9 +94,15 @@ export function coversDate(a: Pick<PublicSearchable, "validFrom" | "validTo">, d
 export function matchesText(a: PublicSearchable, query: string): boolean {
   const q = query.trim().toLocaleLowerCase("sv");
   if (!q) return true;
-  return [a.name, a.agreementArea, a.employerOrg.name, a.employeeOrg.name].some((field) =>
-    field.toLocaleLowerCase("sv").includes(q),
-  );
+  return [
+    a.name,
+    a.agreementArea,
+    a.employerOrg.name,
+    a.employeeOrg.name,
+    /* The industry code reads "61 Telekommunikation", so free text finds an
+       industry by its word as well as by the dropdown. */
+    a.industryCode ?? "",
+  ].some((field) => field.toLocaleLowerCase("sv").includes(q));
 }
 
 export function publicSearch<T extends PublicSearchable>(
@@ -92,6 +113,7 @@ export function publicSearch<T extends PublicSearchable>(
     if (criteria.employerOrgId && a.employerOrg.id !== criteria.employerOrgId) return false;
     if (criteria.employeeOrgId && a.employeeOrg.id !== criteria.employeeOrgId) return false;
     if (criteria.agreementId && a.id !== criteria.agreementId) return false;
+    if (criteria.industryCode && a.industryCode !== criteria.industryCode) return false;
     if (criteria.validAt && !coversDate(a, criteria.validAt)) return false;
     if (criteria.text && !matchesText(a, criteria.text)) return false;
     return true;
@@ -105,6 +127,7 @@ export function hasCriteria(criteria: PublicSearchCriteria): boolean {
       criteria.employerOrgId ||
       criteria.employeeOrgId ||
       criteria.agreementId ||
+      criteria.industryCode ||
       criteria.validAt,
   );
 }

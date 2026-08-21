@@ -45,6 +45,7 @@ export function PublicSearch({
   agreements,
   employerOrgs,
   employeeOrgs,
+  industryCodes,
   lang,
   columns,
   rowFor,
@@ -52,6 +53,14 @@ export function PublicSearch({
   agreements: PublicSearchable[];
   employerOrgs: { id: string; name: string }[];
   employeeOrgs: { id: string; name: string }[];
+  /**
+   * Bransch — the parameter Bilaga 2 §3.5 names **first** for this role.
+   *
+   * A visitor thinks in industries before they think in employer
+   * organisations, so a selection screen offering only AGO/ATO/avtal was
+   * precise and unusable to anyone who did not already know the answer.
+   */
+  industryCodes: string[];
   lang: Lang;
   columns: Column[];
   /**
@@ -71,9 +80,10 @@ export function PublicSearch({
   const [employerOrgId, setEmployerOrgId] = useState("");
   const [employeeOrgId, setEmployeeOrgId] = useState("");
   const [agreementId, setAgreementId] = useState("");
+  const [industryCode, setIndustryCode] = useState("");
   const [validAt, setValidAt] = useState("");
 
-  const criteria = { text, employerOrgId, employeeOrgId, agreementId, validAt };
+  const criteria = { text, employerOrgId, employeeOrgId, agreementId, industryCode, validAt };
   const found = publicSearch(agreements, criteria);
   const narrowed = hasCriteria(criteria);
 
@@ -107,6 +117,13 @@ export function PublicSearch({
       clear: () => setAgreementId(""),
     });
   }
+  if (industryCode) {
+    active.push({
+      key: "bransch",
+      label: `${t.selection.industryCode}: ${industryCode}`,
+      clear: () => setIndustryCode(""),
+    });
+  }
   if (validAt) {
     active.push({
       key: "datum",
@@ -120,6 +137,7 @@ export function PublicSearch({
     setEmployerOrgId("");
     setEmployeeOrgId("");
     setAgreementId("");
+    setIndustryCode("");
     setValidAt("");
   }
 
@@ -147,6 +165,18 @@ export function PublicSearch({
         <div className="mt-5">
           <h3 className="mi-kicker mb-2 text-muted-foreground">{t.selection.narrow}</h3>
           <FormGrid>
+            {/* First, because MI names it first for this role. */}
+            <Select
+              id="pub-bransch"
+              width="medium"
+              label={t.selection.industryCode}
+              value={industryCode}
+              onChange={setIndustryCode}
+              options={[
+                { id: "", label: t.selection.all },
+                ...industryCodes.map((c) => ({ id: c, label: c })),
+              ]}
+            />
             <Select
               id="pub-ago"
               width="medium"

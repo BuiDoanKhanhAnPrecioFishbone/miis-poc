@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isPublished,
   isSectionLimited,
+  mayPublish,
   orderedQuestions,
   SPECIAL_QUESTION_NUMBERS,
   unionDensityPercent,
@@ -106,5 +108,36 @@ describe("avtalet upphört — §3.3, in the expiry report", () => {
 
   it("still drops an unsigned one whatever the flag says", () => {
     expect(isCurrent({ terminated: false })).toBe(false);
+  });
+});
+
+/**
+ * Bilaga 2 §3.5, Scenario 2: *"Publicerar avtalet så att det blir tillgängligt
+ * för användare med åtkomst till publicerad information."*
+ */
+describe("publishing an agreement", () => {
+  const base = { registrationStatus: "complete" as const, signedDate: "2027-04-01" };
+
+  it("is ready when the registration is complete and the agreement is signed", () => {
+    expect(mayPublish(base)).toBe(true);
+  });
+
+  /* A half-registered agreement reaching the public computer would be MI
+     publishing a draft, so the control is not offered on one. */
+  it("is not ready while the registration is incomplete or unsigned", () => {
+    expect(mayPublish({ ...base, registrationStatus: "incomplete" })).toBe(false);
+    expect(mayPublish({ registrationStatus: "complete" })).toBe(false);
+  });
+
+  it("is not offered again once published", () => {
+    expect(mayPublish({ ...base, published: { date: "2027-04-02", by: "A" } })).toBe(false);
+  });
+
+  it("counts as published only while it is not confidentiality-marked", () => {
+    const published = { published: { date: "2027-04-02", by: "A" } };
+    expect(isPublished({ ...published, confidential: false })).toBe(true);
+    /* Published and later marked: the marking is what the public view honours. */
+    expect(isPublished({ ...published, confidential: true })).toBe(false);
+    expect(isPublished({ confidential: false })).toBe(false);
   });
 });

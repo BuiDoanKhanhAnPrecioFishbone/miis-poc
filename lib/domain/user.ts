@@ -94,3 +94,50 @@ export function mayDeactivate(user: SystemUser, users: readonly SystemUser[]): b
   if (user.role !== "permission-admin") return true;
   return users.filter((u) => u.active && u.role === "permission-admin").length > 1;
 }
+
+/**
+ * Changing a role — the third of Bilaga 2 §3.5's Scenario 1 bullets,
+ * *"ändrar eller återkallar behörigheter för en befintlig användare"*.
+ *
+ * A role change is not an edit of the user; it is a **new assignment**, and
+ * `roleAssigned` moves with it. NFÅ-005 pairs the administration with FH-001's
+ * change log, and a log entry that could not say when the role changed or who
+ * changed it would record that something happened and nothing about what.
+ *
+ * The guard is the same one deactivation has, for the same reason: moving the
+ * last authorisation administrator to another role locks MI out exactly as
+ * deactivating them would, and NFÅ-005 exists to keep the supplier out of that
+ * repair.
+ */
+export function mayChangeRole(user: SystemUser, users: readonly SystemUser[], next: Role): boolean {
+  if (!user.active) return false;
+  if (next === user.role) return false;
+  if (user.role !== "permission-admin") return true;
+  return users.filter((u) => u.active && u.role === "permission-admin").length > 1;
+}
+
+export function changeRole(
+  users: readonly SystemUser[],
+  id: string,
+  next: Role,
+  by: string,
+  date: string,
+): SystemUser[] {
+  return users.map((u) =>
+    u.id === id && mayChangeRole(u, users, next)
+      ? { ...u, role: next, roleAssigned: { date, by } }
+      : u,
+  );
+}
+
+/**
+ * Revoking access — the other half of the same bullet.
+ *
+ * Deactivation *is* the revocation in this model: §3.1 defines access by role
+ * and NFÅ-001 puts the identity in Försäkringskassan's IdP, so there is no
+ * per-permission grant to take back. What MIIS can withdraw is the link between
+ * the identity and the role, and that is what `active` holds.
+ */
+export function deactivateUser(users: readonly SystemUser[], id: string): SystemUser[] {
+  return users.map((u) => (u.id === id && mayDeactivate(u, users) ? { ...u, active: false } : u));
+}

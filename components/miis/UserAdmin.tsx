@@ -5,7 +5,13 @@ import { useState } from "react";
 import type { Lang } from "@/lib/domain/lang";
 import { t as text } from "@/lib/domain/lang";
 import { ROLES, type Role } from "@/lib/domain/role";
-import { mayDeactivate, type SystemUser } from "@/lib/domain/user";
+import {
+  changeRole,
+  deactivateUser,
+  mayChangeRole,
+  mayDeactivate,
+  type SystemUser,
+} from "@/lib/domain/user";
 import { dictionary } from "@/lib/i18n";
 import { DataTable, matchesFacets, type Column, type Row } from "./DataTable";
 import { IconCheck, IconPlus } from "./icons";
@@ -49,9 +55,33 @@ import { Select } from "./Select";
  * administrator remove themselves, which is the one lock-out that would need the
  * supplier to repair — exactly what NFÅ-005 exists to prevent.
  */
-export function UserAdmin({ users, lang }: { users: SystemUser[]; lang: Lang }) {
+/**
+ * The day a change is stamped with.
+ *
+ * Fixed, not `new Date()`: the screenshot pass has to produce the same image
+ * twice, and a live clock would make every capture differ. In the delivered
+ * system this is the server's clock and the entry is FH-001's.
+ */
+const TODAY = "2027-06-14";
+/** Whoever is signed in — the demo's authorisation administrator (Bilaga E). */
+const ACTING_ADMIN = "Karin Karlsson";
+
+export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang: Lang }) {
   const d = dictionary(lang);
   const t = d.anvandare.users;
+
+  /*
+    Bilaga 2 §3.5, Scenario 1: *"Ändrar eller återkallar behörigheter för en
+    befintlig användare."* The register could create and assign; changing and
+    revoking were a disabled button and a button with no `onClick`. Both act on
+    the list now, so the row the officer changed is the row they see change —
+    which is the whole of what that bullet asks to be shown.
+  */
+  const [users, setUsers] = useState(initial);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [nextRole, setNextRole] = useState<Role>("agreement-admin");
+  const [changed, setChanged] = useState<string | null>(null);
+  const [revoked, setRevoked] = useState<string | null>(null);
 
   const [roleFilter, setRoleFilter] = useState("");
   const [activeFilter, setActiveFilter] = useState("");
@@ -63,6 +93,21 @@ export function UserAdmin({ users, lang }: { users: SystemUser[]; lang: Lang }) 
   const [saved, setSaved] = useState<string | null>(null);
 
   const roleLabel = (id: Role) => ROLES.find((r) => r.id === id)?.label[lang] ?? id;
+
+  function applyRoleChange(id: string) {
+    const before = users.find((u) => u.id === id);
+    if (!before) return;
+    setUsers((list) => changeRole(list, id, nextRole, ACTING_ADMIN, TODAY));
+    setChanged(`${before.name} · ${roleLabel(before.role)} → ${roleLabel(nextRole)}`);
+    setRevoked(null);
+    setEditing(null);
+  }
+
+  function revoke(id: string, name: string) {
+    setUsers((list) => deactivateUser(list, id));
+    setRevoked(name);
+    setChanged(null);
+  }
 
   const columns: Column[] = [
     { key: "name", header: t.name, sortable: true },
@@ -101,20 +146,66 @@ export function UserAdmin({ users, lang }: { users: SystemUser[]; lang: Lang }) 
         {u.active ? t.active : t.inactive}
       </Badge>,
       /*
-        The action, per row and per rule. A control that is refused says why on
+        The actions, per row and per rule. A control that is refused says why on
         itself rather than failing when pressed — the last authorisation
         administrator is the case, and it is the one an evaluator will try.
+
+        Changing the role happens in the row rather than on a page of its own:
+        the administrator is looking at the person, the current role and who
+        assigned it, and moving to a second screen to change it would lose all
+        three.
       */
       u.active ? (
-        <Button
-          key="d"
-          size="sm"
-          variant="secondary"
-          disabled={!mayDeactivate(u, users)}
-          disabledReason={t.lastAdminReason}
-        >
-          {t.deactivate}
-        </Button>
+        editing === u.id ? (
+          <span key="d" className="flex flex-wrap items-end gap-2">
+            <Select
+              id={`ua-role-${u.id}`}
+              width="medium"
+              label={t.newRole}
+              value={nextRole}
+              onChange={(v) => setNextRole(v as Role)}
+              options={ROLES.map((r) => ({ id: r.id, label: r.label[lang] }))}
+            />
+            <Button
+              size="sm"
+              onClick={() => applyRoleChange(u.id)}
+              disabled={!mayChangeRole(u, users, nextRole)}
+              disabledReason={
+                nextRole === u.role ? t.sameRoleReason : t.lastAdminChangeReason
+              }
+              iconStart={<IconCheck />}
+            >
+              {t.saveRole}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setEditing(null)}>
+              {d.common.close}
+            </Button>
+          </span>
+        ) : (
+          <span key="d" className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                setEditing(u.id);
+                setNextRole(u.role);
+                setChanged(null);
+                setRevoked(null);
+              }}
+            >
+              {t.changeRole}
+            </Button>
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() => revoke(u.id, u.name)}
+              disabled={!mayDeactivate(u, users)}
+              disabledReason={t.lastAdminReason}
+            >
+              {t.deactivate}
+            </Button>
+          </span>
+        )
       ) : (
         <Button key="d" size="sm" variant="secondary" disabled disabledReason={t.reactivateReason}>
           {t.reactivate}
@@ -169,6 +260,22 @@ export function UserAdmin({ users, lang }: { users: SystemUser[]; lang: Lang }) 
         <div className="mb-4">
           <Callout tone="ok" live tags={["NFÅ-005", "FH-001"]}>
             {t.savedNote(saved)}
+          </Callout>
+        </div>
+      )}
+
+      {changed && (
+        <div className="mb-4">
+          <Callout tone="ok" live tags={["NFÅ-005", "FH-001"]}>
+            {t.changedNote(changed)}
+          </Callout>
+        </div>
+      )}
+
+      {revoked && (
+        <div className="mb-4">
+          <Callout tone="attention" live tags={["NFÅ-005", "NFL-001"]}>
+            {t.revokedNote(revoked)}
           </Callout>
         </div>
       )}

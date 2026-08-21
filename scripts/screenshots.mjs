@@ -114,6 +114,9 @@ const SHOTS = [
     scrollTo: 900,
   },
   { name: "avtalsregister", path: "/avtal", role: "agreement-admin" },
+  /* §3.5's Scenario 2 opens on a wholly new agreement, which §4.1 says is the
+     one registration the AI may not do. */
+  { name: "avtal-nytt", path: "/avtal/ny", role: "agreement-admin" },
   { name: "avtal-huvudrapport", path: "/avtal/A-001", role: "agreement-admin" },
   { name: "market", path: "/market", role: "agreement-admin" },
   { name: "rapporter-urvalsbild", path: "/rapporter", role: "agreement-admin" },
@@ -151,6 +154,12 @@ const SHOTS = [
   { name: "part-namnbyte", path: "/parter/P-028", role: "agreement-admin" },
   { name: "dokument", path: "/dokument", role: "agreement-admin" },
   { name: "allmanheten", path: "/allmanheten", role: "public" },
+  /*
+    Bilaga 2 §3.5's Scenario 3 ends on *"tar del av information om avtalet"* and
+    *"öppnar och laddar ned avtal"*, and neither had a screen until this page.
+    It is Bilaga F's Rapport 1 — the release, not the working record.
+  */
+  { name: "allmanheten-avtal", path: "/allmanheten/A-013", role: "public" },
   { name: "administration-loggar", path: "/administration", role: "system-admin" },
   { name: "anvandare-behorigheter", path: "/administration/anvandare", role: "permission-admin" },
 ];
