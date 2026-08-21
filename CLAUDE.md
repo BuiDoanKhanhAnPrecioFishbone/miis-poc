@@ -33,6 +33,13 @@ the eight roles all check out — and what has **not** been diffed yet (chapter 
 requirement tables). `docs/12-source-documents.md` records the same for the two English
 guides, plus the places our domain model still diverges from the information model.
 
+**`docs/19-arbetsprocesser.md` is the response text for Bilaga 2 §3.4** — the
+ska-krav on working process, collaboration with MI and the overall timeline. It is
+drafted against the fixed dates (tilldelning 2026-09-08, Steg 1 before 2027-04-01)
+and against `docs/16-verification.md`, which is its evidence. Two placeholders
+remain and are not ours to fill: the named consultants with CVs (§3.1) and the
+hours and rates (Bilaga 4).
+
 **`docs/17-scenario-criterion.md` is the one to read before planning work.** Bilaga 2 §3.5
 names **three** roles — Systemadministratör, Avtalsadministratör/Handläggare, Allmänhetens
 dator — and asks for four things about each: uppgift och mål, arbetsflöde, visualiseringar,
