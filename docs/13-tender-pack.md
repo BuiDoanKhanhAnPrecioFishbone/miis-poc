@@ -8,6 +8,7 @@ disagree, **these win.**
 | File | Searchable text | What it is |
 |---|---|---|
 | `tender/Avropsforfragan.pdf` | `avropsforfragan.txt` | The call-off request — how the response is evaluated and what the award criteria are worth |
+| `tender/Bilaga_2_Leverantorskontroll.pdf` | `bilaga-2-leverantorskontroll.txt` | Arrived 2026-08-21. **§3.5 is the scored criterion's own instruction** — three roles, four elements, thirteen prescribed bullets, six named judgements. §3.4 arbetsprocesser, §3.6 the presentation, §3.7 IP, §5 price. See `docs/17-scenario-criterion.md` for the bullet-by-bullet diff |
 | `tender/Bilaga_1_Kravspecifikation.pdf` | `bilaga-1-kravspecifikation.txt` | **This is "Appendix 1."** 50 pages, dated 2026-06-04, diarienummer 2026/0059. The requirement tables, the roles, the system sketch and the registration user flow |
 
 `Bilaga 1` is the document `docs/12-source-documents.md` and half of `docs/09` have been

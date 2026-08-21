@@ -1,34 +1,104 @@
 # The scored criterion, read literally — and what it still needs
 
-*Written 2026-08-21, after MI's Bilaga 3 arrived.*
+*Written 2026-08-21, after MI's Bilaga 3 arrived. **Rewritten the same day, after
+Bilaga 2 arrived** — the paraphrase this document was built on is now superseded by MI's
+own Swedish text.*
 
 The criterion this prototype exists to win is *Rollbaserade användarscenarier och
-användargränssnitt*, **SEK 1 000 000 of 2 500 000**. The call-off (Avropsförfrågan §16)
-names it and gives the scoring bands, but **not** the detailed instruction. That
-instruction reached us second-hand, as an English extract, and it changes the shape of
-what we deliver:
+användargränssnitt*, **SEK 1 000 000 of 2 500 000**. Avropsförfrågan §16 names it and
+gives the scoring bands; the instruction itself is **Bilaga 2 §3.5**, which we now have.
 
-> The supplier shall present role-based user scenarios and user interfaces:
-> * describe how the solution supports three user roles: **System Administrator**,
->   **Agreement Administrator/Case Officer**, **The Public Access Computer**
-> * describe the user's task and goal for each scenario
-> * describe the workflow for each scenario
-> * attach visualisations (screenshots, wireframes or sketches) illustrating the UI
-> * describe how the solution supports usability, efficiency and accessibility for each
->   user role.
+## What Bilaga 2 §3.5 actually says
 
-## First: get Bilaga 2
+The three roles and the four elements are exactly as the English extract had them, so
+nothing already written is wasted:
 
-That text is **not in Avropsförfrågan** — §16 there stops at the bands. Avropsförfrågan
-§18.2 says Bilaga 2 *Leverantörskontroll* holds *"kompletterande krav och beskrivning av
-uppdragets omfattning och innehåll"*, so this instruction is almost certainly Bilaga 2's,
-and Bilaga 2 **is not in this repository**. We are currently building the most heavily
-weighted deliverable in the tender against a paraphrase.
+- **Systemadministratör**, **Avtalsadministratör/Handläggare**, **Allmänhetens dator**
+- per role: *en kort beskrivning av användarens uppgift och mål*; *en beskrivning av
+  arbetsflödet*; *visualiseringar*; *hur lösningen stödjer användbarhet, effektivitet och
+  tillgänglighet*
 
-**Action: ask MI's contact — or the CEO — for Bilaga 2 and Bilaga 4 before the response
-is written.** Everything below assumes the extract is accurate; if the Swedish original
-names different roles or a different list of elements, that assumption is the single
-thing most worth checking.
+Two sentences the extract did **not** carry, and both are ours to use:
+
+> *"Visualiseringarna behöver inte utgöra färdiga systembilder utan ska ses som
+> illustrativa exempel."*
+
+MI is asking for sketches. We are handing them a working system at
+**miis-poc.vercel.app**, WCAG-audited, in two languages. Say so.
+
+> *"Medlingsinstitutet kommer att bedöma: Hur väl lösningen stödjer de olika
+> användarrollernas behov. Gränssnittets tydlighet, struktur och användbarhet. Hur
+> intuitivt arbetsflödena är utformade. Leverantörens förståelse för verksamhetens krav
+> och arbetsprocesser. Hur väl visualiseringarna bidrar till förståelsen av den föreslagna
+> lösningen. I vilken utsträckning lösningen bedöms skapa mervärde för användarna och
+> verksamheten."*
+
+Six named judgements, and the fourth — **förståelse för verksamhetens krav** — is the one
+the requirement-ID layer, the Bilaga F report shapes and the Bilaga 3 field work were
+built for.
+
+## The part that changes the work: §3.5 prescribes the steps
+
+The extract said "use the user scenarios below as the starting point" and gave us none.
+Bilaga 2 gives **thirteen numbered bullets**, and they are not the US-* scenarios our
+walkthrough was cut from. Checked against the running build:
+
+### Scenario 1 – Systemadministratör
+
+| MI's bullet | State |
+|---|---|
+| Överblick över användare, roller och behörigheter | Built — **but on a screen `system-admin` is refused** |
+| Skapar en ny användare | Built, as `permission-admin` |
+| Tilldelar roll och behörighet | Built, as `permission-admin` |
+| **Ändrar eller återkallar behörigheter** | **Partial** — deactivation exists, changing a role does not |
+| Hanterar systeminställningar | Built ✓ |
+
+**Bilaga 2 §3.5 and Bilaga 1 §3.1 disagree, and the disagreement is explicit.** §3.1 gives
+Systemadministratör *"Full åtkomst inkl. systemkonfiguration **(exkl. behörigheter)**"* and
+Behörighetsadministratör *"Läsa, skriva, redigera användare"* — a deliberate separation,
+written with a parenthesis. §3.5 then asks the Systemadministratör to do precisely what
+that parenthesis excludes.
+
+Quietly widening `system-admin` to satisfy §3.5 would break §3.1 and NFÅ-005; refusing the
+scenario would fail the criterion. The answer is to **demonstrate all five bullets and
+switch role where §3.1 requires it, saying why on screen** — separation of duties, the
+person who configures the system is not the person who grants access to it. The
+walkthrough already names a role change on the button when the persona shifts. This turns
+a contradiction between MI's own two documents into evidence for *"leverantörens förståelse
+för verksamhetens krav"*, which is one of the six things they say they will judge.
+
+### Scenario 2 – Avtalsadministratör/Handläggare
+
+| MI's bullet | State |
+|---|---|
+| **Registrerar ett nytt kollektivavtal** | **Missing as a path.** `/registrera` registers an incoming *protocol* against an agreement that already exists; §4.1 says a wholly new agreement is always registered manually, and that screen does not exist. This was our own open US-02 gap — it is now scored |
+| **Lägger till eller uppdaterar information** | **Missing** — *Redigera avtalet* is a disabled button |
+| Hanterar versioner eller ändringar | Built — a wage agreement per bargaining round, the event log and the change log |
+| **Publicerar avtalet** | **Missing** — there is no publish action; *Rapporturval* is adjacent but is not the same thing |
+
+### Scenario 3 – Allmänhetens dator
+
+| MI's bullet | State |
+|---|---|
+| Söker utifrån **bransch**, avtalsområde eller annan parameter | Partial — free text plus AGO/ATO/avtal; **bransch is not offered**, and MI names it first |
+| Filtrerar eller avgränsar sökresultatet | Built ✓ |
+| **Tar del av information om avtalet** | **Missing** — the rows are not links; the public cannot open an agreement |
+| **Öppnar och laddar ned avtal** | **Missing** — print exists, download does not |
+
+### The rest of Bilaga 2, briefly
+
+- **§3.6** the 15-minute presentation is at MI's premises, and *"leverantören får ej
+  tillföra nya åtaganden"* — nothing can be added on the day, so everything has to be in
+  the written response.
+- **§3.4 Arbetsprocesser och metoder** is a ska-krav of its own: method, how we collaborate
+  with MI, and an overall timeline. `docs/16-verification.md` is the evidence; the prose
+  still has to be written.
+- **§3.2** Steg 1 must be finished **before 2027-04-01**; Steg 2 starts autumn 2027.
+- **§3.7** MI owns the system outright — source, documentation, database structure,
+  integrations, configuration.
+- **§3.1** names the working group, with CVs and named consultants.
+
+**Bilaga 4 (Prisformulär) is still missing**, and §3.1, §2.6 and §5 all write into it.
 
 ## Second: three roles, not eight
 

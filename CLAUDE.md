@@ -8,7 +8,7 @@ presentation at MI in week 35.
 
 Read `docs/00-START-HERE.md` before doing design work.
 
-**Six source documents in `docs/requirements/`, each with a searchable `.txt` beside
+**Seven source documents in `docs/requirements/`, each with a searchable `.txt` beside
 the authoritative original. Check work against all of them, not just the first.**
 
 **MI's own, in Swedish — these outrank ours:**
@@ -17,6 +17,7 @@ the authoritative original. Check work against all of them, not just the first.*
 |---|---|
 | `tender/Bilaga_1_Kravspecifikation.pdf` | **This is "Appendix 1"** — MI's real requirement specification, 50 pages, diarienummer 2026/0059. §3.1 roles, §4.3 system sketch, §4.4 the registration flow, §5 the requirement tables. **§4.3 and §4.4 are diagrams and are absent from the `.txt` — open the PDF** |
 | `tender/Avropsforfragan.pdf` | The call-off request. §16 is how the response is scored: our criterion is worth **SEK 1 000 000 of 2 500 000**, awarded in five bands (100/75/50/25/0 %), judged on *relevans, tydlighet, konkretionsgrad, genomförbarhet* and understanding of MI's needs. §18 lists the appendices — **Bilaga 2 and 4 are still not in this repo**, and Bilaga 2 is where the scored criterion's own instruction appears to live |
+| `tender/Bilaga_2_Leverantorskontroll.pdf` | **The scored criterion's own instruction lives here — §3.5.** Arrived 2026-08-21 and supersedes the English paraphrase everything was built against. It names the three roles, the four elements per role, **thirteen prescribed bullets** across the three scenarios, and the six things MI says it will judge. Also §3.4 arbetsprocesser (a ska-krav of its own), §3.6 the 15-minute presentation (*"leverantören får ej tillföra nya åtaganden"*), §3.2 Steg 1 before 2027-04-01, §3.7 MI owns source and documentation outright. **Bilaga 4 is still missing** |
 | `tender/Bilaga_3_W3D3_Anvandarmanual.pdf` | **The current system's user manual** (W3D3 Avtal, v1.9, 2025-10-31). Every registration form field by field, the two published interfaces (Allmänheten, Medlare), the search-builder objects and **seven** reports — one more than Bilaga F. §18.3 states its limit in MI's own words: *"Det gamla systemet ska leverantören inte utgå ifrån vid utvecklingen av det nya systemet."* **Migration source and process background, never a design template** |
 
 **Ours, written from MI's — useful, but second-hand:**
@@ -32,12 +33,21 @@ the eight roles all check out — and what has **not** been diffed yet (chapter 
 requirement tables). `docs/12-source-documents.md` records the same for the two English
 guides, plus the places our domain model still diverges from the information model.
 
-**`docs/17-scenario-criterion.md` is the one to read before planning work.** The scored
-criterion names **three** roles — System Administrator, Agreement Administrator/Case
-Officer, The Public Access Computer — and asks for four things about each: task and goal,
-workflow, a visualisation, and a usability/efficiency/accessibility statement. The
-prototype implements all eight roles, which is right, but the *presentation* is marked on
-those three. **`docs/18-role-scenarios.md` is the response text** for all four elements of
+**`docs/17-scenario-criterion.md` is the one to read before planning work.** Bilaga 2 §3.5
+names **three** roles — Systemadministratör, Avtalsadministratör/Handläggare, Allmänhetens
+dator — and asks for four things about each: uppgift och mål, arbetsflöde, visualiseringar,
+and a användbarhet/effektivitet/tillgänglighet statement. The prototype implements all
+eight roles, which is right, but the *presentation* is marked on those three. **§3.5 also
+prescribes thirteen bullets**, and they are not our US-* scenarios — that doc holds the
+bullet-by-bullet diff against the running build.
+
+**§3.5 and Bilaga 1 §3.1 contradict each other about who administers users**, and the
+contradiction is explicit: §3.1 gives Systemadministratör *"full åtkomst … (exkl.
+behörigheter)"* while §3.5's Scenario 1 asks that role to create users and assign roles.
+Never resolve it by widening `system-admin` — that breaks §3.1 and NFÅ-005. Demonstrate
+every bullet and **switch role where §3.1 requires it, saying why on screen**: separation
+of duties is the reason MI wrote the parenthesis, and naming it is evidence for
+*"leverantörens förståelse för verksamhetens krav"*, one of the six scored judgements. **`docs/18-role-scenarios.md` is the response text** for all four elements of
 all three, drafted against what the prototype actually does — and it carries no
 *to be strengthened* caveats any more. **The demo itself leads with those three:
 `/genomgang`** is the reviewer's guided walkthrough and the address to send an evaluator
