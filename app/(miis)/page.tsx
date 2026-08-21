@@ -203,7 +203,8 @@ function Prose({ panel }: { panel: DashboardPanel }) {
   }
 
   return (
-    <AppShell role={page.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={page.role} dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       {/*
         §6.10 governs the criterion this prototype is scored on and carried no
         tag anywhere: the client is web-based (NFUI-001), responsive (NFUI-002)

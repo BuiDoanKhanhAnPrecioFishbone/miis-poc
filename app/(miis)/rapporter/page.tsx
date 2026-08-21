@@ -189,6 +189,7 @@ export default async function RapporterPage() {
 
   return (
     <AppShell
+      walkthrough={session.walkthrough}
       role={session.role}
       requires="rapporter"
       dataset={session.dataset}

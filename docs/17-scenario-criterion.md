@@ -275,6 +275,23 @@ it says what it is in its first sentence, in the demo strip's own colour. Same r
 demo bar: inventing a "walkthrough module" would work against the criterion it is meant to
 serve. The other five roles stay, below, as evidence that the system is complete.
 
+**Then it turned out to be hard to *use*, which is a different failure.** Everything was
+expanded — seven scenarios, 10 236 characters, 5 267 pixels, no contents — so a reviewer
+landed in the middle of scenario one with no way to see the shape of what they had opened.
+Sixteen buttons all read *"Öppna som Avtalsadministratör"*. And it was a page you **left**:
+opening step 2 took you to a screen, and the only route to step 3 was back here to find
+your place in the document.
+
+- **A contents list of all seven**, with role, step count and which three are scored, and
+  **one scenario shown at a time**. 5 267px → 2 300px.
+- **A step names the step**, and names the role only when the persona is about to change —
+  the one case it is a warning rather than noise.
+- **The position travels.** Opening a step writes it to a cookie, and the demo strip then
+  carries *Nästa: Avtalsregistret* on every screen, switching the role exactly as the
+  guide's own buttons do. A whole scenario now walks end to end without returning here,
+  and returning lands on the scenario you were in. The control lives in the demo strip
+  rather than the product chrome, for the same reason the guide has no menu entry.
+
 If there is an existing walkthrough document held outside this repository, send it and the
 two can be reconciled; `lib/domain/walkthrough.ts` is the content, so aligning wording is
 an edit to one file.

@@ -166,11 +166,28 @@ export const en: Dictionary = {
     workflow: "Workflow",
     usability: "Usability, efficiency and accessibility",
     step: (n: number) => `Step ${n}`,
-    openAs: (role: string) => `Open as ${role}`,
+    contents: "Scenarios",
+    contentsNote: (total: number, scored: number, steps: number) =>
+      `${total} scenarios, ${scored} of them scored, ${steps} steps in all. One scenario is shown at a time.`,
+    stepCount: (n: number) => `${n} steps`,
+    scoredMark: "Scored",
+    startScenario: "Start the scenario",
+    startScenarioNote:
+      "The role is switched and the screen opens. The way on to the next step is then in the demo strip, on every screen.",
+    openStep: (n: number) => `Open step ${n}`,
+    openStepAs: (n: number, role: string) => `Open step ${n} as ${role}`,
+    showSupporting: (n: number) => `Show other roles (${n})`,
+    hideSupporting: "Hide other roles",
     roleNote: (role: string) =>
       `Current role: ${role}. The role is changed by the buttons above and by the role switcher in the demo bar.`,
     toStart: "To the start page",
     demoLink: "Guided walkthrough",
+    backToGuide: "Overview",
+    position: (scenario: string, n: number, total: number) =>
+      `${scenario} · step ${n} of ${total}`,
+    next: (label: string) => `Next: ${label}`,
+    nextAs: (label: string, role: string) => `Next: ${label} (as ${role})`,
+    lastStep: "Last step in the scenario",
   },  session: {
     title: "Your session is about to expire",
     body: (minutes: number) =>

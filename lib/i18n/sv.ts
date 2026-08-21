@@ -169,11 +169,28 @@ export const sv = {
     workflow: "Arbetsflöde",
     usability: "Användbarhet, effektivitet och tillgänglighet",
     step: (n: number) => `Steg ${n}`,
-    openAs: (role: string) => `Öppna som ${role}`,
+    contents: "Scenarier",
+    contentsNote: (total: number, scored: number, steps: number) =>
+      `${total} scenarier, varav ${scored} bedöms, tillsammans ${steps} steg. Ett scenario visas i taget.`,
+    stepCount: (n: number) => `${n} steg`,
+    scoredMark: "Bedöms",
+    startScenario: "Börja scenariot",
+    startScenarioNote:
+      "Rollen byts och skärmen öppnas. Vägen vidare till nästa steg finns sedan i demoraden, på varje skärm.",
+    openStep: (n: number) => `Öppna steg ${n}`,
+    openStepAs: (n: number, role: string) => `Öppna steg ${n} som ${role}`,
+    showSupporting: (n: number) => `Visa övriga roller (${n})`,
+    hideSupporting: "Dölj övriga roller",
     roleNote: (role: string) =>
       `Aktuell roll: ${role}. Rollen byts av knapparna ovan och av rollväxlaren i demoraden.`,
     toStart: "Till startsidan",
     demoLink: "Guidad genomgång",
+    backToGuide: "Översikt",
+    position: (scenario: string, n: number, total: number) =>
+      `${scenario} · steg ${n} av ${total}`,
+    next: (label: string) => `Nästa: ${label}`,
+    nextAs: (label: string, role: string) => `Nästa: ${label} (som ${role})`,
+    lastStep: "Sista steget i scenariot",
   },  session: {
     title: "Din session håller på att gå ut",
     body: (minutes: number) =>

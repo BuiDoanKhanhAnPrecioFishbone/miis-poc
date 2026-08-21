@@ -64,7 +64,8 @@ export default async function PartyMeetingPage({ params }: { params: Promise<{ i
   const isNew = meeting.id === "ny";
 
   return (
-    <AppShell role={session.role} requires="partstraffar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="partstraffar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={isNew ? t.newMeeting.title : t.current.heading(meeting.party, meeting.date)}
         subtitle={isNew ? t.newMeeting.subtitle : t.subtitle}

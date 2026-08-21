@@ -31,4 +31,12 @@ export const WATCHWORD_COOKIE = "miis_watchwords";
 */
 export const SESSION_TIMEOUT_COOKIE = "miis_session_timeout";
 
+/*
+  Where the reviewer has got to in the guided walkthrough — a reviewer tool, not
+  a MIIS setting, which is why it is read by the demo strip and by nothing else.
+  It exists so the walkthrough can be walked from inside the product rather than
+  by returning to a long page and finding your place in it.
+*/
+export const WALKTHROUGH_COOKIE = "miis_walkthrough";
+
 export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;

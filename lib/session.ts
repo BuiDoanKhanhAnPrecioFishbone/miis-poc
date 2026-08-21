@@ -10,8 +10,10 @@ import {
   REQTAGS_COOKIE,
   ROLE_COOKIE,
   SESSION_TIMEOUT_COOKIE,
+  WALKTHROUGH_COOKIE,
 } from "@/lib/cookies";
 import { sessionTimeoutMinutes } from "@/lib/domain/settings";
+import { decodePosition, type WalkthroughPosition } from "@/lib/domain/walkthrough";
 
 /**
  * The active role for the current request.
@@ -88,15 +90,18 @@ export interface Session {
   reqTags: boolean;
   /** NFÅ-002's configured limit, in minutes. */
   sessionTimeoutMinutes: number;
+  /** Where the reviewer has got to in `/genomgang`, if anywhere. Demo tooling. */
+  walkthrough: WalkthroughPosition | null;
 }
 
 export async function getSession(): Promise<Session> {
-  const [role, dataset, lang, reqTags, timeout] = await Promise.all([
+  const [role, dataset, lang, reqTags, timeout, jar] = await Promise.all([
     activeRole(),
     activeDataset(),
     activeLang(),
     reqTagsEnabled(),
     activeSessionTimeout(),
+    cookies(),
   ]);
   return {
     role: roleInfo(role, lang),
@@ -105,5 +110,6 @@ export async function getSession(): Promise<Session> {
     i18n: dictionary(lang),
     reqTags,
     sessionTimeoutMinutes: timeout,
+    walkthrough: decodePosition(jar.get(WALKTHROUGH_COOKIE)?.value),
   };
 }

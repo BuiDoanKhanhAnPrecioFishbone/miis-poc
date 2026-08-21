@@ -417,6 +417,19 @@ rule** — outside the `(miis)` route group, no shell, no menu entry, the demo s
 colour, and it says what it is in its first sentence. A "walkthrough module" inside the
 product would work against the criterion it exists to serve.
 
+**The walkthrough is walked from inside the product, and the demo strip is how.**
+`WALKTHROUGH_COOKIE` records which scenario and step the reviewer opened; the strip then
+carries *Nästa: <step>* on every screen, switching the role the same way the guide's own
+buttons do. Before that, the guide was a page you **left**: opening step 2 took you to a
+screen and the only route to step 3 was back to a 5 267px document to find your place —
+impossible in front of an evaluator with fifteen minutes. The onward control belongs in
+the strip and nowhere else; putting it in the product chrome is the "walkthrough module"
+the rule above forbids. `/genomgang` itself shows **one scenario at a time** under a
+contents list of all seven, and a step button names the step rather than the role —
+sixteen buttons reading *"Öppna som Avtalsadministratör"* said nothing about where you
+were about to land. The role is named only when it is about to **change**, which is the
+one case it is a warning rather than noise.
+
 `StatusDot` takes a whole `StatusInfo` (`{kod, farg, etikett}`) rather than a colour, so
 FR-012 status can never be rendered as colour alone. Get one from `statusInfo()` or
 `avtalStatus()` in `lib/domain/status.ts`.

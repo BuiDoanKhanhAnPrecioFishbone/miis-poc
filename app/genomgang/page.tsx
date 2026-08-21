@@ -42,6 +42,7 @@ export default async function GenomgangPage() {
       </a>
 
       <DemoBar
+        walkthrough={session.walkthrough}
         role={session.role.id}
         dataset={session.dataset}
         lang={lang}
@@ -65,7 +66,14 @@ export default async function GenomgangPage() {
         <p className="mt-2 max-w-4xl text-body">{t.subtitle}</p>
 
         <div className="mt-8">
-          <WalkthroughGuide lang={lang} currentRole={session.role.id} />
+          {/* Coming back mid-walk opens the scenario the reviewer was in, not
+              scenario one — finding your place again is the thing this page was
+              hard at. */}
+          <WalkthroughGuide
+            lang={lang}
+            currentRole={session.role.id}
+            position={session.walkthrough}
+          />
         </div>
 
         <p className="mt-10 border-t border-border pt-4 text-label">

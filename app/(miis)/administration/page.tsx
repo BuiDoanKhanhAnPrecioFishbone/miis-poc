@@ -106,7 +106,8 @@ export default async function AdministrationPage() {
   }));
 
   return (
-    <AppShell role={session.role} requires="administration" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="administration" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

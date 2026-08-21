@@ -147,6 +147,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
 
   return (
     <AppShell
+      walkthrough={session.walkthrough}
       role={session.role}
       requires="avtal"
       dataset={session.dataset}

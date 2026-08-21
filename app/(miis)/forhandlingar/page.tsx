@@ -75,7 +75,8 @@ export default async function ForhandlingarPage() {
   });
 
   return (
-    <AppShell role={session.role} requires="forhandlingar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="forhandlingar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

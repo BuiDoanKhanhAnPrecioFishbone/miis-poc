@@ -114,7 +114,8 @@ export default async function AvtalPage() {
   });
 
   return (
-    <AppShell role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

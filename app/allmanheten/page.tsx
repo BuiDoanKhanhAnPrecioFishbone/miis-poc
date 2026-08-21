@@ -113,6 +113,7 @@ export default async function AllmanhetenPage() {
 
   return (
     <PublicShell
+      walkthrough={session.walkthrough}
       lang={lang}
       dataset={session.dataset}
       role={session.role.id}

@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import type { DatasetName } from "@/lib/domain/dataset";
 import type { Lang } from "@/lib/domain/lang";
 import type { Role } from "@/lib/domain/role";
+import type { WalkthroughPosition } from "@/lib/domain/walkthrough";
 import { dictionary } from "@/lib/i18n";
 import { DemoBar } from "./DemoBar";
 
@@ -27,12 +28,15 @@ export function PublicShell({
   dataset,
   role,
   reqTags,
+  walkthrough,
   children,
 }: {
   lang: Lang;
   dataset: DatasetName;
   role: Role;
   reqTags: boolean;
+  /** The reviewer's place in `/genomgang`, carried into the demo strip. */
+  walkthrough?: WalkthroughPosition | null;
   children: ReactNode;
 }) {
   const t = dictionary(lang);
@@ -47,7 +51,7 @@ export function PublicShell({
       </a>
 
       {/* No session control here — NFÅ-006 makes this entrance login-free. */}
-      <DemoBar role={role} dataset={dataset} lang={lang} reqTags={reqTags} />
+      <DemoBar role={role} dataset={dataset} lang={lang} reqTags={reqTags} walkthrough={walkthrough} />
 
       <header className="border-b-4 border-[var(--mi-sand-500)] bg-primary text-primary-foreground">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">

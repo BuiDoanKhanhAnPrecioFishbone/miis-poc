@@ -98,7 +98,8 @@ export default async function MarketPage() {
   }));
 
   return (
-    <AppShell role={session.role} requires="market" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="market" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FM-001", "FM-002", "FM-003"]} />
 
       {/*

@@ -11,7 +11,7 @@ other things. A claim about testing is worth what it can be shown to be.
 ## The four commands
 
 ```
-npm test          200 unit tests over the domain layer and the mock data
+npm test          211 unit tests over the domain layer and the mock data
 npm run lint      ESLint, including the architectural rules below
 npx tsc --noEmit  types, which is also what keeps the English translation complete
 npm run build     production build, which fails on broken mock references

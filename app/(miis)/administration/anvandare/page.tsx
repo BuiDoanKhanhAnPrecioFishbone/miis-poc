@@ -104,7 +104,8 @@ export default async function AnvandarePage() {
   }));
 
   return (
-    <AppShell role={session.role} requires="anvandare" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="anvandare" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

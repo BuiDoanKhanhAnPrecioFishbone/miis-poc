@@ -70,7 +70,8 @@ export default async function PartstraffarPage() {
   }));
 
   return (
-    <AppShell role={session.role} requires="partstraffar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="partstraffar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

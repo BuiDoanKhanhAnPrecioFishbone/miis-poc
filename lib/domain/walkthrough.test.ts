@@ -4,8 +4,12 @@ import { NAV_HREF } from "./nav";
 import { REQUIREMENTS } from "./requirements";
 import { accessLevel, ROLES } from "./role";
 import {
+  cursorAt,
+  decodePosition,
+  encodePosition,
   scoredScenarios,
   supportingScenarios,
+  totalSteps,
   WALKTHROUGH,
   walkthroughRequirements,
   walkthroughRoutes,
@@ -133,5 +137,59 @@ describe("every step is reachable by the role it names", () => {
         `${href} is not a route the navigation knows`,
       ).toBe(true);
     }
+  });
+});
+
+/**
+ * The cursor — the thing that makes the guide usable during a presentation.
+ *
+ * The walkthrough used to be a page you left: clicking a step opened a screen,
+ * and the only way onward was back to a five-thousand-pixel document to find
+ * your place. These assertions are about the position surviving the jump, and
+ * about a stale one never producing a control that leads nowhere.
+ */
+describe("the walkthrough cursor", () => {
+  const first = WALKTHROUGH[0]!;
+
+  it("round-trips a position", () => {
+    const p = { scenarioId: first.id, stepIndex: 1 };
+    expect(decodePosition(encodePosition(p))).toEqual(p);
+  });
+
+  it("resolves a position to its step, with the one after it", () => {
+    const c = cursorAt({ scenarioId: first.id, stepIndex: 0 })!;
+    expect(c.scenario.id).toBe(first.id);
+    expect(c.number).toBe(1);
+    expect(c.total).toBe(first.steps.length);
+    expect(c.next?.step).toBe(first.steps[1]);
+    expect(c.next?.position.stepIndex).toBe(1);
+  });
+
+  /* A scenario is one officer doing one task. Running on into the next one
+     would be the guide changing the subject without saying so. */
+  it("stops at the end of a scenario rather than running into the next", () => {
+    const last = cursorAt({ scenarioId: first.id, stepIndex: first.steps.length - 1 })!;
+    expect(last.next).toBeNull();
+  });
+
+  /*
+    A renamed scenario or a removed step must not leave a "Nästa" control in the
+    demo strip that leads nowhere — that is the same dead control the cursor
+    exists to remove.
+  */
+  it("refuses a stale or malformed cookie", () => {
+    expect(decodePosition(undefined)).toBeNull();
+    expect(decodePosition("")).toBeNull();
+    expect(decodePosition("nope:0")).toBeNull();
+    expect(decodePosition(`${first.id}:999`)).toBeNull();
+    expect(decodePosition(`${first.id}:-1`)).toBeNull();
+    expect(decodePosition(`${first.id}:x`)).toBeNull();
+    expect(decodePosition(first.id)).toBeNull();
+    expect(cursorAt(null)).toBeNull();
+  });
+
+  it("counts every step, so the guide can state the total up front", () => {
+    expect(totalSteps()).toBe(WALKTHROUGH.reduce((n, s) => n + s.steps.length, 0));
+    expect(totalSteps()).toBeGreaterThan(10);
   });
 });

@@ -8,6 +8,7 @@ import type { DatasetName } from "@/lib/domain/dataset";
 import type { Lang } from "@/lib/domain/lang";
 import { isHeadingOnly, navFor, NAV_HREF, type NavId } from "@/lib/domain/nav";
 import { canAccess, type RoleInfo } from "@/lib/domain/role";
+import type { WalkthroughPosition } from "@/lib/domain/walkthrough";
 import { dictionary } from "@/lib/i18n";
 import { AiAssistant, AiAssistantLauncher } from "./AiAssistant";
 import { DemoBar } from "./DemoBar";
@@ -37,6 +38,7 @@ export function AppShell({
   dataset,
   lang,
   reqTags,
+  walkthrough,
   requires,
   children,
 }: {
@@ -44,6 +46,8 @@ export function AppShell({
   dataset: DatasetName;
   lang: Lang;
   reqTags: boolean;
+  /** The reviewer's place in `/genomgang`, carried into the demo strip. */
+  walkthrough?: WalkthroughPosition | null;
   /**
    * NFÅ-003 — the menu item this screen belongs to. A role without it is
    * refused here rather than merely not shown the link.
@@ -130,6 +134,7 @@ export function AppShell({
       </a>
 
       <DemoBar
+        walkthrough={walkthrough}
         role={role.id}
         dataset={dataset}
         lang={lang}

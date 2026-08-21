@@ -10,11 +10,14 @@ import {
   LANG_COOKIE,
   REQTAGS_COOKIE,
   ROLE_COOKIE,
+  WALKTHROUGH_COOKIE,
 } from "@/lib/cookies";
 import { datasetOptions, type DatasetName } from "@/lib/domain/dataset";
 import { LANGS, type Lang } from "@/lib/domain/lang";
-import { roleOptions, type Role } from "@/lib/domain/role";
+import { roleInfo, roleOptions, type Role } from "@/lib/domain/role";
+import { cursorAt, encodePosition, type WalkthroughPosition } from "@/lib/domain/walkthrough";
 import { dictionary } from "@/lib/i18n";
+import { IconForward } from "./icons";
 import { SelectChevron } from "./Select";
 import { Button } from "./primitives";
 
@@ -50,12 +53,23 @@ export function DemoBar({
   dataset,
   lang,
   reqTags,
+  walkthrough,
   onShowSessionWarning,
 }: {
   role: Role;
   dataset: DatasetName;
   lang: Lang;
   reqTags: boolean;
+  /**
+   * Where the reviewer has got to in `/genomgang`, if anywhere.
+   *
+   * The guide used to be a page you left: clicking step 2 opened a screen and
+   * the only way to step 3 was back to a five-thousand-pixel document to find
+   * your place. The position travels instead, and the way onward is here — in
+   * the demo strip, which is where reviewer tooling belongs and the one place a
+   * walkthrough control can live without claiming to be MIIS functionality.
+   */
+  walkthrough?: WalkthroughPosition | null;
   /**
    * Omitted on the public computer view: NFÅ-006 says that entrance has no
    * login, so it has no session to time out. A button that does nothing is
@@ -66,10 +80,21 @@ export function DemoBar({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const t = dictionary(lang).demo;
+  const w = dictionary(lang).walkthrough;
 
   function change(cookie: string, value: string) {
     setCookie(cookie, value);
     startTransition(() => router.refresh());
+  }
+
+  const cursor = cursorAt(walkthrough ?? null);
+
+  /** Advance to the next step: same two things the guide's own buttons do. */
+  function goNext() {
+    if (!cursor?.next) return;
+    setCookie(ROLE_COOKIE, cursor.next.step.role);
+    setCookie(WALKTHROUGH_COOKIE, encodePosition(cursor.next.position));
+    startTransition(() => router.push(cursor.next!.step.href));
   }
 
   return (
@@ -184,13 +209,40 @@ export function DemoBar({
           menu — it is reviewer material like everything else here. An evaluator
           who arrived at a deep link needs a way back to the order the criterion
           is actually judged in.
+
+          And, once a step has been opened, the way *onward*. This is the whole
+          fix for the guide being hard to use: the reviewer no longer returns to
+          a long page and hunts for their place — the next step is on the screen
+          they are already standing on, and it switches the role the same way
+          the guide's own buttons do.
         */}
-        <Link
-          href="/genomgang"
-          className="inline-flex min-h-11 items-center rounded-sm border-2 border-primary px-3 py-2 text-label font-bold text-primary transition-colors hover:bg-card"
-        >
-          {dictionary(lang).walkthrough.demoLink}
-        </Link>
+        <span className="flex flex-wrap items-center gap-2">
+          {cursor && (
+            <>
+              <span className="text-meta font-bold uppercase tracking-wide">
+                {w.position(cursor.scenario.title[lang], cursor.number, cursor.total)}
+              </span>
+              {cursor.next ? (
+                <Button size="sm" onClick={goNext} iconEnd={<IconForward />}>
+                  {cursor.next.step.role === role
+                    ? w.next(cursor.next.step.label[lang])
+                    : w.nextAs(
+                        cursor.next.step.label[lang],
+                        roleInfo(cursor.next.step.role, lang).label,
+                      )}
+                </Button>
+              ) : (
+                <span className="text-meta">{w.lastStep}</span>
+              )}
+            </>
+          )}
+          <Link
+            href="/genomgang"
+            className="inline-flex min-h-11 items-center rounded-sm border-2 border-primary px-3 py-2 text-label font-bold text-primary transition-colors hover:bg-card"
+          >
+            {cursor ? w.backToGuide : w.demoLink}
+          </Link>
+        </span>
       </div>
     </div>
   );

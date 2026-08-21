@@ -88,6 +88,12 @@ async function runExpiryReport(page) {
 }
 
 const SHOTS = [
+  /*
+    The address we send an evaluator to, so the pack should contain it. It is
+    outside the `(miis)` group and carries no shell — the shot is evidence that
+    the guide cannot be mistaken for MIIS functionality.
+  */
+  { name: "genomgang", path: "/genomgang", role: "agreement-admin" },
   { name: "start-avtalsadministrator", path: "/", role: "agreement-admin" },
   { name: "start-systemadministrator", path: "/", role: "system-admin" },
   { name: "start-medlingsadministrator", path: "/", role: "mediation-admin" },

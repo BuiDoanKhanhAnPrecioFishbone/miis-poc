@@ -372,4 +372,97 @@ export function walkthroughRequirements(): string[] {
   ];
 }
 
+/* -------------------------------------------------------------------------- */
+/* The cursor — walking a scenario from inside the product                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Where a reviewer has got to in the walkthrough.
+ *
+ * The guide was a page you left. Clicking step 2 opened `/registrera`, and the
+ * only way to step 3 was to go back to a 5 000-pixel document and find your
+ * place in it — which is a bad thing to do once and an impossible thing to do
+ * in front of an evaluator with fifteen minutes. So the position travels: it is
+ * written when a step is opened, and the demo strip carries the way onward from
+ * whatever screen the reviewer is standing on.
+ *
+ * A cursor rather than history: what a reviewer needs is *the next step*, not a
+ * record of where they have been.
+ */
+export interface WalkthroughPosition {
+  scenarioId: string;
+  /** 0-based, into `scenario.steps`. */
+  stepIndex: number;
+}
+
+export function encodePosition(p: WalkthroughPosition): string {
+  return `${p.scenarioId}:${p.stepIndex}`;
+}
+
+/**
+ * Reads the cookie back, and returns null for anything that no longer resolves.
+ *
+ * A scenario can be renamed or a step removed between deployments, and a stale
+ * cookie must not put a "Nästa" control in the demo strip that leads nowhere —
+ * that is the same failure as the dead link this whole cursor exists to fix.
+ */
+export function decodePosition(raw: string | undefined): WalkthroughPosition | null {
+  if (!raw) return null;
+  const [scenarioId, index] = raw.split(":");
+  if (!scenarioId || index === undefined) return null;
+  const stepIndex = Number(index);
+  if (!Number.isInteger(stepIndex) || stepIndex < 0) return null;
+  const scenario = scenarioById(scenarioId);
+  if (!scenario || stepIndex >= scenario.steps.length) return null;
+  return { scenarioId, stepIndex };
+}
+
+export function scenarioById(id: string): WalkthroughScenario | undefined {
+  return WALKTHROUGH.find((s) => s.id === id);
+}
+
+export interface WalkthroughCursor {
+  scenario: WalkthroughScenario;
+  step: WalkthroughStep;
+  /** 1-based, for display: "Steg 2 av 5". */
+  number: number;
+  total: number;
+  /** The step after this one, within the same scenario. */
+  next: { position: WalkthroughPosition; step: WalkthroughStep } | null;
+}
+
+/**
+ * Resolve a position, with the step after it.
+ *
+ * `next` stops at the end of the scenario rather than running on into the next
+ * one. A scenario is one officer doing one task; carrying a reviewer silently
+ * from the agreement administrator into the public computer would be the guide
+ * changing the subject without saying so.
+ */
+export function cursorAt(position: WalkthroughPosition | null): WalkthroughCursor | null {
+  if (!position) return null;
+  const scenario = scenarioById(position.scenarioId);
+  const step = scenario?.steps[position.stepIndex];
+  if (!scenario || !step) return null;
+
+  const nextStep = scenario.steps[position.stepIndex + 1];
+  return {
+    scenario,
+    step,
+    number: position.stepIndex + 1,
+    total: scenario.steps.length,
+    next: nextStep
+      ? {
+          position: { scenarioId: scenario.id, stepIndex: position.stepIndex + 1 },
+          step: nextStep,
+        }
+      : null,
+  };
+}
+
+/** Every step in the walkthrough, for a total the guide can state up front. */
+export function totalSteps(): number {
+  return WALKTHROUGH.reduce((n, s) => n + s.steps.length, 0);
+}
+
 export type { Text };

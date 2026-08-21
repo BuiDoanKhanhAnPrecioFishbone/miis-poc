@@ -44,7 +44,8 @@ export default async function RegistreraPage() {
   const t = i18n.registrera;
 
   return (
-    <AppShell role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FAI-001", "FAI-002", "FAI-003"]} />
 
       <ProtocolReview proposals={proposals} lang={lang} watchwords={watchwords}>

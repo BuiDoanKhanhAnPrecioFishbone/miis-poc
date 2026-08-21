@@ -67,7 +67,8 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
   const decisionNumber = mediationCase.dgDecision.number.replace(/^GD-beslut nr\s*/i, "");
 
   return (
-    <AppShell role={session.role} requires="medling" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="medling" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading
         title={c.heading(
           caseNumber(mediationCase.id),

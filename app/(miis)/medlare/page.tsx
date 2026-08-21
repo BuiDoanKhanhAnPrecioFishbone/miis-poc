@@ -90,7 +90,8 @@ export default async function MedlarePage() {
   });
 
   return (
-    <AppShell role={session.role} requires="medlare" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="medlare" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FF-009", "D-004"]} />
 
       <Panel title={t.register.heading} tags={["FF-009", "FH-001"]}>
