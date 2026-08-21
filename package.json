@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "screenshots": "node scripts/screenshots.mjs",
+    "audit": "node scripts/audit.mjs",
     "a11y:stage": "node -e \"require('fs').copyFileSync('node_modules/axe-core/axe.min.js','public/_axe.min.js')\"",
     "a11y:clean": "node -e \"require('fs').rmSync('public/_axe.min.js',{force:true})\""
   },
