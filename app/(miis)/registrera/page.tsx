@@ -34,21 +34,43 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title, description, openGraph: { title, description } };
 }
 
-export default async function RegistreraPage() {
+/**
+ * The protocol the AI drawer's queue is pointing at.
+ *
+ * A resumed registration is a real state, not a demo shortcut: FAI-002 says
+ * nothing is saved before an officer approves it, so a protocol that has been
+ * interpreted and not yet approved is exactly what the queue holds. Reaching it
+ * had to land on the proposals rather than on the upload the officer already
+ * did.
+ */
+const QUEUED_PROTOCOL = { name: "Seko Kommunikation 2025-27.pdf", bytes: 184320 };
+
+export default async function RegistreraPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ forts?: string }>;
+}) {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [proposals, watchwords] = await Promise.all([
+  const [proposals, watchwords, params] = await Promise.all([
     listExtractionProposals(),
     listWatchwords(),
+    searchParams,
   ]);
   const t = i18n.registrera;
+  const resume = params.forts === "1";
 
   return (
     <AppShell
       walkthrough={session.walkthrough} role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
       <PageHeading title={t.title} subtitle={t.subtitle} tags={["FAI-001", "FAI-002", "FAI-003"]} />
 
-      <ProtocolReview proposals={proposals} lang={lang} watchwords={watchwords}>
+      <ProtocolReview
+        proposals={proposals}
+        lang={lang}
+        watchwords={watchwords}
+        resume={resume ? QUEUED_PROTOCOL : null}
+      >
         <div id="steg-loneavtal" className="scroll-mt-24">
           <Panel title={t.wage.title} tags={["FA-002", "FA-007"]}>
             {/*

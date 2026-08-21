@@ -116,12 +116,12 @@ export const sv = {
     onThisScreenNone:
       "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
     where: "Var",
-    goThere: "Öppna vyn",
+    goThere: "Granska förslagen",
     queue: "Väntar på din granskning",
     queueLead:
       "Ingenting av det här är sparat. Listan är det som AI-stödet har tolkat och som ännu inte har godkänts av en handläggare.",
     queueEmpty: "Ingenting väntar på granskning just nu.",
-    queueCount: (n: number) => (n === 1 ? "1 förslag" : `${n} förslag`),
+    queueCount: (n: number) => (n === 1 ? "1 att granska" : `${n} att granska`),
     functions: "Det här gör AI-stödet",
     boundaries: "Det här gör det inte",
     boundariesLead:

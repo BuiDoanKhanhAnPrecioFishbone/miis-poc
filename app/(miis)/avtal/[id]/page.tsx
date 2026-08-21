@@ -100,16 +100,25 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
   const wageRows: Row[] = wageAgreements.map((w) => ({
     key: w.id,
     cells: [
+      /* Each date whole, the break allowed only between them. The cell was
+         wrapping *inside* a date — "2027-04-" / "01 – 2029-" / "03-31" — which
+         no reader can take in at a glance, and this row exists to be compared
+         with the one above it. Nowrapping the whole period instead would push
+         the table 64px past its column and put it back behind a scrollbar. */
       <span key="p" className="tabular-nums">
-        {w.validFrom} – {w.validTo}
+        <span className="whitespace-nowrap">{w.validFrom}</span> –{" "}
+        <span className="whitespace-nowrap">{w.validTo}</span>
       </span>,
       `${w.construction}. ${AGREEMENT_CONSTRUCTIONS[lang][w.construction]}`,
       w.wageScopePercent === undefined ? i18n.common.none : percent(w.wageScopePercent, lang),
       w.costFramePercent === undefined ? i18n.common.none : percent(w.costFramePercent, lang),
       w.individualGuarantee ? i18n.common.yes : i18n.common.no,
       w.wageRevision ? (
+        /* Same rule as the period: the date stays whole, the break falls at
+           the separator. This cell was reading "2027-04-" / "01 · 3,2 %". */
         <span key="r" className="tabular-nums">
-          {w.wageRevision.date} · {percent(w.wageRevision.percent, lang)}
+          <span className="whitespace-nowrap">{w.wageRevision.date}</span> ·{" "}
+          <span className="whitespace-nowrap">{percent(w.wageRevision.percent, lang)}</span>
         </span>
       ) : (
         i18n.common.none
@@ -182,7 +191,20 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
         }
       />
 
-      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+      {/*
+        A fixed sidebar, not a fraction.
+
+        `0.85fr` gave the short facts — status, flags, lifecycle, basfakta,
+        rapporturval — 46 % of the page, and left the wage-agreement table,
+        which is six columns and the substance of the screen, scrolling inside
+        a 618px column at 1440. The sidebar is one value per row and does not
+        get better with more width; the table does. 20rem holds its longest
+        label, gives the table 738px at 1440 — enough to fit whole — and below
+        `@3xl` both stack as before. Narrower than 1440 the table still scrolls
+        inside its own region, which is the overflow guard working rather than
+        columns collapsing to slivers.
+      */}
+      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-5">
           <Panel title={t.identity} tags={["FA-001", "FA-005"]}>
             <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
@@ -210,7 +232,12 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
                 rows={wageRows}
                 lang={lang}
                 caption={t.wageAgreements}
-                minWidth="46rem"
+                /* What the six headers actually need unconstrained (706px
+                   measured), not a round number. 46rem left the table 30px
+                   wider than its own column at 1440 and scrolling for no
+                   reason; below this it still scrolls, which is the guard
+                   doing its job rather than columns collapsing to slivers. */
+                minWidth="44rem"
               />
             )}
           </Panel>

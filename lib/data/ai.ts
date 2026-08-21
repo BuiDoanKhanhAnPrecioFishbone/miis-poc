@@ -43,10 +43,17 @@ export async function listAiQueue(): Promise<AiQueueItem[]> {
       functionId: "quick-registration",
       subject: { sv: matched, en: matched },
       detail: {
-        sv: "Uppladdat protokoll, tolkat men inte godkänt",
-        en: "Uploaded protocol, interpreted but not approved",
+        sv: `Tolkat protokoll: ${EXTRACTION_PROPOSALS.length} fältvärden är utlästa och väntar på att godkännas eller avvisas. Inget är sparat.`,
+        en: `Interpreted protocol: ${EXTRACTION_PROPOSALS.length} field values have been read out and are waiting to be approved or rejected. Nothing is saved.`,
       },
-      href: "/registrera",
+      /*
+        `?forts=1`, not `/registrera`. The queue promises work that is already
+        interpreted, and the bare route opens on an empty drop zone — so the one
+        control that says "nine things are waiting for you" delivered a blank
+        upload form, and looked identical to the task button above it that
+        starts a fresh interpretation. This one resumes; that one starts.
+      */
+      href: "/registrera?forts=1",
       proposals: EXTRACTION_PROPOSALS.length,
       nav: "avtal",
     });
@@ -59,8 +66,8 @@ export async function listAiQueue(): Promise<AiQueueItem[]> {
       functionId: "mediation-support",
       subject: { sv: `${c.id} · ${c.name}`, en: `${c.id} · ${c.name}` },
       detail: {
-        sv: "Beslutsstöd framtaget ur MIIS – övriga parter, tidigare medlingar, spridningsrisk",
-        en: "Decision support drawn from MIIS – other parties, previous mediations, contagion risk",
+        sv: "Beslutsstöd: tre framtagna underlag – övriga parter, tidigare medlingar och spridningsrisk – som ska läsas innan ärendet drivs vidare.",
+        en: "Decision support: three findings — other parties, previous mediations and contagion risk — to be read before the case is taken further.",
       },
       href: `/medling/${c.id}`,
       /* Three findings, which is what §4.1 names for a mediation case. */

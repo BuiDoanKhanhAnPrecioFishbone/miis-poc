@@ -115,12 +115,12 @@ export const en: Dictionary = {
     onThisScreenNone:
       "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
     where: "Where",
-    goThere: "Open the view",
+    goThere: "Review the proposals",
     queue: "Awaiting your review",
     queueLead:
       "None of this is saved. The list is what the AI support has interpreted and no case officer has approved yet.",
     queueEmpty: "Nothing is awaiting review right now.",
-    queueCount: (n: number) => (n === 1 ? "1 proposal" : `${n} proposals`),
+    queueCount: (n: number) => (n === 1 ? "1 to review" : `${n} to review`),
     functions: "What the AI support does",
     boundaries: "What it does not do",
     boundariesLead:

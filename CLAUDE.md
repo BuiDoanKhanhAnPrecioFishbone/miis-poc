@@ -103,6 +103,15 @@ reviewer to a screen its own role would be refused.
    looked at. Collapsing them — `p === phase ? "current" : …` — made a completed
    step lose its tick the moment the officer clicked back to it, so the screen
    said the work had come undone.
+   **A table's `minWidth` is what its own headers need, and the column it sits
+   in has to be that wide.** `DataTable` scrolls inside its region rather than
+   widening the page, which makes an over-wide table invisible in an audit and
+   permanently behind a scrollbar in use. The agreement view's sidebar was
+   `0.85fr` — 46 % of the page for one value per row — while the six-column
+   wage table scrolled in what was left. A sidebar of short facts is a fixed
+   width; the content column takes the rest. **And a date never breaks inside
+   itself**: nowrap each value and let the wrap fall on the separator, because
+   `2027-04-` over `01 · 3,2 %` is not a date anyone can read.
    **A report a role may run has to produce something that role may read.**
    *Avtal – Medlare* pointed at `/avtal`, and §3.1 gives Medlare Start and
    Rapporter — so the picker offered a report whose only outcome was the
@@ -282,6 +291,14 @@ reviewer to a screen its own role would be refused.
    by default** (`miis_reqtags`), so the plain product view exists too — every new ID
    also needs its sentence in `lib/domain/requirements.ts`, which is what the hover
    tooltip reads.
+   **A queue item lands on the work it promises.** The AI drawer's queue said
+   "nine proposals, interpreted but not approved" and linked to `/registrera`,
+   which opens on an empty drop zone — so the one control that says work is
+   waiting delivered a blank form, and looked identical to the task button
+   above it that *starts* an interpretation. `?forts=1` resumes past the upload
+   and the pipeline. The badge says what the number counts and the button says
+   what the officer is about to do; "Öppna vyn" on a queue said neither.
+
 7. **AI proposals are never applied automatically (FAI-002).** Anything AI-suggested is
    labelled `AI-FÖRSLAG` and needs an explicit human approve/reject control. Every
    proposal is **source-linked**: selecting it highlights the passage in the protocol it

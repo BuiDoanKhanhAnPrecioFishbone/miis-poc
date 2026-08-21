@@ -324,10 +324,22 @@ export function ProtocolReview({
   proposals,
   lang,
   watchwords,
+  resume,
   children,
 }: {
   proposals: ExtractionProposal[];
   lang: Lang;
+  /**
+   * A protocol already uploaded and interpreted, waiting for review.
+   *
+   * The AI drawer's queue said "nine proposals, interpreted but not approved"
+   * and linked to `/registrera`, which opens on an **empty drop zone** — so the
+   * one control in the system that promises pending work delivered a blank
+   * upload form, and looked identical to the task button above it that starts a
+   * fresh interpretation. Resuming skips the upload and the pipeline and lands
+   * on the proposals themselves, which is what the queue was pointing at.
+   */
+  resume?: { name: string; bytes: number } | null;
   /** FAI-004 — MI's predefined terms plus whatever a party meeting added. */
   watchwords: Watchword[];
   /**
@@ -348,8 +360,11 @@ export function ProtocolReview({
   const [approved, setApproved] = useState(false);
   const [registered, setRegistered] = useState(false);
   const [incomplete, setIncomplete] = useState(false);
-  const [file, setFile] = useState<UploadedFile | null>(null);
-  const [completed, setCompleted] = useState(0);
+  const [file, setFile] = useState<UploadedFile | null>(resume ?? null);
+  /* Resuming means the pipeline has already run — replaying four stages of
+     spinner for work that finished before the officer opened the drawer would
+     be theatre. */
+  const [completed, setCompleted] = useState(resume ? UPLOAD_PIPELINE.length : 0);
   const [confirming, setConfirming] = useState(false);
   const [view, setView] = useState<"text" | "original">("text");
   const paneRef = useRef<HTMLDivElement>(null);
