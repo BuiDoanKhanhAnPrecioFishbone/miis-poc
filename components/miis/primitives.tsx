@@ -143,6 +143,7 @@ export function Button({
   fullWidth,
   pressed,
   ariaLabel,
+  id,
 }: {
   children: ReactNode;
   variant?: ButtonVariant;
@@ -165,6 +166,12 @@ export function Button({
   fullWidth?: boolean;
   pressed?: boolean;
   ariaLabel?: string;
+  /**
+   * For a script that has to find this control in both languages — the
+   * screenshot pass runs Swedish and English over the same shot list, and a
+   * label selector only ever works for one of them.
+   */
+  id?: string;
 }) {
   const sizeClass = BUTTON_SIZE[size];
 
@@ -190,6 +197,7 @@ export function Button({
 
   return (
     <button
+      id={id}
       type={type}
       onClick={onClick}
       disabled={disabled}

@@ -1,7 +1,7 @@
 import type { Lang } from "@/lib/domain/lang";
 import { monthShare, type BargainingMonthRow, type BargainingRoundReport } from "@/lib/domain/report";
 import { statusInfo } from "@/lib/domain/status";
-import { decimal } from "@/lib/format";
+import { amount, decimal } from "@/lib/format";
 import { dictionary } from "@/lib/i18n";
 import { Panel, Rationale, StatusDot } from "./primitives";
 
@@ -124,14 +124,14 @@ function Half({
                     key={s.key}
                     className="whitespace-nowrap py-1.5 pr-3 text-right tabular-nums"
                   >
-                    {decimal(row[s.key], lang)}
+                    {amount(row[s.key], lang)}
                     <span className="ml-2 text-muted-foreground">
                       {decimal(monthShare(row[s.key], grandTotal), lang)} %
                     </span>
                   </td>
                 ))}
                 <td className="py-1.5 text-right font-semibold tabular-nums">
-                  {decimal(rowTotal, lang)}
+                  {amount(rowTotal, lang)}
                 </td>
               </tr>
             );
@@ -142,10 +142,10 @@ function Half({
             </th>
             {SERIES.map((s) => (
               <td key={s.key} className="py-2 pr-3 text-right font-bold tabular-nums">
-                {decimal(totals[s.key], lang)}
+                {amount(totals[s.key], lang)}
               </td>
             ))}
-            <td className="py-2 text-right font-bold tabular-nums">{decimal(grandTotal, lang)}</td>
+            <td className="py-2 text-right font-bold tabular-nums">{amount(grandTotal, lang)}</td>
           </tr>
         </tbody>
       </table>

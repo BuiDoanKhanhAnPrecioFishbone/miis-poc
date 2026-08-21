@@ -4,10 +4,16 @@ import { REQUIREMENTS } from "./requirements";
 import {
   bargainingRoundReport,
   criteriaGroups,
+  expiryReport,
+  EXPIRY_CONFEDERATION,
+  isCurrent,
   monthShare,
   reportById,
+  reportsForRole,
   REPORTS,
   selectionSummary,
+  UNGROUPED_MEMBERS,
+  type ReportAgreement,
 } from "./report";
 
 /**
@@ -159,5 +165,132 @@ describe("monthShare", () => {
 
   it("is zero rather than NaN when nothing was counted", () => {
     expect(monthShare(0, 0)).toBe(0);
+  });
+});
+
+/**
+ * §3.1 gives *Allmänhetens dator* and *Medlare* the same permission —
+ * **"Specifika rapporter"** — and Bilaga 3 names which. "Specific" is a closed
+ * list, so it is data rather than something inferred from a menu.
+ */
+describe("reportsForRole — §3.1 and Bilaga 3", () => {
+  it("gives the public computer MI's own one report", () => {
+    expect(reportsForRole("public", true).map((r) => r.id)).toEqual(["allmanheten"]);
+  });
+
+  it("gives the mediator Bilaga 3 §5.1's three, and only those", () => {
+    expect(reportsForRole("mediator", true).map((r) => r.id).sort()).toEqual([
+      "avtalsrorelse",
+      "medlare",
+      "utlopningstidpunkter",
+    ]);
+  });
+
+  it("gives MI's own staff the whole catalogue", () => {
+    expect(reportsForRole("agreement-admin", false)).toHaveLength(REPORTS.length);
+  });
+
+  /* It narrows; it never grants. A role with no reports named gets none. */
+  it("gives an external role with no reports named nothing at all", () => {
+    expect(reportsForRole("statistics-user", true)).toHaveLength(0);
+  });
+});
+
+/**
+ * Bilaga 3 §7.11 — the seventh report, which Bilaga F does not contain and
+ * which we would not have known about without the manual.
+ */
+describe("the expiry report — Bilaga 3 §7.11", () => {
+  const a = (over: Partial<ReportAgreement>): ReportAgreement => ({
+    id: "A", name: "A", employerOrg: "AGO", employeeOrg: "ATO", ...over,
+  });
+
+  const list = [
+    a({ id: "sn1", validTo: "2027-04-30", employees: 1000, signedDate: "2026-01-01",
+        employerCentralOrg: "Svenskt Näringsliv", employerGroup: "Almega" }),
+    a({ id: "sn2", validTo: "2027-04-15", employees: 500, signedDate: "2026-01-01",
+        employerCentralOrg: "Svenskt Näringsliv", employerGroup: "Industriarbetsgivarna" }),
+    a({ id: "other", validTo: "2027-11-30", employees: 250, signedDate: "2026-01-01",
+        employerCentralOrg: "Fristående" }),
+    /* Unsigned — *kvarstående*, so not "gällande" and out of the report. */
+    a({ id: "unsigned", validTo: "2027-04-30", employees: 9999 }),
+    /* Expired in January — still in the 2027 report. A report taken in June has
+       to show the whole year, which is the point of taking it. */
+    a({ id: "january", validTo: "2027-01-31", employees: 400, signedDate: "2025-01-01" }),
+    /* A different year. */
+    a({ id: "later", validTo: "2029-03-31", employees: 800, signedDate: "2026-01-01" }),
+  ];
+
+  const report = expiryReport(list, 2027);
+
+  it('counts only agreements in force — "Endast gällande avtal ingår"', () => {
+    expect(report.all.totalAgreements).toBe(4);
+    expect(report.all.totalEmployees).toBe(2150);
+    /* The unsigned one is kvarstående and is out. */
+    expect(report.all.months[3]!.agreements).toBe(2);
+  });
+
+  it("buckets by the month the agreement expires", () => {
+    expect(report.all.months[3]!.agreements).toBe(2);
+    expect(report.all.months[3]!.employees).toBe(1500);
+    expect(report.all.months[10]!.agreements).toBe(1);
+  });
+
+  it("breaks Svenskt Näringsliv out from the whole", () => {
+    expect(report.confederation.totalAgreements).toBe(2);
+    expect(report.confederation.totalEmployees).toBe(1500);
+  });
+
+  it("breaks Svenskt Näringsliv down by employer group, largest first", () => {
+    expect(report.byEmployerGroup.map((g) => g.group)).toEqual([
+      "Almega",
+      "Industriarbetsgivarna",
+    ]);
+  });
+
+  /*
+    A member with no group of its own is *Övriga Svenskt Näringsliv*, which is
+    one of the four groups MI's own Rapport 2 names — not a group named after
+    the confederation. Svenskt Näringsliv is not an arbetsgivargrupp, and a
+    section reading "Svenskt Näringsliv" inside "Svenskt Näringsliv per
+    arbetsgivargrupp" says nothing.
+  */
+  it("counts an ungrouped member as Övriga Svenskt Näringsliv", () => {
+    const ungrouped = expiryReport(
+      [
+        a({ id: "sn3", validTo: "2027-06-30", employees: 300, signedDate: "2026-01-01",
+            employerCentralOrg: "Svenskt Näringsliv" }),
+      ],
+      2027,
+    );
+    expect(ungrouped.byEmployerGroup.map((g) => g.group)).toEqual([UNGROUPED_MEMBERS]);
+    expect(UNGROUPED_MEMBERS).not.toBe(EXPIRY_CONFEDERATION);
+  });
+
+  it("has twelve months in every section", () => {
+    expect(report.all.months).toHaveLength(12);
+    expect(report.confederation.months).toHaveLength(12);
+    for (const g of report.byEmployerGroup) expect(g.months).toHaveLength(12);
+  });
+});
+
+describe("isCurrent", () => {
+  it("counts a signed agreement", () => {
+    expect(isCurrent({ signedDate: "2026-01-01" })).toBe(true);
+  });
+
+  /* Unsigned is *kvarstående*: the previous agreement is still applied, but the
+     one the report is about does not exist, so its expiry is nobody's date. */
+  it("does not count an unsigned agreement", () => {
+    expect(isCurrent({})).toBe(false);
+  });
+
+  /*
+    Not "has not run out yet". A report taken in June for 2027 has to show
+    April — an earlier draft compared against the extraction date and dropped
+    two thirds of the year.
+  */
+  it("still counts one whose period has already ended", () => {
+    expect(isCurrent({ signedDate: "2024-01-01" })).toBe(true);
   });
 });

@@ -355,11 +355,15 @@ export const en: Dictionary = {
         "External access via Bank-ID through Försäkringskassan's identification solution (option, stage 2)",
     },
     mediatorMaterial: {
-      title: "Reference material",
+      title: "Reports I have access to",
       items: [
-        "Märket 2027–2029 · cost frame 6.4 %",
-        "Protocols and agreement prints without confidentiality-marked information",
+        "Agreement – Mediators · the agreement's periods, termination and linked documents",
+        "Agreement – Bargaining round · agreements and employees by expiry",
+        "Agreement – Expiry dates · agreements in force by month and employer group",
       ],
+      footnote:
+        "Appendix 1 §3.1 gives the Mediator role the permission Specific reports, and Appendix 3 §5.1 names the three. Confidentiality-marked information is excluded from all of them (NFÅ-004, FR-011).",
+      action: "Open the reports",
     },
   },
 
@@ -822,6 +826,25 @@ export const en: Dictionary = {
         "Agreement constructions counts employees across the whole Swedish labour market — 3,797,764 people in Medlingsinstitutet's own printout. The figures below are therefore Medlingsinstitutet's published ones, with the selection they were taken under (Employer org: Almega Tjänsteförbunden), and are not changed by the selection above. The bargaining round counts the register's own agreements and follows the selection in full.",
       rationale:
         "Appendix F opens by stating that for every report a selection screen and a result are shown. The selection is therefore part of the report rather than a step before it — which is why the criteria are printed at the head of the result.",
+    },
+    expiry: {
+      title: (year: number) => `Expiry dates ${year}`,
+      intro:
+        "Agreements in force distributed by the month they expire. Unlike the Bargaining Round Report, which splits the year by agreement status, this report splits the year by who signs the agreement.",
+      onlyCurrent:
+        "Only agreements in force are included (Appendix 3 §7.11). An agreement not yet signed is remaining, and is not counted here.",
+      month: "Month",
+      agreements: "Agreements",
+      employees: "Employees",
+      allSectors: "All sectors",
+      confederation: "Svenskt Näringsliv",
+      byGroup: "Svenskt Näringsliv by employer group",
+      byGroupNote: "Largest first, counted in employees. The month order within each group follows the report's own sorting.",
+      sectionTotal: (agreements: string, employees: string) =>
+        `${agreements} agreements · ${employees} employees`,
+      emptySection: "No agreements expire during the year in this part.",
+      derivedNote:
+        "The tables and charts are derived from the agreement register at the moment of extraction. All three parts share a scale, so a small part does not look like a large one. An agreement with no employee figure is shown as ¤, as in Medlingsinstitutet's own reports.",
     },
     bargainingRound: {
       title: (year: number) => `The ${year} bargaining round`,

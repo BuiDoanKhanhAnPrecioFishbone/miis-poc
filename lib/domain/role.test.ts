@@ -81,7 +81,19 @@ describe("accessLevel — Appendix 1 §3.1", () => {
   it("gives read, not write, where a role can look but not change", () => {
     expect(accessLevel(role("agreement-admin"), "market")).toBe("read");
     expect(accessLevel(role("agreement-admin"), "sok")).toBe("read");
-    expect(accessLevel(role("mediator"), "medling")).toBe("read");
+    expect(accessLevel(role("mediator"), "rapporter")).toBe("read");
+  });
+
+  /*
+    The mediator gets *"Specifika rapporter"*, which is the same permission §3.1
+    gives the public computer — not the mediation module. Bilaga 3 §5.1 names the
+    three and says "endast följande rapporter". This role used to carry Medling,
+    Dokument and Märket, which is more than the table allows.
+  */
+  it("does not give the mediator the mediation module — §3.1 says specific reports", () => {
+    expect(accessLevel(role("mediator"), "medling")).toBe("none");
+    expect(accessLevel(role("mediator"), "dokument")).toBe("none");
+    expect(accessLevel(role("mediator"), "market")).toBe("none");
   });
 
   it("reports none for a screen the role cannot reach at all", () => {

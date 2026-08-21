@@ -15,7 +15,7 @@ import { eventText } from "@/lib/domain/event";
 import { DEFAULT_LANG, t, type Lang } from "@/lib/domain/lang";
 import { caseNumber, MEDIATION_TYPE_LABEL } from "@/lib/domain/mediation";
 import { NAV_HREF } from "@/lib/domain/nav";
-import { roleInfo, type Role } from "@/lib/domain/role";
+import { accessLevel, roleInfo, type Role } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
 import { countAgreements, listIncompleteAgreements, listRecentAgreements } from "./agreements";
 import { SESSION_TIMEOUT } from "@/lib/domain/settings";
@@ -34,7 +34,15 @@ export async function getDashboard(
   const d = i18n;
   const s = i18n.start;
   const info = roleInfo(role, lang);
-  const benchmark = await getCurrentBenchmark();
+
+  /*
+    The Märket banner carries a link to /market, so it belongs only to a role
+    that may open it. The mediator's §3.1 permission is "Specifika rapporter"
+    and its nav is Start and Rapporter — the banner was handing that role a
+    button whose only outcome is the authorisation notice, which is the same
+    failure as a <Button> with no onClick.
+  */
+  const benchmark = accessLevel(info, "market") === "none" ? undefined : await getCurrentBenchmark();
 
   const base = {
     role: info,
@@ -332,6 +340,11 @@ export async function getDashboard(
           title: s.mediatorMaterial.title,
           reqTags: ["FM-003", "FR-011"],
           items: s.mediatorMaterial.items.map((text) => ({ text })),
+          /* The three are the role's whole system, so the panel that names
+             them is where the way in belongs — otherwise the only route is the
+             menu, and the start page lists work it cannot open. */
+          rationale: s.mediatorMaterial.footnote,
+          action: { text: s.mediatorMaterial.action, href: "/rapporter" },
         },
       ];
 

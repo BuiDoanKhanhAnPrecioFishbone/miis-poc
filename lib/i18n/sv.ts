@@ -351,11 +351,15 @@ export const sv = {
         "Extern åtkomst via Bank-ID genom Försäkringskassans identifieringslösning (option, steg 2)",
     },
     mediatorMaterial: {
-      title: "Underlag",
+      title: "Rapporter jag har tillgång till",
       items: [
-        "Märket 2027–2029 · kostnadsram 6,4 %",
-        "Protokoll och avtalsutskrifter utan sekretessmarkerad information",
+        "Avtal – Medlare · avtalets löptider, uppsägning och länkade handlingar",
+        "Avtal – Avtalsrörelse · avtal och anställda efter utlöpningstidpunkt",
+        "Avtal – Utlöpningstidpunkter · gällande avtal per månad och arbetsgivargrupp",
       ],
+      footnote:
+        "Bilaga 1 §3.1 ger rollen Medlare behörigheten Specifika rapporter, och Bilaga 3 §5.1 namnger de tre. Sekretessmarkerad information utelämnas ur samtliga (NFÅ-004, FR-011).",
+      action: "Öppna rapporterna",
     },
   },
 
@@ -815,6 +819,25 @@ export const sv = {
         "Avtalskonstruktioner räknar anställda på hela den svenska arbetsmarknaden – 3 797 764 personer i Medlingsinstitutets egen utskrift. Siffrorna nedan är därför Medlingsinstitutets publicerade, med det urval de togs med (Arbetsgivarorg: Almega Tjänsteförbunden), och ändras inte av urvalet ovan. Avtalsrörelsen räknar registrets egna avtal och följer urvalet fullt ut.",
       rationale:
         "Bilaga F inleds med att det för varje rapport visas urvalsbild och resultat. Urvalet är alltså en del av rapporten, inte ett steg före den – därför skrivs kriterierna ut överst i resultatet.",
+    },
+    expiry: {
+      title: (year: number) => `Utlöpningstidpunkter ${year}`,
+      intro:
+        "Gällande avtal fördelade efter den månad de löper ut. Till skillnad från Avtalsrörelserapporten, som delar året efter avtalsstatus, delar den här rapporten året efter vem som tecknar avtalet.",
+      onlyCurrent:
+        "Endast gällande avtal ingår i rapporten (Bilaga 3 §7.11). Ett avtal som ännu inte är tecknat är kvarstående och räknas inte här.",
+      month: "Månad",
+      agreements: "Avtal",
+      employees: "Anställda",
+      allSectors: "Samtliga sektorer",
+      confederation: "Svenskt Näringsliv",
+      byGroup: "Svenskt Näringsliv per arbetsgivargrupp",
+      byGroupNote: "Störst först, räknat i anställda. Månadsordningen inom varje grupp följer rapportens egen sortering.",
+      sectionTotal: (agreements: string, employees: string) =>
+        `${agreements} avtal · ${employees} anställda`,
+      emptySection: "Inga avtal löper ut under året i den här delen.",
+      derivedNote:
+        "Tabellerna och diagrammen härleds ur avtalsregistret vid uttaget. Alla tre delarna delar skala, så en liten del inte ser ut som en stor. Ett avtal utan uppgift om antal anställda visas med ¤, som i Medlingsinstitutets egna rapporter.",
     },
     bargainingRound: {
       title: (year: number) => `Avtalsrörelsen ${year}`,

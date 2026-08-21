@@ -73,6 +73,20 @@ async function openAiAssistant(page) {
   await page.waitForTimeout(250);
 }
 
+/**
+ * Bilaga F's opening line — *"För varje rapport visas urvalsbild och resultat"* —
+ * is the one sentence a report screenshot has to prove, and a capture of an
+ * unrun selection screen proves half of it. So this shot runs the report.
+ *
+ * By id and by value rather than by label, so the English pass takes the same
+ * shot; the button is found by its `#report-run` id for the same reason.
+ */
+async function runExpiryReport(page) {
+  await page.selectOption("#report-pick", "utlopningstidpunkter");
+  await page.click("#report-run");
+  await page.waitForTimeout(400);
+}
+
 const SHOTS = [
   { name: "start-avtalsadministrator", path: "/", role: "agreement-admin" },
   { name: "start-systemadministrator", path: "/", role: "system-admin" },
@@ -97,6 +111,19 @@ const SHOTS = [
   { name: "avtal-huvudrapport", path: "/avtal/A-001", role: "agreement-admin" },
   { name: "market", path: "/market", role: "agreement-admin" },
   { name: "rapporter-urvalsbild", path: "/rapporter", role: "agreement-admin" },
+  /*
+    The mediator, deliberately. §3.1 gives the role *"Specifika rapporter"* and
+    Bilaga 3 §5.1 names which three, so this shot carries two things at once:
+    Bilaga F's urvalsbild-plus-result, and a picker holding exactly three
+    reports with no menu behind it. Under the agreement administrator it would
+    show ten, and the authorisation claim would be invisible.
+  */
+  {
+    name: "rapport-utlopningstidpunkter",
+    path: "/rapporter",
+    role: "mediator",
+    prepare: runExpiryReport,
+  },
   {
     name: "ai-assistenten",
     path: "/registrera",

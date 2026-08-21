@@ -18,6 +18,7 @@
 
 import type { Agreement } from "./agreement";
 import { DEFAULT_LANG, type Lang, type Text } from "./lang";
+import type { Role } from "./role";
 
 /**
  * FR-008's status column. Three states, not two: "partially registered" is the
@@ -147,7 +148,13 @@ export type ReportCriterionKind =
   | "party-employee"
   | "sector"
   | "industry-code"
-  | "central-org"
+  /* Two kinds, not one: MI's screen shows Centralorganisation twice, and the
+     two lists have nothing in common — Svenskt Näringsliv on the employer side,
+     LO, TCO and Saco on the employee side. One shared list offered every role
+     both, so half of each dropdown was a selection that could only return
+     nothing, for a reason the user could not see. */
+  | "central-org-employer"
+  | "central-org-employee"
   | "employer-group"
   | "cooperation-group"
   | "pension-agreement"
@@ -180,7 +187,7 @@ export const REPORT_FORMAT_LABEL: Record<ReportFormat, string> = {
 /** Where a generated report actually appears in MIIS. */
 export type ReportResult =
   /** Built here, from the register. */
-  | { kind: "inline"; component: "constructions" | "bargaining-round" }
+  | { kind: "inline"; component: "constructions" | "bargaining-round" | "expiry" }
   /** A screen that already is this printout — the report sends you there. */
   | { kind: "screen"; href: string }
   /** Named in MI's table as Steg 2, and stated rather than drawn. */
@@ -200,6 +207,20 @@ export interface ReportDefinition {
   result: ReportResult;
   /** Bilaga F's own numbering, where the report is one of the six. */
   bilagaF?: 1 | 2 | 3 | 4 | 5 | 6;
+  /**
+   * The roles outside MI's own staff that may run this report.
+   *
+   * §3.1 gives both *Allmänhetens dator* and *Medlare* the same permission —
+   * **"Specifika rapporter"** — and Bilaga 3 names which: the public interface
+   * carries *Avtal – Allmänheten* (§4.3), and the mediator interface carries
+   * *Avtal – Medlare*, *Avtal – Avtalsrörelse* and *Avtal – Utlöpningstidpunkter*
+   * and nothing else (§5.1). Specific means specific, so the list is here rather
+   * than inferred from a menu.
+   *
+   * Absent means MI's own staff only, decided by `accessLevel` as everywhere
+   * else. It is never a substitute for that: this narrows, it does not grant.
+   */
+  externalRoles?: readonly Role[];
 }
 
 /* The three criteria the single-agreement reports share (Bilaga F, pages 39, 46, 48). */
@@ -234,7 +255,7 @@ const POPULATION_CRITERIA: readonly ReportCriterion[] = [
   { id: "industryCode", kind: "industry-code", label: { sv: "Branschkod", en: "Industry code" } },
   {
     id: "employerCentralOrg",
-    kind: "central-org",
+    kind: "central-org-employer",
     label: { sv: "Centralorganisation (AGO)", en: "Confederation (employer)" },
   },
   {
@@ -249,7 +270,7 @@ const POPULATION_CRITERIA: readonly ReportCriterion[] = [
   },
   {
     id: "employeeCentralOrg",
-    kind: "central-org",
+    kind: "central-org-employee",
     label: { sv: "Centralorganisation (ATO)", en: "Confederation (employee)" },
   },
   {
@@ -282,6 +303,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     formats: ["pdf", "word", "excel"],
     result: { kind: "screen", href: "/allmanheten" },
     bilagaF: 1,
+    externalRoles: ["public"],
   },
   {
     id: "avtalskonstruktioner",
@@ -310,6 +332,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     formats: ["pdf", "word", "excel"],
     result: { kind: "inline", component: "bargaining-round" },
     bilagaF: 3,
+    externalRoles: ["mediator"],
   },
   {
     id: "huvudrapport",
@@ -338,6 +361,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     formats: ["pdf", "word", "excel"],
     result: { kind: "screen", href: "/avtal" },
     bilagaF: 5,
+    externalRoles: ["mediator"],
   },
   {
     id: "pensionsavtal",
@@ -382,6 +406,24 @@ export const REPORTS: readonly ReportDefinition[] = [
     formats: ["pdf", "word", "excel"],
     result: { kind: "screen", href: "/avtal" },
     bilagaF: 6,
+  },
+  {
+    id: "utlopningstidpunkter",
+    label: {
+      sv: "Avtal – Utlöpningstidpunkter",
+      en: "Agreement – Expiry dates",
+    },
+    produces: {
+      sv: "Gällande avtal fördelade efter den månad de löper ut, i tre delar: samtliga sektorer, Svenskt Näringsliv, och Svenskt Näringsliv per arbetsgivargrupp. Endast gällande avtal ingår.",
+      en: "Agreements in force distributed by the month they expire, in three parts: all sectors, Svenskt Näringsliv, and Svenskt Näringsliv by employer group. Only agreements in force are included.",
+    },
+    requirements: ["FR-005", "FA-015"],
+    stage: 1,
+    /* One criterion. Bilaga 3 §7.11: "Ange årtal (4 siffror)." */
+    criteria: [{ id: "year", kind: "year", label: { sv: "Årtal", en: "Year" } }],
+    formats: ["pdf", "word", "excel"],
+    result: { kind: "inline", component: "expiry" },
+    externalRoles: ["mediator"],
   },
   {
     id: "konjunkturlon",
@@ -637,4 +679,156 @@ export function filterForReport(
       match(a.employerGroup, values["employerGroup"]) &&
       match(a.cooperationGroup, values["cooperationGroup"]),
   );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Utlöpningstidpunkter — Bilaga 3 §7.11                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * MI's seventh report, and the one Bilaga F does not contain.
+ *
+ * It is in the current system's user manual (Bilaga 3 §7.11) and nowhere in the
+ * requirement specification, which is exactly why reading the manual was worth
+ * the afternoon: MI runs a report we did not know existed.
+ *
+ * The manual gives its whole shape in five lines. One criterion, *Årtal*. A note
+ * that says **"Endast gällande avtal ingår i rapporten"** — so it is not "which
+ * agreements expired in 2027" but "of the agreements in force, which fall due
+ * when". And a sort order that names its four parts: a chart by month, then
+ * *Samtliga sektorer*, *Svenskt Näringsliv*, and *Svenskt Näringsliv per
+ * arbetsgivargrupp*.
+ *
+ * That breakdown is the difference between this and Avtalsrörelserapporten.
+ * Rapport 3 splits the year by FR-012's status — what has been settled. This one
+ * splits it by **who signs the agreement**, which is the question an analyst
+ * preparing for a round asks: how much of Svenskt Näringsliv falls due in April,
+ * and in which employer groups.
+ */
+export interface ExpiryMonthRow {
+  /** 1–12. */
+  month: number;
+  agreements: number;
+  employees: number;
+}
+
+export interface ExpirySection {
+  /** The employer group, for the third breakdown; absent for the two totals. */
+  group?: string;
+  months: ExpiryMonthRow[];
+  totalAgreements: number;
+  totalEmployees: number;
+}
+
+export interface ExpiryReport {
+  year: number;
+  /** Samtliga sektorer. */
+  all: ExpirySection;
+  /** Svenskt Näringsliv. */
+  confederation: ExpirySection;
+  /** Svenskt Näringsliv per arbetsgivargrupp, largest first. */
+  byEmployerGroup: ExpirySection[];
+}
+
+/** The confederation the report breaks out by name, as MI's own manual does. */
+export const EXPIRY_CONFEDERATION = "Svenskt Näringsliv";
+
+/**
+ * Where a member of that confederation with no employer group of its own is
+ * counted. It is one of the four groups Bilaga F's Rapport 2 names — *Almega*,
+ * *Industriarbetsgivarna*, *Transportföretagen*, *Övriga Svenskt Näringsliv* —
+ * so an ungrouped member lands in a real group rather than in a bucket named
+ * after the confederation, which is not an arbetsgivargrupp at all.
+ */
+export const UNGROUPED_MEMBERS = "Övriga Svenskt Näringsliv";
+
+function emptySection(group?: string): ExpirySection {
+  return {
+    ...(group ? { group } : {}),
+    months: Array.from({ length: 12 }, (_, i) => ({ month: i + 1, agreements: 0, employees: 0 })),
+    totalAgreements: 0,
+    totalEmployees: 0,
+  };
+}
+
+function add(section: ExpirySection, month: number, employees: number | undefined): void {
+  const row = section.months[month - 1]!;
+  row.agreements += 1;
+  section.totalAgreements += 1;
+  if (employees !== undefined) {
+    row.employees += employees;
+    section.totalEmployees += employees;
+  }
+}
+
+/**
+ * *"Endast gällande avtal ingår i rapporten."* — Bilaga 3 §7.11.
+ *
+ * **Signed, and not superseded.** An unsigned agreement is *kvarstående*: the
+ * previous one is still being applied and the agreement this report is about
+ * does not exist yet, so counting its expiry date would be counting a date
+ * nobody has agreed to.
+ *
+ * It is deliberately **not** "has not run out yet". A report taken in June for
+ * 2027 has to show April — the whole point is to see when the year's agreements
+ * fall due, and half of them will already have fallen by the time anyone reads
+ * it. An earlier draft compared `validTo` against the extraction date and
+ * silently dropped two thirds of the year.
+ *
+ * In the delivered system this is refined by *Avtalet upphört*, the flag MI's
+ * own Basfakta form carries (Bilaga 3 §3.3), which the prototype does not model
+ * yet. The year criterion does most of the work either way: a historical
+ * agreement that ran to 2021 is not in a 2027 report because of its date.
+ */
+export function isCurrent(a: { signedDate?: string | undefined }): boolean {
+  return Boolean(a.signedDate);
+}
+
+export function expiryReport(
+  agreements: readonly ReportAgreement[],
+  year: number,
+): ExpiryReport {
+  const all = emptySection();
+  const confederation = emptySection();
+  const groups = new Map<string, ExpirySection>();
+
+  for (const a of agreements) {
+    if (!a.validTo?.startsWith(String(year))) continue;
+    if (!isCurrent(a)) continue;
+    const month = Number(a.validTo.slice(5, 7));
+    if (!(month >= 1 && month <= 12)) continue;
+
+    add(all, month, a.employees);
+    if (a.employerCentralOrg === EXPIRY_CONFEDERATION) {
+      add(confederation, month, a.employees);
+      const group = a.employerGroup ?? UNGROUPED_MEMBERS;
+      if (!groups.has(group)) groups.set(group, emptySection(group));
+      add(groups.get(group)!, month, a.employees);
+    }
+  }
+
+  return {
+    year,
+    all,
+    confederation,
+    /* Largest first: an analyst reads the groups that move the market, and MI's
+       own sort is by month within each group rather than between them. */
+    byEmployerGroup: [...groups.values()].sort(
+      (a, b) => b.totalEmployees - a.totalEmployees || b.totalAgreements - a.totalAgreements,
+    ),
+  };
+}
+
+/**
+ * The reports a role may run.
+ *
+ * MI's own staff see the catalogue, narrowed by `accessLevel` like every other
+ * screen. The two roles §3.1 gives *"Specifika rapporter"* see exactly the
+ * reports named for them, in Bilaga 3's own order — because "specific" is a
+ * closed list, and a mediator who could reach the seventh report by guessing a
+ * URL would make NFÅ-003 a navigation feature.
+ */
+export function reportsForRole(role: Role, isExternal: boolean): readonly ReportDefinition[] {
+  if (!isExternal) return REPORTS;
+  return REPORTS.filter((r) => r.externalRoles?.includes(role));
 }

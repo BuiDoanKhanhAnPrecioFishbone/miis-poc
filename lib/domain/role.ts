@@ -160,10 +160,24 @@ export const ROLES: readonly RoleDefinition[] = [
     person: "Gunilla Runnquist",
     label: { sv: "Medlare", en: "Mediator" },
     permissions: {
-      sv: "Åtkomst till medlingsrelaterad information (option, steg 2)",
-      en: "Access to mediation-related information (option, step 2)",
+      sv: "Specifika rapporter (option, steg 2)",
+      en: "Specific reports (option, step 2)",
     },
-    nav: ["start", "medling", "dokument", "market"],
+    /*
+      **Specific reports, not the mediation module.**
+
+      §3.1's *description* column says "Åtkomst till medlingsrelaterad
+      information"; its *permission* column says **"Specifika rapporter"** — the
+      same permission it gives Allmänhetens dator. Bilaga 3 §5.1 settles which
+      three: *Avtal – Medlare*, *Avtal – Avtalsrörelse* and *Avtal –
+      Utlöpningstidpunkter*, and "endast följande rapporter".
+
+      This role used to carry Medling, Dokument and Märket, which is more than
+      the table allows. Mediation-related information reaches a mediator **as**
+      reports, and `reportsForRole` decides which; confidentiality-marked
+      information is excluded from all of them (NFÅ-004, FR-011).
+    */
+    nav: ["start", "rapporter"],
     write: [],
   },
 ] as const;

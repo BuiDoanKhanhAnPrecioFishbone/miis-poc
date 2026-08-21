@@ -11,7 +11,7 @@ other things. A claim about testing is worth what it can be shown to be.
 ## The four commands
 
 ```
-npm test          174 unit tests over the domain layer and the mock data
+npm test          188 unit tests over the domain layer and the mock data
 npm run lint      ESLint, including the architectural rules below
 npx tsc --noEmit  types, which is also what keeps the English translation complete
 npm run build     production build, which fails on broken mock references
@@ -58,11 +58,13 @@ break is worth more than one everybody agrees with:
 - A dangling reference in the mock data fails `next build`.
 
 **Accessibility.** NFUI-003 makes WCAG 2.1 AA a requirement rather than a preference. axe
-runs across every route at five width and language combinations, currently 0 violations,
-alongside a check that no route scrolls horizontally at any width from 375 to 1920 in
-either language. Both have caught defects that review missed — most recently a page-wide
-horizontal scrollbar caused by screen-reader-only text escaping its container, which was
-live on the deployed build and invisible to the eye.
+runs across every route **as every role**, at five width and language combinations,
+currently 0 violations, alongside a check that no route scrolls horizontally at any width
+from 375 to 1920 in either language. Both have caught defects that review missed — a
+page-wide horizontal scrollbar caused by screen-reader-only text escaping its container,
+which was live on the deployed build and invisible to the eye; and a 404 whose display
+numeral measured 2.4:1, which `aria-hidden` had hidden from a screen reader and from us,
+but not from the requirement.
 
 ## Why each build is reasonable
 

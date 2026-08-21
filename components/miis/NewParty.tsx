@@ -25,6 +25,9 @@ import { Select } from "./Select";
 /** The date a new registration starts from, and the value "register another" returns to. */
 const INITIAL_VALID_FROM = "2027-07-01";
 
+/** The one confederation whose members carry an industry code (FP-001). */
+const CONFEDERATION_WITH_INDUSTRY_CODE = "Svenskt Näringsliv";
+
 /**
  * Registering a party — FP-001, FP-002, FP-006, and US-03's merger.
  *
@@ -63,6 +66,25 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
   /* Only a party of the same side can be a predecessor: an AGO does not merge
      into an ATO, and offering it would invite a record that means nothing. */
   const candidates = register.filter((p) => p.type === type);
+
+  /*
+    MI's own arbetsgivargrupper, read off the register rather than typed here.
+    The report screen derives its Arbetsgivargrupp criterion the same way, and a
+    second hand-written list is a list that drifts — this one already had, when
+    it offered "Svenskt Näringsliv" as a group. Svenskt Näringsliv is a
+    confederation; its groups are Almega, Industriarbetsgivarna,
+    Transportföretagen and Övriga Svenskt Näringsliv (Bilaga F, Rapport 2).
+  */
+  const employerGroups = [
+    ...new Map(
+      register
+        .filter((p) => Boolean(p.employerGroup))
+        .map((p) => [
+          p.employerGroup as string,
+          { name: p.employerGroup as string, confederation: p.centralOrganisation },
+        ]),
+    ).values(),
+  ].sort((a, b) => a.name.localeCompare(b.name, lang === "sv" ? "sv" : "en"));
 
   function save() {
     const value = name.trim();
@@ -194,19 +216,14 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
               onChange={setGroup}
               options={[
                 { id: "", label: t.choose },
-                { id: "Svenskt Näringsliv", label: "Svenskt Näringsliv" },
-                {
-                  id: "Fristående arbetsgivarorganisationer",
-                  label: "Fristående arbetsgivarorganisationer",
-                },
-                {
-                  id: "Kommunala företagens arbetsgivarorganisation",
-                  label: "Kommunala företagens arbetsgivarorganisation",
-                },
+                ...employerGroups.map((g) => ({ id: g.name, label: g.name })),
               ]}
             />
-            {/* The industry code exists only inside Svenskt Näringsliv (FP-001). */}
-            {group === "Svenskt Näringsliv" && (
+            {/* The industry code exists only inside Svenskt Näringsliv (FP-001),
+                and membership is the group's own rather than a match on its
+                name — three of the four SN groups are not called after it. */}
+            {employerGroups.find((g) => g.name === group)?.confederation ===
+              CONFEDERATION_WITH_INDUSTRY_CODE && (
               <div data-span="2">
                 <FieldLabel htmlFor="np-code">{t.industryCode}</FieldLabel>
                 <input

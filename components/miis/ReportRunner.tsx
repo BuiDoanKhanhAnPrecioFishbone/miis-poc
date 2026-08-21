@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
+import type { Role } from "@/lib/domain/role";
 import {
   bargainingRoundReport,
   criteriaGroups,
+  expiryReport,
   filterForReport,
   REPORT_FORMAT_LABEL,
-  REPORTS,
   reportById,
+  reportsForRole,
   selectionSummary,
   type ReportAgreement,
   type ReportCriterion,
@@ -19,6 +21,7 @@ import {
 import { agreementStatus } from "@/lib/domain/status";
 import { dictionary } from "@/lib/i18n";
 import { BargainingRoundReportView } from "./BargainingRoundReport";
+import { ExpiryReportView } from "./ExpiryReport";
 import { IconForward } from "./icons";
 import { Badge, Button, Callout, FormGrid, LinkButton, Panel, Rationale, ReqTags } from "./primitives";
 import { Select } from "./Select";
@@ -52,7 +55,8 @@ export interface CriterionOptions {
   agreements: string[];
   sectors: { id: string; label: string }[];
   industryCodes: string[];
-  centralOrgs: string[];
+  employerCentralOrgs: string[];
+  employeeCentralOrgs: string[];
   employerGroups: string[];
   cooperationGroups: string[];
   years: number[];
@@ -82,8 +86,10 @@ function optionsFor(
       return o.sectors;
     case "industry-code":
       return plain(o.industryCodes);
-    case "central-org":
-      return plain(o.centralOrgs);
+    case "central-org-employer":
+      return plain(o.employerCentralOrgs);
+    case "central-org-employee":
+      return plain(o.employeeCentralOrgs);
     case "employer-group":
       return plain(o.employerGroups);
     case "cooperation-group":
@@ -103,6 +109,8 @@ export function ReportRunner({
   options,
   results,
   agreements,
+  role,
+  isExternal,
 }: {
   lang: Lang;
   options: CriterionOptions;
@@ -117,17 +125,27 @@ export function ReportRunner({
    * is not a payload worth a round trip per dropdown.
    */
   agreements: ReportAgreement[];
+  /**
+   * The role, and whether it is one of the two §3.1 gives "Specifika rapporter".
+   *
+   * Mediators and the public computer see a named list rather than the
+   * catalogue — Bilaga 3 §4.3 and §5.1 say which — so the picker is narrowed
+   * here rather than by hiding options in the markup.
+   */
+  role: Role;
+  isExternal: boolean;
 }) {
   const d = dictionary(lang);
   const t = d.rapporter.runner;
-  const [reportId, setReportId] = useState(REPORTS[1]!.id);
+  const available = reportsForRole(role, isExternal);
+  const [reportId, setReportId] = useState(available[0]!.id);
   const [values, setValues] = useState<Record<string, string>>({
     year: String(options.defaultYear),
   });
   const [format, setFormat] = useState<ReportFormat>("pdf");
   const [generated, setGenerated] = useState<string | null>(null);
 
-  const report = reportById(reportId)!;
+  const report = available.find((r) => r.id === reportId) ?? available[0]!;
   const groups = criteriaGroups(report, lang);
 
   /* Nine string comparisons; the React compiler memoizes what is worth memoizing. */
@@ -161,7 +179,7 @@ export function ReportRunner({
             label={t.pick}
             value={reportId}
             onChange={choose}
-            options={REPORTS.map((r) => ({
+            options={available.map((r) => ({
               id: r.id,
               label: r.stage === 2 ? `${r.label[lang]} (${t.stage2})` : r.label[lang],
             }))}
@@ -271,7 +289,9 @@ export function ReportRunner({
               {t.generate}
             </Button>
           ) : (
-            <Button onClick={() => setGenerated(report.id)}>{t.generate}</Button>
+            <Button id="report-run" onClick={() => setGenerated(report.id)}>
+              {t.generate}
+            </Button>
           )}
           {format !== "pdf" && (
             <span className="text-label text-muted-foreground">{t.formatNote}</span>
@@ -331,6 +351,14 @@ export function ReportRunner({
                     filterForReport(agreements, values),
                     Number(values["year"] ?? "") || options.defaultYear,
                     (a) => agreementStatus(a),
+                  )}
+                />
+              ) : report.result.component === "expiry" ? (
+                <ExpiryReportView
+                  lang={lang}
+                  report={expiryReport(
+                    filterForReport(agreements, values),
+                    Number(values["year"] ?? "") || options.defaultYear,
                   )}
                 />
               ) : (

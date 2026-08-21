@@ -148,7 +148,7 @@ export const AGREEMENTS: Agreement[] = [
   },
   {
     id: "A-009",
-    employees: 10,
+    employees: 9400,
     agreementArea: "Hemserviceföretag",
     name: "Hemserviceföretag",
     employerOrg: PARTIES.almega,

@@ -120,12 +120,13 @@ into FA-014's working groups; the shape above is MI's own and is worth matching.
 **A seventh report we did not know about.** §7.11 *Avtal – Utlöpningstidpunkter* — one
 criterion (Årtal), *"Endast gällande avtal ingår"*, and it is grouped by month with
 sections for Samtliga sektorer, Svenskt Näringsliv, and Svenskt Näringsliv per
-arbetsgivargrupp. Bilaga F does not contain it, so `REPORTS` is one short.
+arbetsgivargrupp. Bilaga F does not contain it, so `REPORTS` was one short. **Built —
+see item 5.**
 
 **The mediator interface is three named reports.** §5.1: *Avtal – Medlare*, *Avtal –
 Avtalsrörelse*, *Avtal – Utlöpningstidpunkter*, and nothing else, with
 *"Sekretess- och GDPR-markerad information visas ej"* at the head. FR-011's mediator half
-now has an exact specification and we have no mediator entrance at all.
+now has an exact specification. **Built — see item 5.**
 
 ## The plan, in the order it should be done
 
@@ -174,8 +175,36 @@ configuration panel.~~ **Done**, and with a better answer than "four editable bo
   gränssnitt eller exportfunktion"*; the interface is the screen and the export that needs
   no server is the print, which now carries MI's letterhead here too.
 
-**5 — Add *Avtal – Utlöpningstidpunkter* to the report catalogue**, and the mediator
-entrance that Bilaga 3 §5 specifies as exactly three reports.
+**5 — Add *Avtal – Utlöpningstidpunkter* to the report catalogue** ~~and the mediator
+entrance that Bilaga 3 §5 specifies as exactly three reports.~~ **Done.**
+
+- **The seventh report is built.** `utlopningstidpunkter` in `REPORTS`, one criterion
+  (*Årtal*), and a result in Bilaga 3 §7.11's own three sections — *Samtliga sektorer*,
+  *Svenskt Näringsliv*, *Svenskt Näringsliv per arbetsgivargrupp* — each a bar chart and a
+  table. It is **not Avtalsrörelserapporten with different words**: Rapport 3 splits the
+  year by FR-012 status, this one splits it by who signs. The three charts share one
+  scale, so a small section cannot look like a large one.
+- **Only agreements in force.** `isCurrent` is `Boolean(signedDate)` — an unsigned
+  agreement is *kvarstående*, so its expiry is nobody's date. It is deliberately **not**
+  "has not run out yet": a report taken in June for 2027 has to show April, and an earlier
+  draft that compared against the extraction date dropped two thirds of the year.
+- **The mediator's entrance matches §3.1.** The role's own words are *"Specifika
+  rapporter"*, so the menu is Start and Rapporter, `write` is empty, and the picker is
+  narrowed by `reportsForRole` rather than by hiding options — a URL cannot reach a report
+  the role was not given. Konjunkturlönerapporten and the scheduled extracts are off the
+  screen for both external roles, because neither is one of the three Bilaga 3 §5.1 names.
+- **Two defects the generated report then exposed, both now fixed.** Employee figures
+  printed as `52510` — `decimal()` does no thousands grouping and `amount()` does; the
+  Avtalsrörelse report had the same bug. And *Svenskt Näringsliv per arbetsgivargrupp*
+  showed a group called *Svenskt Näringsliv*, because the party register was carrying the
+  confederation in `employerGroup`. The real groups are Bilaga F Rapport 2's own —
+  **Almega, Industriarbetsgivarna, Transportföretagen, Övriga Svenskt Näringsliv** — and
+  the registration form now derives its list from the register instead of holding a second
+  hand-written one.
+- **Centralorganisation is two criteria, not one.** MI's selection screen shows it twice,
+  once per side, and the lists have nothing in common. A single shared list offered
+  Svenskt Näringsliv under *Centralorganisation (ATO)* — a selection that could only
+  return nothing, for a reason the user could not see.
 
 **6 — Enrich the agreement model from Bilaga 3 §3.** Not all 36 fields; the ones the
 reports and the scenarios actually read — *Årsarbetare*, *Fackmedlemmar*, *Medellön*,

@@ -18,9 +18,13 @@ import {
 } from "@/lib/data/reports";
 import { SECTOR_LABEL } from "@/lib/domain/agreement";
 import type { ReportAgreement } from "@/lib/domain/report";
+import type { Role } from "@/lib/domain/role";
 import { getSession } from "@/lib/session";
 
 const EXTRACT_PERIOD_START = "2027-06-01";
+
+/** The two roles §3.1 gives *"Specifika rapporter"* rather than the catalogue. */
+const EXTERNAL_ROLES: Role[] = ["mediator", "public"];
 
 export async function generateMetadata(): Promise<Metadata> {
   const { i18n } = await getSession();
@@ -48,7 +52,8 @@ export default async function RapporterPage() {
   const { i18n, lang } = session;
   const t = i18n.rapporter;
 
-  const [rows, constructionsReport, bargainingYears, agreements, parties, bodies] = await Promise.all([
+  const [rows, constructionsReport, bargainingYears, agreements, parties, bodies] =
+    await Promise.all([
       listMonitoredAgreements(lang),
       getConstructionsReport(),
       listBargainingYears(),
@@ -58,6 +63,7 @@ export default async function RapporterPage() {
     ]);
 
   const exportedCount = rows.filter((r) => r.lastExported).length;
+  const isExternal = EXTERNAL_ROLES.includes(session.role.id);
 
   /*
     The option lists behind MI's criteria, taken from the register rather than
@@ -80,7 +86,15 @@ export default async function RapporterPage() {
       label: SECTOR_LABEL[lang][s],
     })),
     industryCodes: unique(parties.map((p) => p.industryCode)),
-    centralOrgs: unique(parties.map((p) => p.centralOrganisation)),
+    /* Per side. Confederations do not span the two — offering Svenskt
+       Näringsliv under Centralorganisation (ATO) is a criterion that can only
+       return nothing. */
+    employerCentralOrgs: unique(
+      parties.filter((p) => p.type === "employer").map((p) => p.centralOrganisation),
+    ),
+    employeeCentralOrgs: unique(
+      parties.filter((p) => p.type === "employee").map((p) => p.centralOrganisation),
+    ),
     employerGroups: unique(parties.map((p) => p.employerGroup)),
     cooperationGroups: unique(bodies.map((b) => b.name)),
     years: bargainingYears.years,
@@ -155,7 +169,13 @@ export default async function RapporterPage() {
   }));
 
   return (
-    <AppShell role={session.role} requires="rapporter" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      role={session.role}
+      requires="rapporter"
+      dataset={session.dataset}
+      lang={lang}
+      reqTags={session.reqTags}
+    >
       <PrintHeader lang={lang} title={t.title} />
       <PageHeading
         title={t.title}
@@ -164,10 +184,18 @@ export default async function RapporterPage() {
         action={<PrintButton lang={lang} />}
       />
 
+      {/*
+        §3.1 gives Medlare and Allmänhetens dator "Specifika rapporter", and
+        Bilaga 3 §4.3 and §5.1 name which. The picker is narrowed by the role
+        rather than by hiding options, so a URL cannot reach a report the role
+        was not given.
+      */}
       <ReportRunner
         lang={lang}
         options={criterionOptions}
         agreements={reportAgreements}
+        role={session.role.id}
+        isExternal={isExternal}
         results={{
           constructions: <ConstructionsReport report={constructionsReport} lang={lang} d={i18n} />,
         }}
@@ -177,36 +205,45 @@ export default async function RapporterPage() {
         FR-008 puts this one on a screen rather than behind a selection: the
         report "ska skrivas ut/exporteras från en vy som visar en lista med
         bevakade avtal", so the list is the selection and it is always visible.
+
+        Not for the two roles §3.1 limits to specific reports, though — the
+        Short-Term Wage Report is not one of the three Bilaga 3 §5.1 names, and a
+        panel below the picker would hand a mediator a report the table does not
+        give them.
       */}
-      <div id="konjunkturlon" className="mt-5 scroll-mt-4">
-        <ShortTermWageReport
-          rows={rows}
-          lang={lang}
-          periodValue={`${EXTRACT_PERIOD_START} – ${EXTRACT_PERIOD_END}`}
-          lastExportValue={`${LAST_EXPORT_DATE} · ${i18n.common.agreementCount(exportedCount)}`}
-        />
-      </div>
-
-      <div className="mt-5">
-        <Panel title={t.scheduled.heading} tags={["FR-014", "FE-001", "FE-002"]}>
-          <p className="max-w-4xl text-table">{t.scheduled.intro}</p>
-          <DataTable
-            columns={scheduleColumns}
-            rows={scheduleRows}
+      {!isExternal && (
+        <div id="konjunkturlon" className="mt-5 scroll-mt-4">
+          <ShortTermWageReport
+            rows={rows}
             lang={lang}
-            caption={t.scheduled.heading}
-            minWidth="48rem"
+            periodValue={`${EXTRACT_PERIOD_START} – ${EXTRACT_PERIOD_END}`}
+            lastExportValue={`${LAST_EXPORT_DATE} · ${i18n.common.agreementCount(exportedCount)}`}
           />
+        </div>
+      )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
-              {t.scheduled.add}
-            </Button>
-            <ReqTag id="FE-003" />
-          </div>
-          <Rationale>{t.scheduled.logNote}</Rationale>
-        </Panel>
-      </div>
+      {!isExternal && (
+        <div className="mt-5">
+          <Panel title={t.scheduled.heading} tags={["FR-014", "FE-001", "FE-002"]}>
+            <p className="max-w-4xl text-table">{t.scheduled.intro}</p>
+            <DataTable
+              columns={scheduleColumns}
+              rows={scheduleRows}
+              lang={lang}
+              caption={t.scheduled.heading}
+              minWidth="48rem"
+            />
+
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+                {t.scheduled.add}
+              </Button>
+              <ReqTag id="FE-003" />
+            </div>
+            <Rationale>{t.scheduled.logNote}</Rationale>
+          </Panel>
+        </div>
+      )}
     </AppShell>
   );
 }

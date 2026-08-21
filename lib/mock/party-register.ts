@@ -88,7 +88,7 @@ export const PARTY_REGISTER: Party[] = [
     type: "employer",
     name: "Teknikföretagen",
     sector: "private",
-    employerGroup: "Svenskt Näringsliv",
+    employerGroup: "Övriga Svenskt Näringsliv",
     industryCode: "25–30 Metallvaru- och maskinindustri",
     nameHistory: [
       { name: "Sveriges Verkstadsindustrier", validFrom: "1990-01-01", validTo: "2001-12-31" },
@@ -105,7 +105,7 @@ export const PARTY_REGISTER: Party[] = [
     type: "employer",
     name: "Industriarbetsgivarna",
     sector: "private",
-    employerGroup: "Svenskt Näringsliv",
+    employerGroup: "Industriarbetsgivarna",
     industryCode: "24 Stål- och metallframställning",
     nameHistory: [{ name: "Industriarbetsgivarna", validFrom: "2011-01-01" }],
     contacts: [
@@ -119,7 +119,7 @@ export const PARTY_REGISTER: Party[] = [
     type: "employer",
     name: "Almega Tjänsteförbunden",
     sector: "private",
-    employerGroup: "Svenskt Näringsliv",
+    employerGroup: "Almega",
     industryCode: "61 Telekommunikation",
     nameHistory: [{ name: "Almega Tjänsteförbunden", validFrom: "2005-01-01" }],
     contacts: [
