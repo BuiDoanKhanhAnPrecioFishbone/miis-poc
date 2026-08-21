@@ -111,6 +111,12 @@ export function AiAssistantLauncher({ lang, role }: { lang: Lang; role: RoleInfo
   return (
     <button
       type="button"
+      /*
+        A stable hook, so the screenshot pass can take it out of shots where it
+        is not the subject. A fixed control lands mid-content in a full-page
+        capture and reads as a defect in the tender document.
+      */
+      data-ai-launcher
       onClick={() => setOpen(true)}
       aria-haspopup="dialog"
       aria-label={waiting > 0 ? t.launcherWaiting(waiting) : t.launcher}

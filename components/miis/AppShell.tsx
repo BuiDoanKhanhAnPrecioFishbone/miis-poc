@@ -276,7 +276,14 @@ export function AppShell({
 
         <main
           id="innehall"
-          className="@container min-w-0 flex-1 bg-background px-5 py-8 sm:px-8 xl:px-10"
+          /*
+            `pb-28` rather than a symmetric `py-8`. The AI launcher is fixed
+            24px from the bottom and 48px tall, so without room to scroll past
+            it the last row of a long table sits underneath it permanently.
+            Padding is the fix rather than moving the control — the corner is
+            the point of the corner.
+          */
+          className="@container min-w-0 flex-1 bg-background px-5 pb-28 pt-8 sm:px-8 xl:px-10"
         >
           {/*
             NFÅ-003 enforced, not merely reflected. A role that does not have

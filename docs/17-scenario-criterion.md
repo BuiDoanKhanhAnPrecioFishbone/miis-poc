@@ -57,16 +57,19 @@ supporting evidence that the system is complete.
 
 The criterion asks for four things per role. Being honest about which we have:
 
+*Updated after item 2 — the narratives are now in `docs/18-role-scenarios.md`.*
+
 | | System admin | Agreement admin | Public computer |
 |---|---|---|---|
-| **Task and goal** | not written | not written | not written |
-| **Workflow** | thin — the screen shows logs, not a task | strong — five named steps, MI's own §4.4 flow | thin — one selection, one result |
-| **Visualisation** | screen exists | screens exist | screen exists |
-| **Usability / efficiency / accessibility** | not written per role | not written per role | not written per role |
+| **Task and goal** | written | written | written |
+| **Workflow** | written; thin in the system itself — no configuration screen (item 4) | strong — five named steps, MI's own §4.4 flow | written; thin in the system — no search (item 3) |
+| **Visualisation** | `administration-loggar`, `start-systemadministrator`, `anvandare-behorigheter` | eight shots incl. `ai-assistenten` | `allmanheten` |
+| **Usability / efficiency / accessibility** | written | written | written |
 
-**The task/goal and the usability paragraph are missing for all three, and they are three
-of the four things being marked.** They are writing, not building — and they are the
-cheapest points on the board.
+Three of the four elements were prose nobody had written, and that was the cheapest
+score on the board. It is written now. What remains is the **workflow** row: two of the
+three roles have a narrative that is honest about being thin, and items 3 and 4 are what
+make them not thin.
 
 ### What each role still needs built
 
@@ -134,13 +137,16 @@ now has an exact specification and we have no mediator entrance at all.
 
 ## The plan, in the order it should be done
 
-**1 — Ask for Bilaga 2.** One message. Everything else is built against a paraphrase
-until it arrives.
+**1 — Ask for Bilaga 2.** ~~One message.~~ **Sent 2026-08-21.** Everything below stays
+built against a paraphrase until it comes back; if the Swedish original names different
+roles or different elements, `docs/18-role-scenarios.md` is the file to re-check first.
 
-**2 — Write the three scenario narratives.** Task and goal, workflow, and a
-usability/efficiency/accessibility paragraph per role. Three of the four scored elements
-are prose we have not written, and the material for all of it already exists in the
-repository. This is the highest score per hour available.
+**2 — Write the three scenario narratives.** ~~Task and goal, workflow, and a
+usability/efficiency/accessibility paragraph per role.~~ **Done — `docs/18-role-scenarios.md`.**
+All four elements for all three roles, with the screenshot for each named. Two places are
+marked *to be strengthened before submission* rather than papered over: the system
+administrator has no configuration screen (item 4) and the public computer has no search
+(item 3). The draft is English; the response is Swedish, and the note at the top says so.
 
 **3 — Give the public computer its search.** Bilaga 3 §4.1 says MI's visitors have a
 search builder today. Reusing `/sok` in a reduced, read-only, confidentiality-filtered

@@ -62,8 +62,20 @@ async function uploadProtocol(page) {
   await page.waitForTimeout(150);
 }
 
+/**
+ * The AI support, opened. §4.1 is the part of the offer a competitor is least
+ * likely to have thought about, and it is behind a launcher — so a page capture
+ * of any screen shows a violet pill and nothing else. The drawer has to be open
+ * in at least one shot or the reader never sees it.
+ */
+async function openAiAssistant(page) {
+  await page.getByRole("button", { name: /AI-stöd|AI support/ }).first().click();
+  await page.waitForTimeout(250);
+}
+
 const SHOTS = [
   { name: "start-avtalsadministrator", path: "/", role: "agreement-admin" },
+  { name: "start-systemadministrator", path: "/", role: "system-admin" },
   { name: "start-medlingsadministrator", path: "/", role: "mediation-admin" },
   { name: "start-statistikanvandare", path: "/", role: "statistics-user" },
   { name: "registrera-uppladdning", path: "/registrera", role: "agreement-admin" },
@@ -81,7 +93,20 @@ const SHOTS = [
     fullPage: false,
     scrollTo: 900,
   },
-  { name: "rapporter-konjunkturlonerapporten", path: "/rapporter", role: "agreement-admin" },
+  { name: "avtalsregister", path: "/avtal", role: "agreement-admin" },
+  { name: "avtal-huvudrapport", path: "/avtal/A-001", role: "agreement-admin" },
+  { name: "market", path: "/market", role: "agreement-admin" },
+  { name: "rapporter-urvalsbild", path: "/rapporter", role: "agreement-admin" },
+  {
+    name: "ai-assistenten",
+    path: "/registrera",
+    role: "agreement-admin",
+    prepare: async (page) => {
+      await uploadProtocol(page);
+      await openAiAssistant(page);
+    },
+    fullPage: false,
+  },
   { name: "sok-sokbyggaren", path: "/sok", role: "statistics-user" },
   { name: "partstraffar", path: "/partstraffar", role: "mediation-admin" },
   { name: "partstraffar-ny", path: "/partstraffar/ny", role: "mediation-admin" },
@@ -93,6 +118,8 @@ const SHOTS = [
   { name: "part-namnbyte", path: "/parter/P-028", role: "agreement-admin" },
   { name: "dokument", path: "/dokument", role: "agreement-admin" },
   { name: "allmanheten", path: "/allmanheten", role: "public" },
+  { name: "administration-loggar", path: "/administration", role: "system-admin" },
+  { name: "anvandare-behorigheter", path: "/administration/anvandare", role: "permission-admin" },
 ];
 
 const { hostname } = new URL(BASE);
@@ -142,6 +169,16 @@ async function main() {
         console.error(`  FAIL ${shot.name} (${reqTags}) — ${response?.status() ?? "no response"}`);
         failures += 1;
         continue;
+      }
+
+      /*
+        The AI launcher is `position: fixed`, so a full-page capture paints it
+        wherever the viewport happened to be — over a table, halfway down a
+        report — and in a tender document that reads as a defect rather than as
+        a control. It stays only in the shot whose subject it is.
+      */
+      if (shot.name !== "ai-assistenten") {
+        await page.addStyleTag({ content: "[data-ai-launcher]{display:none !important}" });
       }
 
       if (shot.prepare) await shot.prepare(page);

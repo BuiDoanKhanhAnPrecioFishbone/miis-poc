@@ -37,7 +37,9 @@ criterion names **three** roles — System Administrator, Agreement Administrato
 Officer, The Public Access Computer — and asks for four things about each: task and goal,
 workflow, a visualisation, and a usability/efficiency/accessibility statement. The
 prototype implements all eight roles, which is right, but the *presentation* is marked on
-those three, and three of the four elements are prose that has not been written yet.
+those three. **`docs/18-role-scenarios.md` is the response text** for all four elements of
+all three, drafted against what the prototype actually does; where a role's story is thin
+the draft says so rather than papering over it.
 
 **When our English rendering and MI's Swedish original disagree, MI's original wins.**
 
