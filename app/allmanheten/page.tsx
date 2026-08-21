@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
 
-import { PrintButton, PrintHeader } from "@/components/miis/Print";
-import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { PrintHeader } from "@/components/miis/Print";
+import { type Column, type Row } from "@/components/miis/DataTable";
+import { PublicSearch } from "@/components/miis/PublicSearch";
 import { PublicShell } from "@/components/miis/PublicShell";
 import {
-  Button,
   ConfidentialityMarker,
-  EmptyState,
   PageHeading,
   Panel,
   Rationale,
-  ReqTags,
   StatusDot,
 } from "@/components/miis/primitives";
 import { listAgreements } from "@/lib/data/agreements";
 import { listEmployeeOrgs, listEmployerOrgs } from "@/lib/data/parties";
 import { validityLabel } from "@/lib/domain/agreement";
+import type { PublicSearchable } from "@/lib/domain/public-search";
 import { agreementStatus } from "@/lib/domain/status";
 import { getSession } from "@/lib/session";
 
@@ -26,6 +25,20 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title, description, openGraph: { title, description } };
 }
 
+/**
+ * The public computer — FR-011, NFÅ-006, D-002, and US-14.
+ *
+ * The one screen a role gets, so it has to carry the whole scenario: find the
+ * agreement, read its status and period, take the answer away. There is no
+ * sign-in and there should not be — NFÅ-001 puts staff authentication in
+ * Försäkringskassan's IdP, and NFÅ-006 restricts public access to MI's own IP
+ * address, so the machine in the room is the credential.
+ *
+ * The cells are rendered here and handed to the client component as a map. The
+ * status marker, the confidentiality marker and the masked validity are
+ * decisions about what may be *shown*, and those stay on the server; the browser
+ * decides only which rows are in the selection.
+ */
 export default async function AllmanhetenPage() {
   const session = await getSession();
   const { i18n, lang } = session;
@@ -44,9 +57,10 @@ export default async function AllmanhetenPage() {
     { key: "validity", header: t.result.table.validity, sortable: true },
   ];
 
-  const rows: Row[] = agreements.map((a) => {
+  const rowFor: Record<string, Row> = {};
+  for (const a of agreements) {
     const status = agreementStatus(a, lang);
-    return {
+    rowFor[a.id] = {
       key: a.id,
       cells: [
         <StatusDot key="s" status={status} showLabel />,
@@ -84,7 +98,18 @@ export default async function AllmanhetenPage() {
         a.confidential ? "" : validityLabel(a, lang),
       ],
     };
-  });
+  }
+
+  /* Only what a public search may read — see `lib/domain/public-search.ts`. */
+  const searchable: PublicSearchable[] = agreements.map((a) => ({
+    id: a.id,
+    name: a.name,
+    agreementArea: a.agreementArea,
+    employerOrg: { id: a.employerOrg.id, name: a.employerOrg.name },
+    employeeOrg: { id: a.employeeOrg.id, name: a.employeeOrg.name },
+    ...(a.validFrom ? { validFrom: a.validFrom } : {}),
+    ...(a.validTo ? { validTo: a.validTo } : {}),
+  }));
 
   return (
     <PublicShell
@@ -105,99 +130,14 @@ export default async function AllmanhetenPage() {
         }
       />
 
-      <Panel title={t.selection.title} tags={["FR-011"]}>
-        {/*
-          Selections on employer organisation, employee organisation and
-          agreement, then a report — the shape the requirement describes. Not a
-          kiosk: the real users need a usable selection, not big buttons.
-        */}
-        <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
-          <div>
-            <label htmlFor="pub-ago" className="mb-1 block text-label font-bold">
-              {t.selection.employerOrg}
-            </label>
-            <select id="pub-ago" className="field-input" defaultValue="">
-              <option value="">{t.selection.all}</option>
-              {employerOrgs.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="pub-ato" className="mb-1 block text-label font-bold">
-              {t.selection.employeeOrg}
-            </label>
-            <select id="pub-ato" className="field-input" defaultValue="">
-              <option value="">{t.selection.all}</option>
-              {employeeOrgs.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="pub-avtal" className="mb-1 block text-label font-bold">
-              {t.selection.agreement}
-            </label>
-            <select id="pub-avtal" className="field-input" defaultValue="">
-              <option value="">{t.selection.all}</option>
-              {agreements.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="pub-datum" className="mb-1 block text-label font-bold">
-              {t.selection.period}
-            </label>
-            <input
-              id="pub-datum"
-              type="date"
-              defaultValue="2027-06-01"
-              className="field-input tabular-nums"
-            />
-          </div>
-        </div>
-
-        <p className="mt-3 text-label text-muted-foreground">{t.selection.hint}</p>
-
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Button
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{t.selection.search}</Button>
-          <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{t.selection.reset}</Button>
-        </div>
-      </Panel>
-
-      <div className="mt-5">
-        <Panel
-          title={`${t.result.title} · ${i18n.common.agreementCount(agreements.length)}`}
-          tags={["FR-012"]}
-        >
-          {agreements.length === 0 ? (
-            <EmptyState text={t.result.empty} />
-          ) : (
-            <>
-              <DataTable columns={columns} rows={rows} lang={lang} caption={t.result.title} />
-
-              <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-                <PrintButton lang={lang} variant="primary" />
-                <span className="text-label text-muted-foreground">{t.result.downloadNote}</span>
-                <ReqTags ids={["FR-011", "NFÅ-004"]} />
-              </div>
-            </>
-          )}
-        </Panel>
-      </div>
+      <PublicSearch
+        agreements={searchable}
+        employerOrgs={employerOrgs.map((p) => ({ id: p.id, name: p.name }))}
+        employeeOrgs={employeeOrgs.map((p) => ({ id: p.id, name: p.name }))}
+        lang={lang}
+        columns={columns}
+        rowFor={rowFor}
+      />
 
       <div className="mt-5">
         <Panel title={t.help.title} tone="sand" tags={["D-002"]}>

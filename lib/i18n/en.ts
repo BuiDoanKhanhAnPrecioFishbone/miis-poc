@@ -928,7 +928,13 @@ export const en: Dictionary = {
     publicExplain:
       "This is the same system in a reduced, read-only version. No registration, no editing and no confidentiality-marked agreement information.",
     selection: {
-      title: "Make your selection",
+      title: "Find an agreement",
+      lead:
+        "Type a word — an agreement area, a union or an employer organisation — or choose from the lists below. The results update as you type.",
+      text: "Search",
+      textPlaceholder: "e.g. Apotek, Unionen or Spårtrafik",
+      textHint: "Searches the agreement name, the agreement area and both parties",
+      narrow: "Narrow the selection",
       employerOrg: "Employer organisation",
       employeeOrg: "Employee organisation",
       agreement: "Agreement",
@@ -937,11 +943,16 @@ export const en: Dictionary = {
       search: "Show report",
       reset: "Start over",
       hint: "Choose one or more levels. A field left empty includes everything.",
+      builderNote:
+        "The full search builder is an internal function and is not offered here. Field, operator and value with and/or, groupings, chosen presentation columns and saved searches are an expert instrument, and the visitor has no sign-in, no introduction and one attempt. Free-text search and the three criteria answer the same question in one step. Should Medlingsinstitutet want the builder in the public view anyway it is the same component — the confidentiality rule already decides the rest (D-002).",
     },
     result: {
       title: "Agreements in the selection",
       count: (n: number) => `${n} agreements`,
-      empty: "No agreement matches the selection. Try a broader one.",
+      empty: "No agreement matches the search. Try a broader selection, or start over.",
+      all: "Every agreement Medlingsinstitutet has registered. Search or narrow above to reduce the list.",
+      narrowed:
+        "The agreements matching the search above. Confidentiality-marked agreements are included in the list; what is withheld is their detail.",
       table: {
         status: "Status",
         agreement: "Agreement",

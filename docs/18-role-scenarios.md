@@ -259,11 +259,20 @@ Medlingsinstitutet's own IP address — so the machine in the room *is* the
 credential. The view is visually marked as a public view, so nobody mistakes it
 for the internal system.
 
-**Making a selection.** The visitor chooses employer organisation, employee
-organisation and agreement — **MI's own three criteria**, read off the selection
-screen for *Avtal – Allmänheten* in Appendix 1's Bilaga F. Any field left as
-*Alla* means it was not narrowed, which the result then states explicitly rather
-than leaving the reader to guess at the population.
+**Finding the agreement.** The first control is a single search field. The
+visitor types what they came in knowing — an agreement area, a union, an employer
+— and the list narrows as they type, matching the agreement's name, its area and
+both parties (FR-001, FR-003). Nothing has to be chosen from a list first, and
+nothing has to be pressed.
+
+Underneath it are **MI's own three criteria** — employer organisation, employee
+organisation, agreement — read off the selection screen for *Avtal –
+Allmänheten* in Appendix 1's Bilaga F, for the visitor who knows exactly which
+agreement they want. A fourth narrows to the agreements that were in force at a
+given date (FA-020), which is the question a visitor checking a past year asks.
+Whatever is narrowed appears as a removable chip with a count, and any field left
+as *Alla* means it was not narrowed — which the result then states in a sentence
+rather than leaving the reader to guess at the population.
 
 **Reading the result.** The agreements in the selection, with parties, agreement
 area, the validity period of the wage agreement and of the general terms, and the
@@ -283,29 +292,43 @@ withheld, the view says so rather than leaving a blank, because an empty field
 reads as missing data and a marked one reads as withheld data, and those are
 different facts.
 
-> **To be strengthened before submission.** Bilaga 3 §4.1 records that MI's
-> *current* public interface offers three ways in — via ärendekort, via the search
-> builder, and free-text search — where the prototype offers the selection and the
-> report. Plan item 3 gives this role a reduced, read-only, confidentiality-filtered
-> search builder, so the new system does not arrive with less than the one it
-> replaces.
+**Why there is no query builder here.** Bilaga 3 §4.1 records that MI's *current*
+public interface offers three ways in — via ärendekort, via the search builder,
+and free-text search. Free text is here, and the report is here. The **search
+builder deliberately is not**, and the reasoning is on the screen rather than
+left to be noticed: W3D3 offers it to the public because W3D3 is a generic diary
+product whose public interface was *configured* rather than designed, and
+Avropsförfrågan §18.3 is explicit that the old system is not the starting point
+for the new one. FR-002's builder is field × operator × value with and/or, nested
+groups, chosen presentation columns and saved searches — an expert instrument,
+handed to someone with no sign-in, no introduction and one attempt. What it would
+answer, the search field and three criteria answer in one step.
+
+It is a decision, not an omission, and it is reversible: should MI want the
+builder in the public view, it is the same component, and `maySeeConfidential`
+already decides what it may return.
 
 ### Visualisations
 
 | File | Shows |
 |---|---|
-| `allmanheten` | The whole role: selection, result, status coding, print |
+| `allmanheten` | The whole role: search, selection, result, status coding, print |
 
 ### Usability, efficiency and accessibility
 
-**Usability.** One screen, one selection, one result. No menu, no login, no
-internal vocabulary, and nothing that can be edited. Everything the visitor needs
-to understand the answer is on the same page as the answer: what a colour means
-is written beside it, and what was *not* narrowed is stated rather than implied.
+**Usability.** One screen, one search field, one result. No menu, no login, no
+internal vocabulary, and nothing that can be edited. The visitor is never asked to
+choose from a list before they can begin — they type, and what they typed appears
+above the result as a removable chip so it is always clear what the list is a list
+*of*. Everything needed to understand the answer is on the same page as the
+answer: what a colour means is written beside it, and what was *not* narrowed is
+stated rather than implied.
 
-**Efficiency.** Three fields and a button. The common case — "which agreement
-covers this area" — is one selection, and the result prints without a dialog or a
-download.
+**Efficiency.** The common case — "which agreement covers this area" — is one
+word, with no button to find and no page to wait for; the result narrows as the
+visitor types. The precise case is one dropdown. The result prints without a
+dialog or a download, and an empty result offers the way back rather than leaving
+the visitor at a dead end.
 
 **Accessibility.** This is the role where accessibility stops being a compliance
 exercise. The visitor may be using MI's computer at 200 % zoom, with a screen

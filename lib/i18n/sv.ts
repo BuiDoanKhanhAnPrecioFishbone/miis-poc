@@ -918,7 +918,13 @@ export const sv = {
     publicExplain:
       "Detta är samma system i en begränsad, läsbar version. Ingen registrering, ingen redigering och ingen sekretessmarkerad avtalsinformation.",
     selection: {
-      title: "Gör ditt urval",
+      title: "Sök avtal",
+      lead:
+        "Skriv ett ord — ett avtalsområde, ett förbund eller en arbetsgivarorganisation — eller välj i listorna nedan. Träffarna uppdateras medan du skriver.",
+      text: "Sök",
+      textPlaceholder: "T.ex. Apotek, Unionen eller Spårtrafik",
+      textHint: "Söker i avtalets namn, avtalsområde och båda parterna",
+      narrow: "Avgränsa urvalet",
       employerOrg: "Arbetsgivarorganisation",
       employeeOrg: "Arbetstagarorganisation",
       agreement: "Avtal",
@@ -927,11 +933,15 @@ export const sv = {
       search: "Visa rapport",
       reset: "Börja om",
       hint: "Välj en eller flera nivåer. Lämnas ett fält tomt tas alla med.",
+      builderNote:
+        "Den fullständiga sökbyggaren är en intern funktion och erbjuds inte här. Fält, operator och värde med och/eller, grupperingar, valda presentationskolumner och sparade sökningar är ett expertverktyg, och besökaren har ingen inloggning, ingen introduktion och ett försök. Fritextsökningen och de tre kriterierna svarar på samma fråga i ett steg. Vill Medlingsinstitutet ändå ha sökbyggaren i den publika vyn är det samma komponent — sekretessregeln avgör redan resten (D-002).",
     },
     result: {
       title: "Avtal i urvalet",
       count: (n: number) => `${n} avtal`,
-      empty: "Inget avtal matchar urvalet. Prova ett bredare urval.",
+      empty: "Inget avtal matchar sökningen. Prova ett bredare urval eller börja om.",
+      all: "Samtliga avtal som Medlingsinstitutet har registrerat. Sök eller avgränsa ovan för att smalna av.",
+      narrowed: "Avtal som matchar sökningen ovan. Sekretessmarkerade avtal är med i listan; det som utelämnas är deras uppgifter.",
       table: {
         status: "Status",
         agreement: "Avtal",

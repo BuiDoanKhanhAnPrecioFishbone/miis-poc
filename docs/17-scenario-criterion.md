@@ -62,7 +62,7 @@ The criterion asks for four things per role. Being honest about which we have:
 | | System admin | Agreement admin | Public computer |
 |---|---|---|---|
 | **Task and goal** | written | written | written |
-| **Workflow** | written; thin in the system itself — no configuration screen (item 4) | strong — five named steps, MI's own §4.4 flow | written; thin in the system — no search (item 3) |
+| **Workflow** | written; thin in the system itself — no configuration screen (item 4) | strong — five named steps, MI's own §4.4 flow | **strong** — free text, MI's three criteria, valid-at-date, print (item 3 done) |
 | **Visualisation** | `administration-loggar`, `start-systemadministrator`, `anvandare-behorigheter` | eight shots incl. `ai-assistenten` | `allmanheten` |
 | **Usability / efficiency / accessibility** | written | written | written |
 
@@ -81,18 +81,12 @@ session timeout, *"en konfigurerbar tidsgräns (default max 30 minuter)"* — ex
 a demo trigger. A system administrator with nothing to administer is the weakest of the
 three stories.
 
-**Public Access Computer.** `/allmanheten` matches Bilaga F's Rapport 1 exactly: the
-three criteria AGO / ATO / Avtal, and confidentiality-marked information excluded in the
-markup rather than in CSS. But Bilaga 3 §4 shows MI's *current* public interface has
-**two** parts and we built one:
-
-- *Gränssnitt Allmänheten* — search: via ärendekort, **Sökbyggaren**, and free-text search
-- *Gränssnitt Allmänheten Avtal* — the report *Avtal – Allmänheten*
-
-We have the second and not the first. A visitor at MI's public computer can today run a
-search builder; in our prototype they can pick three dropdowns. That is a capability
-regression against the system being replaced, and it is on the one role the criterion
-names that has the least built.
+**Public Access Computer — resolved, see item 3.** Bilaga 3 §4 shows MI's *current*
+public interface has two parts: *Gränssnitt Allmänheten* (search via ärendekort, the
+search builder, and free text) and *Gränssnitt Allmänheten Avtal* (the report). We had the
+report and a selection that turned out not to select at all. It now has free-text search,
+MI's three criteria, a valid-at date and a real empty state; the query builder stays out
+on stated grounds.
 
 **Agreement Administrator.** Strong, and two named scenarios are still missing a screen:
 US-02 (an entirely new agreement, registered manually — which is also §4.1's own boundary,
@@ -148,9 +142,21 @@ marked *to be strengthened before submission* rather than papered over: the syst
 administrator has no configuration screen (item 4) and the public computer has no search
 (item 3). The draft is English; the response is Swedish, and the note at the top says so.
 
-**3 — Give the public computer its search.** Bilaga 3 §4.1 says MI's visitors have a
-search builder today. Reusing `/sok` in a reduced, read-only, confidentiality-filtered
-form closes a capability regression on a role the criterion names.
+**3 — Give the public computer its search.** ~~Bilaga 3 §4.1 says MI's visitors have a
+search builder today.~~ **Done.** And it turned out to be worse than a missing feature:
+the selection on `/allmanheten` **did not select** — three dropdowns with no state, two
+buttons disabled with "Ej aktiv i demon", and a table that showed every agreement whatever
+was chosen. On the one role the criterion names, the primary control was a picture of one.
+
+It now has a free-text field that narrows as the visitor types (FR-001, FR-003), MI's own
+three criteria from Bilaga F's Rapport 1, a valid-at date (FA-020), removable chips with a
+count, and a real empty state. `publicSearch` is a tested domain rule.
+
+The **query builder is deliberately still not** in the public view, and the reasoning is
+on the screen rather than left to be noticed: W3D3 offers it to the public because W3D3 is
+a generic diary product whose public interface was configured rather than designed, and
+§18.3 says the old system is not the starting point. It is reversible — the same component,
+with `maySeeConfidential` already deciding what it may return.
 
 **4 — Give the system administrator something to administer.** NFÅ-002's configurable
 timeout, the watchword table it already owns, and the retention settings, on one
