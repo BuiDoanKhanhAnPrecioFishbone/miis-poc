@@ -1054,6 +1054,48 @@ export const sv = {
       signedDate: "Teckningsdatum",
       validity: "Löptid",
       registration: "Registreringsstatus",
+      scopeHeading: "Avtalets omfattning",
+      scopeIntro:
+        "Fyra mått, inte ett. Anställda är huvuden, årsarbetare är heltider, fackmedlemmar visar hur stor del av området avtalet faktiskt talar för och medellönen är underlaget för kostnadsberäkningen.",
+      employeesLabel: "Anställda",
+      annualWorkers: "Årsarbetare",
+      unionMembers: "Fackmedlemmar",
+      unionDensity: "Organisationsgrad (%)",
+      averageWage: "Medellön (kr/mån)",
+      updatedSuffix: (date: string) => `Uppdaterad ${date}`,
+      notRegistered: "Ej registrerat",
+      derivedNote:
+        "Organisationsgraden räknas fram ur fackmedlemmar och anställda och lagras inte – ett tredje sparat tal är ett tredje tal som kan bli inaktuellt.",
+      basicFacts: "Basfakta",
+      basicFactsIntro:
+        "Registrerade förhållanden om avtalet som helhet. Varje ja/nej har en kommentar, eftersom flaggan är det en rapport kan räkna och kommentaren är varför handläggaren satte den.",
+      hangingAgreement: "Hängavtal",
+      organisationalChange: "Organisatorisk avtalsförändring",
+      terminated: "Avtalet upphört",
+      negotiationOrderRef: "Förhandlingsordningsavtal Dnr",
+      noBasicFacts: "Inga särskilda förhållanden registrerade om avtalet.",
+      terminatedNote:
+        "Upphört är inte detsamma som utlöpt. Ett utlöpt avtal tillämpas tills det ersätts – ett upphört avtal tillämpas inte alls och räknas därför inte i Utlöpningstidpunkter.",
+      reportSelection: "Rapporturval",
+      reportEurofound: "Eurofound",
+      reportMinimumWage: "Lägstlöner",
+      reportWebsite: "MI:s webbplats",
+      reportShortTermWage: "Konjunkturlönerapporten",
+      noReportSelection: "Avtalet ingår inte i något rapporturval.",
+      specialQuestions: "Särskilda frågor",
+      specialQuestionsIntro:
+        "Frågor som avtalstexten själv svarar på, numrerade i tre fasta platser. Till skillnad från en arbetsgrupp finns det ingen som ska återkomma – frågan är reglerad.",
+      questionNumber: (n: number) => `Särskild fråga ${n}`,
+      questionYear: (year: string) => `Tecknat ${year}`,
+      questionText: "Avtalstext",
+      questionComment: "Kommentar",
+      questionEquality: "Jämställdhetsfråga",
+      noSpecialQuestions: "Inga särskilda frågor registrerade på avtalet.",
+      limited: "Informationsbegränsning",
+      limitedRegisteredNote:
+        "Avsnitten utelämnas ur gränssnitten för medlare och allmänhet. Begränsningen gäller avsnittet – avtalet i övrigt är öppet och är inte detsamma som sekretessmarkerat.",
+      limitedNote:
+        "Uppgifterna är informationsbegränsade för den här rollen enligt registreringen på avtalet. Begränsningen gäller avsnittet, inte hela avtalet, och är inte samma sak som en sekretessmarkering.",
       workingGroups: "Arbetsgrupper och frågeområden",
       workingGroupsIntro:
         "Frågor som parterna sköt till en partsgemensam arbetsgrupp i stället för att lösa i avtalet. Ett avtal med öppna arbetsgrupper är inte färdigförhandlat.",

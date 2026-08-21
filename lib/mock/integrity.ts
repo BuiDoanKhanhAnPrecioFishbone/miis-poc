@@ -77,6 +77,23 @@ export function findIntegrityProblems(name: string, data: Dataset): string[] {
     }
   }
 
+  for (const set of data.specialQuestions) {
+    if (!agreementIds.has(set.agreementId)) {
+      problems.push(
+        `specialQuestions ${set.agreementId}: references missing agreement "${set.agreementId}"`,
+      );
+    }
+    /* MI's form has three numbered slots and no more. Two questions filed under
+       the same number would print twice under one heading in Rapport 4. */
+    const numbers = new Set<number>();
+    for (const q of set.questions) {
+      if (numbers.has(q.number)) {
+        problems.push(`specialQuestions ${set.agreementId}: duplicate question number ${q.number}`);
+      }
+      numbers.add(q.number);
+    }
+  }
+
   for (const e of [...data.events, ...data.mediationEvents]) {
     if (e.agreementId && !agreementIds.has(e.agreementId)) {
       problems.push(`event ${e.id}: references missing agreement "${e.agreementId}"`);

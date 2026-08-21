@@ -107,7 +107,7 @@ Copying W3D3's screens would be the specific mistake MI wrote a sentence to prev
 What it legitimately gives us:
 
 **The complete field list of every registration form.** §3.3 *Basfakta* alone adds 36
-custom fields, and they name things our model does not have: *Årsarbetare*,
+custom fields, and they named things our model did not have (**taken up — see item 6**): *Årsarbetare*,
 *Fackmedlemmar*, *Anställda ackumulerat*, *Medellön*, *Timlönefaktor*, *Arbetstidskonto/-bank*,
 *Rapporturval MI*, *Rapporturval lägstlöner*, *Informationsbegränsning arbetsgrupper*,
 *Informationsbegränsning lägstlöner*, *Hängavtal*, *Förhandlingsordningsavtal Dnr*. The
@@ -115,7 +115,7 @@ sample data becomes markedly more credible for the cost of reading one section.
 
 **Särskilda frågor is three numbered questions, not free text.** §3.11: *Särskild fråga
 1/2/3*, each with a *jämställdhet* flag, an *avtalstext* and a comment. We folded this
-into FA-014's working groups; the shape above is MI's own and is worth matching.
+into FA-014's working groups; the shape above is MI's own. **Built — see item 6.**
 
 **A seventh report we did not know about.** §7.11 *Avtal – Utlöpningstidpunkter* — one
 criterion (Årtal), *"Endast gällande avtal ingår"*, and it is grouped by month with
@@ -206,10 +206,53 @@ entrance that Bilaga 3 §5 specifies as exactly three reports.~~ **Done.**
   Svenskt Näringsliv under *Centralorganisation (ATO)* — a selection that could only
   return nothing, for a reason the user could not see.
 
-**6 — Enrich the agreement model from Bilaga 3 §3.** Not all 36 fields; the ones the
+**6 — Enrich the agreement model from Bilaga 3 §3.** ~~Not all 36 fields; the ones the
 reports and the scenarios actually read — *Årsarbetare*, *Fackmedlemmar*, *Medellön*,
 *Hängavtal*, *Rapporturval*, *Informationsbegränsning* — plus Särskilda frågor in MI's own
-three-question shape.
+three-question shape.~~ **Done.**
+
+What was taken is the **shape of the information MI keeps**, never the shape of a W3D3
+screen — §18.3 is explicit that the old system is not a starting point, and the manual is
+migration source material, which is exactly what this used it for.
+
+- **Four scope figures, not one.** We held *Anställda*; MI holds *Anställda*,
+  *Årsarbetare*, *Fackmedlemmar* and *Medellön*, each dated. They answer different
+  questions and a cost frame applies to the second — 9 400 employees in home services is
+  6 100 årsarbetare. *Organisationsgrad* is **derived** from two of them rather than
+  stored: a third saved number is a third number that can go stale, and it has to be able
+  to say "not known" where MI's own printouts show `¤`.
+- **A flag is always paired with a comment.** *Hängavtal*, *Organisatorisk
+  avtalsförändring*, *Avtalet upphört*, plus *Förhandlingsordningsavtal Dnr*. The flag is
+  what a report can count; the comment is why an officer set it. `Nej` **with** a comment
+  is a real state — "checked 2027-05-06, and it is not one" is different from nobody
+  having looked, and one agreement in the sample carries exactly that.
+- **Avtalet upphört now reaches the report.** `isCurrent` closes the note it was carrying:
+  ceased is not expired. An expired agreement applies until it is replaced, which is what
+  makes it *kvarstående*; a ceased one does not apply at all, so its expiry date is a date
+  nothing hangs on.
+- **Informationsbegränsning is per section, and it is not sekretess.** MI's form carries
+  two — *arbetsgrupper* and *lägstlöner* — and an agreement can have one, both or neither
+  and still not be sekretessmarkerat. It takes both halves: the record says *what* is
+  restricted (`isSectionLimited`), the role says *who* may read it (`maySeeConfidential`).
+  The withheld section is **never rendered**, per FR-011 and D-002 — and the officer who
+  set the restriction sees it named on Basfakta, because a restriction nobody can see back
+  is one nobody can lift.
+- **Rapporturval was registered on every agreement and shown nowhere**, so an officer
+  could not see why one agreement reaches Konjunkturlönerapporten and the next does not.
+- **Särskilda frågor in §3.11's own shape** — three numbered slots, each with a
+  *jämställdhet* flag, an *avtalstext* and a comment. We had folded this into
+  `WorkingGroup.subjectAreas`, which read FA-014 rather than MI's form. They are different
+  things and both are real: a working group is a **body** with a reporting date, a
+  särskild fråga is a **question the agreement text answers**. The slot numbering is kept
+  even with a gap — MI's reports refer to *Särskild fråga 3*, so renumbering it because
+  slot 2 is empty would rename the thing being pointed at.
+
+**Deliberately not done: the registration form is unchanged.** These are properties of the
+agreement record, not of the protocol being read, and five more boxes in US-01's five-step
+flow would work against the scenario the criterion is actually marked on. The remaining
+§3.3 fields — *Timlönefaktor*, *Arbetstidskonto/-bank*, *Semester*,
+*Föräldraledighetstillägg*, *Pensionsavtal deltid* — belong to Allmänna villkor and
+Pensionsavtal, which are sections of their own rather than basfakta.
 
 **7 — Re-cut the walkthrough** ~~so the three scored roles lead it.~~ **Done, and built
 into the prototype: `/genomgang`.**

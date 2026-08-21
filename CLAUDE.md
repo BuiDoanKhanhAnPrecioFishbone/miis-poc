@@ -240,6 +240,21 @@ reviewer to a screen its own role would be refused.
    `maySeeConfidential(role)` is false for `public` and `mediator`; a value
    hidden by CSS is still in the document, and a requirement about what may
    leave the building cannot be met by not painting it.
+   **Informationsbegränsning is not sekretess, and it takes both halves.**
+   Bilaga 3 §3.3 restricts a *section* — MI's form carries two, arbetsgrupper
+   and lägstlöner — so `isSectionLimited(agreement, section)` says **what** is
+   restricted and `maySeeConfidential(role)` says **who** may read it. An
+   agreement can be restricted and not marked, or marked and not restricted.
+   The officer who set it sees it named on Basfakta: a restriction nobody can
+   see back is one nobody can lift. And a restriction that hides nothing
+   demonstrates nothing — the sample data keeps real content behind both.
+   **A registered flag is a flag *and* a comment.** MI pairs them six times in
+   §3.3, and `Nej` with a comment is a real state: "checked, and it is not one"
+   is different from nobody having looked. `NotedFlag`, never a bare boolean.
+   **A figure that can be derived is derived.** *Organisationsgrad* comes from
+   fackmedlemmar and anställda rather than a third stored number, and it returns
+   `undefined` rather than 0 where MI's own printouts show `¤` — a computed 0 %
+   is a claim about the labour market, an absent value a claim about the record.
 
 6. **Every view carries its requirement IDs.** Use the `<ReqTag id="FA-007" />`
    component. The evaluators trace requirement → interface; that traceability is a

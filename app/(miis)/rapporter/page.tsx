@@ -119,6 +119,7 @@ export default async function RapporterPage() {
       ...(a.validTo ? { validTo: a.validTo } : {}),
       ...(a.employees !== undefined ? { employees: a.employees } : {}),
       ...(a.signedDate ? { signedDate: a.signedDate } : {}),
+      ...(a.terminated?.value ? { terminated: true } : {}),
       ...(a.mediationLinked ? { mediationLinked: true } : {}),
       employerOrg: a.employerOrg.name,
       employeeOrg: a.employeeOrg.name,

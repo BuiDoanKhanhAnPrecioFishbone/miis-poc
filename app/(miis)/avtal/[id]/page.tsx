@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import {
+  AgreementBasicFactsPanel,
+  AgreementScopePanel,
+  LimitedSectionPanel,
+  ReportSelectionPanel,
+  SpecialQuestionsPanel,
+} from "@/components/miis/AgreementRecord";
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
@@ -21,10 +28,12 @@ import { getAgreementDetail } from "@/lib/data/agreements";
 import {
   AGREEMENT_CONSTRUCTIONS,
   agreementTitle,
+  isSectionLimited,
   registrationStatusLabel,
   validityLabel,
 } from "@/lib/domain/agreement";
 import { EVENT_TYPE_LABEL } from "@/lib/domain/event";
+import { maySeeConfidential } from "@/lib/domain/role";
 import { agreementStatus } from "@/lib/domain/status";
 import { amount, percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
@@ -58,20 +67,26 @@ export async function generateMetadata({
  * whole point is comparison across rounds — the construction, the scope and the
  * cost frame for this round set against the last.
  */
-export default async function AgreementDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function AgreementDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [{ id }, session] = await Promise.all([params, getSession()]);
   const { i18n, lang } = session;
   const detail = await getAgreementDetail(id);
   if (!detail) notFound();
 
-  const { agreement, wageAgreements, workingGroups, events } = detail;
+  const { agreement, wageAgreements, workingGroups, specialQuestions, events } = detail;
   const t = i18n.avtal.detail;
   const status = agreementStatus(agreement, lang);
   const latest = wageAgreements[0];
+
+  /*
+    Informationsbegränsning (Bilaga 3 §3.3) needs both halves: the record says
+    *what* is restricted, `maySeeConfidential` says *who* may read it. Resolved
+    here, on the server, so the restricted section is never in the document —
+    FR-011 and D-002 are enforced in the markup, not the stylesheet.
+  */
+  const mayReadLimited = maySeeConfidential(session.role.id);
+  const hideWorkingGroups = !mayReadLimited && isSectionLimited(agreement, "workingGroups");
+  const hideMinimumWages = !mayReadLimited && isSectionLimited(agreement, "minimumWages");
 
   const wageColumns: Column[] = [
     { key: "period", header: t.period, sortable: true },
@@ -131,7 +146,13 @@ export default async function AgreementDetailPage({
   }));
 
   return (
-    <AppShell role={session.role} requires="avtal" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+    <AppShell
+      role={session.role}
+      requires="avtal"
+      dataset={session.dataset}
+      lang={lang}
+      reqTags={session.reqTags}
+    >
       <PrintHeader lang={lang} title={agreementTitle(agreement)} />
       <PageHeading
         title={agreementTitle(agreement)}
@@ -173,12 +194,11 @@ export default async function AgreementDetailPage({
                 label={t.alternativeName}
                 value={agreement.alternativeName ?? i18n.common.none}
               />
-              <Field
-                label={t.signedDate}
-                value={agreement.signedDate ?? i18n.common.none}
-              />
+              <Field label={t.signedDate} value={agreement.signedDate ?? i18n.common.none} />
             </div>
           </Panel>
+
+          <AgreementScopePanel agreement={agreement} lang={lang} />
 
           <Panel title={t.wageAgreements} tags={["FA-002", "FA-007", "FA-008", "FA-009"]}>
             <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
@@ -200,41 +220,56 @@ export default async function AgreementDetailPage({
             current system keeps it as a document type of its own, and MI's
             requirement folds it into the group that owns the question.
           */}
-          <Panel title={t.workingGroups} tags={["FA-014"]}>
-            <p className="mb-3 max-w-4xl text-table">{t.workingGroupsIntro}</p>
-            {workingGroups.length === 0 ? (
-              <p className="text-table text-muted-foreground">{t.noWorkingGroups}</p>
-            ) : (
-              <ul className="space-y-4">
-                {workingGroups.map((g) => (
-                  <li key={g.id} className="border-t border-border pt-3 first:border-t-0 first:pt-0">
-                    <p className="font-semibold">{g.name}</p>
-                    <p className="mt-1 text-table">
-                      <span className="text-label font-bold">{t.subjectAreas}: </span>
-                      {g.subjectAreas.join(" · ")}
-                    </p>
-                    {g.reportsBy && (
-                      <p className="mt-1 text-label text-muted-foreground">
-                        {t.reportsBy} <span className="tabular-nums">{g.reportsBy}</span>
+          {hideWorkingGroups ? (
+            <LimitedSectionPanel title={t.workingGroups} lang={lang} tags={["FA-014"]} />
+          ) : (
+            <Panel title={t.workingGroups} tags={["FA-014"]}>
+              <p className="mb-3 max-w-4xl text-table">{t.workingGroupsIntro}</p>
+              {workingGroups.length === 0 ? (
+                <p className="text-table text-muted-foreground">{t.noWorkingGroups}</p>
+              ) : (
+                <ul className="space-y-4">
+                  {workingGroups.map((g) => (
+                    <li
+                      key={g.id}
+                      className="border-t border-border pt-3 first:border-t-0 first:pt-0"
+                    >
+                      <p className="font-semibold">{g.name}</p>
+                      <p className="mt-1 text-table">
+                        <span className="text-label font-bold">{t.subjectAreas}: </span>
+                        {g.subjectAreas.join(" · ")}
                       </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Panel>
-
-          {minRows.length > 0 && (
-            <Panel title={t.minimumWages} tags={["FA-013"]}>
-              <p className="mb-3 max-w-4xl text-table">{t.minimumWagesIntro}</p>
-              <DataTable
-                columns={minColumns}
-                rows={minRows}
-                lang={lang}
-                caption={t.minimumWages}
-                minWidth="34rem"
-              />
+                      {g.reportsBy && (
+                        <p className="mt-1 text-label text-muted-foreground">
+                          {t.reportsBy} <span className="tabular-nums">{g.reportsBy}</span>
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </Panel>
+          )}
+
+          {/* §3.11's three numbered slots — a question the agreement text
+              answers, which is not the same thing as a working group. */}
+          <SpecialQuestionsPanel sets={specialQuestions} lang={lang} />
+
+          {hideMinimumWages ? (
+            <LimitedSectionPanel title={t.minimumWages} lang={lang} tags={["FA-013"]} />
+          ) : (
+            minRows.length > 0 && (
+              <Panel title={t.minimumWages} tags={["FA-013"]}>
+                <p className="mb-3 max-w-4xl text-table">{t.minimumWagesIntro}</p>
+                <DataTable
+                  columns={minColumns}
+                  rows={minRows}
+                  lang={lang}
+                  caption={t.minimumWages}
+                  minWidth="34rem"
+                />
+              </Panel>
+            )
           )}
         </div>
 
@@ -300,6 +335,9 @@ export default async function AgreementDetailPage({
             )}
             <Rationale>{i18n.avtal.register.areaNote}</Rationale>
           </Panel>
+
+          <AgreementBasicFactsPanel agreement={agreement} lang={lang} />
+          <ReportSelectionPanel agreement={agreement} lang={lang} />
         </div>
       </div>
 

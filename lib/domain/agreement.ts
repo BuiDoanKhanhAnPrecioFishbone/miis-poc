@@ -65,6 +65,46 @@ export interface ReportSelection {
   shortTermWageReport: boolean;
 }
 
+/**
+ * A yes/no that MI always pairs with a comment field.
+ *
+ * Bilaga 3 §3.3 does this six times — *Hängavtal*, *Organisatorisk
+ * avtalsförändring*, *Avtalet upphört*, *Uppdatera avtalet*, *Anställda
+ * ackumulerat*, *Arbetstidskonto/-bank* — and the pairing is the point. The
+ * flag is what a report can count; the comment is why an officer set it, which
+ * is what the next officer needs and no report will ever hold.
+ *
+ * `value: false` with a comment is a real state, not a contradiction: "checked,
+ * and it is not one, because …" is worth registering and is different from
+ * nobody having looked.
+ */
+export interface NotedFlag {
+  value: boolean;
+  comment?: string;
+}
+
+/**
+ * *Informationsbegränsning* — Bilaga 3 §3.3, and **not** the same thing as
+ * D-001's sekretessmarkering.
+ *
+ * Sekretess is a legal status on the whole agreement. Informationsbegränsning
+ * is narrower and duller: MI registers that *this section* of *this agreement*
+ * is not to leave the house, section by section, and the form carries exactly
+ * two — *arbetsgrupper* and *lägstlöner*. An agreement can have neither, one,
+ * or both, and still not be sekretessmarkerat.
+ *
+ * We had only the agreement-wide flag, so a working group that MI restricts
+ * would have travelled into a public report attached to an agreement that is
+ * openly published. Both halves are needed: this says *what*, `maySeeConfidential`
+ * says *who*.
+ */
+export interface InformationLimits {
+  workingGroups: boolean;
+  minimumWages: boolean;
+}
+
+export type LimitedSection = keyof InformationLimits;
+
 export interface PartyRef {
   id: string;
   name: string;
@@ -102,11 +142,80 @@ export interface Agreement {
    * MI's own printouts show `¤` where the figure is missing.
    */
   employees?: number;
+  /**
+   * The rest of MI's own *Avtalets omfattning* — Bilaga 3 §3.3, and the block
+   * the Huvudrapport opens with. Four figures, not one, because they answer
+   * different questions and MI registers all four:
+   *
+   * - **Årsarbetare** is headcount converted to full-time equivalents. A retail
+   *   agreement covering 20 000 people may be 12 000 årsarbetare, and a cost
+   *   frame applies to the second number.
+   * - **Fackmedlemmar** is how many of them are union members — the
+   *   organisation rate, which is what says how much of the area the agreement
+   *   actually speaks for.
+   * - **Medellön** is the average monthly wage under it, in whole kronor.
+   *
+   * Each figure MI dates carries its own date, because the three are updated
+   * at different times from different sources and an undated statistic is one
+   * nobody can decide whether to trust.
+   */
+  annualWorkers?: number;
+  unionMembers?: number;
+  employeesUpdated?: string;
+  averageWageSek?: number;
+  averageWageUpdated?: string;
+  /**
+   * Basfakta's registered flags (§3.3), each with MI's own comment field.
+   *
+   * *Hängavtal* — an employer outside the signing organisation has adopted this
+   * agreement. *Organisatorisk avtalsförändring* — the agreement moved because
+   * a party merged or split rather than because the parties renegotiated.
+   * *Avtalet upphört* — it has ceased, which is not the same as having run out:
+   * an expired agreement still applies until replaced, a ceased one does not.
+   */
+  hangingAgreement?: NotedFlag;
+  organisationalChange?: NotedFlag;
+  terminated?: NotedFlag;
+  /** *Förhandlingsordningsavtal Dnr* (§3.3) — MI's own diarienummer for it. */
+  negotiationOrderRef?: string;
+  /** Absent means neither section is restricted. */
+  informationLimits?: InformationLimits;
   /** Registration order, newest first when sorted descending. */
   registeredAt?: string;
   /** FA-015 / FA-016 */
   expiresWithoutRenewal?: boolean;
   earlyTermination?: { date: string; party: string };
+}
+
+/**
+ * Whether one section of an agreement is information-restricted.
+ *
+ * Deliberately split from `maySeeConfidential`: this says **what** is
+ * restricted, that one says **who** may see it, and a screen has to ask both.
+ * Folding them into one predicate would have made the restriction a property of
+ * the reader rather than of the record.
+ */
+export function isSectionLimited(
+  a: Pick<Agreement, "informationLimits">,
+  section: LimitedSection,
+): boolean {
+  return a.informationLimits?.[section] === true;
+}
+
+/**
+ * *Organisationsgrad* — union members as a percentage of those covered.
+ *
+ * Derived rather than registered, because it is the ratio of two fields MI
+ * already holds and a third stored number is a third number that can go stale.
+ * Undefined when either side is missing or the headcount is zero: MI's own
+ * printouts show `¤` for a missing figure rather than a zero, and a computed
+ * 0 % would be a claim we cannot make.
+ */
+export function unionDensityPercent(
+  a: Pick<Agreement, "employees" | "unionMembers">,
+): number | undefined {
+  if (!a.employees || a.unionMembers === undefined) return undefined;
+  return Math.round((a.unionMembers / a.employees) * 1000) / 10;
 }
 
 /** One new row per bargaining round (FA-002). */
@@ -148,6 +257,62 @@ export interface WorkingGroup {
   subjectAreas: string[];
   /** When it is due to report, where the protocol says so. */
   reportsBy?: string;
+}
+
+/**
+ * *Särskilda frågor* — Bilaga 3 §3.11, in MI's own shape.
+ *
+ * We had folded this into `WorkingGroup.subjectAreas`, and that was a reading
+ * of FA-014 rather than of MI's form. The two are different things and both are
+ * real: a working group is a **body** with a name and a reporting date; a
+ * särskild fråga is a **question the agreement itself answers**, with the
+ * clause that answers it and a flag for whether it is a gender-equality
+ * question. An agreement can carry särskilda frågor and no working group, and
+ * routinely does.
+ *
+ * Three slots, numbered, because MI's form has exactly three — *Särskild fråga
+ * 1/2/3*, each with its own *jämställdhet*, *avtalstext* and *kommentar*. Not a
+ * list of arbitrary length: the numbering is how MI's own reports refer to
+ * them, so a fourth question would have nowhere to be printed.
+ */
+export type SpecialQuestionNumber = 1 | 2 | 3;
+
+export interface SpecialQuestion {
+  number: SpecialQuestionNumber;
+  /** *Särskild fråga N* — what the parties put to each other. */
+  question: string;
+  /** *Särskild fråga N jämställdhet* — FA-011's flag, per question. */
+  genderEquality: boolean;
+  /** *Särskild fråga N avtalstext* — the clause that settles it. */
+  agreementText?: string;
+  comment?: string;
+}
+
+export interface SpecialQuestions {
+  agreementId: string;
+  /**
+   * The year the agreement was signed. §3.11 files these by year in the
+   * *Åtgärd/Handling* field, so a question belongs to a round rather than to
+   * the agreement in general.
+   */
+  year: string;
+  questions: SpecialQuestion[];
+  /** The form's own trailing *Kommentar*, about the set rather than one of them. */
+  comment?: string;
+}
+
+/** The slots MI's form has, in the order it prints them. */
+export const SPECIAL_QUESTION_NUMBERS: readonly SpecialQuestionNumber[] = [1, 2, 3];
+
+/**
+ * The questions in slot order, with no gaps closed up.
+ *
+ * If MI registered a question in slot 3 and nothing in slot 2, slot 3 is still
+ * *Särskild fråga 3* — renumbering it would rename the thing MI's reports point
+ * at.
+ */
+export function orderedQuestions(set: SpecialQuestions): SpecialQuestion[] {
+  return [...set.questions].sort((a, b) => a.number - b.number);
 }
 
 /** FA-013 – minimum wages grouped by occupational group. */

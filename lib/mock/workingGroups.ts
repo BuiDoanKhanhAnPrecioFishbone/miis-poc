@@ -34,4 +34,16 @@ export const WORKING_GROUPS: WorkingGroup[] = [
     subjectAreas: ["Lönemodellens utformning", "Lokal lönebildning"],
     reportsBy: "2028-06-30",
   },
+  {
+    /*
+      On the agreement that carries *Informationsbegränsning arbetsgrupper*
+      (Bilaga 3 §3.3). The restriction has to have something to withhold, or
+      the notice a mediator sees stands in front of an empty room.
+    */
+    id: "AG-004",
+    agreementId: "A-011",
+    name: "Arbetsgrupp tjänstefördelning och arbetsbelastning",
+    subjectAreas: ["Undervisningstid", "Förtroendearbetstid", "Arbetsbelastning"],
+    reportsBy: "2028-08-31",
+  },
 ];

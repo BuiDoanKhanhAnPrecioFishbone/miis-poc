@@ -16,6 +16,7 @@ import { DOCUMENTS } from "./documents";
 import { CHANGE_LOG } from "./changelog";
 import { NEGOTIATIONS } from "./negotiations";
 import { WAGE_AGREEMENTS } from "./wageAgreements";
+import { SPECIAL_QUESTIONS } from "./specialQuestions";
 import { WORKING_GROUPS } from "./workingGroups";
 import { generateAgreements, generateEvents, generateReminders } from "./generate";
 import { assertIntegrity } from "./integrity";
@@ -29,6 +30,7 @@ const quiet: Dataset = {
   agreements: AGREEMENTS.slice(0, 2),
   wageAgreements: WAGE_AGREEMENTS.slice(0, 1),
   workingGroups: [],
+  specialQuestions: [],
   documents: DOCUMENTS.slice(0, 1),
   mediationCases: [],
   mediators: MEDIATORS.slice(0, 1),
@@ -46,6 +48,7 @@ const normal: Dataset = {
   agreements: AGREEMENTS,
   wageAgreements: WAGE_AGREEMENTS,
   workingGroups: WORKING_GROUPS,
+  specialQuestions: SPECIAL_QUESTIONS,
   documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
@@ -66,6 +69,7 @@ const peak: Dataset = {
   agreements: peakAgreements,
   wageAgreements: WAGE_AGREEMENTS,
   workingGroups: WORKING_GROUPS,
+  specialQuestions: SPECIAL_QUESTIONS,
   documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,

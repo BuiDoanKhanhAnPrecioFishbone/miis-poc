@@ -15,6 +15,7 @@ import {
   type Agreement,
   type AgreementRow,
   type RegistrationStatus,
+  type SpecialQuestions,
   type WageAgreement,
   type WorkingGroup,
 } from "@/lib/domain/agreement";
@@ -107,6 +108,19 @@ export async function listWorkingGroups(agreementId: string): Promise<WorkingGro
   );
 }
 
+/**
+ * Bilaga 3 §3.11 — the särskilda frågor registered on one agreement.
+ *
+ * MI files these by the year the agreement was signed, so the return is a list
+ * rather than one record: a long-running agreement carries a set per round, and
+ * the newest round comes first.
+ */
+export async function listSpecialQuestions(agreementId: string): Promise<SpecialQuestions[]> {
+  return getDataset(await activeDataset())
+    .specialQuestions.filter((q) => q.agreementId === agreementId)
+    .sort((a, b) => b.year.localeCompare(a.year));
+}
+
 /** FH-002 — the high-level events on one agreement, newest first. */
 export async function listAgreementEvents(agreementId: string): Promise<AuditEvent[]> {
   return getDataset(await activeDataset())
@@ -118,16 +132,18 @@ export async function getAgreementDetail(id: string): Promise<{
   agreement: Agreement;
   wageAgreements: WageAgreement[];
   workingGroups: WorkingGroup[];
+  specialQuestions: SpecialQuestions[];
   events: AuditEvent[];
 } | null> {
   const agreement = await getAgreement(id);
   if (!agreement) return null;
-  const [wageAgreements, workingGroups, events] = await Promise.all([
+  const [wageAgreements, workingGroups, specialQuestions, events] = await Promise.all([
     listWageAgreements(id),
     listWorkingGroups(id),
+    listSpecialQuestions(id),
     listAgreementEvents(id),
   ]);
-  return { agreement, wageAgreements, workingGroups, events };
+  return { agreement, wageAgreements, workingGroups, specialQuestions, events };
 }
 
 /** The distinct agreement areas present in the data — FA-001, and /avtal's filter. */

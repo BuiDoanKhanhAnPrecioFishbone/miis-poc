@@ -641,6 +641,8 @@ export interface ReportAgreement {
   validTo?: string;
   employees?: number;
   signedDate?: string;
+  /** *Avtalet upphört* (Bilaga 3 §3.3) — read by `isCurrent`. */
+  terminated?: boolean;
   mediationLinked?: boolean;
   employerOrg: string;
   employeeOrg: string;
@@ -775,13 +777,17 @@ function add(section: ExpirySection, month: number, employees: number | undefine
  * it. An earlier draft compared `validTo` against the extraction date and
  * silently dropped two thirds of the year.
  *
- * In the delivered system this is refined by *Avtalet upphört*, the flag MI's
- * own Basfakta form carries (Bilaga 3 §3.3), which the prototype does not model
- * yet. The year criterion does most of the work either way: a historical
- * agreement that ran to 2021 is not in a 2027 report because of its date.
+ * *Avtalet upphört* is the other half, and it is not the same as having run
+ * out. An expired agreement still applies until it is replaced, which is what
+ * makes it *kvarstående*; a ceased one does not apply at all, so its expiry
+ * date is a date nothing hangs on. MI's own Basfakta form carries the flag
+ * (Bilaga 3 §3.3) and the report has to honour it.
  */
-export function isCurrent(a: { signedDate?: string | undefined }): boolean {
-  return Boolean(a.signedDate);
+export function isCurrent(a: {
+  signedDate?: string | undefined;
+  terminated?: boolean | undefined;
+}): boolean {
+  return Boolean(a.signedDate) && a.terminated !== true;
 }
 
 export function expiryReport(

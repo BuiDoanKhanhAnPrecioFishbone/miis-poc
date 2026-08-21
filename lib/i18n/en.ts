@@ -1064,6 +1064,48 @@ export const en: Dictionary = {
       signedDate: "Date signed",
       validity: "Validity period",
       registration: "Registration status",
+      scopeHeading: "Agreement scope",
+      scopeIntro:
+        "Four measures, not one. Employees are heads, annual workers are full-time equivalents, union members show how much of the area the agreement actually speaks for, and the average wage is the basis for the cost calculation.",
+      employeesLabel: "Employees",
+      annualWorkers: "Annual workers (FTE)",
+      unionMembers: "Union members",
+      unionDensity: "Union density (%)",
+      averageWage: "Average wage (SEK/month)",
+      updatedSuffix: (date: string) => `Updated ${date}`,
+      notRegistered: "Not registered",
+      derivedNote:
+        "Union density is derived from union members and employees and is not stored — a third stored figure is a third figure that can go stale.",
+      basicFacts: "Basic facts",
+      basicFactsIntro:
+        "Registered circumstances about the agreement as a whole. Every yes/no carries a comment, because the flag is what a report can count and the comment is why the case officer set it.",
+      hangingAgreement: "Adopted agreement (hängavtal)",
+      organisationalChange: "Organisational agreement change",
+      terminated: "Agreement ceased",
+      negotiationOrderRef: "Negotiation procedure agreement, ref. no.",
+      noBasicFacts: "No particular circumstances registered about the agreement.",
+      terminatedNote:
+        "Ceased is not the same as expired. An expired agreement applies until it is replaced — a ceased one does not apply at all, and is therefore not counted in Expiry dates.",
+      reportSelection: "Report selection",
+      reportEurofound: "Eurofound",
+      reportMinimumWage: "Minimum wages",
+      reportWebsite: "MI's website",
+      reportShortTermWage: "Short-Term Wage Report",
+      noReportSelection: "The agreement is not included in any report selection.",
+      specialQuestions: "Special questions",
+      specialQuestionsIntro:
+        "Questions the agreement text itself answers, numbered in three fixed slots. Unlike a working group there is nobody due to report back — the question is settled.",
+      questionNumber: (n: number) => `Special question ${n}`,
+      questionYear: (year: string) => `Signed ${year}`,
+      questionText: "Agreement text",
+      questionComment: "Comment",
+      questionEquality: "Gender equality question",
+      noSpecialQuestions: "No special questions registered on the agreement.",
+      limited: "Information restriction",
+      limitedRegisteredNote:
+        "These sections are omitted from the mediator and public interfaces. The restriction applies to the section — the rest of the agreement is open, and this is not the same as a confidentiality marking.",
+      limitedNote:
+        "This information is restricted for this role, as registered on the agreement. The restriction applies to the section rather than the whole agreement, and is not the same thing as a confidentiality marking.",
       workingGroups: "Working groups and subject areas",
       workingGroupsIntro:
         "Questions the parties handed to a joint working group instead of settling in the agreement. An agreement with open working groups is not finished business.",
