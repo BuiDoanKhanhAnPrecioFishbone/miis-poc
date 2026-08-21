@@ -167,6 +167,7 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           */}
           {mediationCase.decisionSupport && (
             <AiRegion
+              id="beslutsstod"
               title={ds.title}
               mark={i18n.common.aiMark}
               notice={i18n.common.aiNotice}

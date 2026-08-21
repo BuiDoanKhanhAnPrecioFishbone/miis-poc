@@ -116,6 +116,9 @@ export const en: Dictionary = {
       "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
     where: "Where",
     goThere: "Review the proposals",
+    notHere:
+      "The AI support does not work on this screen. Per §4.1 it is four named functions that run where the registration happens — not an assistant answering questions anywhere.",
+    goWhereItWorks: (where: string) => `Go to ${where}`,
     queue: "Awaiting your review",
     queueLead:
       "None of this is saved. The list is what the AI support has interpreted and no case officer has approved yet.",
@@ -456,6 +459,28 @@ export const en: Dictionary = {
         Not translated: it is a Swedish document, and rendering it in English
         would describe a system reading something it will never be given.
       */
+      clauseSearch: {
+        title: "Search the protocol for a provision",
+        intro:
+          "Type what you are looking for and the AI support searches the protocol and proposes the hits for registration. Nothing is saved until you approve it, and every proposal points back to the passage it was read from.",
+        label: "Search term",
+        placeholder: "E.g. jämställdhet",
+        search: "Search the protocol",
+        tooShort: "Type at least two characters.",
+        suggested: "Common searches:",
+        results: (term: string) => `Hits for “${term}”`,
+        noHits: (term: string) =>
+          `No provision about “${term}” was found in the protocol. Try another word — the search covers the protocol's text, not the whole register.`,
+        equality: "Gender equality question",
+        wouldRegister: (question: string) =>
+          `Registered as a special question: ${question}. The passage becomes the agreement text, unedited.`,
+        showSource: "Show in the protocol",
+        registered: "Approved and registered as a special question.",
+        rejected: "Rejected. Nothing was registered.",
+        boundedNote:
+          "This is the free-text search §4.1 asks for, bounded the way the requirement bounds it: one term, one protocol, and a proposal of a known shape. A box that accepts any instruction has no defined output and therefore nothing to review — and FAI-002 is a guarantee about review.",
+      },
+
       lines: {
         heading: "ÖVERENSKOMMELSE",
         betweenLabel: "mellan",

@@ -117,6 +117,9 @@ export const sv = {
       "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
     where: "Var",
     goThere: "Granska förslagen",
+    notHere:
+      "AI-stödet arbetar inte på den här skärmen. Enligt §4.1 är det fyra namngivna funktioner som körs där registreringen sker – inte en assistent som svarar på frågor var som helst.",
+    goWhereItWorks: (where: string) => `Gå till ${where}`,
     queue: "Väntar på din granskning",
     queueLead:
       "Ingenting av det här är sparat. Listan är det som AI-stödet har tolkat och som ännu inte har godkänts av en handläggare.",
@@ -451,6 +454,28 @@ export const sv = {
         Not translated: it is a Swedish document, and rendering it in English
         would describe a system reading something it will never be given.
       */
+      clauseSearch: {
+        title: "Sök efter en skrivning i protokollet",
+        intro:
+          "Skriv vad du letar efter, så söker AI-stödet igenom protokollet och föreslår träffarna för registrering. Ingenting sparas förrän du godkänner det, och varje förslag pekar tillbaka på stycket det lästes ur.",
+        label: "Sökord",
+        placeholder: "T.ex. jämställdhet",
+        search: "Sök i protokollet",
+        tooShort: "Skriv minst två tecken.",
+        suggested: "Vanliga sökningar:",
+        results: (term: string) => `Träffar på ”${term}”`,
+        noHits: (term: string) =>
+          `Ingen skrivning om ”${term}” hittades i protokollet. Prova ett annat ord – sökningen omfattar protokollets text, inte hela registret.`,
+        equality: "Jämställdhetsfråga",
+        wouldRegister: (question: string) =>
+          `Registreras som särskild fråga: ${question}. Stycket blir avtalstexten, oredigerat.`,
+        showSource: "Visa i protokollet",
+        registered: "Godkänt och registrerat som särskild fråga.",
+        rejected: "Avvisat. Ingenting registrerades.",
+        boundedNote:
+          "Det här är den fritextsökning §4.1 begär, och den är avgränsad som kravet avgränsar den: ett sökord, ett protokoll, och ett förslag av en känd form. En ruta som tar emot vilken instruktion som helst har ingen definierad utdata och därmed ingenting att granska – och FAI-002 är en garanti om granskning.",
+      },
+
       lines: {
         heading: "ÖVERENSKOMMELSE",
         betweenLabel: "mellan",

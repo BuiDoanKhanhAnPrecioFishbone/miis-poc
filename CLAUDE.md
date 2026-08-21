@@ -334,10 +334,22 @@ reviewer to a screen its own role would be refused.
    they can ask the AI to do here**, as controls, and **what is waiting for their
    approval** (the queue FAI-002 implies must exist). The tasks are §4.1's four
    functions applied to the current screen, which is what "ask the AI to do
-   something" means in a system whose AI *is* four named functions. **There is no
-   prompt box, and adding one would be the mistake** — an authority procures a
-   bounded set of behaviours, and a box that accepts any instruction is the
-   opposite of a bounded set. The catalogue, MI's own limits and the traceability
+   something" means in a system whose AI *is* four named functions. **On a screen
+   where none of them runs, the drawer says so and offers one way to the nearest
+   screen that does** — falling back to every function the role can reach showed
+   three protocol tasks on Rapporter, Parter and the start page, which is why
+   the assistant read as the same unplaceable panel everywhere. On a screen
+   where one *does* run, the task button goes to the **region**, not to the
+   route it is already on (`aiTaskHref`).
+   **§4.1's third function *is* a text input, and it is now built.**
+   `ClauseSearch` on `/registrera`: *"via fritextsökning i protokoll och avtal
+   ska systemet kunna identifiera och föreslå registrering av specifika
+   skrivningar"*. One term, one protocol, and every hit a source-linked proposal
+   that becomes a *Särskild fråga* only if the officer approves it. That is the
+   box to type into, and it is the answer whenever someone asks for one.
+   **A free prompt box is still the mistake** — an authority procures a bounded
+   set of behaviours; a box that accepts any instruction has no defined output,
+   so there is nothing for FAI-002 to review. The catalogue, MI's own limits and the traceability
    sit behind one *Om AI-stödet* toggle: they are the sections a competitor will
    not have, and they are still reference material, which does not belong above
    the work. NFÅ-003 applies inside it — the queue is filtered by **write**

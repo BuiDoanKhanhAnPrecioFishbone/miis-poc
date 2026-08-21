@@ -12,6 +12,7 @@ import { UPLOAD_PIPELINE, registrationSteps, type RegistrationStage } from "@/li
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { ProtocolUpload } from "./ProtocolUpload";
 import { RegistrationProvider } from "./RegistrationSave";
+import { ClauseSearch } from "./ClauseSearch";
 import { Stepper, type StepState } from "./Stepper";
 import { Marked } from "./Marked";
 import { Tabs } from "./Select";
@@ -441,12 +442,23 @@ export function ProtocolReview({
     screen causes no movement at all.
   */
   function showSource(p: ExtractionProposal) {
-    setActiveSource(p.source);
     setActiveField(p.id);
+    showAnchor(p.source);
+  }
+
+  /*
+    The same highlight, reached from a source that is not a pre-filled field.
+    The free-text clause search proposes a passage rather than a field value, so
+    it has an anchor and no `ProposalField` — and FAI-001's source link has to
+    work identically either way, or the officer learns that some proposals can
+    be checked and some cannot.
+  */
+  function showAnchor(anchor: SourceAnchor) {
+    setActiveSource(anchor);
     setView("text");
 
     const pane = paneRef.current;
-    const line = lineRefs.current[p.source];
+    const line = lineRefs.current[anchor];
     if (!pane || !line) return;
 
     const top = line.offsetTop - pane.offsetTop;
@@ -837,6 +849,25 @@ export function ProtocolReview({
               <Rationale>{t.review.changeLogNote}</Rationale>
             </AiRegion>
           </div>
+
+          {/*
+            §4.1's third function, where §4.1 puts it: *"stöd vid både
+            huvudregistrering och registrering av avtalsinformation"*, so it sits
+            between the matched agreement above and the agreement-information
+            steps below. It only appears once there is a protocol to search —
+            an empty search box over nothing is the dead control this whole
+            screen is built to avoid.
+          */}
+          {ready && (
+            <div className="mt-5">
+              <ClauseSearch
+                lines={lines}
+                lang={lang}
+                activeSource={activeSource}
+                onShowSource={showAnchor}
+              />
+            </div>
+          )}
 
           <RegistrationProvider value={{ stage, setRegistered, incomplete, setIncomplete }}>
             {children}

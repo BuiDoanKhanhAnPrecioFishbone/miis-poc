@@ -133,6 +133,23 @@ const SHOTS = [
     role: "mediator",
     prepare: runExpiryReport,
   },
+  /*
+    §4.1's third function is the one text input the requirement asks for, and it
+    is the screenshot that answers "does the AI have a box you can type into".
+  */
+  {
+    name: "ai-fritextsokning",
+    path: "/registrera",
+    role: "agreement-admin",
+    prepare: async (page) => {
+      await uploadProtocol(page);
+      await page.click("#clause-term");
+      await page.getByRole("button", { name: /^deltidspension$/ }).click();
+      await page.waitForTimeout(300);
+    },
+    fullPage: false,
+    scrollTo: 1600,
+  },
   {
     name: "ai-assistenten",
     path: "/registrera",

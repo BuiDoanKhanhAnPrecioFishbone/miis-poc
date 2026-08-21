@@ -10,6 +10,7 @@ import {
   aiFunctionsForPath,
   aiFunctionsForRole,
   mayReviewAi,
+  aiTaskHref,
   queueTotal,
   visibleQueue,
   type AiQueueItem,
@@ -285,20 +286,51 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
             takes them to the screen the function runs on, because that is where
             the proposal appears and where FAI-002's approve and reject live.
           */}
-          <Section title={t.ask} lead={here.length === 0 ? t.askElsewhere : t.askLead}>
-            <ul className="space-y-2">
-              {(here.length > 0 ? here : elsewhere).map((f) => (
-                <li key={f.id}>
-                  <LinkButton href={f.href} fullWidth iconEnd={<IconForward />}>
-                    {f.ask}
-                  </LinkButton>
-                </li>
-              ))}
-            </ul>
-            {reachable.length === 0 && (
-              <p className="text-table text-muted-foreground">{t.onThisScreenNone}</p>
-            )}
-          </Section>
+          {/*
+            Two different screens, and the drawer used to show the first one
+            everywhere.
+
+            `here.length > 0 ? here : elsewhere` fell back to *every* function
+            the role can reach, so on Rapporter, Parter, Sök and the start page
+            an officer was offered three protocol tasks that had nothing to do
+            with where they were standing — and all three linked away. That is
+            why it read as the same panel on every screen and as impossible to
+            place on the first try.
+
+            On a screen where a function runs, the drawer names the functions
+            and points at the region on **this** page. Where none runs, it says
+            so in one sentence and offers one way to the nearest screen that
+            does, rather than three that look like they apply here.
+          */}
+          {here.length > 0 ? (
+            <Section title={t.ask} lead={t.askLead}>
+              <ul className="space-y-2">
+                {here.map((f) => (
+                  <li key={f.id}>
+                    {/* The region on this page, not the page itself. */}
+                    <LinkButton
+                      href={aiTaskHref(f, pathname)}
+                      fullWidth
+                      iconEnd={<IconForward />}
+                    >
+                      {f.ask}
+                    </LinkButton>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          ) : (
+            <Section title={t.ask} lead={t.askElsewhere}>
+              <p className="mb-3 text-table">{t.notHere}</p>
+              {elsewhere.length === 0 ? (
+                <p className="text-table text-muted-foreground">{t.onThisScreenNone}</p>
+              ) : (
+                <LinkButton href={elsewhere[0]!.href} fullWidth iconEnd={<IconForward />}>
+                  {t.goWhereItWorks(elsewhere[0]!.where)}
+                </LinkButton>
+              )}
+            </Section>
+          )}
 
           <Section title={t.queue} lead={canReview ? t.queueLead : t.readOnly}>
             {mine.length === 0 ? (

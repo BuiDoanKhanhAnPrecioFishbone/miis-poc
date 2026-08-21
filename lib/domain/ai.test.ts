@@ -8,6 +8,7 @@ import {
   mayReviewAi,
   queueTotal,
   visibleQueue,
+  aiTaskHref,
   type AiQueueItem,
 } from "./ai";
 import { REQUIREMENTS } from "./requirements";
@@ -152,5 +153,36 @@ describe("the review queue", () => {
   it("shows a read-only role nothing", () => {
     expect(visibleQueue(queue, role("statistics-user"))).toHaveLength(0);
     expect(visibleQueue(queue, role("public"))).toHaveLength(0);
+  });
+});
+
+/**
+ * §4.1's third function is *"via fritextsökning"*, and the assistant's task
+ * button for it used to link to the screen it was already on.
+ */
+describe("aiTaskHref", () => {
+  const fn = { href: "/registrera", anchor: "#steg-fritext" };
+
+  it("goes to the region when the officer is already on the screen", () => {
+    expect(aiTaskHref(fn, "/registrera")).toBe("#steg-fritext");
+  });
+
+  it("goes to the screen and then the region from anywhere else", () => {
+    expect(aiTaskHref(fn, "/rapporter")).toBe("/registrera#steg-fritext");
+  });
+
+  it("falls back to the screen for a function with no region", () => {
+    expect(aiTaskHref({ href: "/medling" }, "/rapporter")).toBe("/medling");
+    expect(aiTaskHref({ href: "/medling" }, "/medling")).toBe("/medling");
+  });
+
+  /* Every function that runs on a screen names its region, or the button on
+     that screen navigates nowhere. */
+  it("gives every function a region on the screen it runs on", () => {
+    for (const f of AI_FUNCTIONS) {
+      if (f.routes.includes(f.href)) {
+        expect(f.anchor, `${f.id} has no anchor`).toBeDefined();
+      }
+    }
   });
 });

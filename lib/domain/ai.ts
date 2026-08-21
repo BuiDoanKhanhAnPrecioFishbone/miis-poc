@@ -55,6 +55,15 @@ export interface AiFunctionDefinition {
    * so a detail view inherits its register's answer.
    */
   routes: readonly string[];
+  /**
+   * The region on the screen the function runs on.
+   *
+   * Without it the drawer's task button linked to the route it was already on —
+   * a control that navigates nowhere, which is the whole reason the assistant
+   * read as impossible to place. With it, asking for a function on the screen
+   * that runs it takes the officer to the part of the page that does it.
+   */
+  anchor?: string;
   /** The menu item that owns those screens, so NFÅ-003 decides who may act. */
   nav: NavId;
   href: string;
@@ -75,6 +84,7 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
     where: { sv: "Steg 2 och 3 i Registrera avtalsprotokoll", en: "Steps 2 and 3 of Register agreement protocol" },
     requirements: ["FAI-001", "FAI-002", "FA-018"],
     routes: ["/registrera"],
+    anchor: "#steg-ai",
     nav: "avtal",
     href: "/registrera",
   },
@@ -95,6 +105,7 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
     },
     requirements: ["FAI-004"],
     routes: ["/registrera", "/partstraffar", "/administration"],
+    anchor: "#steg-protokoll",
     nav: "avtal",
     href: "/administration",
   },
@@ -115,6 +126,7 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
     where: { sv: "Steg 4 i Registrera avtalsprotokoll", en: "Step 4 of Register agreement protocol" },
     requirements: ["FAI-001", "FAI-002", "FA-011"],
     routes: ["/registrera"],
+    anchor: "#steg-fritext",
     nav: "avtal",
     href: "/registrera",
   },
@@ -132,6 +144,7 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
     where: { sv: "På medlingsärendet", en: "On the mediation case" },
     requirements: ["FF-006", "FF-008"],
     routes: ["/medling"],
+    anchor: "#beslutsstod",
     nav: "medling",
     href: "/medling",
   },
@@ -187,6 +200,7 @@ export interface AiFunctionInfo {
   where: string;
   requirements: readonly string[];
   href: string;
+  anchor?: string;
   nav: NavId;
 }
 
@@ -202,8 +216,25 @@ export function aiFunctionInfo(
     where: definition.where[lang],
     requirements: definition.requirements,
     href: definition.href,
+    ...(definition.anchor ? { anchor: definition.anchor } : {}),
     nav: definition.nav,
   };
+}
+
+/**
+ * Where the drawer's task button should go.
+ *
+ * On the screen the function runs on, the region on that page; anywhere else,
+ * the screen. A button that navigates to the route it is already on is a
+ * control that does nothing, and three of them side by side is why the
+ * assistant was hard to place on a first visit.
+ */
+export function aiTaskHref(
+  fn: { href: string; anchor?: string },
+  pathname: string,
+): string {
+  if (!fn.anchor) return fn.href;
+  return pathname === fn.href ? fn.anchor : `${fn.href}${fn.anchor}`;
 }
 
 /**
