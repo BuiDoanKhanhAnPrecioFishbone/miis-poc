@@ -12,7 +12,7 @@ import {
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
-import { PrintButton, PrintHeader } from "@/components/miis/Print";
+import { PrintButton } from "@/components/miis/Print";
 import {
   Badge,
   Button,
@@ -153,7 +153,6 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
       lang={lang}
       reqTags={session.reqTags}
     >
-      <PrintHeader lang={lang} title={agreementTitle(agreement)} />
       <PageHeading
         title={agreementTitle(agreement)}
         back={

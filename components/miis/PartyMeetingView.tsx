@@ -14,6 +14,8 @@ import { addWatchword, encodeWatchwords, suggestTerm } from "@/lib/domain/watchw
 
 import { dictionary } from "@/lib/i18n";
 import { DocumentTemplate } from "./DocumentTemplate";
+import { IconPlus } from "./icons";
+import { Select } from "./Select";
 import { Stepper, type StepState } from "./Stepper";
 import {
   Badge,
@@ -21,10 +23,12 @@ import {
   Callout,
   Chip,
   Field,
+  FormGrid,
   Panel,
   Rationale,
   ReqTag,
   ReqTags,
+  TextField,
 } from "./primitives";
 
 /**
@@ -192,6 +196,36 @@ export function PartyMeetingView({
   const [promoting, setPromoting] = useState<string | null>(null);
   const [term, setTerm] = useState("");
 
+  /*
+    *Inför träffen* is a form, not a summary.
+
+    It rendered `Field` — a read-only value on a rule — so a screen titled
+    "Registrera en partsträff" showed five rows reading "Ej registrerat" and no
+    way to register any of them. Read as disabled, which is the same failure as
+    a `<Button>` with no `onClick`: it teaches an evaluator that the prototype
+    is a picture.
+
+    Editable whether the meeting is new or held, because US-08's alternative
+    flow says exactly that — *"registreringen kan uppdateras både före och efter
+    mötet"* — and what the requirement pairs with the freedom is FH-001's change
+    log, which the rationale under the panel names.
+  */
+  const [party, setParty] = useState(meeting.party);
+  const [date, setDate] = useState(meeting.date);
+  const [purpose, setPurpose] = useState(text(meeting.purpose, lang));
+  const [participants, setParticipants] = useState(meeting.participants.join(", "));
+  const [agenda, setAgenda] = useState<string[]>(meeting.agenda.map((a) => text(a, lang)));
+  const [agendaDraft, setAgendaDraft] = useState("");
+  const [savedBefore, setSavedBefore] = useState(false);
+
+  function addAgendaItem() {
+    const value = agendaDraft.trim();
+    if (!value) return;
+    setAgenda((prev) => [...prev, value]);
+    setAgendaDraft("");
+    setSavedBefore(false);
+  }
+
   function addNote() {
     const value = draft.trim();
     if (!value) return;
@@ -284,42 +318,104 @@ export function PartyMeetingView({
         label={t.phaseLabel}
         lang={lang}
         sticky={false}
-        states={PHASES.map((p) =>
-          p === phase ? "current" : phaseState(meeting, p) === "done" ? "done" : "upcoming",
-        )}
+        /* Progress, not selection. Collapsing the two here is what made a
+           completed phase lose its tick when the officer clicked back to it. */
+        states={PHASES.map((p) => phaseState(meeting, p))}
+        selected={PHASES.indexOf(phase)}
         steps={PHASES.map((p) => ({ label: t.phase[p], onSelect: () => setPhase(p) }))}
       />
 
       <div className="mt-5 space-y-5">
         {phase === "before" && (
           <Panel title={t.before.heading} tags={["FF-004", "FSD-002"]}>
-            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field
-                label={t.before.party}
-                value={meeting.party || t.notRegistered}
-                hint={t.before.partyHint}
-              />
-              <Field label={t.before.date} value={meeting.date || t.notRegistered} />
-              <Field
-                label={t.before.purpose}
-                value={text(meeting.purpose, lang) || t.notRegistered}
-              />
-              <Field
-                label={t.before.participants}
-                value={meeting.participants.join(" · ") || t.notRegistered}
-              />
+            <div className="@container/form">
+              <FormGrid>
+                {/* FF-004: one party at a time, so the union is chosen from the
+                    register rather than typed — a meeting with a party MIIS
+                    does not hold is a meeting nothing can be filed against. */}
+                <Select
+                  id="pm-party"
+                  width="medium"
+                  label={t.before.party}
+                  value={party}
+                  onChange={(v) => {
+                    setParty(v);
+                    setSavedBefore(false);
+                  }}
+                  options={[
+                    { id: "", label: d.common.choose },
+                    ...unions.map((u) => ({ id: u, label: u })),
+                  ]}
+                />
+                <TextField
+                  id="pm-date"
+                  type="date"
+                  width="short"
+                  numeric
+                  label={t.before.date}
+                  value={date}
+                  onChange={(v) => {
+                    setDate(v);
+                    setSavedBefore(false);
+                  }}
+                />
+                <TextField
+                  id="pm-purpose"
+                  width="full"
+                  label={t.before.purpose}
+                  value={purpose}
+                  onChange={(v) => {
+                    setPurpose(v);
+                    setSavedBefore(false);
+                  }}
+                />
+                <TextField
+                  id="pm-participants"
+                  width="full"
+                  label={t.before.participants}
+                  hint={t.before.participantsHint}
+                  value={participants}
+                  onChange={(v) => {
+                    setParticipants(v);
+                    setSavedBefore(false);
+                  }}
+                />
+              </FormGrid>
             </div>
+            <Rationale>{t.before.partyHint}</Rationale>
 
             <h3 className="mt-5 mb-2 font-display text-body font-semibold">{t.before.agenda}</h3>
-            {meeting.agenda.length === 0 ? (
+            {agenda.length === 0 ? (
               <p className="text-table text-muted-foreground">{t.before.agendaEmpty}</p>
             ) : (
               <ol className="list-decimal space-y-1 pl-5 text-table">
-                {meeting.agenda.map((item, i) => (
-                  <li key={i}>{text(item, lang)}</li>
+                {agenda.map((item, i) => (
+                  <li key={`${item}-${i}`}>{item}</li>
                 ))}
               </ol>
             )}
+
+            <div className="mt-3 flex flex-wrap items-end gap-3">
+              <TextField
+                id="pm-agenda"
+                width="full"
+                label={t.before.agendaAdd}
+                value={agendaDraft}
+                onChange={setAgendaDraft}
+              />
+              <Button variant="secondary" iconStart={<IconPlus />} onClick={addAgendaItem}>
+                {d.common.add}
+              </Button>
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <Button onClick={() => setSavedBefore(true)}>{t.before.save}</Button>
+              {savedBefore && (
+                <Callout tone="ok" live tags={["FH-001"]}>
+                  {t.before.saved}
+                </Callout>
+              )}
+            </div>
 
             {/* FSD-002 — the party-meeting document comes from MI's template. */}
             {/*

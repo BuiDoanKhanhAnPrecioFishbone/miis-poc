@@ -122,7 +122,9 @@ export function constructionCounts(
  * - **FR-011**'s "utlämning av protokoll och avtalstryck … för medlare och
  *   allmänhet" is Rapport 1 (Allmänheten) and Rapport 5 (Medlare) — two
  *   printouts of one agreement, for two audiences, with confidentiality-marked
- *   information excluded from both.
+ *   information excluded from both. Rapport 1's audience has a screen of its
+ *   own (`/allmanheten`), so that report sends the reader there; Rapport 5's
+ *   audience has no screen at all, so it builds its printout here.
  * - **Rapport 4, Huvudrapport**, has no FR of its own. It is the complete record
  *   for one agreement — basfakta, omfattning, lön, arbetstid, pension, ledighet,
  *   löneavtal, lönerevision — i.e. the agreement view, printed, which is why it
@@ -187,7 +189,10 @@ export const REPORT_FORMAT_LABEL: Record<ReportFormat, string> = {
 /** Where a generated report actually appears in MIIS. */
 export type ReportResult =
   /** Built here, from the register. */
-  | { kind: "inline"; component: "constructions" | "bargaining-round" | "expiry" }
+  | {
+      kind: "inline";
+      component: "constructions" | "bargaining-round" | "expiry" | "mediator-release";
+    }
   /** A screen that already is this printout — the report sends you there. */
   | { kind: "screen"; href: string }
   /** Named in MI's table as Steg 2, and stated rather than drawn. */
@@ -359,7 +364,13 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 1,
     criteria: AGREEMENT_CRITERIA,
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/avtal" },
+    /*
+      Not `{ kind: "screen", href: "/avtal" }`. §3.1 gives Medlare Start and
+      Rapporter and nothing else, so the picker was offering the role a report
+      whose only outcome was the authorisation notice. §7.4 describes a printout
+      of its own, and this now produces it.
+    */
+    result: { kind: "inline", component: "mediator-release" },
     bilagaF: 5,
     externalRoles: ["mediator"],
   },
@@ -638,6 +649,14 @@ export function monthShare(value: number, total: number): number {
 export interface ReportAgreement {
   id: string;
   name: string;
+  /** D-001 — §5.1 excludes a marked agreement from the mediator interface. */
+  confidential: boolean;
+  /** The display string for the period, resolved on the server: it is
+      language-dependent and a function cannot cross into a client component. */
+  validity: string;
+  validFrom?: string;
+  expiresWithoutRenewal?: boolean;
+  earlyTermination?: { date: string; party: string };
   validTo?: string;
   employees?: number;
   signedDate?: string;
@@ -837,4 +856,155 @@ export function expiryReport(
 export function reportsForRole(role: Role, isExternal: boolean): readonly ReportDefinition[] {
   if (!isExternal) return REPORTS;
   return REPORTS.filter((r) => r.externalRoles?.includes(role));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Avtal – Medlare, Bilaga F Rapport 5 / Bilaga 3 §7.4                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * What is released to a mediator about one agreement.
+ *
+ * §3.1 gives Medlare *"Specifika rapporter"* and nothing else — no Avtal, no
+ * Medling, no menu past Start and Rapporter. So this report cannot be "the
+ * agreement screen, go and look": the screen it pointed at is one the role is
+ * refused, which made the picker offer a report whose only outcome was the
+ * authorisation notice. It has to produce its own printout.
+ *
+ * The shape is MI's, from §7.4's own sort order — four sections in this order:
+ * *Protokoll*, *Avtal*, *Medlingshandlingar*, and *Övriga avtal som
+ * arbetsgivaren tecknar*. The manual's file rules come with it: a message or an
+ * embedded image is not a document a mediator is being handed, so `meddelande`
+ * and `image` prefixes and `.msg`/`.eml` extensions are excluded.
+ *
+ * *"Sekretess- och GDPR-markerad information visas ej"* heads MI's own page and
+ * is applied here rather than by the screen: a mediator asking for a
+ * confidentiality-marked agreement gets the marked agreement's absence, not its
+ * detail with some fields blank.
+ */
+export interface MediatorReleaseDocument {
+  id: string;
+  fileName: string;
+  uploadedDate: string;
+}
+
+export interface MediatorReleaseOtherAgreement {
+  id: string;
+  name: string;
+  employeeOrg: string;
+  validity: string;
+}
+
+export interface MediatorRelease {
+  agreementId: string;
+  name: string;
+  employerOrg: string;
+  employeeOrg: string;
+  signedDate?: string;
+  validFrom?: string;
+  validTo?: string;
+  expiresWithoutRenewal: boolean;
+  earlyTermination?: { date: string; party: string };
+  protocols: MediatorReleaseDocument[];
+  agreementFiles: MediatorReleaseDocument[];
+  mediationFiles: MediatorReleaseDocument[];
+  otherAgreements: MediatorReleaseOtherAgreement[];
+}
+
+/** One document as this report sees it. */
+export interface ReleaseDocument {
+  id: string;
+  fileName: string;
+  uploadedDate: string;
+  type: string;
+  agreementId?: string;
+  confidential: boolean;
+}
+
+/**
+ * §7.4's own file rules, in MI's words: files whose name begins with
+ * *meddelande* or *image* are out, and so are `.msg` and `.eml`. They are mail
+ * artefacts that ended up on the case, not documents anybody meant to release.
+ */
+export function isReleasableFile(fileName: string): boolean {
+  const lower = fileName.toLowerCase();
+  if (lower.startsWith("meddelande") || lower.startsWith("image")) return false;
+  return !lower.endsWith(".msg") && !lower.endsWith(".eml");
+}
+
+/**
+ * *Endast giltiga avtal visas* (§7.4).
+ *
+ * Two things disqualify an agreement, and only two: it is not in force
+ * (`isCurrent`), or it is confidentiality-marked, which §5.1 excludes from the
+ * mediator interface entirely.
+ */
+export function isReleasableToMediator(a: ReportAgreement): boolean {
+  return isCurrent(a) && !a.confidential;
+}
+
+function byFileName(a: MediatorReleaseDocument, b: MediatorReleaseDocument): number {
+  return a.fileName.localeCompare(b.fileName, "sv");
+}
+
+function releaseDoc(d: ReleaseDocument): MediatorReleaseDocument {
+  return { id: d.id, fileName: d.fileName, uploadedDate: d.uploadedDate };
+}
+
+/**
+ * Build the release for one agreement, or null if it may not be released.
+ *
+ * `validityOf` is passed in rather than imported, because the display string
+ * for a validity period is language-dependent and this file holds no dictionary.
+ */
+export function mediatorRelease(
+  agreement: ReportAgreement,
+  documents: readonly ReleaseDocument[],
+  register: readonly ReportAgreement[],
+): MediatorRelease | null {
+  if (!isReleasableToMediator(agreement)) return null;
+
+  const mine = documents.filter(
+    (d) => d.agreementId === agreement.id && !d.confidential && isReleasableFile(d.fileName),
+  );
+
+  const pick = (types: readonly string[]) =>
+    mine.filter((d) => types.includes(d.type)).map(releaseDoc).sort(byFileName);
+
+  return {
+    agreementId: agreement.id,
+    name: agreement.name,
+    employerOrg: agreement.employerOrg,
+    employeeOrg: agreement.employeeOrg,
+    ...(agreement.signedDate ? { signedDate: agreement.signedDate } : {}),
+    ...(agreement.validFrom ? { validFrom: agreement.validFrom } : {}),
+    ...(agreement.validTo ? { validTo: agreement.validTo } : {}),
+    expiresWithoutRenewal: agreement.expiresWithoutRenewal === true,
+    ...(agreement.earlyTermination ? { earlyTermination: agreement.earlyTermination } : {}),
+    protocols: pick(["protocol"]),
+    agreementFiles: pick(["agreement"]),
+    /* §7.4: documents on linked mediation cases — the mediator's report and the
+       Director-General's decision are what a mediator is handed about a case. */
+    mediationFiles: pick(["mediator-report", "dg-decision"]),
+    /*
+      *Övriga avtal som arbetsgivaren tecknar*, sorted by employee organisation
+      then by name, which is MI's own order. This is the section that makes the
+      report worth running: a mediator walking into a dispute needs to know what
+      else that employer organisation has already settled.
+    */
+    otherAgreements: register
+      .filter(
+        (a) => a.id !== agreement.id && a.employerOrg === agreement.employerOrg && isReleasableToMediator(a),
+      )
+      .map((a) => ({
+        id: a.id,
+        name: a.name,
+        employeeOrg: a.employeeOrg,
+        validity: a.validity,
+      }))
+      .sort(
+        (a, b) =>
+          a.employeeOrg.localeCompare(b.employeeOrg, "sv") || a.name.localeCompare(b.name, "sv"),
+      ),
+  };
 }

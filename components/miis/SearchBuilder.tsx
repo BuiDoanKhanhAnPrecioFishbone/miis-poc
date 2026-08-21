@@ -16,7 +16,7 @@ import {
   type SearchFieldId,
 } from "@/lib/domain/options";
 import { dictionary } from "@/lib/i18n";
-import { Button, Callout, Chip, Panel, Rationale, ReqTag } from "./primitives";
+import { Button, Callout, Chip, FilterChips, Panel, Rationale, ReqTag } from "./primitives";
 import { SegmentedControl, Select, Tabs } from "./Select";
 
 /**
@@ -131,6 +131,11 @@ export function SearchBuilder({
     setGroups((gs) => [...gs, { id, join: "all", conditions: [newCondition(`${id}c0`)] }]);
   }
 
+  /** Empty the whole selection — every group's conditions at once. */
+  function clearConditions() {
+    setGroups((prev) => prev.map((g) => ({ ...g, conditions: [] })));
+  }
+
   function removeCondition(conditionId: string) {
     setGroups((gs) =>
       gs
@@ -187,7 +192,7 @@ export function SearchBuilder({
   return (
     <>
       {/* FR-002 — "choice of information type", the sketch's four pill tabs. */}
-      <div className="mb-6 flex flex-wrap items-center gap-3">
+      <div className="print-hide mb-6 flex flex-wrap items-center gap-3">
         <Tabs
           label={c.infoTypeLabel}
           value={infoType}
@@ -197,7 +202,14 @@ export function SearchBuilder({
         <ReqTag id="FR-002" />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+      {/*
+        The query builder is a control, not a result. A printed search is the
+        selection and the hits — the same rule the report screen follows, and
+        the reason both now print as documents rather than as pictures of a
+        form. The *Aktivt urval* block below stays on the paper: it is what
+        says which population the hits came from.
+      */}
+      <div className="print-hide grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
         <Panel title={c.title} tags={["FR-002"]}>
           <Rationale>{c.joinExplain}</Rationale>
 
@@ -435,23 +447,23 @@ export function SearchBuilder({
           <h2 className="font-display text-body font-semibold">{t.chips.heading}</h2>
           <ReqTag id="FR-002" />
         </div>
-        {allConditions.length === 0 ? (
-          <p className="text-label text-muted-foreground">{t.chips.empty}</p>
-        ) : (
-          <ul className="flex flex-wrap gap-2">
-            {allConditions.map((cond) => (
-              <li key={cond.id}>
-                <Chip
-                  selected
-                  onRemove={() => removeCondition(cond.id)}
-                  removeLabel={t.chips.remove(conditionText(cond))}
-                >
-                  {conditionText(cond)}
-                </Chip>
-              </li>
-            ))}
-          </ul>
-        )}
+        {/*
+          `FilterChips`, like both registers. These were **filled** — `Chip`'s
+          selected state, which means "one of a set of options, chosen". A
+          criterion already applied is not one of a set: the only thing it
+          offers is removal, so filling it put the loudest treatment in the
+          system on the control the reader is least likely to press. It is also
+          the third place this had been hand-built, and the third livery.
+        */}
+        <FilterChips
+          lang={lang}
+          active={allConditions.map((cond) => ({
+            key: cond.id,
+            label: conditionText(cond),
+            clear: () => removeCondition(cond.id),
+          }))}
+          onClearAll={clearConditions}
+        />
       </div>
 
       <div className="mt-5">

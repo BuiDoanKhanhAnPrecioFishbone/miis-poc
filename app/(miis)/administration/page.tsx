@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
-import { PrintButton, PrintHeader } from "@/components/miis/Print";
+import { PrintButton } from "@/components/miis/Print";
 import { SystemSettings } from "@/components/miis/SystemSettings";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Button, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
@@ -107,7 +107,6 @@ export default async function AdministrationPage() {
 
   return (
     <AppShell role={session.role} requires="administration" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
-      <PrintHeader lang={lang} title={t.title} />
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

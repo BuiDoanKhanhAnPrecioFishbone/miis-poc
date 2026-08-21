@@ -18,7 +18,7 @@ import { t as text, type Lang } from "@/lib/domain/lang";
 import type { RoleInfo } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
 import { IconAi, IconChevronDown, IconClose, IconForward } from "./icons";
-import { Badge, LinkButton, ReqTags } from "./primitives";
+import { Badge, LinkButton, Rationale, ReqTags } from "./primitives";
 
 /**
  * The AI assistant — Appendix 1 §4.1, gathered into one place.
@@ -142,14 +142,25 @@ function Section({
   children,
 }: {
   title: string;
+  /**
+   * Why the section is here, in requirement terms.
+   *
+   * A `Rationale`, not a paragraph, and that is the fix for the drawer being
+   * hard to read on first open: both sections led with two sentences of
+   * justification, so an officer met about sixty words before the first thing
+   * they could press. Neither sentence is needed to do the task — they explain
+   * that these are §4.1's four functions and that nothing is saved until it is
+   * approved — so they belong on the `miis_reqtags` layer with every other
+   * sentence of that kind. The product view opens on a heading and a control.
+   */
   lead?: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="border-t border-border pt-4 first:border-t-0 first:pt-0">
       <h3 className="mi-kicker mb-2 text-muted-foreground">{title}</h3>
-      {lead && <p className="mb-3 text-label text-muted-foreground">{lead}</p>}
       {children}
+      {lead && <Rationale>{lead}</Rationale>}
     </section>
   );
 }

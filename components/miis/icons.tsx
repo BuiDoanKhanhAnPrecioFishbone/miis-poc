@@ -5,6 +5,7 @@ import {
   ChevronDown,
   ChevronsUpDown,
   ChevronUp,
+  FileText,
   Lock,
   Plus,
   Printer,
@@ -74,6 +75,8 @@ export const IconPrint = icon(Printer, "IconPrint");
 export const IconClose = icon(X, "IconClose");
 /** Attention — a `Callout` that needs reading before acting. */
 export const IconAlert = icon(TriangleAlert, "IconAlert");
+/** A stored file in a list of them — a protocol, an agreement print. */
+export const IconDocument = icon(FileText, "IconDocument");
 /** A sekretessmarkering (D-001). A legal status, so it gets the larger size. */
 export const IconLock = icon(Lock, "IconLock");
 /** Back to the register a detail view came from. */

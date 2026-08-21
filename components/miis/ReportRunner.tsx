@@ -10,11 +10,13 @@ import {
   criteriaGroups,
   expiryReport,
   filterForReport,
+  mediatorRelease,
   REPORT_FORMAT_LABEL,
   reportById,
   reportsForRole,
   selectionSummary,
   type ReportAgreement,
+  type ReleaseDocument,
   type ReportCriterion,
   type ReportFormat,
 } from "@/lib/domain/report";
@@ -22,8 +24,18 @@ import { agreementStatus } from "@/lib/domain/status";
 import { dictionary } from "@/lib/i18n";
 import { BargainingRoundReportView } from "./BargainingRoundReport";
 import { ExpiryReportView } from "./ExpiryReport";
+import { MediatorReleaseView } from "./MediatorRelease";
 import { IconForward } from "./icons";
-import { Badge, Button, Callout, FormGrid, LinkButton, Panel, Rationale, ReqTags } from "./primitives";
+import {
+  Badge,
+  Button,
+  Callout,
+  FormGrid,
+  LinkButton,
+  Panel,
+  Rationale,
+  ReqTags,
+} from "./primitives";
 import { Select } from "./Select";
 
 /**
@@ -109,6 +121,7 @@ export function ReportRunner({
   options,
   results,
   agreements,
+  documents,
   role,
   isExternal,
 }: {
@@ -125,6 +138,12 @@ export function ReportRunner({
    * is not a payload worth a round trip per dropdown.
    */
   agreements: ReportAgreement[];
+  /**
+   * The stored files, for Rapport 5's three document sections (Bilaga 3 §7.4).
+   * Already narrowed to what may be released — the seam derives `confidential`
+   * from the agreement, so this layer never has to.
+   */
+  documents: ReleaseDocument[];
   /**
    * The role, and whether it is one of the two §3.1 gives "Specifika rapporter".
    *
@@ -169,136 +188,147 @@ export function ReportRunner({
 
   return (
     <>
-      <Panel title={t.heading} tags={["FR-005", "FR-013"]}>
-        <p className="mb-4 max-w-4xl text-table">{t.intro}</p>
+      {/*
+        The selection screen is on screen only. Bilaga F's own printouts are the
+        *Urvalskriterier* block and the result — the picker is the control that
+        produced them, and printing it makes the paper look like a screenshot of
+        an application rather than the report MI hands over.
+      */}
+      <div className="print-hide">
+        <Panel title={t.heading} tags={["FR-005", "FR-013"]}>
+          <p className="mb-4 max-w-4xl text-table">{t.intro}</p>
 
-        <FormGrid>
-          <Select
-            id="report-pick"
-            width="full"
-            label={t.pick}
-            value={reportId}
-            onChange={choose}
-            options={available.map((r) => ({
-              id: r.id,
-              label: r.stage === 2 ? `${r.label[lang]} (${t.stage2})` : r.label[lang],
-            }))}
-          />
-        </FormGrid>
+          <FormGrid>
+            <Select
+              id="report-pick"
+              width="full"
+              label={t.pick}
+              value={reportId}
+              onChange={choose}
+              options={available.map((r) => ({
+                id: r.id,
+                label: r.stage === 2 ? `${r.label[lang]} (${t.stage2})` : r.label[lang],
+              }))}
+            />
+          </FormGrid>
 
-        <div className="mt-4 flex flex-wrap items-start gap-3">
-          <p className="min-w-0 max-w-3xl text-table">{report.produces[lang]}</p>
-        </div>
-        {/*
+          <div className="mt-4 flex flex-wrap items-start gap-3">
+            <p className="min-w-0 max-w-3xl text-table">{report.produces[lang]}</p>
+          </div>
+          {/*
           The appendix badge first, the requirement tags after it: a hidden
           `ReqTag` still reserves its space so toggling the layer does not
           reflow the page, so putting them first pushed the badge into the
           middle of an empty row in the product view.
         */}
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {report.bilagaF && <Badge tone="neutral">{t.bilagaF(report.bilagaF)}</Badge>}
-          <ReqTags ids={report.requirements} />
-        </div>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {report.bilagaF && <Badge tone="neutral">{t.bilagaF(report.bilagaF)}</Badge>}
+            <ReqTags ids={report.requirements} />
+          </div>
 
-        {/*
+          {/*
           The criteria, in MI's own order and MI's own grouping. The pension
           report splits them into three blocks and the others do not; keeping
           that distinction is the difference between a form built from the
           appendix and a form built from a guess.
         */}
-        {report.criteria.length === 0 ? (
-          <div className="mt-5">
-            <Callout tone="ok" label={t.noSelectionLabel}>
-              {t.noSelection}
-            </Callout>
-          </div>
-        ) : (
-          <div className="mt-5 space-y-5">
-            {groups.map((group, i) => (
-              <div key={group.group ?? `g${i}`}>
-                {group.group && (
-                  <h3 className="mi-kicker mb-2 text-muted-foreground">{group.group}</h3>
-                )}
-                <FormGrid>
-                  {group.criteria.map((criterion) => {
-                    const list = optionsFor(criterion, options);
-                    const key = `${report.id}-${criterion.id}`;
-                    if (!list) {
-                      /* Pensionsavtal is a yes/no in MI's screen. It is a closed
+          {report.criteria.length === 0 ? (
+            <div className="mt-5">
+              <Callout tone="ok" label={t.noSelectionLabel}>
+                {t.noSelection}
+              </Callout>
+            </div>
+          ) : (
+            <div className="mt-5 space-y-5">
+              {groups.map((group, i) => (
+                <div key={group.group ?? `g${i}`}>
+                  {group.group && (
+                    <h3 className="mi-kicker mb-2 text-muted-foreground">{group.group}</h3>
+                  )}
+                  <FormGrid>
+                    {group.criteria.map((criterion) => {
+                      const list = optionsFor(criterion, options);
+                      const key = `${report.id}-${criterion.id}`;
+                      if (!list) {
+                        /* Pensionsavtal is a yes/no in MI's screen. It is a closed
                          two-value choice rather than a switch, because it is
                          part of the query, not a flag on a record. */
+                        return (
+                          <Select
+                            key={key}
+                            id={key}
+                            width="short"
+                            label={criterion.label[lang]}
+                            value={values[criterion.id] ?? ""}
+                            onChange={(v) => setValues((s) => ({ ...s, [criterion.id]: v }))}
+                            options={[
+                              { id: "", label: t.all },
+                              { id: d.common.yes, label: d.common.yes },
+                              { id: d.common.no, label: d.common.no },
+                            ]}
+                          />
+                        );
+                      }
                       return (
                         <Select
                           key={key}
                           id={key}
-                          width="short"
+                          width={criterion.kind === "year" ? "short" : "medium"}
                           label={criterion.label[lang]}
                           value={values[criterion.id] ?? ""}
                           onChange={(v) => setValues((s) => ({ ...s, [criterion.id]: v }))}
-                          options={[
-                            { id: "", label: t.all },
-                            { id: d.common.yes, label: d.common.yes },
-                            { id: d.common.no, label: d.common.no },
-                          ]}
+                          options={[{ id: "", label: t.all }, ...list]}
                         />
                       );
-                    }
-                    return (
-                      <Select
-                        key={key}
-                        id={key}
-                        width={criterion.kind === "year" ? "short" : "medium"}
-                        label={criterion.label[lang]}
-                        value={values[criterion.id] ?? ""}
-                        onChange={(v) => setValues((s) => ({ ...s, [criterion.id]: v }))}
-                        options={[{ id: "", label: t.all }, ...list]}
-                      />
-                    );
-                  })}
-                </FormGrid>
-              </div>
-            ))}
-          </div>
-        )}
+                    })}
+                  </FormGrid>
+                </div>
+              ))}
+            </div>
+          )}
 
-        {/*
+          {/*
           Format is FR-005's own list — Word, Excel, PDF at minimum — and the
           structured pair is FR-013, which is a bör-krav. Only PDF runs, because
           print is the only export that works without a server; the others say
           so on the control rather than failing quietly.
         */}
-        <div className="mt-5">
-          <FormGrid>
-            <Select
-              id="report-format"
-              width="short"
-              label={t.format}
-              value={format}
-              onChange={(v) => setFormat(v as ReportFormat)}
-              options={report.formats.map((f) => ({
-                id: f,
-                label: f === "pdf" ? REPORT_FORMAT_LABEL[f] : `${REPORT_FORMAT_LABEL[f]} — ${t.needsServer}`,
-              }))}
-            />
-          </FormGrid>
-        </div>
+          <div className="mt-5">
+            <FormGrid>
+              <Select
+                id="report-format"
+                width="short"
+                label={t.format}
+                value={format}
+                onChange={(v) => setFormat(v as ReportFormat)}
+                options={report.formats.map((f) => ({
+                  id: f,
+                  label:
+                    f === "pdf"
+                      ? REPORT_FORMAT_LABEL[f]
+                      : `${REPORT_FORMAT_LABEL[f]} — ${t.needsServer}`,
+                }))}
+              />
+            </FormGrid>
+          </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          {report.stage === 2 ? (
-            <Button disabled disabledReason={t.stage2Reason}>
-              {t.generate}
-            </Button>
-          ) : (
-            <Button id="report-run" onClick={() => setGenerated(report.id)}>
-              {t.generate}
-            </Button>
-          )}
-          {format !== "pdf" && (
-            <span className="text-label text-muted-foreground">{t.formatNote}</span>
-          )}
-        </div>
-        <Rationale>{t.rationale}</Rationale>
-      </Panel>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            {report.stage === 2 ? (
+              <Button disabled disabledReason={t.stage2Reason}>
+                {t.generate}
+              </Button>
+            ) : (
+              <Button id="report-run" onClick={() => setGenerated(report.id)}>
+                {t.generate}
+              </Button>
+            )}
+            {format !== "pdf" && (
+              <span className="text-label text-muted-foreground">{t.formatNote}</span>
+            )}
+          </div>
+          <Rationale>{t.rationale}</Rationale>
+        </Panel>
+      </div>
 
       {generated === report.id && (
         <div id="rapportresultat" className="mt-5 scroll-mt-4">
@@ -352,6 +382,23 @@ export function ReportRunner({
                     Number(values["year"] ?? "") || options.defaultYear,
                     (a) => agreementStatus(a),
                   )}
+                />
+              ) : report.result.component === "mediator-release" ? (
+                /*
+                  §7.4 takes one agreement, so the release is built from the
+                  *Avtal* criterion rather than from the whole filtered set. If
+                  the officer has not chosen one — or has chosen one that is
+                  sekretessmarkerat or not in force — the report says which,
+                  rather than printing an empty page.
+                */
+                <MediatorReleaseView
+                  lang={lang}
+                  notReleasable={values["agreement"] ? t.notReleasable : t.chooseAgreement}
+                  release={(() => {
+                    const chosen = agreements.find((a) => a.name === values["agreement"]);
+                    if (!chosen) return null;
+                    return mediatorRelease(chosen, documents, agreements);
+                  })()}
                 />
               ) : report.result.component === "expiry" ? (
                 <ExpiryReportView

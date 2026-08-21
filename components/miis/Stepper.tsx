@@ -50,12 +50,28 @@ export function Stepper({
   label,
   steps,
   states,
+  selected,
   lang,
   sticky = true,
 }: {
   label: string;
   steps: Step[];
+  /**
+   * How far the process has got — done, current, upcoming. **Progress only.**
+   * Which step is being *looked at* is `selected`, and the two are different
+   * facts: on the party meeting a held meeting's *Inför* is done, and clicking
+   * back to it does not un-finish it.
+   */
   states: StepState[];
+  /**
+   * The step currently shown, when that can differ from the current step.
+   *
+   * Without it the call site had to collapse the two into one enum, and
+   * `p === phase ? "current" : …` is what made a completed step lose its tick
+   * the moment the officer clicked back to it — the screen said the work had
+   * come undone. Defaults to whichever step is `current`.
+   */
+  selected?: number;
   lang: Lang;
   /**
    * Pinned by default. A stepper that scrolls away can report a position but
@@ -76,6 +92,10 @@ export function Stepper({
     >
       {steps.map((step, i) => {
         const state = states[i] ?? "upcoming";
+        const isSelected = selected === undefined ? state === "current" : selected === i;
+        /* Selection decides the fill; progress decides the tick. A done step
+           that is being looked at is both, and shows both. */
+        const look = isSelected ? STYLE.current : STYLE[state];
         const content = (
           <>
             {state === "done" && <IconCheck size="sm" />}
@@ -89,8 +109,8 @@ export function Stepper({
             {step.href ? (
               <a
                 href={step.href}
-                aria-current={state === "current" ? "step" : undefined}
-                className={`${SHARED} ${STYLE[state]}`}
+                aria-current={isSelected ? "step" : undefined}
+                className={`${SHARED} ${look}`}
               >
                 {content}
               </a>
@@ -98,8 +118,8 @@ export function Stepper({
               <button
                 type="button"
                 onClick={step.onSelect}
-                aria-current={state === "current" ? "step" : undefined}
-                className={`${SHARED} ${STYLE[state]}`}
+                aria-current={isSelected ? "step" : undefined}
+                className={`${SHARED} ${look}`}
               >
                 {content}
               </button>

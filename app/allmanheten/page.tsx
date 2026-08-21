@@ -118,7 +118,7 @@ export default async function AllmanhetenPage() {
       role={session.role.id}
       reqTags={session.reqTags}
     >
-      <PrintHeader lang={lang} title={t.title} />
+      <PrintHeader lang={lang} />
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}

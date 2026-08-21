@@ -3,12 +3,13 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/miis/AppShell";
 import { ConstructionsReport } from "@/components/miis/ConstructionsReport";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
-import { PrintButton, PrintHeader } from "@/components/miis/Print";
+import { PrintButton } from "@/components/miis/Print";
 import { ReportRunner, type CriterionOptions } from "@/components/miis/ReportRunner";
 import { Badge, Button, PageHeading, Panel, Rationale, ReqTag } from "@/components/miis/primitives";
 import { ShortTermWageReport } from "@/components/miis/ShortTermWageReport";
 import { getConstructionsReport } from "@/lib/data/constructions";
 import { listAgreements } from "@/lib/data/agreements";
+import { listDocuments } from "@/lib/data/documents";
 import { listCooperationBodies, listParties } from "@/lib/data/parties";
 import {
   EXTRACT_PERIOD_END,
@@ -16,8 +17,8 @@ import {
   listBargainingYears,
   listMonitoredAgreements,
 } from "@/lib/data/reports";
-import { SECTOR_LABEL } from "@/lib/domain/agreement";
-import type { ReportAgreement } from "@/lib/domain/report";
+import { SECTOR_LABEL, validityLabel } from "@/lib/domain/agreement";
+import type { ReleaseDocument, ReportAgreement } from "@/lib/domain/report";
 import type { Role } from "@/lib/domain/role";
 import { getSession } from "@/lib/session";
 
@@ -52,7 +53,7 @@ export default async function RapporterPage() {
   const { i18n, lang } = session;
   const t = i18n.rapporter;
 
-  const [rows, constructionsReport, bargainingYears, agreements, parties, bodies] =
+  const [rows, constructionsReport, bargainingYears, agreements, parties, bodies, documents] =
     await Promise.all([
       listMonitoredAgreements(lang),
       getConstructionsReport(),
@@ -60,6 +61,7 @@ export default async function RapporterPage() {
       listAgreements(),
       listParties(),
       listCooperationBodies(),
+      listDocuments(),
     ]);
 
   const exportedCount = rows.filter((r) => r.lastExported).length;
@@ -116,6 +118,11 @@ export default async function RapporterPage() {
     return {
       id: a.id,
       name: a.name,
+      confidential: a.confidential,
+      validity: validityLabel(a, lang),
+      ...(a.validFrom ? { validFrom: a.validFrom } : {}),
+      ...(a.expiresWithoutRenewal ? { expiresWithoutRenewal: true } : {}),
+      ...(a.earlyTermination ? { earlyTermination: a.earlyTermination } : {}),
       ...(a.validTo ? { validTo: a.validTo } : {}),
       ...(a.employees !== undefined ? { employees: a.employees } : {}),
       ...(a.signedDate ? { signedDate: a.signedDate } : {}),
@@ -138,6 +145,17 @@ export default async function RapporterPage() {
       agreementType: a.agreementType,
     };
   });
+
+  /* Rapport 5's three document sections. `confidential` is already derived from
+     the agreement by the seam, so the release rule reads one field. */
+  const releaseDocuments: ReleaseDocument[] = documents.map((d) => ({
+    id: d.id,
+    fileName: d.fileName,
+    uploadedDate: d.uploadedDate,
+    type: d.type,
+    confidential: d.confidential,
+    ...(d.agreementId ? { agreementId: d.agreementId } : {}),
+  }));
 
   const scheduleColumns: Column[] = [
     { key: "report", header: t.scheduled.table.report, sortable: true },
@@ -177,7 +195,6 @@ export default async function RapporterPage() {
       lang={lang}
       reqTags={session.reqTags}
     >
-      <PrintHeader lang={lang} title={t.title} />
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}
@@ -195,6 +212,7 @@ export default async function RapporterPage() {
         lang={lang}
         options={criterionOptions}
         agreements={reportAgreements}
+        documents={releaseDocuments}
         role={session.role.id}
         isExternal={isExternal}
         results={{

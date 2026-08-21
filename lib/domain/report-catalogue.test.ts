@@ -7,12 +7,15 @@ import {
   expiryReport,
   EXPIRY_CONFEDERATION,
   isCurrent,
+  isReleasableFile,
+  mediatorRelease,
   monthShare,
   reportById,
   reportsForRole,
   REPORTS,
   selectionSummary,
   UNGROUPED_MEMBERS,
+  type ReleaseDocument,
   type ReportAgreement,
 } from "./report";
 
@@ -202,7 +205,8 @@ describe("reportsForRole — §3.1 and Bilaga 3", () => {
  */
 describe("the expiry report — Bilaga 3 §7.11", () => {
   const a = (over: Partial<ReportAgreement>): ReportAgreement => ({
-    id: "A", name: "A", employerOrg: "AGO", employeeOrg: "ATO", ...over,
+    id: "A", name: "A", employerOrg: "AGO", employeeOrg: "ATO",
+    confidential: false, validity: "–", ...over,
   });
 
   const list = [
@@ -292,5 +296,97 @@ describe("isCurrent", () => {
   */
   it("still counts one whose period has already ended", () => {
     expect(isCurrent({ signedDate: "2024-01-01" })).toBe(true);
+  });
+});
+
+/**
+ * Avtal – Medlare, Bilaga 3 §7.4.
+ *
+ * The report used to point the reader at `/avtal`, which is the one thing the
+ * role it exists for cannot open — §3.1 gives Medlare Start and Rapporter. A
+ * report a role may run has to produce something that role may read, so these
+ * assertions are about the printout rather than about a link.
+ */
+describe("mediatorRelease — Bilaga 3 §7.4", () => {
+  const a = (over: Partial<ReportAgreement>): ReportAgreement => ({
+    id: "A", name: "A", employerOrg: "Almega", employeeOrg: "Unionen",
+    confidential: false, validity: "2027-01-01–2029-01-01", signedDate: "2027-01-01", ...over,
+  });
+
+  const doc = (over: Partial<ReleaseDocument>): ReleaseDocument => ({
+    id: "D", fileName: "f.pdf", uploadedDate: "2027-01-01", type: "protocol",
+    agreementId: "A-1", confidential: false, ...over,
+  });
+
+  const target = a({ id: "A-1", name: "Fastigheter" });
+  const register = [
+    target,
+    a({ id: "A-2", name: "Apotek", employeeOrg: "Sveriges Farmaceuter" }),
+    a({ id: "A-3", name: "Spel", employeeOrg: "HRF" }),
+    /* Another employer organisation entirely — not this mediator's business. */
+    a({ id: "A-4", name: "Stål", employerOrg: "Industriarbetsgivarna" }),
+    /* Same employer, but marked — §5.1 keeps it out of the mediator interface. */
+    a({ id: "A-5", name: "Hemligt", employeeOrg: "Kommunal", confidential: true }),
+    /* Same employer, but unsigned — "endast giltiga avtal visas". */
+    a({ id: "A-6", name: "Ej tecknat", employeeOrg: "Seko", signedDate: undefined }),
+  ];
+
+  const documents = [
+    doc({ id: "D-2", fileName: "Bvtalsprotokoll.pdf" }),
+    doc({ id: "D-1", fileName: "Avtalsprotokoll.pdf" }),
+    doc({ id: "D-3", fileName: "Avtalstryck.pdf", type: "agreement" }),
+    doc({ id: "D-4", fileName: "Medlarrapport.pdf", type: "mediator-report" }),
+    doc({ id: "D-5", fileName: "GD-beslut.pdf", type: "dg-decision" }),
+    /* MI's own exclusions, §7.4. */
+    doc({ id: "D-6", fileName: "meddelande_från_ombudet.pdf" }),
+    doc({ id: "D-7", fileName: "image001.png" }),
+    doc({ id: "D-8", fileName: "Korrespondens.msg" }),
+    doc({ id: "D-9", fileName: "Korrespondens.eml" }),
+    /* Someone else's agreement. */
+    doc({ id: "D-10", fileName: "Annat.pdf", agreementId: "A-4" }),
+  ];
+
+  const release = mediatorRelease(target, documents, register)!;
+
+  it("splits the documents into MI's own four sections", () => {
+    expect(release.protocols.map((d) => d.id)).toEqual(["D-1", "D-2"]);
+    expect(release.agreementFiles.map((d) => d.id)).toEqual(["D-3"]);
+    expect(release.mediationFiles.map((d) => d.id).sort()).toEqual(["D-4", "D-5"]);
+  });
+
+  it("sorts each section by file name, as §7.4 specifies", () => {
+    expect(release.protocols.map((d) => d.fileName)).toEqual([
+      "Avtalsprotokoll.pdf",
+      "Bvtalsprotokoll.pdf",
+    ]);
+  });
+
+  /* Mail artefacts that ended up on the case are not documents anyone meant to
+     hand a mediator, and MI's manual names them by prefix and extension. */
+  it("drops meddelande, image, .msg and .eml", () => {
+    for (const id of ["D-6", "D-7", "D-8", "D-9"]) {
+      expect(release.protocols.some((d) => d.id === id)).toBe(false);
+    }
+    expect(isReleasableFile("Avtalsprotokoll.pdf")).toBe(true);
+    expect(isReleasableFile("Meddelande.pdf")).toBe(false);
+    expect(isReleasableFile("brev.MSG")).toBe(false);
+  });
+
+  it("lists the employer organisation's other agreements, by union then name", () => {
+    expect(release.otherAgreements.map((o) => o.name)).toEqual(["Spel", "Apotek"]);
+  });
+
+  /*
+    A confidentiality-marked agreement produces no release at all. Withholding
+    fields from a page that still names the agreement would be the same failure
+    as hiding a value with CSS: the fact that this agreement exists between
+    these two parties is itself what D-002 keeps back.
+  */
+  it("releases nothing for a marked agreement", () => {
+    expect(mediatorRelease(register[4]!, documents, register)).toBeNull();
+  });
+
+  it("releases nothing for an agreement that is not in force", () => {
+    expect(mediatorRelease(register[5]!, documents, register)).toBeNull();
   });
 });

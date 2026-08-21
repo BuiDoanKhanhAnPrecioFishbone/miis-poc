@@ -35,6 +35,8 @@ export const sv = {
     adjust: "Justera",
     reject: "Avvisa",
     save: "Spara",
+    add: "Lägg till",
+    choose: "Välj",
     search: "Sök",
     exportLabel: "Exportera:",
     showingOf: (shown: number, total: number) => `Visar ${shown} av ${total}`,
@@ -814,12 +816,36 @@ export const sv = {
         "Rapporten är en utskrift av en vy som redan finns i MIIS. Öppna vyn och skriv ut den där, så följer utskriften samma sekretessregler som skärmen.",
       openView: "Öppna vyn",
       notBuilt: "Rapportens innehåll är inte byggt i mockupen.",
+      chooseAgreement: "Välj ett avtal i urvalet ovan. Rapporten lämnar ut ett avtal i taget.",
+      notReleasable:
+        "Avtalet lämnas inte ut till medlare. Antingen är det sekretessmarkerat, eller så är det inte tecknat och därmed inte gällande (Bilaga 3 §7.4: endast giltiga avtal visas).",
       transcribedLabel: "Medlingsinstitutets egna siffror",
       transcribed:
         "Avtalskonstruktioner räknar anställda på hela den svenska arbetsmarknaden – 3 797 764 personer i Medlingsinstitutets egen utskrift. Siffrorna nedan är därför Medlingsinstitutets publicerade, med det urval de togs med (Arbetsgivarorg: Almega Tjänsteförbunden), och ändras inte av urvalet ovan. Avtalsrörelsen räknar registrets egna avtal och följer urvalet fullt ut.",
       rationale:
         "Bilaga F inleds med att det för varje rapport visas urvalsbild och resultat. Urvalet är alltså en del av rapporten, inte ett steg före den – därför skrivs kriterierna ut överst i resultatet.",
     },
+    mediatorRelease: {
+      title: "Avtal – Medlare",
+      confidentialityNote:
+        "Sekretess- och GDPR-markerad information visas ej (Bilaga 3 §7.4). Ett sekretessmarkerat avtal lämnas inte ut alls – det visas inte med tomma fält.",
+      notReleasableLabel: "Inget utlämnande",
+      employerOrg: "Arbetsgivarorganisation",
+      employeeOrg: "Arbetstagarorganisation",
+      signedDate: "Teckningsdatum",
+      period: "Löptid",
+      expires: "Löper ut utan förnyelse",
+      earlyTermination: "Förtida uppsägning",
+      protocols: "Protokoll",
+      agreementFiles: "Avtal",
+      mediationFiles: "Medlingshandlingar",
+      noDocuments: "Inga handlingar att lämna ut i det här avsnittet.",
+      otherAgreements: "Övriga avtal som arbetsgivaren tecknar",
+      otherAgreementsNote:
+        "Sorterat på arbetstagarorganisation och avtalsnamn. Det här är avsnittet som gör rapporten värd att ta ut: medlaren behöver veta vad samma arbetsgivarorganisation redan har gjort upp om.",
+      noOtherAgreements: "Arbetsgivarorganisationen har inga andra gällande avtal registrerade.",
+    },
+
     expiry: {
       title: (year: number) => `Utlöpningstidpunkter ${year}`,
       intro:
@@ -1346,6 +1372,10 @@ export const sv = {
       participants: "Deltagare",
       agenda: "Dagordning",
       agendaEmpty: "Ingen dagordning registrerad ännu.",
+      agendaAdd: "Ny punkt på dagordningen",
+      participantsHint: "Namn åtskilda med komma",
+      save: "Spara inför träffen",
+      saved: "Registreringen sparad. Ändringen skrivs till ändringsloggen med tidpunkt och användare.",
       location: "Plats",
       createDocument: "Skapa partsträffsdokument från mall",
       documentCreated: "Dokument skapat",

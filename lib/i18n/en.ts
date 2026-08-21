@@ -37,6 +37,8 @@ export const en: Dictionary = {
     adjust: "Adjust",
     reject: "Reject",
     save: "Save",
+    add: "Add",
+    choose: "Choose",
     search: "Search",
     exportLabel: "Export:",
     showingOf: (shown: number, total: number) => `Showing ${shown} of ${total}`,
@@ -821,12 +823,36 @@ export const en: Dictionary = {
         "The report is a printout of a view MIIS already has. Open the view and print it there, so the printout follows the same confidentiality rules as the screen.",
       openView: "Open the view",
       notBuilt: "The report's content is not built in the mockup.",
+      chooseAgreement: "Choose an agreement in the selection above. The report releases one agreement at a time.",
+      notReleasable:
+        "The agreement is not released to mediators. Either it is confidentiality-marked, or it has not been signed and is therefore not in force (Bilaga 3 §7.4: only valid agreements are shown).",
       transcribedLabel: "Medlingsinstitutet's own figures",
       transcribed:
         "Agreement constructions counts employees across the whole Swedish labour market — 3,797,764 people in Medlingsinstitutet's own printout. The figures below are therefore Medlingsinstitutet's published ones, with the selection they were taken under (Employer org: Almega Tjänsteförbunden), and are not changed by the selection above. The bargaining round counts the register's own agreements and follows the selection in full.",
       rationale:
         "Appendix F opens by stating that for every report a selection screen and a result are shown. The selection is therefore part of the report rather than a step before it — which is why the criteria are printed at the head of the result.",
     },
+    mediatorRelease: {
+      title: "Agreement – Mediators",
+      confidentialityNote:
+        "Confidentiality- and GDPR-marked information is not shown (Bilaga 3 §7.4). A marked agreement is not released at all — it is not shown with blank fields.",
+      notReleasableLabel: "Nothing released",
+      employerOrg: "Employer organisation",
+      employeeOrg: "Employee organisation",
+      signedDate: "Signed",
+      period: "Validity period",
+      expires: "Expires without renewal",
+      earlyTermination: "Early termination",
+      protocols: "Protocols",
+      agreementFiles: "Agreements",
+      mediationFiles: "Mediation documents",
+      noDocuments: "No documents to release in this section.",
+      otherAgreements: "Other agreements the employer organisation signs",
+      otherAgreementsNote:
+        "Sorted by employee organisation and agreement name. This is the section that makes the report worth running: a mediator needs to know what the same employer organisation has already settled.",
+      noOtherAgreements: "The employer organisation has no other agreements in force on record.",
+    },
+
     expiry: {
       title: (year: number) => `Expiry dates ${year}`,
       intro:
@@ -1357,6 +1383,10 @@ export const en: Dictionary = {
       participants: "Participants",
       agenda: "Agenda",
       agendaEmpty: "No agenda registered yet.",
+      agendaAdd: "New agenda item",
+      participantsHint: "Names separated by commas",
+      save: "Save preparation",
+      saved: "Registration saved. The change is written to the change log with time and user.",
       location: "Location",
       createDocument: "Create a party meeting document from the template",
       templateLogNote:

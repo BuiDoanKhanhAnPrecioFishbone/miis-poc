@@ -11,6 +11,7 @@ import { canAccess, type RoleInfo } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
 import { AiAssistant, AiAssistantLauncher } from "./AiAssistant";
 import { DemoBar } from "./DemoBar";
+import { PrintHeader } from "./Print";
 import { Callout } from "./primitives";
 import { SessionTimeoutWarning } from "./SessionTimeoutWarning";
 
@@ -290,6 +291,18 @@ export function AppShell({
             this screen's menu item is refused the screen, so authorisation is a
             property of the system rather than of the navigation.
           */}
+          {/*
+            MI's letterhead on every printed screen, not on the six that
+            remembered to ask for it. Sixteen screens were printing without the
+            mark and without an Utskriftsdatum, which is the difference between
+            a document and a screenshot — and it is not something a page should
+            have to opt into.
+
+            No title here: the page's own `<h1>` follows immediately and is the
+            document's title. Passing one as well printed it twice.
+          */}
+          <PrintHeader lang={lang} />
+
           {requires && !canAccess(role, requires) ? (
             <Callout tone="attention" label={t.common.notAuthorised}>
               {t.common.notAuthorisedFor(t.nav[requires], role.label)}

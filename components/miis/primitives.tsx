@@ -1052,7 +1052,14 @@ export function PageHeading({
 }) {
   return (
     <div className="mb-6">
-      {back && <div className="mb-2">{back}</div>}
+      {/*
+        `print-hide` on both slots. A printed document has no Skriv ut button
+        and no way back to a register — they are controls, and a printout that
+        carries them reads as a screenshot of an application rather than as the
+        document MI hands over. The heading and the subtitle stay: they are the
+        document's own title.
+      */}
+      {back && <div className="print-hide mb-2">{back}</div>}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -1066,7 +1073,7 @@ export function PageHeading({
           )}
           {marker && <div className="mt-3">{marker}</div>}
         </div>
-        {action}
+        {action && <div className="print-hide">{action}</div>}
       </div>
     </div>
   );

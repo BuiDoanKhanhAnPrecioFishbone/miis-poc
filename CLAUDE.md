@@ -98,6 +98,16 @@ reviewer to a screen its own role would be refused.
    extract", the public computer "specific reports". `accessLevel(role, screen)`
    in `lib/domain/role.ts` is the one answer; the menu, the screen guard and the
    matrix on `/administration/anvandare` all ask it, so they cannot disagree.
+   **Progress and selection are two facts, and `Stepper` keeps them apart.**
+   `states` is how far the process has got; `selected` is which step is being
+   looked at. Collapsing them — `p === phase ? "current" : …` — made a completed
+   step lose its tick the moment the officer clicked back to it, so the screen
+   said the work had come undone.
+   **A report a role may run has to produce something that role may read.**
+   *Avtal – Medlare* pointed at `/avtal`, and §3.1 gives Medlare Start and
+   Rapporter — so the picker offered a report whose only outcome was the
+   authorisation notice. `ReportResult.kind` is `"screen"` only when the
+   audience has that screen.
    **`StatusDot` is for FR-012 and nothing else; `Badge` is for every other
    state word.** FR-012 is the only status whose colours MI specified, so it gets
    the reserved hues and a mark-plus-label form — a filled red pill would read as
@@ -236,6 +246,16 @@ reviewer to a screen its own role would be refused.
    `@media print` block in `globals.css` drops the demo bar, the nav, the header
    and the requirement tags. Printing is the **only** export that runs without a
    server, so it is wired while Excel, CSV and JSON stay dashed.
+   **The letterhead is `AppShell`'s, not the page's**, and it carries no title —
+   the page's own `<h1>` follows it and *is* the title. Sixteen screens had been
+   printing with no mark and no date because a page had to remember to ask; the
+   four that did ask printed their title twice.
+   **A control is not part of the document.** `PageHeading` puts `print-hide` on
+   its `back` and `action` slots, and the two screens whose top half is a
+   *control* rather than a result — the report picker and the query builder —
+   are `print-hide` in full. Bilaga F's printouts are *Urvalskriterier* plus the
+   result; paper that carries a Skriv ut button is a screenshot of an
+   application.
    **FR-011 and D-002 are enforced in the markup, not the stylesheet.**
    `maySeeConfidential(role)` is false for `public` and `mediator`; a value
    hidden by CSS is still in the document, and a requirement about what may
