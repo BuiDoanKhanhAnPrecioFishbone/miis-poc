@@ -18,11 +18,18 @@ import { NAV_HREF } from "@/lib/domain/nav";
 import { roleInfo, type Role } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
 import { countAgreements, listIncompleteAgreements, listRecentAgreements } from "./agreements";
+import { SESSION_TIMEOUT } from "@/lib/domain/settings";
 import { getCurrentBenchmark } from "./benchmark";
 import { listEvents, listReminders, reminderCount } from "./events";
 import { listMediationCases, listMediators, listOngoingMediationCases } from "./mediation";
 
-export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promise<Dashboard> {
+export async function getDashboard(
+  role: Role,
+  lang: Lang = DEFAULT_LANG,
+  /* NFÅ-002's configured limit, so the start page states the limit that is
+     actually in force rather than a number typed into the dictionary. */
+  sessionTimeoutMinutes = SESSION_TIMEOUT.defaultMinutes,
+): Promise<Dashboard> {
   const i18n = dictionary(lang);
   const d = i18n;
   const s = i18n.start;
@@ -32,7 +39,7 @@ export async function getDashboard(role: Role, lang: Lang = DEFAULT_LANG): Promi
   const base = {
     role: info,
     heading: s.heading(info.label),
-    subheading: s.subheading,
+    subheading: s.subheading(sessionTimeoutMinutes),
     ...(benchmark ? { benchmark } : {}),
   };
 

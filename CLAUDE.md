@@ -185,6 +185,17 @@ the draft says so rather than papering over it.
    authentication in Försäkringskassan's IdP over SAML, so drawing a login page
    would claim we built the one thing we certainly did not. Signing *out* is
    different — NFL-001 logs it — so the header carries it.
+   **A setting is editable only where a requirement lets it be.** `SYSTEM_SETTINGS`
+   in `lib/domain/settings.ts` carries four, and two are deliberately fixed with
+   the sentence that fixes them on the row: NFL-003 names *systemadministratörer*
+   in its prohibition, and NFÅ-006's IP restriction lives in Försäkringskassan's
+   operating environment. Showing the fixed ones beside the editable ones is what
+   says the requirement was read; four editable boxes would say we built a form.
+   NFÅ-002's limit is configurable **end to end** — written on Administration,
+   read by `getSession`, applied by `SessionTimeoutWarning`, stated on the start
+   page — because a setting that does not reach the behaviour is a setting that
+   only looks like one. Its bound is a **ceiling**: MI may shorten the limit, and
+   raising it past thirty minutes would weaken NFÅ-002 rather than configure it.
    **Users and role assignment are editable; the permission matrix is not.**
    NFÅ-005 names exactly what MI administers without us — *"upplägg och
    redigering av användare och rolltilldelning"* — so `/administration/anvandare`

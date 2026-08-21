@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { PrintButton, PrintHeader } from "@/components/miis/Print";
+import { SystemSettings } from "@/components/miis/SystemSettings";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Button, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { listChangeLog, listEvents } from "@/lib/data/events";
@@ -105,11 +107,33 @@ export default async function AdministrationPage() {
 
   return (
     <AppShell role={session.role} requires="administration" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PrintHeader lang={lang} title={t.title} />
       <PageHeading
         title={t.title}
         subtitle={t.subtitle}
         tags={["FH-001", "FH-002", "NFL-003", "NFL-004"]}
+        /*
+          NFL-004 — *"tillgång till loggarna via ett administrativt gränssnitt
+          eller exportfunktion utan att behöva kontakta leverantören"*. The
+          interface is this screen, and the export that actually runs is the
+          print: it needs no server, and it carries MI's letterhead and an
+          Utskriftsdatum the way their own printouts do.
+        */
+        action={<PrintButton lang={lang} />}
       />
+
+      {/*
+        US-13's second half. §3.1 gives this role "systemkonfiguration", and the
+        screen had two logs and a support table — things to read, and nothing to
+        administer.
+      */}
+      <div className="mb-5">
+        <SystemSettings
+          lang={lang}
+          timeoutMinutes={session.sessionTimeoutMinutes}
+          watchwordCount={watchwords.length}
+        />
+      </div>
 
       <Panel title={t.changeLog.heading} tags={["FH-001"]}>
         <p className="mb-4 max-w-4xl text-table">{t.changeLog.intro}</p>

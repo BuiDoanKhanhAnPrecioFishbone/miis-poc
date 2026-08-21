@@ -23,4 +23,12 @@ export const REQTAGS_COOKIE = "miis_reqtags";
 */
 export const WATCHWORD_COOKIE = "miis_watchwords";
 
+/*
+  NFÅ-002's configurable limit. The one system setting MI names as configurable,
+  so it travels the same way role and language do — written by the settings panel
+  in the browser, read on the server, and applied by the session warning. In week
+  2 it is a row in the system configuration table and the cookie disappears.
+*/
+export const SESSION_TIMEOUT_COOKIE = "miis_session_timeout";
+
 export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;

@@ -9,7 +9,9 @@ import {
   LANG_COOKIE,
   REQTAGS_COOKIE,
   ROLE_COOKIE,
+  SESSION_TIMEOUT_COOKIE,
 } from "@/lib/cookies";
+import { sessionTimeoutMinutes } from "@/lib/domain/settings";
 
 /**
  * The active role for the current request.
@@ -44,6 +46,18 @@ export async function activeLang(): Promise<Lang> {
   return isLang(value) ? value : DEFAULT_LANG;
 }
 
+/**
+ * NFÅ-002's limit, in minutes — the one thing §3.1's "systemkonfiguration"
+ * actually configures in this prototype.
+ *
+ * A cookie is user input, so the value goes through `sessionTimeoutMinutes`,
+ * which falls back to MI's own default rather than to zero: a bad value must not
+ * be able to end every session immediately.
+ */
+export async function activeSessionTimeout(): Promise<number> {
+  return sessionTimeoutMinutes((await cookies()).get(SESSION_TIMEOUT_COOKIE)?.value);
+}
+
 export async function activeDictionary(): Promise<Dictionary> {
   return dictionary(await activeLang());
 }
@@ -72,14 +86,24 @@ export interface Session {
   lang: Lang;
   i18n: Dictionary;
   reqTags: boolean;
+  /** NFÅ-002's configured limit, in minutes. */
+  sessionTimeoutMinutes: number;
 }
 
 export async function getSession(): Promise<Session> {
-  const [role, dataset, lang, reqTags] = await Promise.all([
+  const [role, dataset, lang, reqTags, timeout] = await Promise.all([
     activeRole(),
     activeDataset(),
     activeLang(),
     reqTagsEnabled(),
+    activeSessionTimeout(),
   ]);
-  return { role: roleInfo(role, lang), dataset, lang, i18n: dictionary(lang), reqTags };
+  return {
+    role: roleInfo(role, lang),
+    dataset,
+    lang,
+    i18n: dictionary(lang),
+    reqTags,
+    sessionTimeoutMinutes: timeout,
+  };
 }

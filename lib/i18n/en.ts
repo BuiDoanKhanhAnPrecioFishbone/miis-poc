@@ -148,7 +148,8 @@ export const en: Dictionary = {
 
   session: {
     title: "Your session is about to expire",
-    body: "You have been inactive for some time. For security reasons you are signed out automatically after 30 minutes of inactivity.",
+    body: (minutes: number) =>
+      `You have been inactive for some time. For security reasons you are signed out automatically after ${minutes} minutes of inactivity.`,
     remaining: (mm: string) => `Time remaining: ${mm}`,
     remainingAria: (minutes: number, seconds: number) =>
       `The session ends in ${minutes} minutes and ${seconds} seconds.`,
@@ -173,7 +174,8 @@ export const en: Dictionary = {
   start: {
     heading: (role: string) => `Start page – ${role}`,
     subheading:
-      "Content adapted to the assigned role and its authorisation. Signed in with an EFOS card; the session ends after 30 minutes of inactivity.",
+      (minutes: number) =>
+        `Content adapted to the assigned role and its authorisation. Signed in with an EFOS card; the session ends after ${minutes} minutes of inactivity.`,
     benchmarkOverMonths: (n: number) => `over ${n} months`,
     benchmarkKicker: "Reference in agreement and mediator views",
     benchmarkLine: (period: string) => `Märket ${period}:`,
@@ -1425,6 +1427,32 @@ export const en: Dictionary = {
     },
   },
   administration: {
+    settings: {
+      heading: "System settings",
+      intro:
+        "The system administrator has full access including system configuration, but not permissions (Appendix 1 §3.1). Two of the settings below can be changed here; two cannot, and the requirement that decides it is on the row.",
+      editable: "Can be changed",
+      fixed: "Fixed by requirement",
+      timeoutLabel: "Time limit (minutes)",
+      timeoutHint: (min: number, max: number) => `${min}–${max} minutes`,
+      notAllowed: "The value is not allowed",
+      tooHigh: (max: number) =>
+        `NFÅ-002 states at most ${max} minutes of inactivity. The limit may be shortened but not extended — a longer limit weakens the requirement rather than configuring it.`,
+      tooLow: (min: number) =>
+        `Shorter than ${min} minutes is impractical: a limit that expires during a coffee break is a limit users work around.`,
+      notWhole: "Enter a whole number of minutes.",
+      save: "Save the time limit",
+      unchanged: "The value is already saved",
+      effectNote: "Applies immediately across the system — the warning appears two minutes before the limit.",
+      savedNote: (minutes: number) =>
+        `The time limit is set to ${minutes} minutes and applies from now. The change is recorded in the change log.`,
+      watchwordCount: (n: number) =>
+        n === 1 ? "1 term in the table below" : `${n} terms in the table below`,
+      retentionValue: (months: number) => `At least ${months} months`,
+      publicIpValue: "Medlingsinstitutet's IP address",
+      logNote:
+        "Changed system settings are recorded in the change log with old value, new value, time and user (FH-001) — the same way a change to an agreement is.",
+    },
     title: "Administration",
     epic: "Logs and system configuration",
     subtitle: "Support tables, traceability and system settings",

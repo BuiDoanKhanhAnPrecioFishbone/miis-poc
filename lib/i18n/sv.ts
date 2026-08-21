@@ -150,7 +150,8 @@ export const sv = {
 
   session: {
     title: "Din session håller på att gå ut",
-    body: "Du har varit inaktiv en längre stund. Av säkerhetsskäl loggas du ut automatiskt vid 30 minuters inaktivitet.",
+    body: (minutes: number) =>
+      `Du har varit inaktiv en längre stund. Av säkerhetsskäl loggas du ut automatiskt vid ${minutes} minuters inaktivitet.`,
     remaining: (mm: string) => `Tid kvar: ${mm}`,
     remainingAria: (minutes: number, seconds: number) =>
       `Sessionen avslutas om ${minutes} minuter och ${seconds} sekunder.`,
@@ -173,7 +174,8 @@ export const sv = {
   start: {
     heading: (role: string) => `Startsida – ${role}`,
     subheading:
-      "Rollanpassat innehåll enligt tilldelad roll och behörighet. Inloggad via EFOS-kort, sessionen avslutas efter 30 minuters inaktivitet.",
+      (minutes: number) =>
+        `Rollanpassat innehåll enligt tilldelad roll och behörighet. Inloggad via EFOS-kort, sessionen avslutas efter ${minutes} minuters inaktivitet.`,
     benchmarkOverMonths: (n: number) => `över ${n} månader`,
     benchmarkKicker: "Referens i avtals- och medlarvyer",
     benchmarkLine: (period: string) => `Märket ${period}:`,
@@ -1413,6 +1415,33 @@ export const sv = {
     },
   },
   administration: {
+    settings: {
+      heading: "Systeminställningar",
+      intro:
+        "Systemadministratören har full åtkomst inklusive systemkonfiguration, men inte behörigheter (Bilaga 1 §3.1). Två av inställningarna nedan går att ändra här; två gör det inte, och kravet som avgör det står på raden.",
+      editable: "Kan ändras",
+      fixed: "Låst av krav",
+      timeoutLabel: "Tidsgräns (minuter)",
+      timeoutHint: (min: number, max: number) => `${min}–${max} minuter`,
+      notAllowed: "Värdet är inte tillåtet",
+      tooHigh: (max: number) =>
+        `NFÅ-002 anger högst ${max} minuters inaktivitet. Tidsgränsen får kortas men inte förlängas – en längre gräns försvagar kravet i stället för att konfigurera det.`,
+      tooLow: (min: number) =>
+        `Kortare än ${min} minuter är opraktiskt: en gräns som löper ut under en kafferast är en gräns som användarna arbetar runt.`,
+      notWhole: "Ange ett helt antal minuter.",
+      save: "Spara tidsgränsen",
+      unchanged: "Värdet är redan sparat",
+      effectNote:
+        "Gäller direkt i hela systemet – varningen visas två minuter innan gränsen nås.",
+      savedNote: (minutes: number) =>
+        `Tidsgränsen är satt till ${minutes} minuter och gäller från och med nu. Ändringen registreras i ändringsloggen.`,
+      watchwordCount: (n: number) =>
+        n === 1 ? "1 ord i tabellen nedan" : `${n} ord i tabellen nedan`,
+      retentionValue: (months: number) => `Minst ${months} månader`,
+      publicIpValue: "Medlingsinstitutets IP-adress",
+      logNote:
+        "Ändrade systeminställningar registreras i ändringsloggen med gammalt värde, nytt värde, tidpunkt och användare (FH-001) – på samma sätt som en ändring i ett avtal.",
+    },
     title: "Administration",
     epic: "Loggar och systemkonfiguration",
     subtitle: "Stödtabeller, spårbarhet och systeminställningar",

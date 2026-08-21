@@ -26,13 +26,10 @@ import { percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { i18n } = await getSession();
+  const { i18n, sessionTimeoutMinutes } = await getSession();
   const title = `${i18n.common.appName} – ${i18n.nav.start}`;
-  return {
-    title,
-    description: i18n.start.subheading,
-    openGraph: { title, description: i18n.start.subheading },
-  };
+  const description = i18n.start.subheading(sessionTimeoutMinutes);
+  return { title, description, openGraph: { title, description } };
 }
 
 function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Dictionary; lang: Lang }) {
@@ -161,7 +158,7 @@ function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Diction
 export default async function DashboardPage() {
   const session = await getSession();
   const { i18n, lang } = session;
-  const page = await getDashboard(session.role.id, lang);
+  const page = await getDashboard(session.role.id, lang, session.sessionTimeoutMinutes);
   const { benchmark } = page;
 
   const halfWidth = page.panels.filter(isHalfWidth);

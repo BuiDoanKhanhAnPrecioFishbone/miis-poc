@@ -187,9 +187,34 @@ example in the system of an administrator's setting having a visible effect on a
 case officer's day.
 
 **Demonstrating retention and access.** The **händelselogg** (FH-002) carries
-high-level events and the notifications the system has sent. The retention
-statement (NFL-003, NFL-004) states the period and that MI reaches the logs
-through this view or through an export, without the supplier.
+high-level events and the notifications the system has sent. NFL-004 asks for
+access *"via ett administrativt gränssnitt eller exportfunktion utan att behöva
+kontakta leverantören"* — the interface is this screen, and the export that
+actually runs is the print, which carries MI's mark and an *Utskriftsdatum* the
+way their own printouts do.
+
+**Configuring the system.** §3.1 gives this role *"systemkonfiguration (exkl.
+behörigheter)"*, and the settings panel is where that happens. Four settings, and
+the interesting part is that **two of them are deliberately not editable**:
+
+- **The session time limit** (NFÅ-002) is genuinely configurable, and configured
+  here changes the behaviour everywhere: set it to ten minutes and the start page
+  says ten, and the inactivity warning arrives at eight. The field refuses a
+  value above thirty — NFÅ-002's own number — because a longer limit weakens the
+  requirement rather than configures it, and it says so when refusing.
+- **The watchword table** (FAI-004) is the example US-13 names, and is maintained
+  in the table below.
+- **Log retention** is shown with a padlock and its reason. NFL-003 names this
+  role in the prohibition — *"ska inte kunna ändras eller raderas av vanliga
+  användare **eller systemadministratörer**"* — so a field an administrator could
+  shorten would contradict the sentence that created it.
+- **The public IP restriction** (NFÅ-006) likewise: it lives in
+  Försäkringskassan's operation of the environment, and a field here would imply
+  that MIIS could open itself up.
+
+Showing the two that are fixed beside the two that are not is the point of the
+panel. Four editable boxes would say we built a settings form; this says we read
+the sentences.
 
 **Authorisation is deliberately not here.** NFÅ-005 places *upplägg och redigering
 av användare och rolltilldelning* with MI's own authorisation administrator, and
@@ -197,18 +222,11 @@ the system administrator's own permission row on the matrix says so. Separating
 the two is the point: the person who can change the system is not the person who
 can grant access to it.
 
-> **To be strengthened before submission.** US-13 also says "maintain system
-> configuration". The only configurable thing MI names — NFÅ-002's session
-> timeout, *"en konfigurerbar tidsgräns (default max 30 minuter)"* — has no screen
-> yet; it exists as a demonstrable behaviour, triggerable from the reviewer bar.
-> Plan item 4 gives this role a configuration panel. Until it lands, this section
-> should describe the two logs and the watchword table and not claim more.
-
 ### Visualisations
 
 | File | Shows |
 |---|---|
-| `administration-loggar` | Change log with old and new value, event log, watchword table, retention |
+| `administration-loggar` | System settings, change log with old and new value, event log, watchword table, retention |
 | `start-systemadministrator` | The role's start page and its full menu |
 | `anvandare-behorigheter` | The authorisation matrix this role can read but not edit |
 
@@ -225,7 +243,9 @@ written by the system and cannot be edited from here.
 questions an administrator actually asks. The watchword table distinguishes
 predefined terms from those added at a party meeting, so an administrator
 preparing for a round can see at a glance what has accumulated since the last
-one. The export exists for the case where the answer has to leave the system.
+one. A setting that is refused says which way it is wrong and what the limit is,
+so the administrator does not have to guess at an allowed value. Printing gets
+the answer out of the system without a support ticket.
 
 **Accessibility.** The same guarantees as every other role — AA verified by
 tooling on every change, keyboard reachable, no meaning carried by colour alone.

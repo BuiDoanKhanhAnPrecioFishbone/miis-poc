@@ -38,9 +38,9 @@ judged on **three**, and they are not the three the walkthrough currently leads 
 
 | Criterion role | Our role | Scenario | Route | State |
 |---|---|---|---|---|
-| System Administrator | `system-admin` | US-13 — review logs, maintain system configuration | `/administration` | **Partly** |
+| System Administrator | `system-admin` | US-13 — review logs, maintain system configuration | `/administration` | **Strong** (after item 4) |
 | Agreement Administrator / Case Officer | `agreement-admin` | US-01 … US-06, US-16 … US-20 | `/registrera`, `/avtal`, `/parter`, `/market`, `/rapporter` | **Strong** |
-| The Public Access Computer | `public` | US-14 — produce a public report | `/allmanheten` | **Partly** |
+| The Public Access Computer | `public` | US-14 — produce a public report | `/allmanheten` | **Strong** (after item 3) |
 
 The walkthrough was cut to four scenarios from chapter 9 — registration, the mediation
 case, the search builder and party meetings. Two of those belong to the **mediation
@@ -62,24 +62,22 @@ The criterion asks for four things per role. Being honest about which we have:
 | | System admin | Agreement admin | Public computer |
 |---|---|---|---|
 | **Task and goal** | written | written | written |
-| **Workflow** | written; thin in the system itself — no configuration screen (item 4) | strong — five named steps, MI's own §4.4 flow | **strong** — free text, MI's three criteria, valid-at-date, print (item 3 done) |
+| **Workflow** | **strong** — two logs, the watchword table, four settings and a working export (item 4 done) | strong — five named steps, MI's own §4.4 flow | **strong** — free text, MI's three criteria, valid-at-date, print (item 3 done) |
 | **Visualisation** | `administration-loggar`, `start-systemadministrator`, `anvandare-behorigheter` | eight shots incl. `ai-assistenten` | `allmanheten` |
 | **Usability / efficiency / accessibility** | written | written | written |
 
-Three of the four elements were prose nobody had written, and that was the cheapest
-score on the board. It is written now. What remains is the **workflow** row: two of the
-three roles have a narrative that is honest about being thin, and items 3 and 4 are what
-make them not thin.
+Three of the four elements were prose nobody had written, and that was the cheapest score
+on the board. All four are now written for all three roles, and after items 3 and 4 none
+of the three narratives carries a *to be strengthened* caveat. What is left in the plan is
+material that makes the offer richer rather than the criterion answerable.
 
 ### What each role still needs built
 
-**System Administrator.** `/administration` carries the change log (FH-001, with old and
-new value), the event log (FH-002), the watchword table (FAI-004) and the retention
-statement (NFL-003, NFL-004). What it does not carry is *configuration*: US-13 says
-"maintain system configuration", and the only configurable thing MI names — NFÅ-002's
-session timeout, *"en konfigurerbar tidsgräns (default max 30 minuter)"* — exists only as
-a demo trigger. A system administrator with nothing to administer is the weakest of the
-three stories.
+**System Administrator — resolved, see item 4.** `/administration` carried the change log
+(FH-001), the event log (FH-002), the watchword table (FAI-004) and the retention statement
+and nothing that was a *setting*, so US-13's "maintain system configuration" had no screen.
+It now has one, with the two settings MI calls configurable editable and the two the
+requirements keep out of this role's hands shown with their reason.
 
 **Public Access Computer — resolved, see item 3.** Bilaga 3 §4 shows MI's *current*
 public interface has two parts: *Gränssnitt Allmänheten* (search via ärendekort, the
@@ -158,10 +156,23 @@ a generic diary product whose public interface was configured rather than design
 §18.3 says the old system is not the starting point. It is reversible — the same component,
 with `maySeeConfidential` already deciding what it may return.
 
-**4 — Give the system administrator something to administer.** NFÅ-002's configurable
+**4 — Give the system administrator something to administer.** ~~NFÅ-002's configurable
 timeout, the watchword table it already owns, and the retention settings, on one
-configuration panel — so US-13's "maintain system configuration" has a screen and the
-role has a workflow rather than two logs.
+configuration panel.~~ **Done**, and with a better answer than "four editable boxes":
+
+- **NFÅ-002's session limit is configurable end to end** — set on Administration, written
+  as a cookie, read by `getSession`, applied by the inactivity warning and stated on the
+  start page. Set it to ten minutes and the warning arrives at eight. The ceiling is
+  thirty, because MI's sentence gives a maximum and a longer limit would weaken the
+  requirement rather than configure it; the field says so when it refuses.
+- **Two settings are deliberately fixed, with the requirement on the row.** NFL-003 names
+  *systemadministratörer* in its prohibition, so log retention is a padlock and a reason
+  rather than a field; NFÅ-006's IP restriction lives in Försäkringskassan's operation of
+  the environment. Showing the two that are fixed beside the two that are not is what says
+  the sentences were read.
+- **NFL-004's export runs.** The requirement asks for the logs *"via ett administrativt
+  gränssnitt eller exportfunktion"*; the interface is the screen and the export that needs
+  no server is the print, which now carries MI's letterhead here too.
 
 **5 — Add *Avtal – Utlöpningstidpunkter* to the report catalogue**, and the mediator
 entrance that Bilaga 3 §5 specifies as exactly three reports.

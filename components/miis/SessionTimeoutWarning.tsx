@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
+import { SESSION_TIMEOUT_COOKIE } from "@/lib/cookies";
+import {
+  SESSION_TIMEOUT,
+  sessionTimeoutMinutes,
+  warnAtMinutes,
+} from "@/lib/domain/settings";
 import { dictionary } from "@/lib/i18n";
 import { Button, ReqTag } from "./primitives";
 
@@ -24,13 +30,38 @@ import { Button, ReqTag } from "./primitives";
  * 15-minute presentation is a warning nobody can evaluate.
  */
 
-const INACTIVITY_BEFORE_WARNING_MS = 28 * 60 * 1000;
-const COUNTDOWN_SECONDS = 120;
+/*
+  Derived from the configured limit rather than hard-coded at 28 and 30.
+
+  NFÅ-002 calls the limit *konfigurerbar*, and a setting an administrator can
+  change on one screen that does not reach the behaviour on every other screen is
+  a setting that only looks configurable. `warnAtMinutes` keeps the warning a
+  positive delay even at the five-minute floor.
+*/
+const COUNTDOWN_SECONDS = SESSION_TIMEOUT.warnBeforeMinutes * 60;
 
 function mmss(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
   return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+/**
+ * NFÅ-002's configured limit, read where it is used.
+ *
+ * The alternative was a prop on `AppShell` threaded through nineteen pages, and
+ * that is a prop somebody forgets on the twentieth — at which point one screen
+ * quietly keeps the old limit. The value is the same demo cookie the settings
+ * panel writes, and it goes through the same domain function, so a hand-edited
+ * cookie cannot end every session immediately.
+ */
+function configuredTimeout(): number {
+  if (typeof document === "undefined") return SESSION_TIMEOUT.defaultMinutes;
+  const raw = document.cookie
+    .split("; ")
+    .find((c) => c.startsWith(`${SESSION_TIMEOUT_COOKIE}=`))
+    ?.split("=")[1];
+  return sessionTimeoutMinutes(raw);
 }
 
 export function SessionTimeoutWarning({
@@ -61,10 +92,18 @@ export function SessionTimeoutWarning({
   // "inactivity" means — not "time since page load".
   useEffect(() => {
     if (visible) return;
-    let timer = window.setTimeout(() => setOpen(true), INACTIVITY_BEFORE_WARNING_MS);
+    /*
+      Re-read when the clock is armed, not once on mount. An administrator who
+      changes the limit and stays on the page would otherwise keep the old timer
+      until they navigated — and "it takes effect next time you reload" is not
+      what *konfigurerbar* means.
+    */
+    const arm = () =>
+      window.setTimeout(() => setOpen(true), warnAtMinutes(configuredTimeout()) * 60 * 1000);
+    let timer = arm();
     const restart = () => {
       window.clearTimeout(timer);
-      timer = window.setTimeout(() => setOpen(true), INACTIVITY_BEFORE_WARNING_MS);
+      timer = arm();
     };
     const events = ["pointerdown", "keydown", "wheel", "touchstart"] as const;
     events.forEach((e) => window.addEventListener(e, restart, { passive: true }));
@@ -143,7 +182,7 @@ export function SessionTimeoutWarning({
         </div>
 
         <p id="session-body" className="text-table">
-          {t.body}
+          {t.body(configuredTimeout())}
         </p>
 
         <p className="mt-4 font-display text-page-title font-semibold tabular-nums text-[var(--mi-slate-900)]">
