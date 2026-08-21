@@ -131,9 +131,17 @@ with a Model as a Service offer — the AI seam `lib/data/extraction.ts` was wri
   Händelselogg, Ändringslogg, Villkorsändring and Bevakningsord. `docs/12` lists our
   divergences from the information model; this is the drawing to settle them against.
   MI also notes the fields shown "är exempel och inte uttömmande".
-- **Bilaga 2, 3 and 4 are not in the repo.** Bilaga 2 (Leverantörskontroll) carries
-  further requirements on how the assignment is carried out; Bilaga 4 is the price form.
-  Neither is UI work, but Bilaga 2 should be read by whoever writes the response.
+- **Bilaga 3 arrived 2026-08-21** — the W3D3 user manual, now in
+  `tender/Bilaga_3_W3D3_Anvandarmanual.pdf` with a `.txt` beside it. What it settles is in
+  `docs/17-scenario-criterion.md`. Avropsförfrågan §18.3 sets its limit in MI's own words:
+  *"Det gamla systemet ska leverantören inte utgå ifrån vid utvecklingen av det nya
+  systemet."* Migration source and process background, never a design template.
+- **Bilaga 2 and 4 are still not in the repo, and Bilaga 2 now matters most.** §18.2 says
+  it carries *"kompletterande krav och beskrivning av uppdragets omfattning och innehåll"*,
+  and the detailed instruction for our own scored criterion — three named roles, four
+  elements each — is not in Avropsförfrågan §16, so it is almost certainly there. We are
+  building the most heavily weighted deliverable against a paraphrase until it arrives.
+  Bilaga 4 is the price form.
 
 ## How to use these
 

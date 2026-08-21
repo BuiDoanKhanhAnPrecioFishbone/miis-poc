@@ -8,7 +8,7 @@ presentation at MI in week 35.
 
 Read `docs/00-START-HERE.md` before doing design work.
 
-**Five source documents in `docs/requirements/`, each with a searchable `.txt` beside
+**Six source documents in `docs/requirements/`, each with a searchable `.txt` beside
 the authoritative original. Check work against all of them, not just the first.**
 
 **MI's own, in Swedish — these outrank ours:**
@@ -16,7 +16,8 @@ the authoritative original. Check work against all of them, not just the first.*
 | | |
 |---|---|
 | `tender/Bilaga_1_Kravspecifikation.pdf` | **This is "Appendix 1"** — MI's real requirement specification, 50 pages, diarienummer 2026/0059. §3.1 roles, §4.3 system sketch, §4.4 the registration flow, §5 the requirement tables. **§4.3 and §4.4 are diagrams and are absent from the `.txt` — open the PDF** |
-| `tender/Avropsforfragan.pdf` | The call-off request. §16 is how the response is scored: our criterion is worth **SEK 1 000 000 of 2 500 000**, awarded in five bands (100/75/50/25/0 %), judged on *relevans, tydlighet, konkretionsgrad, genomförbarhet* and understanding of MI's needs |
+| `tender/Avropsforfragan.pdf` | The call-off request. §16 is how the response is scored: our criterion is worth **SEK 1 000 000 of 2 500 000**, awarded in five bands (100/75/50/25/0 %), judged on *relevans, tydlighet, konkretionsgrad, genomförbarhet* and understanding of MI's needs. §18 lists the appendices — **Bilaga 2 and 4 are still not in this repo**, and Bilaga 2 is where the scored criterion's own instruction appears to live |
+| `tender/Bilaga_3_W3D3_Anvandarmanual.pdf` | **The current system's user manual** (W3D3 Avtal, v1.9, 2025-10-31). Every registration form field by field, the two published interfaces (Allmänheten, Medlare), the search-builder objects and **seven** reports — one more than Bilaga F. §18.3 states its limit in MI's own words: *"Det gamla systemet ska leverantören inte utgå ifrån vid utvecklingen av det nya systemet."* **Migration source and process background, never a design template** |
 
 **Ours, written from MI's — useful, but second-hand:**
 
@@ -30,6 +31,13 @@ the authoritative original. Check work against all of them, not just the first.*
 the eight roles all check out — and what has **not** been diffed yet (chapter 5's
 requirement tables). `docs/12-source-documents.md` records the same for the two English
 guides, plus the places our domain model still diverges from the information model.
+
+**`docs/17-scenario-criterion.md` is the one to read before planning work.** The scored
+criterion names **three** roles — System Administrator, Agreement Administrator/Case
+Officer, The Public Access Computer — and asks for four things about each: task and goal,
+workflow, a visualisation, and a usability/efficiency/accessibility statement. The
+prototype implements all eight roles, which is right, but the *presentation* is marked on
+those three, and three of the four elements are prose that has not been written yet.
 
 **When our English rendering and MI's Swedish original disagree, MI's original wins.**
 
