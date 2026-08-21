@@ -148,7 +148,31 @@ export const sv = {
     fileNote: (name: string) => `Filen får namnet ${name}`,
   },
 
-  session: {
+
+  /* Den guidade genomgången – granskarmaterial, inte MIIS. */
+  walkthrough: {
+    title: "Guidad genomgång",
+    subtitle:
+      "Rollbaserade användarscenarier och användargränssnitt, i den ordning tilldelningskriteriet bedömer dem. Varje steg byter roll och öppnar skärmen.",
+    marker: "Granskarmaterial – ingår ej i systemet",
+    markerBody:
+      "Den här sidan är en läshjälp för Medlingsinstitutets granskare och för den muntliga presentationen. Den finns inte i menyn, och ingenting på den är föreslagen MIIS-funktionalitet.",
+    scoredHeading: "De tre roller kriteriet namnger",
+    scoredLead:
+      "Bilaga 1 §3.1 definierar åtta roller och prototypen har alla åtta – NFÅ-003 är ett krav på systemet. Bedömningen görs på tre, och de kommer först.",
+    supportingHeading: "Övriga roller",
+    supportingLead:
+      "Inte bedömda, och byggda ändå: ett anbud som visar bara minimum är inte det anbud som får mycket högt mervärde. De ligger här som bevis på att systemet är komplett, inte som ingång.",
+    taskAndGoal: "Uppgift och mål",
+    workflow: "Arbetsflöde",
+    usability: "Användbarhet, effektivitet och tillgänglighet",
+    step: (n: number) => `Steg ${n}`,
+    openAs: (role: string) => `Öppna som ${role}`,
+    roleNote: (role: string) =>
+      `Aktuell roll: ${role}. Rollen byts av knapparna ovan och av rollväxlaren i demoraden.`,
+    toStart: "Till startsidan",
+    demoLink: "Guidad genomgång",
+  },  session: {
     title: "Din session håller på att gå ut",
     body: (minutes: number) =>
       `Du har varit inaktiv en längre stund. Av säkerhetsskäl loggas du ut automatiskt vid ${minutes} minuters inaktivitet.`,

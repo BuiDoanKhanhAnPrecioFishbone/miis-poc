@@ -11,7 +11,7 @@ other things. A claim about testing is worth what it can be shown to be.
 ## The four commands
 
 ```
-npm test          165 unit tests over the domain layer and the mock data
+npm test          174 unit tests over the domain layer and the mock data
 npm run lint      ESLint, including the architectural rules below
 npx tsc --noEmit  types, which is also what keeps the English translation complete
 npm run build     production build, which fails on broken mock references
@@ -24,7 +24,7 @@ below.
 
 | | MI asks for | Where it stands |
 |---|---|---|
-| **T-001** | Unit, integration and system tests before go-live, documented | **Unit: built.** 165 tests over `lib/domain/` and `lib/mock/`. Integration and system tests belong to the delivered system and are described, not built — there is no database or IdP to integrate against yet |
+| **T-001** | Unit, integration and system tests before go-live, documented | **Unit: built.** 174 tests over `lib/domain/` and `lib/mock/`. Integration and system tests belong to the delivered system and are described, not built — there is no database or IdP to integrate against yet |
 | **T-002** | Testing against anonymised or fictitious protocols and agreements representing variations in the Swedish landscape | **Built.** `lib/mock/` holds three datasets with real party names — Teknikföretagen, IF Metall, Almega, Unionen, Kommunal, Seko, Sveriges Lärare — across private, municipal and industry sectors. The sample protocol is MI's own from Bilaga D. A test asserts the variation rather than assuming it |
 | **T-003** | Test data including edge cases, such as entirely new agreements with no previous version | **Built.** The `quiet` dataset is deliberately near-empty so empty states are designed rather than discovered; `peak` is the same register under load. US-02's brand-new agreement is the named edge case |
 | **T-004** | Regression testing on system or AI-model updates | **Partly built.** The unit suite, the lint rules and the accessibility sweep run on every change and have caught real regressions. Regression against an *AI model* update needs the model, and is described |
@@ -40,7 +40,7 @@ React, no Next, no data access — so the business rules are plain functions ove
 values and need no harness. The suite covers FR-012's colour derivation and all four of
 its branches, FAI-002 and FH-001's adjusted-versus-untouched rule, FA-021's empty-field
 rule, FF-004's meeting phases, FF-005's coordinated-demand backing, FP-002's
-name-at-a-date, Bilaga F's report catalogue — that all six of MI's reports are present and numbered as MI numbers them, that each carries the criteria MI's own selection screen shows, and that the bargaining-round report buckets by expiry month and counts employees separately — NFÅ-005's user register, including the rule that the last authorisation administrator cannot lock MI out, the public computer's search — free text over the four fields a visitor knows an agreement by, and FA-020's valid-at-date with both open ends — NFÅ-002's configurable session limit, where the ceiling is MI's own thirty minutes and a stored value that cannot be trusted falls back to the default rather than to zero, and the rule that NFL-003 and NFÅ-006 stay out of the system administrator's hands, §4.1's AI catalogue — that the four functions MI names are the four
+name-at-a-date, Bilaga F's report catalogue — that all six of MI's reports are present and numbered as MI numbers them, that each carries the criteria MI's own selection screen shows, and that the bargaining-round report buckets by expiry month and counts employees separately — NFÅ-005's user register, including the rule that the last authorisation administrator cannot lock MI out, the public computer's search — free text over the four fields a visitor knows an agreement by, and FA-020's valid-at-date with both open ends — NFÅ-002's configurable session limit, where the ceiling is MI's own thirty minutes and a stored value that cannot be trusted falls back to the default rather than to zero, and the rule that NFL-003 and NFÅ-006 stay out of the system administrator's hands — the guided walkthrough, where the assertion that matters is that none of its sixteen steps sends a reviewer to a screen its own role would be refused, §4.1's AI catalogue — that the four functions MI names are the four
 present, that every requirement ID they cite resolves, that no screen claims AI a
 requirement does not put there, and that NFÅ-003 filters the review queue by write access
 so an officer is never shown work they cannot clear — and FAI-004's watchword matching — case-insensitivity, longest-term

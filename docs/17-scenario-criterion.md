@@ -182,8 +182,30 @@ reports and the scenarios actually read — *Årsarbetare*, *Fackmedlemmar*, *Me
 *Hängavtal*, *Rapporturval*, *Informationsbegränsning* — plus Särskilda frågor in MI's own
 three-question shape.
 
-**7 — Re-cut the walkthrough** so the three scored roles lead it, with the mediation and
-statistics scenarios kept as evidence of completeness rather than as the opening.
+**7 — Re-cut the walkthrough** ~~so the three scored roles lead it.~~ **Done, and built
+into the prototype: `/genomgang`.**
+
+An evaluator opening the deployed URL cold landed on a start page with no orientation, as
+the agreement administrator, with nothing saying which of the eight roles the criterion is
+marked on. The guide is now the address to send them to —
+**miis-poc.vercel.app/genomgang** — and it is what the fifteen-minute presentation runs
+from.
+
+The three scored roles first, each with the four elements the criterion asks for, and
+**every step is a control that switches to the role and opens the screen**. Switching is
+the point rather than a convenience: "the role decides what you see" is the claim, and a
+link that left the reviewer as the wrong persona would show them the authorisation notice
+instead of the screen. A test asserts that for all sixteen steps, from the same
+`accessLevel` the screen guard asks.
+
+It is **outside the `(miis)` route group** — no shell, no navigation, no menu entry — and
+it says what it is in its first sentence, in the demo strip's own colour. Same rule as the
+demo bar: inventing a "walkthrough module" would work against the criterion it is meant to
+serve. The other five roles stay, below, as evidence that the system is complete.
+
+If there is an existing walkthrough document held outside this repository, send it and the
+two can be reconciled; `lib/domain/walkthrough.ts` is the content, so aligning wording is
+an edit to one file.
 
 ## What this does not change
 

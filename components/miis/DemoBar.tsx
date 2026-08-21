@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
@@ -177,6 +178,19 @@ export function DemoBar({
             {t.sessionWarning}
           </Button>
         )}
+
+        {/*
+          The way to the guided walkthrough, in this strip rather than in the
+          menu — it is reviewer material like everything else here. An evaluator
+          who arrived at a deep link needs a way back to the order the criterion
+          is actually judged in.
+        */}
+        <Link
+          href="/genomgang"
+          className="inline-flex min-h-11 items-center rounded-sm border-2 border-primary px-3 py-2 text-label font-bold text-primary transition-colors hover:bg-card"
+        >
+          {dictionary(lang).walkthrough.demoLink}
+        </Link>
       </div>
     </div>
   );

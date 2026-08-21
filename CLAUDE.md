@@ -38,8 +38,11 @@ Officer, The Public Access Computer — and asks for four things about each: tas
 workflow, a visualisation, and a usability/efficiency/accessibility statement. The
 prototype implements all eight roles, which is right, but the *presentation* is marked on
 those three. **`docs/18-role-scenarios.md` is the response text** for all four elements of
-all three, drafted against what the prototype actually does; where a role's story is thin
-the draft says so rather than papering over it.
+all three, drafted against what the prototype actually does — and it carries no
+*to be strengthened* caveats any more. **The demo itself leads with those three:
+`/genomgang`** is the reviewer's guided walkthrough and the address to send an evaluator
+to. Its content is `lib/domain/walkthrough.ts`, and a test asserts that no step sends a
+reviewer to a screen its own role would be refused.
 
 **When our English rendering and MI's Swedish original disagree, MI's original wins.**
 
@@ -374,7 +377,10 @@ view. If you cannot decide which one it is, it is a `Rationale`.
 **The demo bar is not part of MIIS.** Role, dataset, language and requirement-ID
 switches are reviewer tools. They live in a visually distinct strip *above* the header,
 labelled as demo settings, so an evaluator cannot mistake them for proposed
-functionality. Never move one into the product chrome.
+functionality. Never move one into the product chrome. **`/genomgang` follows the same
+rule** — outside the `(miis)` route group, no shell, no menu entry, the demo strip's own
+colour, and it says what it is in its first sentence. A "walkthrough module" inside the
+product would work against the criterion it exists to serve.
 
 `StatusDot` takes a whole `StatusInfo` (`{kod, farg, etikett}`) rather than a colour, so
 FR-012 status can never be rendered as colour alone. Get one from `statusInfo()` or

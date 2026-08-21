@@ -146,7 +146,30 @@ export const en: Dictionary = {
     fileNote: (name: string) => `The file will be named ${name}`,
   },
 
-  session: {
+
+  walkthrough: {
+    title: "Guided walkthrough",
+    subtitle:
+      "Role-based user scenarios and user interfaces, in the order the award criterion judges them. Every step switches role and opens the screen.",
+    marker: "Reviewer material – not part of the system",
+    markerBody:
+      "This page is a reading aid for Medlingsinstitutet's evaluators and for the oral presentation. It is not in the menu, and nothing on it is proposed MIIS functionality.",
+    scoredHeading: "The three roles the criterion names",
+    scoredLead:
+      "Appendix 1 §3.1 defines eight roles and the prototype has all eight — NFÅ-003 is a requirement about the system. The assessment is made on three, and they come first.",
+    supportingHeading: "The other roles",
+    supportingLead:
+      "Not assessed, and built anyway: a bid that shows only the minimum is not the bid that receives very high added value. They are here as evidence that the system is complete, not as the opening.",
+    taskAndGoal: "Task and goal",
+    workflow: "Workflow",
+    usability: "Usability, efficiency and accessibility",
+    step: (n: number) => `Step ${n}`,
+    openAs: (role: string) => `Open as ${role}`,
+    roleNote: (role: string) =>
+      `Current role: ${role}. The role is changed by the buttons above and by the role switcher in the demo bar.`,
+    toStart: "To the start page",
+    demoLink: "Guided walkthrough",
+  },  session: {
     title: "Your session is about to expire",
     body: (minutes: number) =>
       `You have been inactive for some time. For security reasons you are signed out automatically after ${minutes} minutes of inactivity.`,
