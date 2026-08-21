@@ -495,6 +495,15 @@ export interface WalkthroughCursor {
   total: number;
   /** The step after this one, within the same scenario. */
   next: { position: WalkthroughPosition; step: WalkthroughStep } | null;
+  /**
+   * And the step before it.
+   *
+   * A walkthrough is explored, not marched: a reviewer who has just seen
+   * something wants to go back and look again, and the browser's own Back
+   * button restores the page without restoring the role — which is exactly the
+   * confusion the cursor exists to prevent.
+   */
+  previous: { position: WalkthroughPosition; step: WalkthroughStep } | null;
 }
 
 /**
@@ -512,6 +521,8 @@ export function cursorAt(position: WalkthroughPosition | null): WalkthroughCurso
   if (!scenario || !step) return null;
 
   const nextStep = scenario.steps[position.stepIndex + 1];
+  const previousStep =
+    position.stepIndex > 0 ? scenario.steps[position.stepIndex - 1] : undefined;
   return {
     scenario,
     step,
@@ -521,6 +532,12 @@ export function cursorAt(position: WalkthroughPosition | null): WalkthroughCurso
       ? {
           position: { scenarioId: scenario.id, stepIndex: position.stepIndex + 1 },
           step: nextStep,
+        }
+      : null,
+    previous: previousStep
+      ? {
+          position: { scenarioId: scenario.id, stepIndex: position.stepIndex - 1 },
+          step: previousStep,
         }
       : null,
   };

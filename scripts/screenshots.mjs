@@ -198,6 +198,18 @@ const SHOTS = [
     It is Bilaga F's Rapport 1 — the release, not the working record.
   */
   { name: "allmanheten-avtal", path: "/allmanheten/A-013", role: "public" },
+  /*
+    The walkthrough as it is actually used: standing on a product screen with
+    the step's own instruction in the demo strip, and the way onward, back and
+    out beside it. `/genomgang` shows the guide; this shows the walking.
+  */
+  {
+    name: "genomgang-steg",
+    path: "/avtal/ny",
+    role: "agreement-admin",
+    walkthrough: "agreement-admin:0",
+    fullPage: false,
+  },
   { name: "administration-loggar", path: "/administration", role: "system-admin" },
   { name: "anvandare-behorigheter", path: "/administration/anvandare", role: "permission-admin" },
 ];
@@ -241,6 +253,9 @@ async function main() {
         cookie("miis_dataset", "normal"),
         cookie("miis_lang", LANG),
         cookie("miis_reqtags", reqTags),
+        /* A shot taken mid-walkthrough needs the reviewer's position, which is
+           the cookie the guide writes when a step is opened. */
+        ...(shot.walkthrough ? [cookie("miis_walkthrough", shot.walkthrough)] : []),
       ]);
 
       const url = `${BASE}${shot.path}`;

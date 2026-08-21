@@ -506,7 +506,14 @@ buttons do. Before that, the guide was a page you **left**: opening step 2 took 
 screen and the only route to step 3 was back to a 5 267px document to find your place —
 impossible in front of an evaluator with fifteen minutes. The onward control belongs in
 the strip and nowhere else; putting it in the product chrome is the "walkthrough module"
-the rule above forbids. `/genomgang` itself shows **one scenario at a time** under a
+the rule above forbids. **The step card in the strip carries the step's own instruction**, its label
+and its position, plus *Nästa*, *Tillbaka*, *Översikt* and **Avsluta
+genomgången**. Without the instruction the strip named the step you were about
+to open and said nothing about the one you were standing on, so "what am I
+looking at here" sent the reviewer back to the guide — the thing the cursor
+exists to prevent. Without *Avsluta*, starting the walkthrough left the strip
+carrying it for the rest of the session with no way back to the plain system.
+`/genomgang` itself shows **one scenario at a time** under a
 contents list of all seven, and a step button names the step rather than the role —
 sixteen buttons reading *"Öppna som Avtalsadministratör"* said nothing about where you
 were about to land. The role is named only when it is about to **change**, which is the

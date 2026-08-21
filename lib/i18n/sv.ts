@@ -242,6 +242,8 @@ export const sv = {
     next: (label: string) => `Nästa: ${label}`,
     nextAs: (label: string, role: string) => `Nästa: ${label} (som ${role})`,
     lastStep: "Sista steget i scenariot",
+    previous: (label: string) => `Tillbaka: ${label}`,
+    endWalkthrough: "Avsluta genomgången",
   },  session: {
     title: "Din session håller på att gå ut",
     body: (minutes: number) =>

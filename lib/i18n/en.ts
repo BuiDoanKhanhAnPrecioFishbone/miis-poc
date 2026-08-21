@@ -235,6 +235,8 @@ export const en: Dictionary = {
     next: (label: string) => `Next: ${label}`,
     nextAs: (label: string, role: string) => `Next: ${label} (as ${role})`,
     lastStep: "Last step in the scenario",
+    previous: (label: string) => `Back: ${label}`,
+    endWalkthrough: "End the walkthrough",
   },  session: {
     title: "Your session is about to expire",
     body: (minutes: number) =>

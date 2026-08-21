@@ -17,7 +17,7 @@ import { LANGS, type Lang } from "@/lib/domain/lang";
 import { roleInfo, roleOptions, type Role } from "@/lib/domain/role";
 import { cursorAt, encodePosition, type WalkthroughPosition } from "@/lib/domain/walkthrough";
 import { dictionary } from "@/lib/i18n";
-import { IconForward } from "./icons";
+import { IconBack, IconForward } from "./icons";
 import { SelectChevron } from "./Select";
 import { Button } from "./primitives";
 
@@ -89,12 +89,26 @@ export function DemoBar({
 
   const cursor = cursorAt(walkthrough ?? null);
 
-  /** Advance to the next step: same two things the guide's own buttons do. */
-  function goNext() {
-    if (!cursor?.next) return;
-    setCookie(ROLE_COOKIE, cursor.next.step.role);
-    setCookie(WALKTHROUGH_COOKIE, encodePosition(cursor.next.position));
-    startTransition(() => router.push(cursor.next!.step.href));
+  /** Move to a step: the same two things the guide's own buttons do. */
+  function goTo(target: NonNullable<typeof cursor>["next"]) {
+    if (!target) return;
+    setCookie(ROLE_COOKIE, target.step.role);
+    setCookie(WALKTHROUGH_COOKIE, encodePosition(target.position));
+    startTransition(() => router.push(target.step.href));
+  }
+
+  const goNext = () => goTo(cursor?.next ?? null);
+  const goPrevious = () => goTo(cursor?.previous ?? null);
+
+  /**
+   * End the walkthrough and leave the reviewer where they are.
+   *
+   * Clearing the cookie rather than navigating: they were looking at a screen
+   * and asked to stop being guided, not to be sent somewhere else.
+   */
+  function endWalkthrough() {
+    document.cookie = `${WALKTHROUGH_COOKIE}=; path=/; max-age=0; samesite=lax`;
+    startTransition(() => router.refresh());
   }
 
   return (
@@ -216,34 +230,74 @@ export function DemoBar({
           they are already standing on, and it switches the role the same way
           the guide's own buttons do.
         */}
-        <span className="flex flex-wrap items-center gap-2">
-          {cursor && (
-            <>
-              <span className="text-meta font-bold uppercase tracking-wide">
-                {w.position(cursor.scenario.title[lang], cursor.number, cursor.total)}
-              </span>
-              {cursor.next ? (
-                <Button size="sm" onClick={goNext} iconEnd={<IconForward />}>
-                  {cursor.next.step.role === role
-                    ? w.next(cursor.next.step.label[lang])
-                    : w.nextAs(
-                        cursor.next.step.label[lang],
-                        roleInfo(cursor.next.step.role, lang).label,
-                      )}
-                </Button>
-              ) : (
-                <span className="text-meta">{w.lastStep}</span>
-              )}
-            </>
-          )}
+        {!cursor && (
           <Link
             href="/genomgang"
             className="inline-flex min-h-11 items-center rounded-sm border-2 border-primary px-3 py-2 text-label font-bold text-primary transition-colors hover:bg-card"
           >
-            {cursor ? w.backToGuide : w.demoLink}
+            {w.demoLink}
           </Link>
-        </span>
+        )}
       </div>
+
+      {/*
+        The step, while one is being walked.
+
+        The strip used to carry a position and a *Nästa* button, which named the
+        step the reviewer was about to open and never said a word about the one
+        they were standing on. The instruction was back on `/genomgang`, so
+        "what am I looking at, and what should I do here" was a question you had
+        to leave the screen to answer — the very thing the cursor was built to
+        stop.
+
+        It is a block of its own below the controls rather than another chip
+        beside them: it carries two sentences, and a row that already holds four
+        selects and a button cannot take a paragraph.
+      */}
+      {cursor && (
+        <div className="border-t border-dashed border-demo-border px-5 py-3 sm:px-8">
+          <p className="mi-kicker text-demo-foreground">
+            {w.position(cursor.scenario.title[lang], cursor.number, cursor.total)}
+          </p>
+          <p className="mt-1 font-display text-body font-semibold">{cursor.step.label[lang]}</p>
+          <p className="mt-1 max-w-4xl text-label leading-snug">{cursor.step.detail[lang]}</p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {cursor.previous && (
+              <Button size="sm" variant="secondary" onClick={goPrevious} iconStart={<IconBack />}>
+                {w.previous(cursor.previous.step.label[lang])}
+              </Button>
+            )}
+            {cursor.next ? (
+              <Button size="sm" onClick={goNext} iconEnd={<IconForward />}>
+                {cursor.next.step.role === role
+                  ? w.next(cursor.next.step.label[lang])
+                  : w.nextAs(
+                      cursor.next.step.label[lang],
+                      roleInfo(cursor.next.step.role, lang).label,
+                    )}
+              </Button>
+            ) : (
+              <span className="text-label font-semibold">{w.lastStep}</span>
+            )}
+            <Link
+              href="/genomgang"
+              className="inline-flex min-h-11 items-center rounded-sm border-2 border-primary px-3 py-2 text-label font-bold text-primary transition-colors hover:bg-card"
+            >
+              {w.backToGuide}
+            </Link>
+            {/*
+              The way out. Starting the walkthrough left the strip carrying it
+              for the rest of the session with nothing that ended it, so a
+              reviewer who had finished — or who only wanted to look around —
+              could not get the plain system view back.
+            */}
+            <Button size="sm" variant="ghost" onClick={endWalkthrough}>
+              {w.endWalkthrough}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

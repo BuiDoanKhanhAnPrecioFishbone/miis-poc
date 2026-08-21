@@ -855,10 +855,13 @@ export function TextField({
       different heights, and the eye follows the inputs, not the hints.
     */
     <div data-span={fieldSpan(width)}>
-      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <FieldLabel htmlFor={id} required={required} lang={lang}>
+        {label}
+      </FieldLabel>
       <input
         id={id}
         type={type}
+        aria-required={required || undefined}
         {...(value === undefined
           ? { defaultValue }
           : { value, onChange: (e: ChangeEvent<HTMLInputElement>) => onChange?.(e.target.value) })}

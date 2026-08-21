@@ -265,3 +265,23 @@ describe("the scored scenarios follow Bilaga 2 §3.5", () => {
     ).toBe(true);
   });
 });
+
+describe("stepping back through a scenario", () => {
+  const first = WALKTHROUGH[0]!;
+
+  /* A walkthrough is explored rather than marched. The browser's own Back
+     button restores the page without restoring the role, which is the
+     confusion the cursor exists to prevent — so going back is a control. */
+  it("offers the step before, and none at the start", () => {
+    expect(cursorAt({ scenarioId: first.id, stepIndex: 0 })!.previous).toBeNull();
+    const second = cursorAt({ scenarioId: first.id, stepIndex: 1 })!;
+    expect(second.previous?.step).toBe(first.steps[0]);
+    expect(second.previous?.position.stepIndex).toBe(0);
+  });
+
+  it("keeps both directions available in the middle", () => {
+    const middle = cursorAt({ scenarioId: first.id, stepIndex: 1 })!;
+    expect(middle.previous).not.toBeNull();
+    expect(middle.next).not.toBeNull();
+  });
+});
