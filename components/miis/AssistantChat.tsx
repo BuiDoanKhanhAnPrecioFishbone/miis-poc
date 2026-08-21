@@ -42,6 +42,9 @@ import { Badge, Button, Chip, Rationale, TextField } from "./primitives";
  * week is a box they do not use — and they are the intents' own examples, so
  * each one demonstrably returns what it says it will.
  */
+/** How many rows an answer shows before it says how many more there are. */
+const ROWS_SHOWN = 6;
+
 export function AssistantChat({
   lang,
   role,
@@ -59,7 +62,19 @@ export function AssistantChat({
   const nav = d.nav;
 
   const [question, setQuestion] = useState("");
-  const [asked, setAsked] = useState<{ question: string; answer: AssistantAnswer } | null>(null);
+  /*
+    The whole exchange, not the last answer.
+    
+    Replacing it meant an officer comparing "what is incomplete" with "what is
+    unpublished" had to ask the first one again to see it — and the second
+    answer arrived where the first had been, so it was not obvious anything had
+    changed. The thread is the session's; nothing is stored, and the panel says
+    so, because a system that kept an officer's questions would be keeping a
+    record MI never asked for.
+  */
+  const [thread, setThread] = useState<{ id: number; question: string; answer: AssistantAnswer }[]>(
+    [],
+  );
 
   /* Only the questions this role could actually be answered — offering one that
      is refused the moment it is pressed is a control that looks live and is
@@ -71,10 +86,8 @@ export function AssistantChat({
   function ask(text: string) {
     const trimmed = text.trim();
     if (!trimmed) return;
-    setQuestion(trimmed);
-    setAsked({
-      question: trimmed,
-      answer: answerFor(trimmed, facts, role, lang, {
+    setQuestion("");
+    const answer = answerFor(trimmed, facts, role, lang, {
         refused: t.refused,
         none: t.none,
         found: t.found,
@@ -89,8 +102,8 @@ export function AssistantChat({
           "find-agreement": t.what.agreements,
           capabilities: t.what.capabilities,
         },
-      }, (id: NavId) => nav[id]),
-    });
+      }, (id: NavId) => nav[id]);
+    setThread((t) => [...t, { id: t.length, question: trimmed, answer }]);
   }
 
   return (
@@ -117,66 +130,80 @@ export function AssistantChat({
         ))}
       </div>
 
-      {asked && (
-        <div className="mt-4 space-y-3" aria-live="polite">
-          {/* What was asked, so the answer is readable after a second question. */}
-          <p className="text-label text-muted-foreground">{t.youAsked(asked.question)}</p>
+      {thread.length > 0 && (
+        <div className="mt-4 space-y-4" aria-live="polite">
+          {thread.map((turn) => (
+            <div key={turn.id} className="space-y-2">
+              {/* What was asked, above the answer to it — a thread of two
+                  questions is unreadable if only the answers are kept. */}
+              <p className="text-label text-muted-foreground">{t.youAsked(turn.question)}</p>
 
-          <div className="rounded-md border-2 border-ai-border bg-ai p-3">
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <Badge tone="ai">{d.common.aiMark}</Badge>
-              {asked.answer.refused && <Badge tone="attention">{t.notAuthorised}</Badge>}
-            </div>
-            <p className="text-table text-ai-foreground">{asked.answer.summary}</p>
+              <div className="rounded-md border-2 border-ai-border bg-ai p-3">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <Badge tone="ai">{d.common.aiMark}</Badge>
+                  {turn.answer.refused && <Badge tone="attention">{t.notAuthorised}</Badge>}
+                </div>
+                <p className="text-table text-ai-foreground">{turn.answer.summary}</p>
 
-            {asked.answer.intent === "capabilities" && (
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-table text-ai-foreground">
-                {suggestions.map((intent) => (
-                  <li key={intent.id}>{intent.example[lang]}</li>
-                ))}
-              </ul>
-            )}
+                {turn.answer.intent === "capabilities" && (
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-table text-ai-foreground">
+                    {suggestions.map((intent) => (
+                      <li key={intent.id}>{intent.example[lang]}</li>
+                    ))}
+                  </ul>
+                )}
 
-            {asked.answer.rows.length > 0 && (
-              <ul className="mt-3 divide-y divide-ai-border">
-                {asked.answer.rows.slice(0, 6).map((row) => (
-                  <li key={row.key} className="py-2 first:pt-0 last:pb-0">
-                    {row.href ? (
-                      <Link
-                        href={row.href}
-                        onClick={onNavigate}
-                        className="font-semibold text-primary underline underline-offset-2"
-                      >
-                        {row.label}
-                      </Link>
-                    ) : (
-                      <span className="font-semibold">{row.label}</span>
-                    )}
-                    {row.detail && (
-                      <span className="block text-label text-muted-foreground">{row.detail}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
+                {turn.answer.rows.length > 0 && (
+                  <ul className="mt-3 divide-y divide-ai-border">
+                    {turn.answer.rows.slice(0, ROWS_SHOWN).map((row) => (
+                      <li key={row.key} className="py-2 first:pt-0 last:pb-0">
+                        {row.href ? (
+                          <Link
+                            href={row.href}
+                            onClick={onNavigate}
+                            className="font-semibold text-primary underline underline-offset-2"
+                          >
+                            {row.label}
+                          </Link>
+                        ) : (
+                          <span className="font-semibold">{row.label}</span>
+                        )}
+                        {row.detail && (
+                          <span className="block text-label text-muted-foreground">
+                            {row.detail}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
-            {asked.answer.rows.length > 6 && (
-              <p className="mt-2 text-label text-muted-foreground">
-                {d.common.showingOf(6, asked.answer.rows.length)}
-              </p>
-            )}
+                {turn.answer.rows.length > ROWS_SHOWN && (
+                  <p className="mt-2 text-label text-muted-foreground">
+                    {d.common.showingOf(ROWS_SHOWN, turn.answer.rows.length)}
+                  </p>
+                )}
 
-            {asked.answer.href && asked.answer.rows.length > 0 && (
-              <div className="mt-3">
-                <Link
-                  href={asked.answer.href}
-                  onClick={onNavigate}
-                  className="inline-flex min-h-11 items-center gap-2 text-label font-bold text-primary underline underline-offset-2"
-                >
-                  {t.openScreen} <IconForward />
-                </Link>
+                {turn.answer.href && turn.answer.rows.length > 0 && (
+                  <div className="mt-3">
+                    <Link
+                      href={turn.answer.href}
+                      onClick={onNavigate}
+                      className="inline-flex min-h-11 items-center gap-2 text-label font-bold text-primary underline underline-offset-2"
+                    >
+                      {t.openScreen} <IconForward />
+                    </Link>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
+          ))}
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => setThread([])}>
+              {t.clear}
+            </Button>
+            <span className="text-label text-muted-foreground">{t.notStored}</span>
           </div>
         </div>
       )}

@@ -2,6 +2,8 @@
 
 import { useState, type ReactNode } from "react";
 
+import type { Lang } from "@/lib/domain/lang";
+
 import { fieldSpan, FieldLabel } from "./primitives";
 
 /**
@@ -61,9 +63,15 @@ export function Select({
   hint,
   badge,
   srOnlyLabel,
+  required,
+  lang,
   width = "full",
 }: {
   id: string;
+  /** Marks the field as one that must be chosen — the same rule `TextField` follows. */
+  required?: boolean;
+  /** Needed only when `required` is set: the word is translated. */
+  lang?: Lang;
   label: string;
   options: { id: string; label: string }[];
   defaultValue?: string;
@@ -94,7 +102,7 @@ export function Select({
           {label}
         </label>
       ) : (
-        <FieldLabel htmlFor={id} badge={badge}>
+        <FieldLabel htmlFor={id} badge={badge} required={required} lang={lang}>
           {label}
         </FieldLabel>
       )}
@@ -128,6 +136,7 @@ export function Select({
           still show it in full; this is the third way to reach it.
         */}
         <select
+          aria-required={required || undefined}
           id={id}
           title={options.find((o) => o.id === current)?.label}
           value={current}

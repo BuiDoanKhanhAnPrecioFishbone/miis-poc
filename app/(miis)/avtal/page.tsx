@@ -144,7 +144,16 @@ export default async function AvtalPage() {
       />
 
       <Panel title={t.register.heading} tags={["FA-001", "FA-021", "FR-012"]}>
-        <p className="mb-4 max-w-4xl text-table">{t.register.intro}</p>
+        <p className="max-w-4xl text-table">{t.register.intro}</p>
+        {/*
+          Which of the two registration paths to take, where the choice is made.
+          Both buttons begin "Registrera", and a label cannot carry the
+          difference between a protocol about an agreement we hold and an
+          agreement we have never seen.
+        */}
+        <p className="mb-4 mt-2 max-w-4xl text-label text-muted-foreground">
+          {t.register.howToRegister}
+        </p>
         {/*
           The filters own the table. They used to sit above one the page
           rendered itself, so choosing an agreement area changed the chips and

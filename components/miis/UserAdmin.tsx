@@ -286,6 +286,8 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
           <FormGrid>
             <TextField
               id="ua-name"
+              required
+              lang={lang}
               label={t.name}
               width="medium"
               value={name}

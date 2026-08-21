@@ -156,10 +156,13 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
             is why the name sat above the type beside it.
           */}
           <div data-span="2">
-            <FieldLabel htmlFor="np-name">{t.name}</FieldLabel>
+            <FieldLabel htmlFor="np-name" required lang={lang}>
+              {t.name}
+            </FieldLabel>
             <input
               id="np-name"
               type="text"
+              aria-required
               value={name}
               placeholder={t.namePlaceholder}
               onChange={(e) => setName(e.target.value)}

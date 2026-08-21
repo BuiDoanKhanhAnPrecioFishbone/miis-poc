@@ -35,6 +35,8 @@ export const sv = {
     adjust: "Justera",
     reject: "Avvisa",
     save: "Spara",
+    required: "Obligatoriskt",
+    requiredLegend: "Fält märkta Obligatoriskt måste fyllas i.",
     add: "Lägg till",
     choose: "Välj",
     search: "Sök",
@@ -117,6 +119,10 @@ export const sv = {
       "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
     where: "Var",
     goThere: "Granska förslagen",
+    tabsLabel: "AI-stödets delar",
+    tabAsk: "Fråga",
+    tabTasks: "Uppgifter",
+    tabQueue: "Väntar",
     askQuestion: "Fråga om avtalen",
     askQuestionLead:
       "Svaret hämtas ur registret och visar de poster det räknade. Ingenting formuleras och ingenting sparas – att fråga är att läsa.",
@@ -128,6 +134,9 @@ export const sv = {
       youAsked: (q: string) => `Du frågade: ${q}`,
       notAuthorised: "Behörighet saknas",
       openScreen: "Öppna vyn med hela svaret",
+      clear: "Rensa samtalet",
+      notStored:
+        "Samtalet ligger kvar så länge fliken är öppen och sparas inte i systemet.",
       refused: (screen: string) =>
         `${screen} ingår inte i din behörighet, så frågan besvaras inte här. Behörigheten styrs av din roll och administreras av behörighetsadministratören.`,
       none: (what: string) => `Inga ${what} just nu.`,
@@ -1168,6 +1177,8 @@ export const sv = {
       heading: "Avtalsregister",
       intro:
         "Ett avtal per part och avtalsområde. Färgmarkeringen visar hur avtalet kom till – nytecknat, tecknat efter medling eller kvarstående.",
+      howToRegister:
+        "Två vägar in, beroende på vad som kommit. Registrera avtalsprotokoll när ett undertecknat protokoll gäller ett avtal som redan finns här – AI-stödet läser protokollet och föreslår uppgifterna. Registrera nytt kollektivavtal när avtalet saknar tidigare motsvarighet i registret; då finns ingenting att matcha mot, och avtalet läggs upp för hand.",
       areaNote:
         "Avtalsområdet är den övergripande enheten i MI:s modell (FA-001); avtalen under det registreras per partskombination.",
     },
@@ -1716,6 +1727,13 @@ export const sv = {
     },
   },
   administration: {
+    tabsLabel: "Delar av administrationen",
+    tabs: {
+      settings: "Inställningar",
+      changeLog: "Ändringslogg",
+      eventLog: "Händelselogg",
+      watchwords: "Bevakningsord",
+    },
     settings: {
       heading: "Systeminställningar",
       intro:

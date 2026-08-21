@@ -37,6 +37,8 @@ export const en: Dictionary = {
     adjust: "Adjust",
     reject: "Reject",
     save: "Save",
+    required: "Required",
+    requiredLegend: "Fields marked Required must be filled in.",
     add: "Add",
     choose: "Choose",
     search: "Search",
@@ -116,6 +118,10 @@ export const en: Dictionary = {
       "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
     where: "Where",
     goThere: "Review the proposals",
+    tabsLabel: "Parts of the AI support",
+    tabAsk: "Ask",
+    tabTasks: "Tasks",
+    tabQueue: "Waiting",
     askQuestion: "Ask about the agreements",
     askQuestionLead:
       "The answer is taken from the register and shows the records it counted. Nothing is composed and nothing is saved — asking is reading.",
@@ -127,6 +133,8 @@ export const en: Dictionary = {
       youAsked: (q: string) => `You asked: ${q}`,
       notAuthorised: "Not authorised",
       openScreen: "Open the screen with the full answer",
+      clear: "Clear the conversation",
+      notStored: "The conversation stays while this tab is open and is not stored in the system.",
       refused: (screen: string) =>
         `${screen} is not part of your authorisation, so the question is not answered here. Access follows your role and is administered by the authorisation administrator.`,
       none: (what: string) => `No ${what} at the moment.`,
@@ -1175,6 +1183,8 @@ export const en: Dictionary = {
       heading: "Agreement register",
       intro:
         "One agreement per party and agreement area. The colour marking shows how the agreement came about — newly signed, signed after mediation, or remaining.",
+      howToRegister:
+        "Two ways in, depending on what has arrived. Register an agreement protocol when a signed protocol concerns an agreement already held here — the AI support reads the protocol and proposes the details. Register a new collective agreement when the agreement has no previous counterpart in the register; there is then nothing to match against, and it is entered by hand.",
       areaNote:
         "The agreement area is the overarching unit in MI's model (FA-001); the agreements under it are registered per party combination.",
     },
@@ -1724,6 +1734,13 @@ export const en: Dictionary = {
     },
   },
   administration: {
+    tabsLabel: "Parts of the administration",
+    tabs: {
+      settings: "Settings",
+      changeLog: "Change log",
+      eventLog: "Event log",
+      watchwords: "Watchwords",
+    },
     settings: {
       heading: "System settings",
       intro:

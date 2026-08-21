@@ -22,6 +22,7 @@ import { dictionary } from "@/lib/i18n";
 import { IconAi, IconChevronDown, IconClose, IconForward } from "./icons";
 import { AssistantChat } from "./AssistantChat";
 import { Badge, LinkButton, Rationale, ReqTags } from "./primitives";
+import { Tabs } from "./Select";
 
 /**
  * The AI assistant — Appendix 1 §4.1, gathered into one place.
@@ -94,9 +95,7 @@ export function AiAssistantProvider({
 }
 
 function useAi(): AiContextValue {
-  return (
-    useContext(AiContext) ?? { queue: [], facts: NO_FACTS, open: false, setOpen: () => {} }
-  );
+  return useContext(AiContext) ?? { queue: [], facts: NO_FACTS, open: false, setOpen: () => {} };
 }
 
 /**
@@ -193,6 +192,9 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const [details, setDetails] = useState(false);
+  /* Opens on the question, because that is the part an officer reaches for
+     without already knowing which screen they need. */
+  const [tab, setTab] = useState("ask");
 
   const close = useCallback(() => setOpen(false), [setOpen]);
 
@@ -242,6 +244,7 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
   const reachable = aiFunctionsForRole(role).map((f) => aiFunctionInfo(f, lang));
   const elsewhere = reachable.filter((f) => !here.some((h) => h.id === f.id));
   const mine = visibleQueue(queue, role);
+  const waiting = queueTotal(mine);
   const canReview = mayReviewAi(role);
 
   return (
@@ -296,21 +299,51 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
           {d.common.aiNotice}
         </p>
 
+        {/*
+          Three tabs, not five stacked sections.
+
+          The drawer's three parts answer three different questions — *ask me
+          something*, *what can you do here*, *what is waiting for me* — and a
+          reader who wants the third had to scroll past the first two every
+          time. Stacking is right when the parts are one subject read in order;
+          these are not, and the panel is 512px wide.
+
+          `Tabs` is the `tablist` primitive the rest of the system uses, so the
+          arrow keys work here exactly as they do on the protocol view.
+        */}
+        <div className="border-b border-border px-5 pt-3">
+          <Tabs
+            label={t.tabsLabel}
+            value={tab}
+            onChange={setTab}
+            tabs={[
+              { id: "ask", label: t.tabAsk },
+              { id: "tasks", label: t.tabTasks },
+              {
+                id: "queue",
+                label: waiting > 0 ? `${t.tabQueue} (${waiting})` : t.tabQueue,
+              },
+            ]}
+          />
+        </div>
+
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
-          {/*
-            The question, first and on every screen.
+          {tab === "ask" && (
+            /*
+              An officer with a question in their head should not have to work
+              out which screen answers it — that translation is the system's
+              job. What comes back is a query MIIS could already run, with the
+              rows it counted and a way to the screen they live on; nothing here
+              is composed, and nothing here writes.
+            */
+            <Section title={t.askQuestion} lead={t.askQuestionLead}>
+              <AssistantChat lang={lang} role={role} facts={facts} onNavigate={close} />
+            </Section>
+          )}
 
-            An officer with a question in their head should not have to work out
-            which screen answers it — that translation is the system's job, and
-            this is where it happens. What comes back is a query MIIS could
-            already run, with the rows it counted and a way to the screen they
-            live on; nothing here is composed, and nothing here writes.
-          */}
-          <Section title={t.askQuestion} lead={t.askQuestionLead}>
-            <AssistantChat lang={lang} role={role} facts={facts} onNavigate={close} />
-          </Section>
-
-          {/*
+          {tab === "tasks" && (
+            <>
+              {/*
             What the officer can ask for, first and as controls.
 
             This is the answer to "can the user ask the AI to do things": yes,
@@ -318,7 +351,7 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
             takes them to the screen the function runs on, because that is where
             the proposal appears and where FAI-002's approve and reject live.
           */}
-          {/*
+              {/*
             Two different screens, and the drawer used to show the first one
             everywhere.
 
@@ -334,60 +367,64 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
             so in one sentence and offers one way to the nearest screen that
             does, rather than three that look like they apply here.
           */}
-          {here.length > 0 ? (
-            <Section title={t.ask} lead={t.askLead}>
-              <ul className="space-y-2">
-                {here.map((f) => (
-                  <li key={f.id}>
-                    {/* The region on this page, not the page itself. */}
-                    <LinkButton
-                      href={aiTaskHref(f, pathname)}
-                      fullWidth
-                      iconEnd={<IconForward />}
-                    >
-                      {f.ask}
-                    </LinkButton>
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          ) : (
-            <Section title={t.ask} lead={t.askElsewhere}>
-              <p className="mb-3 text-table">{t.notHere}</p>
-              {elsewhere.length === 0 ? (
-                <p className="text-table text-muted-foreground">{t.onThisScreenNone}</p>
+              {here.length > 0 ? (
+                <Section title={t.ask} lead={t.askLead}>
+                  <ul className="space-y-2">
+                    {here.map((f) => (
+                      <li key={f.id}>
+                        {/* The region on this page, not the page itself. */}
+                        <LinkButton
+                          href={aiTaskHref(f, pathname)}
+                          fullWidth
+                          iconEnd={<IconForward />}
+                        >
+                          {f.ask}
+                        </LinkButton>
+                      </li>
+                    ))}
+                  </ul>
+                </Section>
               ) : (
-                <LinkButton href={elsewhere[0]!.href} fullWidth iconEnd={<IconForward />}>
-                  {t.goWhereItWorks(elsewhere[0]!.where)}
-                </LinkButton>
+                <Section title={t.ask} lead={t.askElsewhere}>
+                  <p className="mb-3 text-table">{t.notHere}</p>
+                  {elsewhere.length === 0 ? (
+                    <p className="text-table text-muted-foreground">{t.onThisScreenNone}</p>
+                  ) : (
+                    <LinkButton href={elsewhere[0]!.href} fullWidth iconEnd={<IconForward />}>
+                      {t.goWhereItWorks(elsewhere[0]!.where)}
+                    </LinkButton>
+                  )}
+                </Section>
+              )}
+            </>
+          )}
+
+          {tab === "queue" && (
+            <Section title={t.queue} lead={canReview ? t.queueLead : t.readOnly}>
+              {mine.length === 0 ? (
+                <p className="text-table text-muted-foreground">{t.queueEmpty}</p>
+              ) : (
+                <ul className="divide-y divide-border">
+                  {mine.map((item) => (
+                    <li key={item.id} className="py-3 first:pt-0">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <p className="min-w-0 font-semibold">{text(item.subject, lang)}</p>
+                        <Badge tone="ai">{t.queueCount(item.proposals)}</Badge>
+                      </div>
+                      <p className="mt-1 text-label text-muted-foreground">
+                        {text(item.detail, lang)}
+                      </p>
+                      <div className="mt-2">
+                        <LinkButton href={item.href} size="sm" iconEnd={<IconForward />}>
+                          {t.goThere}
+                        </LinkButton>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               )}
             </Section>
           )}
-
-          <Section title={t.queue} lead={canReview ? t.queueLead : t.readOnly}>
-            {mine.length === 0 ? (
-              <p className="text-table text-muted-foreground">{t.queueEmpty}</p>
-            ) : (
-              <ul className="divide-y divide-border">
-                {mine.map((item) => (
-                  <li key={item.id} className="py-3 first:pt-0">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <p className="min-w-0 font-semibold">{text(item.subject, lang)}</p>
-                      <Badge tone="ai">{t.queueCount(item.proposals)}</Badge>
-                    </div>
-                    <p className="mt-1 text-label text-muted-foreground">
-                      {text(item.detail, lang)}
-                    </p>
-                    <div className="mt-2">
-                      <LinkButton href={item.href} size="sm" iconEnd={<IconForward />}>
-                        {t.goThere}
-                      </LinkButton>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Section>
 
           {/*
             Everything explanatory, behind one control.

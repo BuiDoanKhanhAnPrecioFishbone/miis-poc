@@ -670,6 +670,14 @@ select.demo-select {
     break-inside: avoid;
   }
 
+  /*
+    A tab is a view state, and paper has no view state. Every section of a
+    tabbed screen prints; the strip that chose between them does not.
+  */
+  [data-tab-panel] {
+    display: block !important;
+  }
+
   /* A table that scrolls on screen has to print whole. */
   [role="region"] {
     max-height: none !important;

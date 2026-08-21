@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/miis/AppShell";
 import { PrintButton } from "@/components/miis/Print";
 import { SystemSettings } from "@/components/miis/SystemSettings";
+import { SectionTabs } from "@/components/miis/SectionTabs";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Button, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { listChangeLog, listEvents } from "@/lib/data/events";
@@ -123,71 +124,96 @@ export default async function AdministrationPage() {
       />
 
       {/*
-        US-13's second half. §3.1 gives this role "systemkonfiguration", and the
-        screen had two logs and a support table — things to read, and nothing to
-        administer.
+        Four sections, four jobs. Settings to change, a change log to search, an
+        event log to read and a watchword table to maintain — an administrator
+        comes to do one of them, and stacking made them scroll past the other
+        three. Every panel still prints; see `SectionTabs`.
       */}
-      <div className="mb-5">
-        <SystemSettings
-          lang={lang}
-          timeoutMinutes={session.sessionTimeoutMinutes}
-          watchwordCount={watchwords.length}
-        />
-      </div>
+      <SectionTabs
+        label={t.tabsLabel}
+        lang={lang}
+        sections={[
+          {
+            id: "settings",
+            label: t.tabs.settings,
+            node: (
+              <>
+                <SystemSettings
+                  lang={lang}
+                  timeoutMinutes={session.sessionTimeoutMinutes}
+                  watchwordCount={watchwords.length}
+                />
+                <Panel title={t.retention.heading} tags={["NFL-003", "NFL-004"]}>
+                  <Callout tone="ok" label={t.retention.heading}>
+                    {t.retention.body}
+                  </Callout>
+                  <div className="mt-4">
+                    <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+                      {t.retention.export}
+                    </Button>
+                  </div>
+                </Panel>
+              </>
+            ),
+          },
+          {
+            id: "change-log",
+            label: t.tabs.changeLog,
+            node: (
+              <Panel title={t.changeLog.heading} tags={["FH-001"]}>
+                <p className="mb-4 max-w-4xl text-table">{t.changeLog.intro}</p>
+                <DataTable
+                  columns={changeColumns}
+                  rows={changeRows}
+                  lang={lang}
+                  caption={t.changeLog.heading}
+                  minWidth="70rem"
+                />
+              </Panel>
+            ),
+          },
+          {
+            id: "event-log",
+            label: t.tabs.eventLog,
+            node: (
+              <Panel title={t.eventLog.heading} tags={["FH-002"]}>
+                <p className="mb-3 max-w-3xl text-table">{t.eventLog.intro}</p>
+                <DataTable
+                  columns={eventColumns}
+                  rows={eventRows}
+                  lang={lang}
+                  caption={t.eventLog.heading}
+                  minWidth="34rem"
+                />
+              </Panel>
+            ),
+          },
+          {
+            id: "watchwords",
+            label: t.tabs.watchwords,
+            node: (
+              /*
+                FAI-004's table, maintained here rather than inside the
+                registration flow: the terms are set ahead of the bargaining
+                round, and the screen that reads them is not the screen that
+                owns them.
+              */
+              <Panel title={t.watchwords.heading} tags={["FAI-004"]}>
+                <p className="mb-3 max-w-3xl text-table">{t.watchwords.intro}</p>
+                <DataTable
+                  columns={watchwordColumns}
+                  rows={watchwordRows}
+                  lang={lang}
+                  caption={t.watchwords.heading}
+                  minWidth="26rem"
+                />
+                <Rationale>{t.watchwords.note}</Rationale>
+              </Panel>
+            ),
+          },
+        ]}
+      />
 
-      <Panel title={t.changeLog.heading} tags={["FH-001"]}>
-        <p className="mb-4 max-w-4xl text-table">{t.changeLog.intro}</p>
-        <DataTable
-          columns={changeColumns}
-          rows={changeRows}
-          lang={lang}
-          caption={t.changeLog.heading}
-          minWidth="70rem"
-        />
-      </Panel>
-
-      <div className="mt-5 grid grid-cols-1 gap-5 @5xl:grid-cols-2">
-        <Panel title={t.eventLog.heading} tags={["FH-002"]}>
-          <p className="mb-3 max-w-3xl text-table">{t.eventLog.intro}</p>
-          <DataTable
-            columns={eventColumns}
-            rows={eventRows}
-            lang={lang}
-            caption={t.eventLog.heading}
-            minWidth="34rem"
-          />
-        </Panel>
-
-        {/*
-          FAI-004's table, maintained here rather than inside the registration
-          flow: the terms are set ahead of the bargaining round, and the screen
-          that reads them is not the screen that owns them.
-        */}
-        <Panel title={t.watchwords.heading} tags={["FAI-004"]}>
-          <p className="mb-3 max-w-3xl text-table">{t.watchwords.intro}</p>
-          <DataTable
-            columns={watchwordColumns}
-            rows={watchwordRows}
-            lang={lang}
-            caption={t.watchwords.heading}
-            minWidth="26rem"
-          />
-          <Rationale>{t.watchwords.note}</Rationale>
-        </Panel>
-      </div>
-
-      <div className="mt-5">
-        <Panel title={t.retention.heading} tags={["NFL-003", "NFL-004"]}>
-          <Callout tone="ok" label={t.retention.heading}>
-            {t.retention.body}
-          </Callout>
-          <div className="mt-4">
-            <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
-              {t.retention.export}
-            </Button>
-          </div>
-        </Panel>
-      </div>
     </AppShell>
   );
 }

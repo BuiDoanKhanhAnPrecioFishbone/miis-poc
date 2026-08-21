@@ -194,6 +194,22 @@ reviewer to a screen its own role would be refused.
    prototype is a picture. Disabled is a **dashed** border, because a solid
    outline in a paler colour is still an outlined button and leaves the page's
    real priority unreadable.
+   **A required field says so in a word.** `TextField`, `Select` and
+   `FieldLabel` take `required`, which prints *Obligatoriskt* beside the label
+   and sets `aria-required` on the control. Not an asterisk: a star has to be
+   explained somewhere else on the page, is read aloud as "star" or skipped, and
+   at 13px is four pixels of ink carrying the rule about whether the officer can
+   finish. A form with required fields carries `common.requiredLegend` once,
+   above them.
+   **A screen whose sections are separate jobs is `SectionTabs`.** Stacking is
+   right when the parts are one subject read in order — an agreement's identity,
+   then its scope, then its wage agreements. It is wrong when they are separate
+   jobs sharing a role, which is what Administration is: settings to change, two
+   logs to read, a watchword table to maintain. **Every panel still prints** —
+   a tab is a view state and paper has none — and the inactive panels are hidden
+   by a *class*, never the `hidden` attribute, because Chrome's UA stylesheet
+   declares `[hidden] { display: none !important }` and author CSS cannot reach
+   past it.
    **Three "pick one" controls, kept apart on purpose.** `Toggle` is a `switch`
    (a flag on or off). `Tabs` is a `tablist` (which panel is shown).
    `SegmentedControl` is a `radiogroup` (a value that is part of the data, like

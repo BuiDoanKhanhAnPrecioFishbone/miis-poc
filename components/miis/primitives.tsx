@@ -13,7 +13,7 @@
 import Link from "next/link";
 import type { ChangeEvent, ReactNode } from "react";
 
-import type { Lang } from "@/lib/domain/lang";
+import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
 
 import { IconAi, IconAlert, IconCheck, IconClose, IconLock, IconPlus } from "./icons";
@@ -728,12 +728,26 @@ export function FieldLabel({
   id,
   children,
   badge,
+  required,
+  lang,
 }: {
   htmlFor?: string;
   /** For a control that names its label by id — `Toggle`'s `aria-labelledby`. */
   id?: string;
   children: ReactNode;
   badge?: ReactNode;
+  /**
+   * Marks the field as one that must be filled in.
+   *
+   * A word, not an asterisk. An asterisk is a convention a form has to explain
+   * somewhere else on the page, it is read aloud as "star" or skipped
+   * altogether, and at 13px it is four pixels of ink carrying a rule about
+   * whether the officer can finish. `aria-required` on the control says the
+   * same thing to a screen reader; this says it to everyone else.
+   */
+  required?: boolean;
+  /** Needed only when `required` is set — the word is translated. */
+  lang?: Lang;
 }) {
   /*
     `hyphens` rather than `break-words`. Swedish compounds long words —
@@ -743,6 +757,11 @@ export function FieldLabel({
     stays readable when it has to wrap.
   */
   const text = "min-w-0 hyphens-auto text-label font-bold text-foreground";
+  const mark = required ? (
+    <span className="mi-kicker shrink-0 text-attention-foreground">
+      {dictionary(lang ?? DEFAULT_LANG).common.required}
+    </span>
+  ) : null;
   return (
     <div className="mb-1 flex min-h-7 flex-wrap items-center gap-2">
       {htmlFor ? (
@@ -754,6 +773,7 @@ export function FieldLabel({
           {children}
         </span>
       )}
+      {mark}
       {badge}
     </div>
   );
@@ -783,10 +803,19 @@ export function TextField({
   type = "text",
   numeric,
   placeholder,
+  required,
+  lang,
   width = "medium",
 }: {
   id: string;
   label: string;
+  /**
+   * Marks the field as one that must be filled in — the word beside the label
+   * and `aria-required` on the control, so the rule reaches every reader.
+   */
+  required?: boolean;
+  /** Needed only when `required` is set: the word is translated. */
+  lang?: Lang;
   defaultValue?: string;
   /**
    * Controlled mode, for the few forms that act on what was typed.

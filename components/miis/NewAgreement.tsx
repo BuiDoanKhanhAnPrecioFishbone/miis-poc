@@ -126,6 +126,8 @@ export function NewAgreement({
   return (
     <>
       <Panel title={t.heading} tags={["FA-001", "FA-005", "FAI-002"]}>
+        {/* The legend, once, above the fields it governs. */}
+        <p className="mb-4 text-label text-muted-foreground">{d.common.requiredLegend}</p>
         {/* §4.1's own boundary, on the screen it governs. */}
         <Callout tone="attention" label={t.manualLabel} tags={["FAI-002"]}>
           {t.manualNote}
@@ -135,6 +137,8 @@ export function NewAgreement({
           <FormGrid>
             <TextField
               id="na-name"
+              required
+              lang={lang}
               label={t.name}
               width="medium"
               value={name}
@@ -143,6 +147,8 @@ export function NewAgreement({
             />
             <TextField
               id="na-area"
+              required
+              lang={lang}
               label={t.area}
               width="medium"
               value={area}
@@ -151,6 +157,8 @@ export function NewAgreement({
             />
             <Select
               id="na-ago"
+              required
+              lang={lang}
               width="medium"
               label={t.employerOrg}
               value={employerOrg}
@@ -162,6 +170,8 @@ export function NewAgreement({
             />
             <Select
               id="na-ato"
+              required
+              lang={lang}
               width="medium"
               label={t.employeeOrg}
               value={employeeOrg}
