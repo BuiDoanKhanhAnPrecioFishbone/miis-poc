@@ -921,6 +921,17 @@ export const sv = {
       exportedNo: "Nej",
       setReminder: "Sätt påminnelse",
       reminderSet: (date: string) => `Påminnelse ${date}`,
+      reminderChange: "Ändra",
+      reminderRemove: "Ta bort",
+      reminderHeading: (name: string) => `Påminnelse för ${name}`,
+      reminderIntro:
+        "Datumet då avtalet ska ses över igen. Påminnelsen räknas på startsidan och skickas som e-post till avtalsadministratören den dagen.",
+      reminderDate: "Påminn den",
+      reminderSave: "Spara påminnelsen",
+      reminderDateRequired: "Välj ett datum först.",
+      reminderSavedNote: (name: string, date: string) =>
+        `Påminnelse satt på ${name} till ${date}. Den syns på startsidan och skickas som e-post den dagen.`,
+      reminderRemovedNote: (name: string) => `Påminnelsen på ${name} är borttagen.`,
       selectedCount: (selected: number, total: number) =>
         `${selected} av ${total} avtal med i uttaget`,
       incompleteWarning: (n: number) =>

@@ -32,6 +32,14 @@ export const WATCHWORD_COOKIE = "miis_watchwords";
 export const SESSION_TIMEOUT_COOKIE = "miis_session_timeout";
 
 /*
+  FA-022's marking. A reminder is set on Konjunkturlönerapporten's watch list and
+  counted on the start page, which is a different route rendered on the server —
+  so it travels the way a watchword does. In week 2 it is a row in the reminder
+  table and the cookie disappears with the mock data.
+*/
+export const REMINDER_COOKIE = "miis_reminders";
+
+/*
   Where the reviewer has got to in the guided walkthrough — a reviewer tool, not
   a MIIS setting, which is why it is read by the demo strip and by nothing else.
   It exists so the walkthrough can be walked from inside the product rather than

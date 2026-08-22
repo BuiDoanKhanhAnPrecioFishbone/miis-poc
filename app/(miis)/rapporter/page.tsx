@@ -11,6 +11,7 @@ import { ShortTermWageReport } from "@/components/miis/ShortTermWageReport";
 import { getConstructionsReport } from "@/lib/data/constructions";
 import { listAgreements } from "@/lib/data/agreements";
 import { listDocuments } from "@/lib/data/documents";
+import { listSetReminders } from "@/lib/data/events";
 import { listCooperationBodies, listParties } from "@/lib/data/parties";
 import {
   EXTRACT_PERIOD_END,
@@ -54,16 +55,27 @@ export default async function RapporterPage() {
   const { i18n, lang } = session;
   const t = i18n.rapporter;
 
-  const [rows, constructionsReport, bargainingYears, agreements, parties, bodies, documents] =
-    await Promise.all([
-      listMonitoredAgreements(lang),
-      getConstructionsReport(),
-      listBargainingYears(),
-      listAgreements(),
-      listParties(),
-      listCooperationBodies(),
-      listDocuments(),
-    ]);
+  const [
+    rows,
+    constructionsReport,
+    bargainingYears,
+    agreements,
+    parties,
+    bodies,
+    documents,
+    setReminders,
+  ] = await Promise.all([
+    listMonitoredAgreements(lang),
+    getConstructionsReport(),
+    listBargainingYears(),
+    listAgreements(),
+    listParties(),
+    listCooperationBodies(),
+    listDocuments(),
+    /* FA-022's markings for this session, read on the server so the row knows
+       which agreements already carry one. */
+    listSetReminders(),
+  ]);
 
   const exportedCount = rows.filter((r) => r.lastExported).length;
   const isExternal = EXTERNAL_ROLES.includes(session.role.id);
@@ -273,6 +285,7 @@ export default async function RapporterPage() {
                     <div id="konjunkturlon" className="scroll-mt-4">
                       <ShortTermWageReport
                         rows={rows}
+                        reminders={setReminders}
                         lang={lang}
                         periodValue={`${EXTRACT_PERIOD_START} – ${EXTRACT_PERIOD_END}`}
                         lastExportValue={`${LAST_EXPORT_DATE} · ${i18n.common.agreementCount(exportedCount)}`}

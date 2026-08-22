@@ -1,8 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
+import { COOKIE_MAX_AGE_SECONDS, REMINDER_COOKIE } from "@/lib/cookies";
 import type { Lang } from "@/lib/domain/lang";
+import {
+  clearReminder,
+  encodeReminders,
+  reminderFor,
+  setReminder as withReminder,
+  type SetReminder,
+} from "@/lib/domain/reminder";
 import type { ExtractStatus, MonitoredAgreementRow } from "@/lib/domain/report";
 import { dictionary } from "@/lib/i18n";
 import { DataTable, type Column, type Row } from "./DataTable";
@@ -11,10 +20,21 @@ import {
   Button,
   Callout,
   ConfidentialityMarker,
+  FormGrid,
   Panel,
   Rationale,
   ReqTag,
+  TextField,
 } from "./primitives";
+
+/*
+  Module scope, because the React compiler's `immutability` rule refuses an
+  assignment to anything declared outside the component body — the same helper
+  the demo bar and the watchword table keep for the same reason.
+*/
+function setCookie(name: string, value: string) {
+  document.cookie = `${name}=${value}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; samesite=lax`;
+}
 
 /**
  * FR-008 — Konjunkturlönerapporten.
@@ -43,14 +63,59 @@ export function ShortTermWageReport({
   lang,
   periodValue,
   lastExportValue,
+  reminders: initialReminders,
 }: {
   rows: MonitoredAgreementRow[];
   lang: Lang;
   periodValue: string;
   lastExportValue: string;
+  /** FA-022's markings, read from the session on the server. */
+  reminders: SetReminder[];
 }) {
   const d = dictionary(lang);
   const t = d.rapporter.shortTerm;
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+
+  /*
+    FA-022 — *"markering av Påminnelse om att uppdatera ett Avtal vid ett visst
+    datum"*. The control was `disabled` with "Ej aktiv i demon", which is a
+    requirement answered by a button that says it is not implemented.
+
+    The marking travels in a cookie so it reaches the start page, which is where
+    MI reads reminders: one the system accepts and then does not count is worse
+    than none, because the officer has been told it was recorded. That is the
+    same loop the AI review queue needed.
+  */
+  const [reminders, setReminders] = useState(initialReminders);
+  const [editing, setEditing] = useState<MonitoredAgreementRow | null>(null);
+  const [date, setDate] = useState("");
+  const [note, setNote] = useState<string | null>(null);
+
+  function persist(next: SetReminder[]) {
+    setCookie(REMINDER_COOKIE, encodeReminders(next));
+    setReminders(next);
+    startTransition(() => router.refresh());
+  }
+
+  function open(row: MonitoredAgreementRow) {
+    setEditing(row);
+    setDate(reminderFor(reminders, row.id)?.date ?? "");
+    setNote(null);
+  }
+
+  function save() {
+    if (!editing || !date) return;
+    persist(withReminder(reminders, { agreementId: editing.id, date, name: editing.name }));
+    setNote(t.reminderSavedNote(editing.name, date));
+    setEditing(null);
+  }
+
+  function remove(row: MonitoredAgreementRow) {
+    persist(clearReminder(reminders, row.id));
+    setNote(t.reminderRemovedNote(row.name));
+    setEditing(null);
+  }
 
   const [selected, setSelected] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(rows.map((r) => [r.id, r.status !== "not-registered"])),
@@ -127,18 +192,36 @@ export function ShortTermWageReport({
       <span key="e" className="tabular-nums">
         {r.lastExported ? t.exportedYes(r.lastExported) : t.exportedNo}
       </span>,
-      r.reminderDate ? (
-        <span key="m" className="tabular-nums">
-          {t.reminderSet(r.reminderDate)}
-        </span>
-      ) : (
-        <Button key="m" variant="secondary" size="sm"
-        disabled
-        disabledReason={d.common.notInDemo}
-      >
-          {t.setReminder}
-        </Button>
-      ),
+      /*
+        The date is the record and the controls are beside it. A reminder that
+        can be set and never changed would be the same half-built register the
+        mediator list was: MI moves these when a protocol slips.
+      */
+      (() => {
+        const set = reminderFor(reminders, r.id)?.date ?? r.reminderDate;
+        return set ? (
+          <span key="m" className="flex flex-wrap items-center gap-2">
+            <span className="tabular-nums">{t.reminderSet(set)}</span>
+            <span className="print-hide flex flex-wrap gap-2">
+              <Button variant="ghost" size="sm" onClick={() => open(r)}>
+                {t.reminderChange}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => remove(r)}>
+                {t.reminderRemove}
+              </Button>
+            </span>
+          </span>
+        ) : (
+          <Button
+            key="m"
+            variant="secondary"
+            size="sm"
+            onClick={() => open(r)}
+          >
+            {t.setReminder}
+          </Button>
+        );
+      })(),
     ],
     sort: [
       "",
@@ -147,7 +230,7 @@ export function ShortTermWageReport({
       statusLabel[r.status],
       r.protocolFile ? t.openProtocol : t.protocolMissing,
       r.lastExported ?? "",
-      r.reminderDate ?? "",
+      reminderFor(reminders, r.id)?.date ?? r.reminderDate ?? "",
     ],
   }));
 
@@ -165,6 +248,51 @@ export function ShortTermWageReport({
           <span className="field-input tabular-nums">{lastExportValue}</span>
         </div>
       </div>
+
+      {note && (
+        <div className="mb-4">
+          <Callout tone="ok" live tags={["FA-022", "FE-001"]}>
+            {note}
+          </Callout>
+        </div>
+      )}
+
+      {/*
+        The form above the table, not inside the cell. A date field plus save
+        and cancel is 400px, and the reminder column of a seven-column register
+        is 150 — a row that grew to hold them would push every other column into
+        a sliver, which is what happened to the mediator register.
+      */}
+      {editing && (
+        <div className="print-hide mb-5 border-b border-border pb-5">
+          <h3 className="mi-kicker mb-2 text-muted-foreground">
+            {t.reminderHeading(editing.name)}
+          </h3>
+          <p className="mb-3 max-w-3xl text-table">{t.reminderIntro}</p>
+          <FormGrid>
+            <TextField
+              id="stw-reminder"
+              label={t.reminderDate}
+              type="date"
+              width="short"
+              numeric
+              required
+              lang={lang}
+              value={date}
+              onChange={setDate}
+            />
+          </FormGrid>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <Button onClick={save} disabled={!date} disabledReason={t.reminderDateRequired}>
+              {t.reminderSave}
+            </Button>
+            <Button variant="ghost" onClick={() => setEditing(null)}>
+              {d.common.cancel}
+            </Button>
+            <ReqTag id="FA-022" />
+          </div>
+        </div>
+      )}
 
       <DataTable
         columns={columns}

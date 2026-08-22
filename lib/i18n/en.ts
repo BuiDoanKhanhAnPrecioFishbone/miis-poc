@@ -923,6 +923,17 @@ export const en: Dictionary = {
       exportedYes: (date: string) => `Yes · ${date}`,
       exportedNo: "No",
       setReminder: "Set a reminder",
+      reminderChange: "Change",
+      reminderRemove: "Remove",
+      reminderHeading: (name: string) => `Reminder for ${name}`,
+      reminderIntro:
+        "The date the agreement is to be looked at again. The reminder is counted on the start page and sent by e-mail to the agreement administrator on that day.",
+      reminderDate: "Remind on",
+      reminderSave: "Save the reminder",
+      reminderDateRequired: "Choose a date first.",
+      reminderSavedNote: (name: string, date: string) =>
+        `A reminder is set on ${name} for ${date}. It appears on the start page and is sent by e-mail that day.`,
+      reminderRemovedNote: (name: string) => `The reminder on ${name} has been removed.`,
       reminderSet: (date: string) => `Reminder ${date}`,
       selectedCount: (selected: number, total: number) =>
         `${selected} of ${total} agreements in the extract`,
