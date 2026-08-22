@@ -33,7 +33,7 @@ the eight roles all check out — and what has **not** been diffed yet (chapter 
 requirement tables). `docs/12-source-documents.md` records the same for the two English
 guides, plus the places our domain model still diverges from the information model.
 
-**`docs/19-arbetsprocesser.md` is the response text for Bilaga 2 §3.4** — the
+**`docs/19-arbetsprocesser-SV.md` is the response text for Bilaga 2 §3.4** — the
 ska-krav on working process, collaboration with MI and the overall timeline. It is
 drafted against the fixed dates (tilldelning 2026-09-08, Steg 1 before 2027-04-01)
 and against `docs/16-verification.md`, which is its evidence. Two placeholders
@@ -62,7 +62,7 @@ behörigheter)"* while §3.5's Scenario 1 asks that role to create users and ass
 Never resolve it by widening `system-admin` — that breaks §3.1 and NFÅ-005. Demonstrate
 every bullet and **switch role where §3.1 requires it, saying why on screen**: separation
 of duties is the reason MI wrote the parenthesis, and naming it is evidence for
-*"leverantörens förståelse för verksamhetens krav"*, one of the six scored judgements. **`docs/18-role-scenarios.md` is the response text** for all four elements of
+*"leverantörens förståelse för verksamhetens krav"*, one of the six scored judgements. **`docs/18-role-scenarios-SV.md` is the response text** for all four elements of
 all three, drafted against what the prototype actually does — and it carries no
 *to be strengthened* caveats any more. **The demo itself leads with those three:
 `/genomgang`** is the reviewer's guided walkthrough and the address to send an evaluator
@@ -73,7 +73,14 @@ reviewer to a screen its own role would be refused.
 
 ## Hard rules
 
-1. **Swedish is the default UI language.** Every screenshot and the live demo open in
+1. **Swedish is the default UI language — and that includes the response.**
+   The two response documents exist twice: `docs/18-role-scenarios-SV.md` and
+   `docs/19-arbetsprocesser-SV.md` are **what is submitted**, and the unsuffixed
+   English files are the working drafts the team reads. Where they disagree the
+   Swedish wins, the same way MI's own originals outrank our English renderings.
+   A number that moves — the test count, the violation count — moves in **both**,
+   which is the drift that put 254 in one document and 236 in another while the
+   suite stood at 286. Every screenshot and the live demo open in
    Swedish. English is a complete second translation reachable from the demo bar — it
    exists so the internal team and non-Swedish reviewers can read the mockup, and is not
    a product feature. No user-facing string is hard-coded in a component; all text comes

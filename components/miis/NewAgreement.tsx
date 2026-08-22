@@ -25,8 +25,8 @@ import { Toggle } from "./Toggle";
  *
  * **This is the one registration the AI is not allowed to do**, and that is why
  * it needed a screen of its own rather than a branch inside `/registrera`.
- * §4.1's own boundary: *"Helt nya avtal, som inte har någon tidigare motsvarighet
- * i systemet, ska alltid registreras manuellt."* `/registrera` reads an incoming
+ * §4.1's own boundary, in MI's own words: *"Helt nya avtal – som inte tidigare
+ * tecknats – ska alltid registreras manuellt."* `/registrera` reads an incoming
  * protocol and proposes values against an agreement MIIS already holds; there is
  * nothing to match a first-time agreement against, so there is nothing for the
  * AI to propose and no source passage to link a proposal to.

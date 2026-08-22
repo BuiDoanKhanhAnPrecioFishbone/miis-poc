@@ -32,8 +32,10 @@ the guided walkthrough, and it is what the 15-minute presentation runs from.
 
 | Document | What it is | State |
 |---|---|---|
-| `docs/18-role-scenarios.md` | The scored §3.5 section — three roles, four elements each, in MI's own bullet order | **Drafted, English** |
-| `docs/19-arbetsprocesser.md` | The §3.4 ska-krav — method, collaboration, timeline | **Drafted, English** |
+| `docs/18-role-scenarios-SV.md` | **The scored §3.5 section, as submitted** — three roles, four elements each, in MI's own bullet order | **Drafted, Swedish** |
+| `docs/18-role-scenarios.md` | The same, English. Working draft for the team | Drafted |
+| `docs/19-arbetsprocesser-SV.md` | **The §3.4 ska-krav, as submitted** — method, collaboration, timeline | **Drafted, Swedish** |
+| `docs/19-arbetsprocesser.md` | The same, English. Working draft for the team | Drafted |
 | `docs/16-verification.md` | Evidence for both: what runs, mapped to MI's chapter 9 | Current |
 | `docs/17-scenario-criterion.md` | The plan, and the bullet-by-bullet diff against §3.5 | All items closed |
 | `screenshots/` | 64 shots × Swedish and English, generated from the running build | **Not in git** — see below |

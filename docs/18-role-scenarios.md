@@ -222,8 +222,8 @@ MI's four steps, in MI's order.
 different tasks:
 
 - **A wholly new agreement is registered manually**, and the screen says why on
-  itself. §4.1's own boundary: *"Helt nya avtal, som inte har någon tidigare
-  motsvarighet i systemet, ska alltid registreras manuellt."* The AI support
+  itself. §4.1's own boundary: *"Helt nya avtal – som inte tidigare tecknats –
+  ska alltid registreras manuellt."* The AI support
   reads an incoming protocol *against an agreement MIIS already holds*; for a
   first-time agreement there is nothing to match against, so there is nothing to
   propose and no source passage to link a proposal to. The form is Bilaga 3's

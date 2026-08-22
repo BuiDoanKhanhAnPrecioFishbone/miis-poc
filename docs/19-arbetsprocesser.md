@@ -68,7 +68,7 @@ merge if it fails:
 
 | Gate | What it protects |
 |---|---|
-| **Unit tests over the domain layer** | The rules — authorisation, status, report selection, publication, the query builder's own composition, the AI's boundaries. Currently **282 tests** |
+| **Unit tests over the domain layer** | The rules — authorisation, status, report selection, publication, the query builder's own composition, the AI's boundaries. Currently **305 tests** |
 | **Architectural lint rules** | The data seam. An import of the data layer from a screen fails the build, so the mock→database swap stays invisible to the interface |
 | **Type-checked translations** | The second language cannot silently rot: a missing or misspelt key fails compilation |
 | **Referential integrity at build** | A dangling reference in the data fails the build rather than showing an empty screen |
@@ -253,7 +253,7 @@ it. If the model service is delayed, registration still works.
 no identity provider and no AI model. What it demonstrates is the interface, the
 rules and the method — and the method is the claim §3.4 asks about.
 
-**The numbers above are current and will move.** 282 tests and 0 accessibility
+**The numbers above are current and will move.** 305 tests and 0 accessibility
 violations are true of the build this response was generated from; they are
 evidence that the gates exist and run, not a promise about a final count. The
 gates have earned their place: the most recent thing they caught was a query

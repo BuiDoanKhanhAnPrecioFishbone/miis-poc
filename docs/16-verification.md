@@ -11,7 +11,7 @@ other things. A claim about testing is worth what it can be shown to be.
 ## The five commands
 
 ```
-npm test          282 unit tests over the domain layer and the mock data
+npm test          305 unit tests over the domain layer and the mock data
 npm run lint      ESLint, including the architectural rules below
 npx tsc --noEmit  types, which is also what keeps the English translation complete
 npm run build     production build, which fails on broken mock references
@@ -29,7 +29,7 @@ IDs, § references and appendix names in the product view. Both currently report
 
 | | MI asks for | Where it stands |
 |---|---|---|
-| **T-001** | Unit, integration and system tests before go-live, documented | **Unit: built.** 282 tests over `lib/domain/` and `lib/mock/`. Integration and system tests belong to the delivered system and are described, not built — there is no database or IdP to integrate against yet |
+| **T-001** | Unit, integration and system tests before go-live, documented | **Unit: built.** 305 tests over `lib/domain/` and `lib/mock/`. Integration and system tests belong to the delivered system and are described, not built — there is no database or IdP to integrate against yet |
 | **T-002** | Testing against anonymised or fictitious protocols and agreements representing variations in the Swedish landscape | **Built.** `lib/mock/` holds three datasets with real party names — Teknikföretagen, IF Metall, Almega, Unionen, Kommunal, Seko, Sveriges Lärare — across private, municipal and industry sectors. The sample protocol is MI's own from Bilaga D. A test asserts the variation rather than assuming it |
 | **T-003** | Test data including edge cases, such as entirely new agreements with no previous version | **Built.** The `quiet` dataset is deliberately near-empty so empty states are designed rather than discovered; `peak` is the same register under load. US-02's brand-new agreement is the named edge case |
 | **T-004** | Regression testing on system or AI-model updates | **Partly built.** The unit suite, the lint rules and `npm run audit` run on every change and have caught real regressions — most recently a query builder whose criteria composed correctly and then returned every agreement regardless, found by running the scenarios in `docs/21` rather than by review. Regression against an *AI model* update needs the model, and is described |
