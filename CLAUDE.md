@@ -40,6 +40,14 @@ and against `docs/16-verification.md`, which is its evidence. Two placeholders
 remain and are not ours to fill: the named consultants with CVs (§3.1) and the
 hours and rates (Bilaga 4).
 
+**`docs/21-definition-of-done.md` is the consolidated requirement** — every
+source we hold and its authority, the exact scoring model (four criteria, five
+bands, `jämförelsetal = anbudssumma − mervärde`), the seven hard gates that
+decide whether the response is scored at all, a definition of done per scored
+criterion, twelve test scenarios, and the delivery acceptance under Bilaga 1 §9.
+Read it before planning a bid of this shape; read `docs/20-handover.md` for what
+is true today.
+
 **`docs/17-scenario-criterion.md` is the one to read before planning work.** Bilaga 2 §3.5
 names **three** roles — Systemadministratör, Avtalsadministratör/Handläggare, Allmänhetens
 dator — and asks for four things about each: uppgift och mål, arbetsflöde, visualiseringar,
