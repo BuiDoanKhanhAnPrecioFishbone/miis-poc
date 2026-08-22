@@ -1,7 +1,7 @@
 "use client";
 
 import { IconClose } from "./icons";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import {
@@ -16,13 +16,27 @@ import {
   type SearchFieldId,
 } from "@/lib/domain/options";
 import { dictionary } from "@/lib/i18n";
+import { coversDate, runQuery, type Searchable } from "@/lib/domain/query";
+import { DataTable, type Column, type Row } from "./DataTable";
 import { Button, Callout, Chip, FilterChips, Panel, Rationale, ReqTag } from "./primitives";
 import { SegmentedControl, Select, Tabs } from "./Select";
 
 /**
  * FR-002 — the query builder.
  *
- * Two things the screen has to demonstrate rather than depict:
+ * **The criteria run.** They did not: the screen composed a query correctly and
+ * then showed every agreement regardless, *Sök* was `disabled` with "Ej aktiv i
+ * demon", and changing a condition left the count where it was. So the one
+ * screen whose whole argument is that MI cannot get data out of W3D3 was itself
+ * a picture of a search. `lib/domain/query.ts` is the rule and it is tested;
+ * this renders what it returns.
+ *
+ * There is no *Sök* button, and that is the point rather than an omission. The
+ * result narrows as the selection changes, the way both registers and the
+ * public view do — a button whose only effect is to confirm what is already on
+ * screen is the dead control this screen was built out of.
+ *
+ * Two more things the screen has to demonstrate rather than depict:
  *
  * 1. **Criteria that compose.** Today's builder offers a flat list, which cannot
  *    express `(A ELLER B) OCH C`. Conditions live in groups, each group has its
@@ -71,26 +85,52 @@ const SEED: Group[] = [
     id: "g1",
     join: "all",
     conditions: [
+      /*
+        Sector only. The seed used to carry a `validAt` condition dated
+        2026-12-31 — which predates every agreement in the register, so the
+        screen opened on nought hits the moment the criteria started running,
+        and it asked the point-in-time question twice over, once here and once
+        in the Bokslut field below. The Bokslut date is the one that applies to
+        the whole result; `Giltig vid tidpunkt` stays available as a condition
+        for a query that needs it inside a group.
+      */
       { id: "g1c0", field: "sector", operator: "is", value: "private" },
-      { id: "g1c1", field: "validAt", operator: "asOf", value: "2026-12-31" },
     ],
   },
 ];
 
 export function SearchBuilder({
   lang,
-  hits,
+  rows,
+  rowFor,
+  tableColumns,
   seconds,
   snapshotDate,
-  children,
 }: {
   lang: Lang;
-  hits: number;
+  /**
+   * What the query runs over — the projection, not the agreements.
+   *
+   * An agreement's construction lives on its latest wage agreement, so the data
+   * layer joins that once here rather than making a pure rule reach for a
+   * relation it cannot see.
+   */
+  rows: Searchable[];
+  /**
+   * The rendered row per id, from the server.
+   *
+   * The cells carry FR-012's status marker and the confidentiality marker, and
+   * those are decisions that must not be re-made in the browser — the same
+   * arrangement the public search uses. The client decides which ids are shown
+   * and nothing else.
+   */
+  rowFor: Record<string, Row>;
+  /** Named apart from the presentation-column state below, which is a different
+      list entirely: these are the table's columns, those are the officer's pick. */
+  tableColumns: Column[];
   /** Already formatted for the language — 1,8 in Swedish, 1.8 in English. */
   seconds: string;
   snapshotDate: string;
-  /** The results table, rendered on the server from real agreement records. */
-  children: ReactNode;
 }) {
   const d = dictionary(lang);
   const t = d.sok;
@@ -104,6 +144,25 @@ export function SearchBuilder({
     DOCUMENT_TYPE_CHOICES.slice(0, 3).map((x) => x.id),
   );
   const [freeText, setFreeText] = useState(c.freeTextValue);
+
+  /*
+    FH-003's *bokslut* — one date, applied to the whole result.
+
+    The field was an uncontrolled `<input>` wired to nothing: it looked live,
+    it was not, and it escaped the sweep for dead controls only because it is
+    not a `<button>`. It drives the result now, and the header states the date
+    the figures are as at. Eighteen disabled "Visa per" buttons in the rows were
+    the same question asked in a place that could not answer it; they are gone.
+  */
+  const [asOf, setAsOf] = useState(snapshotDate);
+
+  /*
+    The result, from the criteria and the snapshot. `runQuery` and `coversDate`
+    are the tested rules; this only decides which server-rendered rows to hand
+    the table.
+  */
+  const matched = runQuery(rows, groups).filter((r) => coversDate(r, asOf));
+  const resultRows = matched.map((r) => rowFor[r.id]).filter((x): x is Row => Boolean(x));
 
   function newCondition(id: string): Condition {
     const field = SEARCH_FIELDS[0]!;
@@ -400,7 +459,9 @@ export function SearchBuilder({
               <input
                 id="snapshot-date"
                 type="date"
-                defaultValue={snapshotDate}
+                value={asOf}
+                onChange={(e) => setAsOf(e.target.value)}
+                data-filled={asOf ? "true" : undefined}
                 className="field-input tabular-nums"
               />
               <ReqTag id="FH-003" />
@@ -426,17 +487,27 @@ export function SearchBuilder({
           </ul>
 
           <div className="mt-5 space-y-3">
-            <Button variant="secondary" fullWidth
-        disabled
-        disabledReason={d.common.notInDemo}
-      >
+            {/*
+              No *Sök*. The result below narrows as the selection changes, the
+              way both registers and the public view do; a button whose only
+              effect is to confirm what is already on screen is the dead control
+              this screen was built out of.
+
+              *Spara sökning* stays refused, and the reason is the real one
+              rather than "Ej aktiv i demon": a saved search belongs to a user,
+              and a user in MIIS is a link to an identity in Försäkringskassan's
+              IdP that this prototype has no store behind.
+            */}
+            <p className="text-label text-muted-foreground">{t.results.liveNote}</p>
+            <Button
+              variant="secondary"
+              fullWidth
+              disabled
+              disabledReason={t.columns.savedSearchBlocked}
+            >
               {t.columns.saveSearch}: {t.columns.savedSearchName}
             </Button>
             <Rationale>{t.columns.savedSearchNote}</Rationale>
-            <Button fullWidth
-        disabled
-        disabledReason={d.common.notInDemo}
-      >{d.common.search}</Button>
           </div>
         </Panel>
       </div>
@@ -467,8 +538,14 @@ export function SearchBuilder({
       </div>
 
       <div className="mt-5">
-        <Panel title={t.results.title(hits, seconds, snapshotDate)} tags={["FH-003", "NFP-003"]}>
-          {children}
+        <Panel title={t.results.title(matched.length, seconds, asOf)} tags={["FH-003", "NFP-003"]}>
+          <DataTable
+            columns={tableColumns}
+            rows={resultRows}
+            lang={lang}
+            caption={t.results.title(matched.length, seconds, asOf)}
+            empty={t.results.empty}
+          />
           <Rationale>{t.results.responseNote(seconds)}</Rationale>
         </Panel>
       </div>

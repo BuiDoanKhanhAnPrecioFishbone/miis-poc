@@ -149,7 +149,7 @@ export default async function AdministrationPage() {
                     {t.retention.body}
                   </Callout>
                   <div className="mt-4">
-                    <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+                    <Button variant="secondary" disabled disabledReason={i18n.common.exportNeedsServer}>
                       {t.retention.export}
                     </Button>
                   </div>

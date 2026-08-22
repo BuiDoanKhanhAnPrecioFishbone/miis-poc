@@ -54,6 +54,8 @@ export const sv = {
     notAuthorised: "Behörighet saknas",
     notAuthorisedFor: (screen: string, role: string) =>
       `${screen} ingår inte i behörigheten för rollen ${role}. Byt roll i demoläget för att se vyn. I MIIS styrs detta av behörighetsadministratören (NFÅ-003).`,
+    exportNeedsServer:
+      "Filexport körs på servern och ingår i steg 1. Utskriften nedan är den export som körs utan serverdrift.",
     notInDemo: "Ej aktiv i demon",
     /* One vocabulary for the filter chips, so two registers cannot describe the
        same control in two ways. */
@@ -730,6 +732,8 @@ export const sv = {
       title: "Presentationskolumner",
       saveSearch: "Spara sökning",
       savedSearchName: "Årsrapport 2026",
+      savedSearchBlocked:
+        "En sparad sökning hör till en användare, och användaren är en länk till en identitet hos Försäkringskassan som prototypen inte har något lager bakom.",
       savedSearchNote:
         "En sparad sökning återanvänds senare och ger då uppdaterade siffror – urvalet sparas, inte resultatet.",
       items: [
@@ -752,6 +756,8 @@ export const sv = {
         `Resultat · ${hits} träffar · ${seconds} s · Bokslut per ${date}`,
       responseNote: (seconds: string) =>
         `Svarstid ${seconds} s. Kravet är svar inom 3 sekunder för standardsökningar.`,
+      liveNote: "Resultatet nedan smalnar av medan urvalet ändras.",
+      empty: "Inget avtal matchar urvalet. Ta bort ett villkor eller byt operator.",
       status: "Status",
       agreement: "Avtal",
       parties: "Parter",

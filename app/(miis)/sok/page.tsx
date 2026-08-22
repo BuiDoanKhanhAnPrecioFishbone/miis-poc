@@ -12,14 +12,18 @@ import {
   ReqTags,
   StatusDot,
 } from "@/components/miis/primitives";
-import { countAgreements, listRecentAgreements } from "@/lib/data/agreements";
+import { countAgreements, listAgreements, listRecentAgreements } from "@/lib/data/agreements";
+import { listParties } from "@/lib/data/parties";
 import { listWageAgreements } from "@/lib/data/reports";
 import { AGREEMENT_CONSTRUCTIONS } from "@/lib/domain/agreement";
+import type { Searchable } from "@/lib/domain/query";
 import { statusInfo } from "@/lib/domain/status";
 import { decimal, percent } from "@/lib/format";
 import { getSession } from "@/lib/session";
 
-const SNAPSHOT_DATE = "2026-12-31";
+/* FH-003's own example is a year-end, and this one falls inside the round the
+   sample data describes — see the seed in `SearchBuilder`. */
+const SNAPSHOT_DATE = "2027-12-31";
 
 /**
  * NFP-003 allows 3 seconds for a standard search. 1,8 s is a believable figure
@@ -38,10 +42,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SokPage() {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [rows, total, wageAgreements] = await Promise.all([
+  const [rows, total, wageAgreements, agreements, parties] = await Promise.all([
     listRecentAgreements(lang, Number.MAX_SAFE_INTEGER),
     countAgreements(),
     listWageAgreements(),
+    /* The full records and the party register: the validity dates live on the
+       agreement and the sector on its employer organisation (FP-001), and
+       `AgreementRow` is a display projection that carries neither. */
+    listAgreements(),
+    listParties(),
   ]);
   const t = i18n.sok;
 
@@ -57,9 +66,29 @@ export default async function SokPage() {
     { key: "parties", header: t.results.parties, sortable: true },
     { key: "construction", header: t.results.construction, sortable: true },
     { key: "scope", header: t.results.scope, numeric: true },
-    { key: "open", header: t.results.open },
   ];
 
+  /*
+    What the query runs over. The construction lives on the latest wage
+    agreement rather than on the agreement, so the join happens once here — a
+    pure rule reaching for that relation would need the whole register to answer
+    one condition.
+  */
+  const sectorOf = new Map(parties.map((p) => [p.name, p.sector]));
+  const searchable: Searchable[] = agreements.map((a) => {
+    const wage = wageByAgreement.get(a.id);
+    const sector = sectorOf.get(a.employerOrg.name);
+    return {
+      id: a.id,
+      ...(wage ? { construction: wage.construction } : {}),
+      ...(sector ? { sector } : {}),
+      ...(a.validFrom ? { validFrom: a.validFrom } : {}),
+      ...(a.validTo ? { validTo: a.validTo } : {}),
+      ...(wage ? { industryBenchmark: wage.industryBenchmark } : {}),
+    };
+  });
+
+  const rowFor: Record<string, Row> = {};
   const tableRows: Row[] = rows.map((row) => {
     const status = statusInfo(row.status, lang);
     const wage = wageByAgreement.get(row.id);
@@ -83,15 +112,6 @@ export default async function SokPage() {
         wage?.wageScopePercent === undefined
           ? i18n.common.none
           : percent(wage.wageScopePercent, lang),
-        /*
-          Was a <span> wearing a link's clothes — underlined, primary-coloured,
-          and not clickable. A cell that looks like a link and is not is worse
-          than a plain one: it invites the click it cannot answer. FA-020's
-          point-in-time view is Stage 2, so it says so.
-        */
-        <Button key="o" variant="ghost" size="sm" disabled disabledReason={i18n.common.notInDemo}>
-          {t.results.openAt(SNAPSHOT_DATE)}
-        </Button>,
       ],
       sort: [
         status.label,
@@ -99,10 +119,10 @@ export default async function SokPage() {
         row.parties,
         wage?.construction ?? 99,
         wage?.wageScopePercent ?? -1,
-        "",
       ],
     };
   });
+  for (const r of tableRows) rowFor[r.key] = r;
 
   return (
     <AppShell
@@ -116,28 +136,21 @@ export default async function SokPage() {
         tags={["FA-019", "FR-001", "FR-002"]}
       />
 
+      {/*
+        The criteria run. `lib/domain/query.ts` decides which rows match; the
+        cells stay on the server because they carry FR-012's status marker and
+        the confidentiality marker, which must not be re-decided in the browser.
+      */}
       <SearchBuilder
         lang={lang}
-        hits={total}
+        rows={searchable}
+        rowFor={rowFor}
+        tableColumns={columns}
         seconds={decimal(RESPONSE_SECONDS, lang)}
         snapshotDate={SNAPSHOT_DATE}
-      >
-        <DataTable
-          columns={columns}
-          rows={tableRows}
-          lang={lang}
-          caption={t.results.title(total, decimal(RESPONSE_SECONDS, lang), SNAPSHOT_DATE)}
-        />
+      />
 
-        {/*
-          Every hit is in the table, which scrolls inside its own region past
-          ten rows. It used to render six and print "… 54 more rows", which is a
-          placeholder standing in front of data the system already had — and on
-          a screen whose whole argument is that the current system cannot get
-          data out, a result set that will not show itself is the wrong thing to
-          demonstrate.
-        */}
-
+      <div className="mt-5">
         <Rationale>
           {t.results.pointInTimeNote} · {t.results.stage2Note}{" "}
           <ReqTags ids={["FA-020", "FA-025"]} />
@@ -147,25 +160,25 @@ export default async function SokPage() {
           <span className="text-label font-bold">{i18n.common.exportLabel}</span>
           <Button variant="secondary" size="sm"
         disabled
-        disabledReason={i18n.common.notInDemo}
+        disabledReason={i18n.common.exportNeedsServer}
       >
             Excel
           </Button>
           <Button variant="secondary" size="sm"
         disabled
-        disabledReason={i18n.common.notInDemo}
+        disabledReason={i18n.common.exportNeedsServer}
       >
             CSV
           </Button>
           <Button variant="secondary" size="sm"
         disabled
-        disabledReason={i18n.common.notInDemo}
+        disabledReason={i18n.common.exportNeedsServer}
       >
             JSON
           </Button>
           <Button variant="secondary" size="sm"
         disabled
-        disabledReason={i18n.common.notInDemo}
+        disabledReason={i18n.common.exportNeedsServer}
       >
             Word / PDF
           </Button>
@@ -176,7 +189,7 @@ export default async function SokPage() {
         <p className="mt-3 text-label text-muted-foreground">
           {t.results.savedSearches} {i18n.start.savedSearches.items.join(" · ")}
         </p>
-      </SearchBuilder>
+      </div>
     </AppShell>
   );
 }

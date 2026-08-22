@@ -56,6 +56,8 @@ export const en: Dictionary = {
     notAuthorised: "Not authorised",
     notAuthorisedFor: (screen: string, role: string) =>
       `${screen} is not part of the permissions for the role ${role}. Switch role in demo mode to see the view. In MIIS this is governed by the authorisation administrator (NFÅ-003).`,
+    exportNeedsServer:
+      "File export runs on the server and is part of Steg 1. The print below is the export that runs without one.",
     notInDemo: "Not active in the demo",
     filtersNone: "No filters selected",
     filtersCount: (n: number) => (n === 1 ? "1 filter" : `${n} filters`),
@@ -729,6 +731,8 @@ export const en: Dictionary = {
       title: "Presentation columns",
       saveSearch: "Save search",
       savedSearchName: "Annual report 2026",
+      savedSearchBlocked:
+        "A saved search belongs to a user, and a user is a link to an identity in Försäkringskassan's IdP that this prototype has no store behind.",
       savedSearchNote:
         "A saved search is reused later and then returns updated figures – the selection is saved, not the result.",
       items: [
@@ -749,6 +753,8 @@ export const en: Dictionary = {
     results: {
       title: (hits: number, seconds: string, date: string) =>
         `Results · ${hits} hits · ${seconds} s · Snapshot as at ${date}`,
+      liveNote: "The result below narrows as the selection changes.",
+      empty: "No agreement matches the selection. Remove a condition or change an operator.",
       responseNote: (seconds: string) =>
         `Response time ${seconds} s. The requirement is a response within 3 seconds for standard searches.`,
       status: "Status",

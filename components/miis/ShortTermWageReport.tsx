@@ -327,13 +327,13 @@ export function ShortTermWageReport({
       <div className="print-hide mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
         <Button
         disabled
-        disabledReason={d.common.notInDemo}
+        disabledReason={d.common.exportNeedsServer}
       >{t.export}</Button>
         <span className="text-label text-muted-foreground">{t.exportFormats}</span>
         <ReqTag id="FR-005" />
         <Button variant="secondary"
         disabled
-        disabledReason={d.common.notInDemo}
+        disabledReason={d.common.exportNeedsServer}
       >{t.markExported}</Button>
       </div>
       <Rationale>{t.markExportedNote}</Rationale>
