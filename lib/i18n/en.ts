@@ -679,7 +679,7 @@ export const en: Dictionary = {
       registered: "The protocol is registered and linked",
       registeredWhere:
         "The agreement is now in the agreement register with the status Newly signed, no mediation, and appears under Agreements, in Search and in the reports. The change log has recorded who approved it and when.",
-      registeredNext: "Open the agreement in the register",
+      registeredNext: "Open the agreement",
       registeredNote:
         "The agreement, the wage agreement and the negotiation are linked to the protocol. The change log has recorded who approved it and when.",
       reopen: "Change the registration",
@@ -1324,6 +1324,12 @@ export const en: Dictionary = {
     },
 
     detail: {
+      tabs: {
+        label: "Parts of the agreement",
+        record: "The agreement",
+        pay: "Wage agreements",
+        open: "Questions and groups",
+      },
       identity: "The agreement",
       area: "Agreement area",
       alternativeName: "Alternative agreement name",

@@ -680,7 +680,7 @@ export const sv = {
       registered: "Protokollet är registrerat och kopplat",
       registeredWhere:
         "Avtalet ligger nu i avtalsregistret med status Nytecknat utan medling och syns i Avtal, i Sök och i rapporterna. Ändringsloggen har registrerat vem som godkände och när.",
-      registeredNext: "Öppna avtalet i avtalsregistret",
+      registeredNext: "Öppna avtalet",
       registeredNote:
         "Avtalet, löneavtalet och förhandlingen är kopplade till protokollet. Ändringsloggen har registrerat vem som godkände och när.",
       reopen: "Ändra registreringen",
@@ -1318,6 +1318,12 @@ export const sv = {
     },
 
     detail: {
+      tabs: {
+        label: "Avtalets delar",
+        record: "Avtalet",
+        pay: "Löneavtal",
+        open: "Frågor och grupper",
+      },
       identity: "Avtalet",
       area: "Avtalsområde",
       alternativeName: "Alternativt avtalsnamn",

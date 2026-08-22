@@ -20,7 +20,7 @@ import {
   Rationale,
   ReqTag,
 } from "@/components/miis/primitives";
-import { listExtractionProposals } from "@/lib/data/extraction";
+import { listExtractionProposals, matchedAgreementId } from "@/lib/data/extraction";
 import { listWatchwords } from "@/lib/data/watchwords";
 import { AGREEMENT_CONSTRUCTIONS, registrationStatusLabel } from "@/lib/domain/agreement";
 import { statusInfo } from "@/lib/domain/status";
@@ -52,10 +52,12 @@ export default async function RegistreraPage({
 }) {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [proposals, watchwords, params] = await Promise.all([
+  const [proposals, watchwords, params, matchedId] = await Promise.all([
     listExtractionProposals(),
     listWatchwords(),
     searchParams,
+    /* The agreement the protocol was matched to, so the flow can end on it. */
+    matchedAgreementId(),
   ]);
   const t = i18n.registrera;
   const resume = params.forts === "1";
@@ -348,7 +350,7 @@ export default async function RegistreraPage({
               five-step flow, and the stepper at the top of the page has to hear
               about it. They used to be plain buttons with no handler at all.
             */}
-            <RegistrationSave lang={lang} />
+            <RegistrationSave lang={lang} agreementHref={`/avtal/${matchedId}`} />
             <Rationale>{t.save.incompleteNote}</Rationale>
 
             <Rationale>{t.save.auditNote}</Rationale>

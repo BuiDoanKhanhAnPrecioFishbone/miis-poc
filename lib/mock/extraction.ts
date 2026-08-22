@@ -18,6 +18,17 @@
 
 import type { ExtractionProposal } from "@/lib/domain/extraction";
 
+/**
+ * The agreement this protocol belongs to.
+ *
+ * `matched` above carries the *name* the AI read off the heading, which is what
+ * the officer checks. The id is what the screen needs once the registration is
+ * approved: FA-022 puts the protocol on an agreement that already exists, so
+ * the act ends somewhere — on that agreement — rather than on a register of
+ * seventeen where the officer has to find it again.
+ */
+export const MATCHED_AGREEMENT_ID = "A-001";
+
 export const EXTRACTION_PROPOSALS: ExtractionProposal[] = [
   /*
     Read out of MI's own protocol (Bilaga D): Föreningen Industriarbetsgivarna

@@ -17,6 +17,7 @@ import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
 import { PrintButton } from "@/components/miis/Print";
+import { SectionTabs } from "@/components/miis/SectionTabs";
 import {
   Badge,
   Callout,
@@ -206,94 +207,145 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
         columns collapsing to slivers.
       */}
       <div className="print-stack grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="space-y-5">
+        <div className="min-w-0">
           {/*
-            Bilaga 2 §3.5, Scenario 2 — *"lägger till eller uppdaterar
-            information kopplad till avtalet"* — happens **in** the record now,
-            not in a panel underneath it. There is no longer a second copy of
-            the agreement's name on this page, and what can be corrected is no
-            longer whatever one panel happened to hold. See `EditablePanel`.
+            Three jobs, one at a time.
+
+            The record had grown to nine panels in one column, and an officer
+            who came to check a lägstalön scrolled past five of them. `CLAUDE.md`
+            named this screen as the *stacking* case, on the reading that an
+            agreement is one subject read in order. That is true of the
+            printout and had stopped being true of the screen: Bilaga F's
+            Rapport 4 is a document read start to finish, and this is a
+            workbench.
+
+            The grouping is by what an officer came to do. **Avtalet** is the
+            record itself — who the agreement is between and how big it is.
+            **Löneavtal** is what the bargaining round produced, the row per
+            avtalsrörelse and the lägstalöner under it. **Frågor och grupper**
+            is what the round left open, which is why an agreement that looks
+            finished is not.
+
+            **The sidebar stays outside the tabs**, and so does the event log.
+            Status, publication, Märket and the validity period are the facts
+            every one of these jobs is done against; a tab that hid them would
+            have the officer switching back to check what they were editing.
           */}
-          <AgreementIdentity agreement={agreement} lang={lang} />
+          <SectionTabs
+            label={t.tabs.label}
+            lang={lang}
+            sections={[
+              {
+                id: "avtalet",
+                label: t.tabs.record,
+                node: (
+                  <>
+                  {/*
+                    Bilaga 2 §3.5, Scenario 2 — *"lägger till eller uppdaterar
+                    information kopplad till avtalet"* — happens **in** the record now,
+                    not in a panel underneath it. There is no longer a second copy of
+                    the agreement's name on this page, and what can be corrected is no
+                    longer whatever one panel happened to hold. See `EditablePanel`.
+                  */}
+                  <AgreementIdentity agreement={agreement} lang={lang} />
 
-          <AgreementScope agreement={agreement} lang={lang} />
+                  <AgreementScope agreement={agreement} lang={lang} />
+                  </>
+                ),
+              },
+              {
+                id: "loneavtal",
+                label: t.tabs.pay,
+                node: (
+                  <>
+                  <Panel title={t.wageAgreements} tags={["FA-002", "FA-007", "FA-008", "FA-009"]}>
+                    <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
+                    {wageRows.length === 0 ? (
+                      <p className="text-table text-muted-foreground">{t.noWageAgreements}</p>
+                    ) : (
+                      <DataTable
+                        columns={wageColumns}
+                        rows={wageRows}
+                        lang={lang}
+                        caption={t.wageAgreements}
+                        /* What the six headers actually need unconstrained (706px
+                           measured), not a round number. 46rem left the table 30px
+                           wider than its own column at 1440 and scrolling for no
+                           reason; below this it still scrolls, which is the guard
+                           doing its job rather than columns collapsing to slivers. */
+                        minWidth="44rem"
+                      />
+                    )}
+                  </Panel>
 
-          <Panel title={t.wageAgreements} tags={["FA-002", "FA-007", "FA-008", "FA-009"]}>
-            <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
-            {wageRows.length === 0 ? (
-              <p className="text-table text-muted-foreground">{t.noWageAgreements}</p>
-            ) : (
-              <DataTable
-                columns={wageColumns}
-                rows={wageRows}
-                lang={lang}
-                caption={t.wageAgreements}
-                /* What the six headers actually need unconstrained (706px
-                   measured), not a round number. 46rem left the table 30px
-                   wider than its own column at 1440 and scrolling for no
-                   reason; below this it still scrolls, which is the guard
-                   doing its job rather than columns collapsing to slivers. */
-                minWidth="44rem"
-              />
-            )}
-          </Panel>
-
-          {/*
-            FA-014. This is also where Bilaga B's `Särskilda frågor` lands: the
-            current system keeps it as a document type of its own, and MI's
-            requirement folds it into the group that owns the question.
-          */}
-          {hideWorkingGroups ? (
-            <LimitedSectionPanel title={t.workingGroups} lang={lang} tags={["FA-014"]} />
-          ) : (
-            <Panel title={t.workingGroups} tags={["FA-014"]}>
-              <p className="mb-3 max-w-4xl text-table">{t.workingGroupsIntro}</p>
-              {workingGroups.length === 0 ? (
-                <p className="text-table text-muted-foreground">{t.noWorkingGroups}</p>
-              ) : (
-                <ul className="space-y-4">
-                  {workingGroups.map((g) => (
-                    <li
-                      key={g.id}
-                      className="border-t border-border pt-3 first:border-t-0 first:pt-0"
-                    >
-                      <p className="font-semibold">{g.name}</p>
-                      <p className="mt-1 text-table">
-                        <span className="text-label font-bold">{t.subjectAreas}: </span>
-                        {g.subjectAreas.join(" · ")}
-                      </p>
-                      {g.reportsBy && (
-                        <p className="mt-1 text-label text-muted-foreground">
-                          {t.reportsBy} <span className="tabular-nums">{g.reportsBy}</span>
-                        </p>
+                  {hideMinimumWages ? (
+                    <LimitedSectionPanel title={t.minimumWages} lang={lang} tags={["FA-013"]} />
+                  ) : (
+                    minRows.length > 0 && (
+                      <Panel title={t.minimumWages} tags={["FA-013"]}>
+                        <p className="mb-3 max-w-4xl text-table">{t.minimumWagesIntro}</p>
+                        <DataTable
+                          columns={minColumns}
+                          rows={minRows}
+                          lang={lang}
+                          caption={t.minimumWages}
+                          minWidth="34rem"
+                        />
+                      </Panel>
+                    )
+                  )}
+                  </>
+                ),
+              },
+              {
+                id: "fragor",
+                label: t.tabs.open,
+                node: (
+                  <>
+                  {/*
+                    FA-014. This is also where Bilaga B's `Särskilda frågor` lands: the
+                    current system keeps it as a document type of its own, and MI's
+                    requirement folds it into the group that owns the question.
+                  */}
+                  {hideWorkingGroups ? (
+                    <LimitedSectionPanel title={t.workingGroups} lang={lang} tags={["FA-014"]} />
+                  ) : (
+                    <Panel title={t.workingGroups} tags={["FA-014"]}>
+                      <p className="mb-3 max-w-4xl text-table">{t.workingGroupsIntro}</p>
+                      {workingGroups.length === 0 ? (
+                        <p className="text-table text-muted-foreground">{t.noWorkingGroups}</p>
+                      ) : (
+                        <ul className="space-y-4">
+                          {workingGroups.map((g) => (
+                            <li
+                              key={g.id}
+                              className="border-t border-border pt-3 first:border-t-0 first:pt-0"
+                            >
+                              <p className="font-semibold">{g.name}</p>
+                              <p className="mt-1 text-table">
+                                <span className="text-label font-bold">{t.subjectAreas}: </span>
+                                {g.subjectAreas.join(" · ")}
+                              </p>
+                              {g.reportsBy && (
+                                <p className="mt-1 text-label text-muted-foreground">
+                                  {t.reportsBy} <span className="tabular-nums">{g.reportsBy}</span>
+                                </p>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Panel>
-          )}
+                    </Panel>
+                  )}
 
-          {/* §3.11's three numbered slots — a question the agreement text
-              answers, which is not the same thing as a working group. */}
-          <SpecialQuestionsPanel sets={specialQuestions} lang={lang} />
-
-          {hideMinimumWages ? (
-            <LimitedSectionPanel title={t.minimumWages} lang={lang} tags={["FA-013"]} />
-          ) : (
-            minRows.length > 0 && (
-              <Panel title={t.minimumWages} tags={["FA-013"]}>
-                <p className="mb-3 max-w-4xl text-table">{t.minimumWagesIntro}</p>
-                <DataTable
-                  columns={minColumns}
-                  rows={minRows}
-                  lang={lang}
-                  caption={t.minimumWages}
-                  minWidth="34rem"
-                />
-              </Panel>
-            )
-          )}
+                  {/* §3.11's three numbered slots — a question the agreement text
+                      answers, which is not the same thing as a working group. */}
+                  <SpecialQuestionsPanel sets={specialQuestions} lang={lang} />
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
 
         <div className="print-first space-y-5">

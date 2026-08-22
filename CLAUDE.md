@@ -225,6 +225,14 @@ reviewer to a screen its own role would be refused.
    stylesheet, and the padlock on a sekretessmarkering is carrying a legal status.
    **An icon never stands alone** — it is `aria-hidden`, and the label beside it
    carries the meaning.
+   **An act that creates or attaches something ends on that thing.** Registering
+   a protocol offered *Öppna avtalet i avtalsregistret* and went to `/avtal` —
+   the register of seventeen — so the officer had to find again the record they
+   had been working on for five steps. FA-022 attaches a protocol to an
+   agreement that already exists, and the seam names which
+   (`matchedAgreementId`), so the flow ends there. The same rule caught the
+   report picker: a control that produces something specific must not land on
+   the list it came from.
    **A record is corrected where it is read.** FA-001 is *"registrera **och
    redigera** avtalsinformation"*, and the detail view answered the second half
    with a panel of its own sitting under the record and repeating three of its
@@ -294,11 +302,18 @@ reviewer to a screen its own role would be refused.
    meaning. A form with required fields carries `common.requiredLegend` once,
    above them.
    **A screen whose sections are separate jobs is `SectionTabs`.** Stacking is
-   right when the parts are one subject read in order — an agreement's identity,
-   then its scope, then its wage agreements. It is wrong when they are separate
-   jobs sharing a role: Administration is settings, two logs and a watchword
-   table, and Rapporter is the report catalogue, Konjunkturlönerapporten's
-   watch list and the schedule of recurring extracts. **Every panel still
+   right when the parts are one subject read in order. It is wrong when they are
+   separate jobs sharing a role: Administration is settings, two logs and a
+   watchword table; Rapporter is the report catalogue, Konjunkturlönerapporten's
+   watch list and the schedule of recurring extracts; and the agreement record
+   is what the agreement **is** (identity, scope), what the round **produced**
+   (löneavtal, lägstalöner) and what it **left open** (arbetsgrupper, särskilda
+   frågor). That last one was the stacking example here until it reached nine
+   panels — Bilaga F's Rapport 4 is a document read start to finish, and the
+   screen is a workbench. **What every job is done against stays outside the
+   tabs**: the agreement's status, publication, Märket and validity period are
+   in the sidebar, and a tab that hid them would have the officer switching back
+   to see what they were editing. **Every panel still
    prints** — a tab is a view state and paper has none — and the inactive panels
    are hidden by a *class*, never the `hidden` attribute, because Chrome's UA
    stylesheet declares `[hidden] { display: none !important }` and author CSS

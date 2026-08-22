@@ -8,8 +8,13 @@
  */
 
 import type { ExtractionProposal } from "@/lib/domain/extraction";
-import { EXTRACTION_PROPOSALS } from "@/lib/mock/extraction";
+import { EXTRACTION_PROPOSALS, MATCHED_AGREEMENT_ID } from "@/lib/mock/extraction";
 
 export async function listExtractionProposals(): Promise<ExtractionProposal[]> {
   return EXTRACTION_PROPOSALS;
+}
+
+/** Which agreement the uploaded protocol was matched to — see the mock's note. */
+export async function matchedAgreementId(): Promise<string> {
+  return MATCHED_AGREEMENT_ID;
 }

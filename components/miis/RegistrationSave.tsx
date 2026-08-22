@@ -49,7 +49,22 @@ export function RegistrationProvider({
  * before. An evaluator clicking through the scenario needs to see the flow
  * arrive somewhere.
  */
-export function RegistrationSave({ lang }: { lang: Lang }) {
+export function RegistrationSave({
+  lang,
+  agreementHref,
+}: {
+  lang: Lang;
+  /**
+   * The agreement the protocol was registered on.
+   *
+   * FA-022 attaches a protocol to an agreement that already exists, so the act
+   * ends *on that agreement*. The control used to open `/avtal` — the register
+   * of seventeen — which made the officer find again the record they had just
+   * been working on. An act that produces something should land on the thing it
+   * produced.
+   */
+  agreementHref: string;
+}) {
   const ctx = useContext(RegistrationContext);
   const t = dictionary(lang).registrera.save;
 
@@ -102,7 +117,7 @@ export function RegistrationSave({ lang }: { lang: Lang }) {
           hierarchy nobody intended.
         */}
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <LinkButton href="/avtal" iconEnd={<IconForward />}>
+          <LinkButton href={agreementHref} iconEnd={<IconForward />}>
             {t.registeredNext}
           </LinkButton>
           <Button variant="secondary" onClick={() => ctx?.setRegistered(false)}>
