@@ -355,6 +355,53 @@ reviewer to a screen its own role would be refused.
    the system on the control the reader is least likely to press. The two
    registers had built this twice and disagreed on all of it — filled vs outline,
    count vs no count, "Rensa filter" vs "Rensa alla".
+   **A control that responds and changes nothing is the third shape of a dead
+   control**, and the sweep for `disabled` buttons will not find it. `/sok`'s
+   four information-type tabs set `infoType` and nothing read it: four tabs, one
+   population, one column set. FR-002's *val av informationstyp* is a choice of
+   **which register is searched**, so each type brings its own rows, its own
+   criteria and its own columns, and switching **rebuilds** the criteria rather
+   than carrying them — no field is shared, and `sector` exists under two ids on
+   purpose, because an agreement's sector comes from the agreement and a party's
+   from FP-001's own link. A criterion that survived the switch would keep its
+   word and change its subject. `Searchable` carries a facet bag rather than
+   named columns for the same reason. And a control belongs only to a population
+   that can answer it: the *Bokslut* date appears where rows have periods,
+   because a party is not in force between two dates.
+   **A found record opens.** A search that finds an agreement and cannot open it
+   is a lookup table; the result's name cell is the same link the register
+   draws. **A saved search loads** — the three names were printed at the foot of
+   the page as a sentence, which is a claim that the feature exists rather than
+   the feature. What is saved is the selection, never the hits.
+   **One set of fields is one form.** Adding a mediator and correcting one were
+   two components — an inline form above the register and a second panel below
+   it with its own disclosure, its own five fields and its own confirmation. The
+   two acts differ in exactly two ways and both are *said* rather than built:
+   the heading names which act is in progress, and a new record has no derived
+   history yet. The create action lives in the register's own header and is
+   hidden while the form is open, because offering it over a half-typed
+   correction offers to discard it without saying so. **The row being changed
+   says so on the row** — a form headed by a name, above an eight-column table,
+   leaves *which of these am I editing* to be answered by reading.
+   **Nothing in MIIS is deleted by a user except what nothing counts.** Four
+   categories, and D-004 is the only deletion MI asked for. *Records the
+   authority is accountable for* — agreements, mediation cases, parties, Märket
+   periods — are never deleted **and never deactivated**: an agreement that ran
+   from 2023 does not stop having existed, and MI publishes statistics off it;
+   what it carries is a löptid and FR-012's status. *People a register offers
+   up* — users, mediators — are **deactivated**, so they stop being offered
+   while everything referencing them still resolves. *Attributes nothing counts*
+   — a contact person, a watchword, a reminder — are removed outright.
+   *Personal data* is **gallrad by rule**, which is `lib/domain/retention.ts`
+   and D-004's own second half: *"möjlighet att definiera automatiska
+   gallringsregler"*, a ska-krav that had been answered by a `Rationale` saying
+   the routines exist. **NFL-003 is the boundary and the reason the screen is
+   not a list**: the logs are kept *"i minst 24 månader"* and are beyond
+   *"vanliga användare eller systemadministratörer"* — the role reading the
+   screen — so that row carries MI's sentence instead of a control and is
+   **shown rather than omitted**. A deactivated account is **anonymised, not
+   erased**: NFL-001 logged its sign-ins and those entries have to survive; what
+   goes is the name behind them.
    **A filter filters.** The controls own the register's `DataTable` and narrow
    it through `Row.facets`; a filter that changes the chips and leaves the rows
    in place is a control that looks live and is not, which is the same failure as
