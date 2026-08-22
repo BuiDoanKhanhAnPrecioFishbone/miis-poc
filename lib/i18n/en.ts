@@ -37,6 +37,7 @@ export const en: Dictionary = {
     adjust: "Adjust",
     reject: "Reject",
     save: "Save",
+    cancel: "Cancel",
     required: "Required",
     requiredLegend: "Fields marked Required must be filled in.",
     add: "Add",
@@ -1341,14 +1342,18 @@ export const en: Dictionary = {
       eventType: "Event",
       eventDetail: "Concerns",
       noEvents: "No events registered on the agreement yet.",
-      edit: "Edit the agreement",
-      administration: "Edit and publish",
-      administrationIntro:
+      edit: "Edit",
+      identityIntro:
         "Correct details directly in the record. The change is saved to the change log with the time and the user.",
       agreementName: "Agreement name",
       nameRequired: "The agreement must have a name.",
+      /* Registered elsewhere, and the row says where. */
+      typeDerived: "Follows from which wage agreements and general terms are registered",
+      partiesElsewhere: "Changed in the party register, so the agreement history follows",
+      scopeEditNote:
+        "Union density is calculated from union members and employees and cannot be typed in.",
       editSaved: (date: string) =>
-        `Change saved ${date}. It is written to the change log with the time and user (FH-001).`,
+        `Change saved ${date}. It is written to the change log with the time and user.`,
       publication: "Publication",
       publishedLabel: "Published",
       publishedNote: (date: string, by: string) =>

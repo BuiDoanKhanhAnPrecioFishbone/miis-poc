@@ -91,19 +91,29 @@ reviewer to a screen its own role would be refused.
    **AI is violet, and it is the one deliberate step outside the MI palette.** An AI
    proposal is machine-generated and unverified; *Märket* and a sekretessmarkering are
    MI's own information. They must not share a hue.
-   **The hue is the step outside; the chroma is not.** The violets were
-   Material's Deep Purple at 54 % and 61 % saturation, against an identity that
-   sits between 12 % and 32 % — slate-800 is 23 %, sand-600 is 32 %, the ink is
-   31 %. One colour at twice the chroma of everything around it does not read
-   as emphasis, it reads as **imported**, which is the wrong thing to say about
-   the part of MIIS a public buyer is most cautious about. They are now 28 % on
-   the spine and 36 % on the solid at hue 255, so the separation from slate
-   (h201) and sand (h36) is untouched and every measured ratio is the same or
-   better. **The `ai-band` gradient ends in `--mi-slate-800`** — violet where
-   the `AI` letter-mark and the spine are, MI's own colour where it runs out.
-   A band that is violet edge to edge says "this belongs to something else";
-   this says what is true, machine-generated material inside MI's system. Every
-   stop stays dark, because text may only sit on a gradient whose lightest stop
+   **The violet is `#7B3FCC` — h266, s58, l52 — and the number that matters is
+   the lightness.** Two attempts failed the same way. It was Material's Deep
+   Purple 700 (h260 s54 **l45**), which read as heavy and muddy; the correction
+   desaturated it into MI's own chroma band (h255 **s28** l44), which read as a
+   grey mauve. Both sat at L44–45. Every violet other systems actually use for
+   AI is lighter and clearly chromatic — GitHub Copilot `#6E40C9` is l52 s56,
+   Atlassian's discovery token `#8270DB` is l65 s60, Tailwind violet-600
+   `#7C3AED` is l58 s83. A dark greyed purple is not restraint; it is a colour
+   with the life taken out of it.
+   The hue is chosen too. The de-facto AI colours cluster at h260–262 and at
+   h234 (Linear's `#5E6AD2`, really an indigo — close enough to a link blue to
+   be a hazard beside MI's own focus colour `#1D5F7A`, h197). Sitting a few
+   degrees red of that cluster gives a royal violet rather than a tech indigo:
+   unmistakably purple, warmer against sand (h36), and not the exact shade every
+   AI product shipped in 2025. Violet is **the one deliberate step outside the
+   MI palette**, so it is the one colour allowed to break the identity's chroma
+   discipline — that is what it is for.
+   **The `ai-band` gradient is two steps of the same hue**, deep to lively, with
+   the mark and the spine at the deep end. It briefly resolved into
+   `--mi-slate-800` on the theory that ending in MI's own colour said something;
+   on screen the far end went grey-teal and the band read as a smudge. A band is
+   44px tall — there is no room in it for an argument, only for a colour. Both
+   stops stay dark, because text may only sit on a gradient whose lightest stop
    clears 4.5:1. Sand already carries Märket,
    attention, requirement tags, the public view and watchword hits — do not add a sixth
    meaning to it.
@@ -147,6 +157,16 @@ reviewer to a screen its own role would be refused.
    interface, and `mayPublish` refuses a registration that is not complete and
    signed — MI decides when an agreement is released, and a half-registered
    record on the public computer would be the authority publishing a draft.
+   **It is also not editing, and the two do not share a panel.** They did, under
+   one heading called *Redigera och publicera*, which made a routine correction
+   look like it might put something in front of the public. Publication belongs
+   beside the status it changes — the sidebar, next to FR-012 and the validity
+   period, which is what a reader is already looking at when *is this out yet?*
+   occurs to them. **And it is a badge and a sentence there, never a `Callout`**:
+   the sidebar is 320px and a callout spends a third of that on an icon, a rule
+   and a label, so the publication note came out one or two words per line.
+   A `Callout` is feedback about something that just happened; a state the
+   record has been in since April is a state word plus its facts.
    `reportSelection.website` is adjacent and is not the same thing: it is which
    *reports* the agreement is drawn into once it is out.
    **A report a role may run has to produce something that role may read.**
@@ -184,6 +204,25 @@ reviewer to a screen its own role would be refused.
    stylesheet, and the padlock on a sekretessmarkering is carrying a legal status.
    **An icon never stands alone** — it is `aria-hidden`, and the label beside it
    carries the meaning.
+   **A record is corrected where it is read.** FA-001 is *"registrera **och
+   redigera** avtalsinformation"*, and the detail view answered the second half
+   with a panel of its own sitting under the record and repeating three of its
+   values as inputs. Two faults followed. The same values appeared **twice on
+   the page** — read them here, type them there, forty pixels apart, with no way
+   to tell which was authoritative until you saved. And **only what that panel
+   happened to hold could be edited**, so *redigera avtalsinformation* meant
+   *redigera three fields*: the four scope figures MI actually revises between
+   rounds were read-only. `EditablePanel` is the shared chrome — each editable
+   section carries its own *Redigera*, switches its own fields to inputs and
+   saves on its own, which is also how the work arrives: a wage figure is
+   corrected without putting the agreement's name into an editable box.
+   **A field that is not editable says why on its own row.** Avtalstyp follows
+   from which wage agreements exist; the parties are a relation into the party
+   register, where FA-006's name history lives. A greyed field with no reason
+   reads as something the system forgot to finish. And **a derived figure never
+   becomes an input** — organisationsgrad recomputes as the two figures above it
+   are typed, which is the demonstration that it follows rather than being
+   entered.
    **`Field` displays, `TextField` registers, `Button` acts, and the three do not
    look alike.** A read-only value is text on a rule; anything boxed can be typed
    into or pressed. `Field`, `TextField` and `Select` share `FieldLabel` so a

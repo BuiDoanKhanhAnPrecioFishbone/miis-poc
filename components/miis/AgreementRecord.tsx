@@ -39,54 +39,6 @@ function figure(value: number | undefined, lang: Lang, fallback: string): string
   return value === undefined ? fallback : amount(value, lang);
 }
 
-export function AgreementScopePanel({ agreement, lang }: { agreement: Agreement; lang: Lang }) {
-  const t = dictionary(lang).avtal.detail;
-  const density = unionDensityPercent(agreement);
-
-  return (
-    <Panel title={t.scopeHeading} tags={["FA-001", "FR-008"]}>
-      <p className="mb-4 max-w-4xl text-table">{t.scopeIntro}</p>
-      <div className="@container/form">
-        <FormGrid>
-          <Field
-            label={t.employeesLabel}
-            value={figure(agreement.employees, lang, t.notRegistered)}
-            width="short"
-            {...(agreement.employeesUpdated
-              ? { hint: t.updatedSuffix(agreement.employeesUpdated) }
-              : {})}
-          />
-          <Field
-            label={t.annualWorkers}
-            value={figure(agreement.annualWorkers, lang, t.notRegistered)}
-            width="short"
-          />
-          <Field
-            label={t.unionMembers}
-            value={figure(agreement.unionMembers, lang, t.notRegistered)}
-            width="short"
-          />
-          {/* The unit is in the label and the value stays a bare number. */}
-          <Field
-            label={t.unionDensity}
-            value={density === undefined ? t.notRegistered : decimal(density, lang)}
-            width="short"
-          />
-          <Field
-            label={t.averageWage}
-            value={figure(agreement.averageWageSek, lang, t.notRegistered)}
-            width="short"
-            {...(agreement.averageWageUpdated
-              ? { hint: t.updatedSuffix(agreement.averageWageUpdated) }
-              : {})}
-          />
-        </FormGrid>
-      </div>
-      <Rationale>{t.derivedNote}</Rationale>
-    </Panel>
-  );
-}
-
 /** One of MI's yes/no-plus-comment rows. Absent is absent — no row is drawn. */
 function FlagRow({
   label,

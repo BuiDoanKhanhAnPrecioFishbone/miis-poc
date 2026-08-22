@@ -35,6 +35,7 @@ export const sv = {
     adjust: "Justera",
     reject: "Avvisa",
     save: "Spara",
+    cancel: "Avbryt",
     required: "Obligatoriskt",
     requiredLegend: "Fält märkta Obligatoriskt måste fyllas i.",
     add: "Lägg till",
@@ -1335,14 +1336,19 @@ export const sv = {
       eventType: "Händelse",
       eventDetail: "Avser",
       noEvents: "Inga händelser registrerade på avtalet ännu.",
-      edit: "Redigera avtalet",
-      administration: "Redigera och publicera",
-      administrationIntro:
+      edit: "Redigera",
+      identityIntro:
         "Rätta uppgifter direkt i posten. Ändringen sparas med tidpunkt och användare i ändringsloggen.",
       agreementName: "Avtalsnamn",
       nameRequired: "Avtalet måste ha ett namn.",
+      /* Registered elsewhere, and the row says where — a field that is grey
+         with no reason reads as a field the system forgot to finish. */
+      typeDerived: "Följer av vilka löneavtal och allmänna villkor som är registrerade",
+      partiesElsewhere: "Ändras i partsregistret, så att avtalshistoriken följer med",
+      scopeEditNote:
+        "Organisationsgrad räknas ur fackmedlemmar och anställda och kan inte skrivas in.",
       editSaved: (date: string) =>
-        `Ändringen sparad ${date}. Den skrivs till ändringsloggen med tidpunkt och användare (FH-001).`,
+        `Ändringen sparad ${date}. Den skrivs till ändringsloggen med tidpunkt och användare.`,
       publication: "Publicering",
       publishedLabel: "Publicerat",
       publishedNote: (date: string, by: string) =>

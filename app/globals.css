@@ -155,30 +155,38 @@
    * watchword hits and accent — all of them on screen together in /registrera.
    * That is the same failure the FR-012 status colours are protected from.
    *
-   * **The hue was never the problem; the chroma was.** #5E35B1 and #4527A0 are
-   * Material's Deep Purple, and they sit at 54 % and 61 % saturation. Every
-   * other colour MI owns sits between 12 % and 32 % — slate-800 is 23 %,
-   * sand-600 is 32 %, the ink itself is 31 %. One colour at twice the chroma of
-   * the whole identity does not read as *emphasis*, it reads as **imported**:
-   * a consumer product's accent pasted onto an authority's system, which is
-   * exactly the wrong thing to say about the part of MIIS a buyer is most
-   * cautious about.
+   * **Two failed attempts, and what they taught.** It was Material's Deep
+   * Purple 700 (#5E35B1, h260 s54 **l45**), which read as heavy and muddy. The
+   * correction desaturated it into MI's own chroma band (#60508F, h255 **s28**
+   * l44) on the reasoning that one colour at twice the chroma of the identity
+   * looks imported — and that produced a grey mauve, which reads as *sad*.
    *
-   * These are the same violets brought into MI's own chroma band — 28 % on the
-   * spine, 36 % on the solid, hue held at 255 so the separation from slate
-   * (h201) and sand (h36) is as wide as it ever was. Nothing about the meaning
-   * changes: violet is still the one deliberate step outside the palette, and
-   * it still cannot be mistaken for Märket or a sekretessmarkering. It now
-   * looks like a marking a government system would make.
+   * Both failures were the same failure: **lightness**, not saturation. Both
+   * sat at L44–45. Every violet other systems actually use for AI is lighter
+   * and clearly chromatic — GitHub Copilot #6E40C9 is l52 s56, Atlassian's
+   * discovery token #8270DB is l65 s60, Tailwind violet-600 #7C3AED is l58
+   * s83. A dark, greyed purple is not restraint; it is a colour with the life
+   * taken out of it.
    *
-   * Contrast, measured: 10.85:1 text on the tint, 6.51:1 spine against paper,
-   * 10.21:1 white on the solid marker — every one of them better than the
-   * threshold and most of them better than before.
+   * So: **l52 and s58**, at hue 266. The hue is deliberate too. The de-facto
+   * "AI" colours cluster at h260-262 (Tailwind violet, Copilot) and h234
+   * (Linear's #5E6AD2, which is really indigo - close enough to a link blue to
+   * be a hazard beside MI's own focus colour #1D5F7A, h197). A few degrees red
+   * of that cluster gives a royal violet rather than a tech indigo:
+   * unmistakably purple at a glance, warmer against MI's sand (h36), and not
+   * the exact shade every AI product shipped in 2025.
+   *
+   * One part of the chroma argument survives and is worth keeping: violet is
+   * **the one deliberate step outside the MI palette**, so it is the one colour
+   * allowed to break the identity's chroma discipline. That is what it is for.
+   *
+   * Contrast, measured: 9.81:1 text on the tint, 5.78:1 spine against paper,
+   * 9.03:1 white on the solid marker.
    */
-  --mi-ai-100: #EEEBF4;
-  --mi-ai-500: #60508F;
-  --mi-ai-700: #453775;
-  --mi-ai-800: #362A5C;
+  --mi-ai-100: #F3EAFB;
+  --mi-ai-500: #7B3FCC;
+  --mi-ai-700: #5F2AA0;
+  --mi-ai-800: #4A2280;
 
   --radius: 8px;
   --background: var(--mi-paper);
@@ -230,28 +238,21 @@
   --ai-solid: var(--mi-ai-700);
   --ai-solid-foreground: #ffffff;
   /*
-    The AI gradient: violet where the mark is, MI's own slate where it ends.
+    The AI gradient - two steps of the same hue, deep to lively.
 
-    A gradient has no single contrast ratio, so text over it has to clear 4.5:1
-    against its *lightest* stop or the figure is a guess.
+    It briefly ended in --mi-slate-800, on the theory that resolving the band
+    into MI's own colour said "machine-generated material inside MI's system".
+    On screen it said something else: the far end went grey-teal and the band
+    read as a smudge, which was half of why the compartment looked drab. A band
+    is 44px tall - there is no room in it for an argument, only for a colour.
 
-    A band that is violet from edge to edge says "this belongs to something
-    else". Resolving it into the identity colour says what is actually true:
-    machine-generated material, inside Medlingsinstitutet's system. The `AI`
-    letter-mark and the 6px spine sit at the violet end, so the signal is at
-    full strength exactly where it is read.
-
-    Every stop is dark, which is the constraint a gradient has to meet before
-    text may sit on it — white clears 4.5:1 against the lightest of the three
-    (6.90:1 on --mi-ai-500, 6.97:1 on slate-800), so there is no point along
-    the band where the label falls below AA.
+    The mark and the 6px spine sit at the deep end, so the signal is strongest
+    exactly where it is read. Both stops are dark, which is the constraint a
+    gradient has to meet before text may sit on it: a gradient has no single
+    contrast ratio, so white has to clear 4.5:1 against the *lightest* stop -
+    6.13:1 on --mi-ai-500 - or the figure is a guess.
   */
-  --ai-gradient: linear-gradient(
-    100deg,
-    var(--mi-ai-700) 0%,
-    var(--mi-ai-500) 55%,
-    var(--mi-slate-800) 100%
-  );
+  --ai-gradient: linear-gradient(100deg, var(--mi-ai-700) 0%, var(--mi-ai-500) 100%);
   /*
     The ring on a traced field. A non-text indicator needs 3:1 against what it
     sits on (WCAG 1.4.11); --mi-ai-500 on the panel's paper measures 4.78:1, so
@@ -359,9 +360,9 @@
   --req-foreground: #17252C;
   --req-border: var(--mi-sand-600);
   /* The same chroma correction as the light ramp — see the note above it. */
-  --ai: #2B2740;
-  --ai-foreground: #D2C9E4;
-  --ai-border: #8878B8;
+  --ai: #2E2447;
+  --ai-foreground: #DACCF5;
+  --ai-border: #9B78E0;
   --demo: #2A3A42;
   --demo-foreground: #F7F5F0;
   --demo-border: #6C818A;

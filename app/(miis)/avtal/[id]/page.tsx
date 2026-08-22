@@ -4,12 +4,15 @@ import { notFound } from "next/navigation";
 
 import {
   AgreementBasicFactsPanel,
-  AgreementScopePanel,
   LimitedSectionPanel,
   ReportSelectionPanel,
   SpecialQuestionsPanel,
 } from "@/components/miis/AgreementRecord";
-import { AgreementAdmin } from "@/components/miis/AgreementAdmin";
+import {
+  AgreementIdentity,
+  AgreementPublication,
+  AgreementScope,
+} from "@/components/miis/AgreementAdmin";
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
@@ -204,36 +207,16 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
       */}
       <div className="print-stack grid grid-cols-1 gap-5 @3xl:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-5">
-          <Panel title={t.identity} tags={["FA-001", "FA-005"]}>
-            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2">
-              <Field label={t.area} value={agreement.agreementArea} />
-              <Field label={t.type} value={agreement.agreementType} />
-              <Field label={t.employerOrg} value={agreement.employerOrg.name} />
-              <Field label={t.employeeOrg} value={agreement.employeeOrg.name} />
-              <Field
-                label={t.alternativeName}
-                value={agreement.alternativeName ?? i18n.common.none}
-              />
-              <Field label={t.signedDate} value={agreement.signedDate ?? i18n.common.none} />
-            </div>
-          </Panel>
-
           {/*
-            Bilaga 2 §3.5, Scenario 2: add or update information, and publish.
-
-            `print-hide` in full, and for the same reason the report picker and
-            the query builder are: the top half of this panel is a *control*.
-            It printed a form with the agreement's name in it beside the record
-            that already states the agreement's name, plus two buttons — so the
-            printed document carried its own subject twice and invited the
-            reader to press something. What was registered is above; this is
-            how it gets changed.
+            Bilaga 2 §3.5, Scenario 2 — *"lägger till eller uppdaterar
+            information kopplad till avtalet"* — happens **in** the record now,
+            not in a panel underneath it. There is no longer a second copy of
+            the agreement's name on this page, and what can be corrected is no
+            longer whatever one panel happened to hold. See `EditablePanel`.
           */}
-          <div className="print-hide">
-            <AgreementAdmin agreement={agreement} lang={lang} />
-          </div>
+          <AgreementIdentity agreement={agreement} lang={lang} />
 
-          <AgreementScopePanel agreement={agreement} lang={lang} />
+          <AgreementScope agreement={agreement} lang={lang} />
 
           <Panel title={t.wageAgreements} tags={["FA-002", "FA-007", "FA-008", "FA-009"]}>
             <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
@@ -336,6 +319,14 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
               )}
             </div>
           </Panel>
+
+          {/*
+            Publication sits beside the status it changes, not inside a panel
+            about correcting typos. *Is this out yet?* is a question a reader
+            asks while looking at FR-012's status and the validity period, so
+            the answer and the act belong in the same column.
+          */}
+          <AgreementPublication agreement={agreement} lang={lang} />
 
           {latest && (
             <Panel title={t.flags} tags={["FA-011", "FA-012"]} tone="sand">
