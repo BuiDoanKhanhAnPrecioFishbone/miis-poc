@@ -731,6 +731,10 @@ export const en: Dictionary = {
     },
     columns: {
       title: "Presentation columns",
+      intro: "Untick a column to leave it out of the result and the printout.",
+      identityLocked: "Carries the record's name and the link that opens it",
+      nothingToSave: "No selection to save — add at least one condition.",
+      ownSearch: "Own selection",
       saveSearch: "Save search",
       savedSearchName: "Annual report 2026",
       savedSearchBlocked:

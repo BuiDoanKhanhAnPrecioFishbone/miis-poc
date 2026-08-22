@@ -732,6 +732,10 @@ export const sv = {
     },
     columns: {
       title: "Presentationskolumner",
+      intro: "Bocka ur en kolumn för att utelämna den ur resultatet och utskriften.",
+      identityLocked: "Bär postens namn och länken som öppnar den",
+      nothingToSave: "Inget urval att spara – lägg till minst ett villkor.",
+      ownSearch: "Eget urval",
       saveSearch: "Spara sökning",
       savedSearchName: "Årsrapport 2026",
       savedSearchBlocked:

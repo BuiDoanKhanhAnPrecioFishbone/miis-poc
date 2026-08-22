@@ -1,6 +1,6 @@
 "use client";
 
-import { IconClose } from "./icons";
+import { IconClose, IconPlus } from "./icons";
 import { useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
@@ -132,6 +132,14 @@ export interface SearchPopulation {
   /** Named apart from the presentation-column state below, which is a different
       list entirely: these are the table's columns, those are the officer's pick. */
   columns: Column[];
+  /**
+   * The column carrying the record's name and the link that opens it.
+   *
+   * Not always the first: an agreement's register leads with FR-012's status,
+   * because an officer triages by how the agreement came about. Locking column
+   * zero would have locked Status and offered to remove the agreement name.
+   */
+  identityColumn: string;
 }
 
 export function SearchBuilder({
@@ -162,7 +170,19 @@ export function SearchBuilder({
   const [infoType, setInfoType] = useState<InfoTypeId>("agreements");
   const [groups, setGroups] = useState<Group[]>(SEED);
   const [nextId, setNextId] = useState(100);
-  const [columns, setColumns] = useState<boolean[]>(() => t.columns.items.map((_, i) => i < 4));
+  /*
+    FR-002's *presentationskolumner* — which columns the result prints.
+
+    Was a fixed list of six labels in the dictionary, ticked into a boolean
+    array nothing read: six checkboxes, one column set, no effect. The same dead
+    control as the information-type tabs, on the same screen, one panel down.
+
+    Now it is keyed off the population's own columns, because there are four
+    registers and they share no column either. `undefined` means "not chosen
+    yet", which is every column — a picker that started with two of six ticked
+    would be hiding data nobody asked it to hide.
+  */
+  const [hidden, setHidden] = useState<Record<string, string[]>>({});
   const [docTypes, setDocTypes] = useState<string[]>(() =>
     DOCUMENT_TYPE_CHOICES.slice(0, 3).map((x) => x.id),
   );
@@ -182,6 +202,7 @@ export function SearchBuilder({
   /* The register being searched, and the criteria it can answer. */
   const population = populations[infoType];
   const fields = fieldsForInfoType(infoType);
+  const infoTypeLabel = INFO_TYPES.find((x) => x.id === infoType)?.label[lang] ?? "";
 
   /*
     FH-003's bokslut applies to a population that has periods. An agreement is
@@ -202,6 +223,34 @@ export function SearchBuilder({
   const resultRows = matched
     .map((r) => population.rowFor[r.id])
     .filter((x): x is Row => Boolean(x));
+
+  /*
+    The columns the officer left on, and the cells that go with them.
+
+    The first column is never removable and says so: it carries the record's
+    name and the link that opens it, so a result without it is a table of
+    attributes belonging to nothing.
+  */
+  const hiddenHere = hidden[infoType] ?? [];
+  const isIdentity = (key: string) => key === population.identityColumn;
+  const isHidden = (key: string) => !isIdentity(key) && hiddenHere.includes(key);
+  const keep = (i: number) => !isHidden(population.columns[i]?.key ?? "");
+  const shownColumns = population.columns.filter((c) => !isHidden(c.key));
+  const shownRows: Row[] = resultRows.map((row) => ({
+    ...row,
+    cells: row.cells.filter((_, i) => keep(i)),
+    ...(row.sort ? { sort: row.sort.filter((_, i) => keep(i)) } : {}),
+  }));
+
+  function toggleColumn(key: string) {
+    setHidden((prev) => {
+      const here = prev[infoType] ?? [];
+      return {
+        ...prev,
+        [infoType]: here.includes(key) ? here.filter((k) => k !== key) : [...here, key],
+      };
+    });
+  }
 
   function newCondition(id: string, from: SearchFieldDef[] = fields): Condition {
     const field = from[0]!;
@@ -227,6 +276,28 @@ export function SearchBuilder({
     it holds today, which is the whole reason an officer keeps one.
   */
   const [loaded, setLoaded] = useState<string | undefined>(undefined);
+  /* Saved this session. Kept apart from `SAVED_SEARCHES` so the catalogue that
+     ships with the system and what this officer just composed are visibly two
+     things — the new one is marked. */
+  const [mine, setMine] = useState<SavedSearch[]>([]);
+
+  function saveCurrent() {
+    const n = mine.length + 1;
+    setMine((list) => [
+      ...list,
+      {
+        id: `egen-${n}`,
+        name: { sv: `${t.columns.ownSearch} ${n}`, en: `${t.columns.ownSearch} ${n}` },
+        purpose: {
+          sv: `${infoTypeLabel} · ${expression}`,
+          en: `${infoTypeLabel} · ${expression}`,
+        },
+        infoType,
+        groups: groups.map((g) => ({ ...g, conditions: g.conditions.map((c) => ({ ...c })) })),
+      },
+    ]);
+    setLoaded(`egen-${n}`);
+  }
 
   function loadSaved(search: SavedSearch) {
     setInfoType(search.infoType);
@@ -543,17 +614,29 @@ export function SearchBuilder({
         </Panel>
 
         <Panel title={t.columns.title} tags={["FR-002"]}>
+          <p className="field-hint mb-3">{t.columns.intro}</p>
           <ul className="space-y-2">
-            {t.columns.items.map((item, i) => (
-              <li key={item}>
+            {population.columns.map((col, i) => (
+              <li key={col.key}>
                 <label className="flex min-h-11 items-center gap-3 text-table">
                   <input
                     type="checkbox"
-                    checked={columns[i] ?? false}
-                    onChange={() => setColumns((cs) => cs.map((on, j) => (j === i ? !on : on)))}
-                    className="size-5 accent-[var(--primary)]"
+                    checked={!isHidden(col.key)}
+                    disabled={isIdentity(col.key)}
+                    onChange={() => toggleColumn(col.key)}
+                    className="size-5 accent-[var(--primary)] disabled:opacity-50"
                   />
-                  {item}
+                  <span>
+                    {col.header}
+                    {/* The reason on the row, the way a locked field carries
+                        its own: a greyed box with no explanation reads as
+                        something the system forgot to finish. */}
+                    {isIdentity(col.key) && (
+                      <span className="block text-label text-muted-foreground">
+                        {t.columns.identityLocked}
+                      </span>
+                    )}
+                  </span>
                 </label>
               </li>
             ))}
@@ -566,21 +649,27 @@ export function SearchBuilder({
               effect is to confirm what is already on screen is the dead control
               this screen was built out of.
 
-              *Spara sökning* stays refused, and the reason is the real one
-              rather than "Ej aktiv i demon": a saved search belongs to a user,
-              and a user in MIIS is a link to an identity in Försäkringskassan's
-              IdP that this prototype has no store behind.
+              *Spara sökning* used to be `disabled` with a true reason — a saved
+              search belongs to a user, and a user is a link to an identity in
+              Försäkringskassan's IdP. But the screen now *loads* saved searches,
+              so a refused Save sat next to a working Load, and the story only
+              worked in one direction. It saves, for the session, the way every
+              other edit in this prototype does; where the record would live is a
+              Rationale rather than a dead control.
             */}
             <p className="text-label text-muted-foreground">{t.results.liveNote}</p>
             <Button
               variant="secondary"
               fullWidth
-              disabled
-              disabledReason={t.columns.savedSearchBlocked}
+              onClick={saveCurrent}
+              disabled={allConditions.length === 0}
+              disabledReason={t.columns.nothingToSave}
+              iconStart={<IconPlus />}
             >
-              {t.columns.saveSearch}: {t.columns.savedSearchName}
+              {t.columns.saveSearch}
             </Button>
             <Rationale>{t.columns.savedSearchNote}</Rationale>
+            <Rationale>{t.columns.savedSearchBlocked}</Rationale>
           </div>
         </Panel>
       </div>
@@ -619,7 +708,7 @@ export function SearchBuilder({
         <h2 className="text-label font-bold">{t.saved.title}</h2>
         <p className="field-hint mt-1">{t.saved.note}</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {SAVED_SEARCHES.map((s) => (
+          {[...SAVED_SEARCHES, ...mine].map((s) => (
             <Chip
               key={s.id}
               selected={loaded === s.id}
@@ -642,8 +731,8 @@ export function SearchBuilder({
           action={<PrintButton lang={lang} />}
         >
           <DataTable
-            columns={population.columns}
-            rows={resultRows}
+            columns={shownColumns}
+            rows={shownRows}
             lang={lang}
             caption={t.results.title(matched.length, seconds, hasPeriods ? asOf : undefined)}
             empty={t.results.empty}

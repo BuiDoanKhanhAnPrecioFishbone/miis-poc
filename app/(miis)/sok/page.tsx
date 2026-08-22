@@ -130,6 +130,10 @@ export default async function SokPage() {
             />
           )}
         </span>,
+        /* The Parter column had no cell at all: five headers, four cells, so
+           construction rendered under *Parter* and *Löneutr. %* came out empty.
+           Found by the column picker, which could not line the two up. */
+        row.parties,
         wage
           ? `${wage.construction}. ${AGREEMENT_CONSTRUCTIONS[lang][wage.construction]}`
           : i18n.common.none,
@@ -227,10 +231,13 @@ export default async function SokPage() {
     Object.fromEntries(list.map((r) => [r.key, r]));
 
   const populations: Record<InfoTypeId, SearchPopulation> = {
-    agreements: { rows: searchable, rowFor, columns },
+    /* The agreement register leads with FR-012's status, so the identity
+        column is the name rather than the first one. */
+    agreements: { rows: searchable, rowFor, columns, identityColumn: "agreement" },
     mediation: {
       rows: mediationRows,
       rowFor: byKey(mediationTable),
+      identityColumn: "case",
       columns: [
         { key: "case", header: t.results.mediationCase, sortable: true },
         { key: "type", header: t.results.mediationType, sortable: true },
@@ -241,6 +248,7 @@ export default async function SokPage() {
     negotiations: {
       rows: negotiationRows,
       rowFor: byKey(negotiationTable),
+      identityColumn: "negotiation",
       columns: [
         { key: "negotiation", header: t.results.negotiation, sortable: true },
         { key: "type", header: t.results.negotiationType, sortable: true },
@@ -251,6 +259,7 @@ export default async function SokPage() {
     parties: {
       rows: partyRows,
       rowFor: byKey(partyTable),
+      identityColumn: "party",
       columns: [
         { key: "party", header: t.results.party, sortable: true },
         { key: "type", header: t.results.partyType, sortable: true },
