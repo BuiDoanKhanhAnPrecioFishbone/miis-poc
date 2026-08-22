@@ -660,6 +660,38 @@ select.demo-select {
  * printed report is for MI's own reader, not for an evaluator tracing IDs.
  */
 @media print {
+  /*
+    A report prints as the report, not as the screen it was taken from.
+
+    When a `.print-document` is on the page — a generated report result — it is
+    the only thing that goes on the paper. Everything else is the application
+    around it: the catalogue, the selection screen, the other tabs, the page
+    heading, the shell's own letterhead.
+
+    `visibility` rather than `display`, because visibility is inherited *and*
+    can be turned back on by a descendant: hiding an ancestor with `display`
+    would take the document with it, which is why the obvious version of this
+    rule does not work. The document is then lifted to the top of the sheet, so
+    it does not print after a page of blank space where the hidden furniture was.
+
+    The document carries its own letterhead — the mark and the utskriftsdatum
+    Bilaga 3 §7 names — so the shell's is suppressed rather than duplicated.
+  */
+  body:has(.print-document) * {
+    visibility: hidden;
+  }
+
+  body:has(.print-document) .print-document,
+  body:has(.print-document) .print-document * {
+    visibility: visible;
+  }
+
+  body:has(.print-document) .print-document {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+  }
+
   /* The letterhead exists only on paper. */
   .print-only {
     display: block !important;

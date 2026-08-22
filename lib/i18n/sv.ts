@@ -37,6 +37,7 @@ export const sv = {
     save: "Spara",
     cancel: "Avbryt",
     required: "Obligatoriskt",
+    action: "Åtgärd",
     requiredLegend: "Fält märkta Obligatoriskt måste fyllas i.",
     add: "Lägg till",
     choose: "Välj",
@@ -927,6 +928,44 @@ export const sv = {
   },
 
   rapporter: {
+    document: {
+      withheld: {
+        sv: "Avtalet är sekretessmarkerat. Uppgifterna lämnas inte ut i den här rapporten.",
+        en: "The agreement is confidentiality-marked. Its details are not released in this report.",
+      },
+      identity: { sv: "Avtalet", en: "The agreement" },
+      rounds: { sv: "Avtalsrörelser", en: "Bargaining rounds" },
+      noRounds: { sv: "Inget löneavtal registrerat", en: "No wage agreement registered" },
+      lifecycle: { sv: "Uppsägning och prolongering", en: "Termination and prolongation" },
+      scope: { sv: "Avtalets omfattning", en: "Scope of the agreement" },
+      agreement: { sv: "Avtal", en: "Agreement" },
+      employerOrg: { sv: "Arbetsgivarorganisation", en: "Employer organisation" },
+      employeeOrg: { sv: "Arbetstagarorganisation", en: "Employee organisation" },
+      agreementType: { sv: "Avtalstyp", en: "Agreement type" },
+      sector: { sv: "Sektor", en: "Sector" },
+      industryCode: { sv: "Branschkod", en: "Industry code" },
+      signedDate: { sv: "Avtalet tecknades", en: "Agreement signed" },
+      validity: { sv: "Löptid", en: "Validity" },
+      year: { sv: "Årtal", en: "Year" },
+      construction: { sv: "Avtalskonstruktion", en: "Agreement construction" },
+      wageScope: { sv: "Löneutrymme (%)", en: "Wage scope (%)" },
+      costFrame: { sv: "Kostnadsram (%)", en: "Cost frame (%)" },
+      period: { sv: "Period", en: "Period" },
+      expiresWithoutRenewal: { sv: "Upphör utan uppsägning", en: "Expires without notice" },
+      earlyTermination: { sv: "Uppsagt i förtid", en: "Terminated early" },
+      terminated: { sv: "Avtalet upphört", en: "Agreement ended" },
+      employees: { sv: "Anställda", en: "Employees" },
+      emptyPopulation: "Inget avtal ingår i det här uttaget.",
+    },
+    population: {
+      pension: "Pensionsavtal och övriga avtal",
+      pensionNote:
+        "Avtal med registrerad avtalstyp. Urvalskriterierna ovan avgränsar underlaget.",
+      website: "Publiceringsunderlag för mi.se",
+      eurofound: "Eurofound och minimilönerapportering",
+      selectionNote:
+        "Urvalet styrs av avtalets eget rapporturval, inte av partskriterierna – Medlingsinstitutet avgör per avtal vad som går ut var.",
+    },
     title: "Rapporter",
     subtitle: "Rapportuttag, bevakningslistor och schemalagda utskick",
     tabs: {
@@ -979,6 +1018,9 @@ export const sv = {
       export: "Skriv ut rapporten",
       exportFormats: "Word · Excel · PDF",
       markExported: "Markera som exporterat",
+      markExportedNothing: "Inget avtal är valt för uttaget.",
+      markExportedDone: (n: number, date: string) =>
+        `${n} avtal är markerade som exporterade ${date}.`,
       markExportedNote:
         "Uttaget noteras per avtal, så nästa uttag visar vad som redan levererats till rapporten.",
     },
@@ -1114,6 +1156,22 @@ export const sv = {
     },
     scheduled: {
       heading: "Schemalagda uttag",
+      addHeading: "Nytt schemalagt uttag",
+      paused: "Pausat",
+      pause: "Pausa",
+      resume: "Återuppta",
+      addedNote: (report: string) => `${report} skickas nu enligt schemat.`,
+      pausedNote: (report: string) => `${report} är pausat och skickas inte förrän det återupptas.`,
+      resumedNote: (report: string) => `${report} skickas igen enligt schemat.`,
+      pauseNote:
+        "Ett uttag pausas, det tas inte bort. Ett uttag som har körts har skickat e-post, och de utskicken finns i händelseloggen – samma skäl som gör att en användare inaktiveras i stället för att raderas.",
+      form: {
+        report: "Rapport",
+        schedule: "Schema",
+        scheduleHint: "T.ex. Kvartalsvis, första vardagen",
+        recipients: "Mottagare",
+        incomplete: "Schema och mottagare måste fyllas i.",
+      },
       intro:
         "Återkommande rapportuttag skickas som e-post med rapporten bifogad och en länk in i MIIS. Varje utskick loggas i händelseloggen.",
       table: {
@@ -1124,7 +1182,6 @@ export const sv = {
         status: "Status",
       },
       active: "Aktivt",
-      paused: "Pausat",
       add: "Nytt schemalagt uttag",
       logNote: "Skickad e-post loggas i händelseloggen med tidpunkt, mottagare och bilaga.",
       items: [

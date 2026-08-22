@@ -392,30 +392,40 @@ describe("mediatorRelease — Bilaga 3 §7.4", () => {
 });
 
 /*
-  A report whose criteria pick one agreement has to be able to open that
-  agreement.
+  Every report produces a report.
 
-  Bilaga F's Rapport 1, 4 and 6 each print *one* agreement — their own
-  `produces` says so — and their selection screen exists to say which. Before
-  `detailBase` the button opened the register regardless, so choosing an
-  agreement and pressing the control landed the officer on a list of seventeen
-  with the choice discarded. That is the fault this locks: a screen result whose
-  criteria include the agreement must name the route a single one lives on.
+  Bilaga 3 §7 opens by requiring it: *"For varje rapport visas urvalsbild och
+  resultat."* Six of the ten had the first and not the second — four resolved to
+  a link to another screen and two to the words *Steg 2*, so pressing *Generera
+  rapport* on more than half the catalogue produced no report at all. That is
+  the same defect as a `<Button>` with no `onClick`, wearing MI's own report
+  name, and this is the assertion that keeps it from coming back.
 */
-describe("a screen result that selects one agreement can open it", () => {
-  const screenReports = REPORTS.filter((r) => r.result.kind === "screen");
-
-  it("has at least one such report", () => {
-    expect(screenReports.length).toBeGreaterThan(0);
+describe("every report has a result — Bilaga 3 §7", () => {
+  it.each(REPORTS.map((r) => [r.id, r] as const))("%s produces something inline", (_id, report) => {
+    expect(report.result.kind).toBe("inline");
+    expect(report.result.component).toBeTruthy();
   });
 
-  it.each(screenReports.map((r) => [r.id, r] as const))(
-    "%s names a detail route where it offers an agreement criterion",
-    (_id, report) => {
-      const picksAnAgreement = report.criteria.some((c) => c.kind === "agreement");
-      if (!picksAnAgreement) return;
-      const result = report.result as { kind: "screen"; href: string; detailBase?: string };
-      expect(result.detailBase).toBeTruthy();
-    },
-  );
+  /* And each result component is distinct enough to be routed to: two reports
+     sharing a component would print the same thing under two names. */
+  it("gives the single-agreement reports their own audience", () => {
+    const byId = (id: string) => REPORTS.find((r) => r.id === id)!;
+    expect(byId("huvudrapport").result.component).toBe("agreement-main");
+    expect(byId("allmanheten").result.component).toBe("agreement-public");
+  });
+
+  /*
+    A report that prints one agreement has to offer the criterion that picks it.
+    Otherwise the document has no way of knowing which record it is about, which
+    is the same dead urvalsbild in a different disguise.
+  */
+  it.each(
+    REPORTS.filter(
+      (r) =>
+        r.result.component === "agreement-main" || r.result.component === "agreement-public",
+    ).map((r) => [r.id, r] as const),
+  )("%s offers the agreement criterion it needs", (_id, report) => {
+    expect(report.criteria.some((c) => c.kind === "agreement")).toBe(true);
+  });
 });

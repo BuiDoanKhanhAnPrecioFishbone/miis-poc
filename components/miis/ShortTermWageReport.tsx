@@ -14,6 +14,7 @@ import {
 } from "@/lib/domain/reminder";
 import type { ExtractStatus, MonitoredAgreementRow } from "@/lib/domain/report";
 import { dictionary } from "@/lib/i18n";
+import { PrintButton } from "./Print";
 import { DataTable, type Column, type Row } from "./DataTable";
 import {
   Badge,
@@ -57,6 +58,9 @@ const STATUS_TONE: Record<ExtractStatus, "ok" | "attention" | "neutral"> = {
   partial: "attention",
   "not-registered": "neutral",
 };
+
+/* Fixed, so a screenshot taken twice is the same image. */
+const EXTRACT_TAKEN_DATE = "2027-06-14";
 
 export function ShortTermWageReport({
   rows,
@@ -120,6 +124,24 @@ export function ShortTermWageReport({
   const [selected, setSelected] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(rows.map((r) => [r.id, r.status !== "not-registered"])),
   );
+
+  /*
+    FR-008's third requirement: *"vilka avtal som redan exporterats"*.
+
+    The register knows which agreements went out before; this records the
+    extract the officer is taking now. It was a `disabled` button reading
+    "kräver server", which made the one act the report exists to perform the
+    only thing on the screen that could not be done — and the requirement's own
+    sentence is about keeping the record, not about the file transfer.
+  */
+  const [exportedNow, setExportedNow] = useState<Record<string, string>>({});
+  const exportedDate = (r: MonitoredAgreementRow) => exportedNow[r.id] ?? r.lastExported;
+
+  function markExported() {
+    const stamp = Object.fromEntries(selectedRows.map((r) => [r.id, EXTRACT_TAKEN_DATE]));
+    setExportedNow((prev) => ({ ...prev, ...stamp }));
+    setNote(t.markExportedDone(selectedRows.length, EXTRACT_TAKEN_DATE));
+  }
 
   const selectedRows = rows.filter((r) => selected[r.id]);
   const partialInExtract = selectedRows.filter((r) => r.status === "partial").length;
@@ -190,7 +212,10 @@ export function ShortTermWageReport({
         </span>
       ),
       <span key="e" className="tabular-nums">
-        {r.lastExported ? t.exportedYes(r.lastExported) : t.exportedNo}
+        {(() => {
+          const on = exportedDate(r);
+          return on ? t.exportedYes(on) : t.exportedNo;
+        })()}
       </span>,
       /*
         The date is the record and the controls are beside it. A reminder that
@@ -325,16 +350,23 @@ export function ShortTermWageReport({
         paper is not one of.
       */}
       <div className="print-hide mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-        <Button
-        disabled
-        disabledReason={d.common.exportNeedsServer}
-      >{t.export}</Button>
+        {/*
+          The label says *Skriv ut* and the control was refused for needing a
+          server. Printing is the one export that does not: the browser owns it,
+          and every browser saves a print as PDF. The formats that do need one
+          are named beside it, which is where that fact belongs.
+        */}
+        <PrintButton lang={lang} />
         <span className="text-label text-muted-foreground">{t.exportFormats}</span>
         <ReqTag id="FR-005" />
-        <Button variant="secondary"
-        disabled
-        disabledReason={d.common.exportNeedsServer}
-      >{t.markExported}</Button>
+        <Button
+          variant="secondary"
+          onClick={markExported}
+          disabled={selectedRows.length === 0}
+          disabledReason={t.markExportedNothing}
+        >
+          {t.markExported}
+        </Button>
       </div>
       <Rationale>{t.markExportedNote}</Rationale>
     </Panel>

@@ -5,11 +5,17 @@ import { ConstructionsReport } from "@/components/miis/ConstructionsReport";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { PrintButton } from "@/components/miis/Print";
 import { ReportRunner, type CriterionOptions } from "@/components/miis/ReportRunner";
+import { ScheduledExtracts, type ScheduledExtract } from "@/components/miis/ScheduledExtracts";
 import { SectionTabs } from "@/components/miis/SectionTabs";
 import { Badge, Button, PageHeading, Panel, Rationale, ReqTag } from "@/components/miis/primitives";
+import {
+  PopulationReport,
+  reportDocumentLabels,
+} from "@/components/miis/ReportDocumentView";
 import { ShortTermWageReport } from "@/components/miis/ShortTermWageReport";
 import { getConstructionsReport } from "@/lib/data/constructions";
 import { listAgreements } from "@/lib/data/agreements";
+import { listWageAgreements } from "@/lib/data/reports";
 import { listDocuments } from "@/lib/data/documents";
 import { listSetReminders } from "@/lib/data/events";
 import { listCooperationBodies, listParties } from "@/lib/data/parties";
@@ -19,8 +25,17 @@ import {
   listBargainingYears,
   listMonitoredAgreements,
 } from "@/lib/data/reports";
-import { SECTOR_LABEL, validityLabel } from "@/lib/domain/agreement";
-import type { ReleaseDocument, ReportAgreement } from "@/lib/domain/report";
+import {
+  AGREEMENT_CONSTRUCTIONS,
+  SECTOR_LABEL,
+  validityLabel,
+  type WageAgreement,
+} from "@/lib/domain/agreement";
+import {
+  agreementDocument,
+  type ReleaseDocument,
+  type ReportAgreement,
+} from "@/lib/domain/report";
 import type { Role } from "@/lib/domain/role";
 import { getSession } from "@/lib/session";
 
@@ -63,6 +78,7 @@ export default async function RapporterPage() {
     parties,
     bodies,
     documents,
+    wageAgreements,
     setReminders,
   ] = await Promise.all([
     listMonitoredAgreements(lang),
@@ -72,6 +88,7 @@ export default async function RapporterPage() {
     listParties(),
     listCooperationBodies(),
     listDocuments(),
+    listWageAgreements(),
     /* FA-022's markings for this session, read on the server so the row knows
        which agreements already carry one. */
     listSetReminders(),
@@ -141,6 +158,15 @@ export default async function RapporterPage() {
       ...(a.signedDate ? { signedDate: a.signedDate } : {}),
       ...(a.terminated?.value ? { terminated: true } : {}),
       ...(a.mediationLinked ? { mediationLinked: true } : {}),
+      /* FR-009 and FR-010 select on this rather than on the party criteria:
+         MI decides per agreement what goes out where, and a report that
+         re-derived the population from sector and branschkod would disagree
+         with the officer who ticked the box. */
+      reportSelection: {
+        website: a.reportSelection.website,
+        eurofound: a.reportSelection.eurofound,
+        minimumWage: a.reportSelection.minimumWage,
+      },
       employerOrg: a.employerOrg.name,
       employeeOrg: a.employeeOrg.name,
       ...(employer?.sector ? { sector: SECTOR_LABEL[lang][employer.sector] } : {}),
@@ -170,35 +196,65 @@ export default async function RapporterPage() {
     ...(d.agreementId ? { agreementId: d.agreementId } : {}),
   }));
 
-  const scheduleColumns: Column[] = [
-    { key: "report", header: t.scheduled.table.report, sortable: true },
-    { key: "schedule", header: t.scheduled.table.schedule },
-    { key: "recipients", header: t.scheduled.table.recipients, sortable: true },
-    { key: "lastRun", header: t.scheduled.table.lastRun, sortable: true },
-    { key: "status", header: t.scheduled.table.status, sortable: true },
-  ];
-
-  const scheduleRows: Row[] = t.scheduled.items.map((item) => ({
-    key: item.report,
-    cells: [
-      item.report,
-      item.schedule,
-      item.recipients,
-      <span key="l" className="tabular-nums">
-        {item.lastRun}
-      </span>,
-      <Badge key="s" tone={item.active ? "ok" : "neutral"}>
-        {item.active ? t.scheduled.active : t.scheduled.paused}
-      </Badge>,
-    ],
-    sort: [
-      item.report,
-      item.schedule,
-      item.recipients,
-      item.lastRun,
-      item.active ? t.scheduled.active : t.scheduled.paused,
-    ],
+  /*
+    The schedule's own records. They come from the dictionary rather than the
+    mock register because a scheduled extract is a *setting*, not a record the
+    authority is accountable for — nothing counts it, and FE-003 is about the
+    schedule rather than about what it sent.
+  */
+  const scheduleItems: ScheduledExtract[] = t.scheduled.items.map((item, i) => ({
+    id: `SCH-${i + 1}`,
+    report: item.report,
+    schedule: item.schedule,
+    recipients: item.recipients,
+    lastRun: item.lastRun,
+    active: item.active,
   }));
+
+
+  /*
+    Every report's result, built here.
+
+    Six of the ten used to resolve to a link or to the words *Steg 2*, so half
+    the catalogue had a urvalsbild and no resultat — which is the opposite of
+    what Bilaga 3 §7 opens by requiring. The documents are built on the server
+    because that is where the confidentiality rule has to run: what an audience
+    may not read is **absent** from the structure handed down, not hidden in it.
+  */
+  const docLabels = reportDocumentLabels(i18n);
+  const roundsByAgreement = new Map<string, WageAgreement[]>();
+  for (const w of wageAgreements) {
+    const list = roundsByAgreement.get(w.agreementId) ?? [];
+    list.push(w);
+    roundsByAgreement.set(w.agreementId, list);
+  }
+
+  const agreementDocuments = Object.fromEntries(
+    reportAgreements.map((a) => {
+      const rounds = (roundsByAgreement.get(a.id) ?? []).map((w) => ({
+        /* A wage agreement has no year of its own — FA-002 dates it by the
+           period it runs, and the round is the year it starts. */
+        year: Number(w.validFrom.slice(0, 4)),
+        ...(w.construction !== undefined ? { construction: w.construction } : {}),
+        constructionLabel:
+          w.construction === undefined
+            ? undefined
+            : `${w.construction}. ${AGREEMENT_CONSTRUCTIONS[lang][w.construction]}`,
+        ...(w.wageScopePercent !== undefined ? { wageScopePercent: w.wageScopePercent } : {}),
+        ...(w.costFramePercent !== undefined ? { costFramePercent: w.costFramePercent } : {}),
+        ...(w.validFrom ? { validFrom: w.validFrom } : {}),
+        ...(w.validTo ? { validTo: w.validTo } : {}),
+      }));
+      return [
+        a.name,
+        {
+          internal: agreementDocument(a, rounds, "internal", docLabels),
+          public: agreementDocument(a, rounds, "public", docLabels),
+        },
+      ];
+    }),
+  );
+
 
   return (
     <AppShell
@@ -252,9 +308,52 @@ export default async function RapporterPage() {
                 documents={releaseDocuments}
                 role={session.role.id}
                 isExternal={isExternal}
+                agreementDocuments={agreementDocuments}
                 results={{
                   constructions: (
                     <ConstructionsReport report={constructionsReport} lang={lang} d={i18n} />
+                  ),
+                  /*
+                    §7.5 and FR-009/FR-010 are populations, so their result is a
+                    table of the agreements the selection leaves. They were a
+                    link and two *Steg 2* notices.
+                  */
+                  pension: (
+                    <PopulationReport
+                      lang={lang}
+                      heading={t.population.pension}
+                      note={t.population.pensionNote}
+                      rows={reportAgreements.filter((a) => a.agreementType !== undefined)}
+                    />
+                  ),
+                  "report-selection-website": (
+                    <PopulationReport
+                      lang={lang}
+                      heading={t.population.website}
+                      note={t.population.selectionNote}
+                      rows={reportAgreements.filter((a) => a.reportSelection?.website)}
+                    />
+                  ),
+                  "report-selection-eurofound": (
+                    <PopulationReport
+                      lang={lang}
+                      heading={t.population.eurofound}
+                      note={t.population.selectionNote}
+                      rows={reportAgreements.filter(
+                        (a) => a.reportSelection?.eurofound || a.reportSelection?.minimumWage,
+                      )}
+                    />
+                  ),
+                  /* FR-008's own view: the watch list *is* the selection, which
+                     is why this report has no criteria of its own. */
+                  "short-term-wage": (
+                    <ShortTermWageReport
+                      lang={lang}
+                      rows={rows}
+                      reminders={setReminders}
+                      periodValue={`${EXTRACT_PERIOD_START} – ${EXTRACT_PERIOD_END}`}
+                      lastExportValue={`${LAST_EXPORT_DATE} · ${i18n.common.agreementCount(exportedCount)}`}
+                    />
                   ),
                 }}
               />
@@ -297,24 +396,16 @@ export default async function RapporterPage() {
                   id: "schemalagt",
                   label: t.tabs.scheduled,
                   node: (
-                    <Panel title={t.scheduled.heading} tags={["FR-014", "FE-001", "FE-002"]}>
-                      <p className="max-w-4xl text-table">{t.scheduled.intro}</p>
-                      <DataTable
-                        columns={scheduleColumns}
-                        rows={scheduleRows}
-                        lang={lang}
-                        caption={t.scheduled.heading}
-                        minWidth="48rem"
-                      />
-
-                      <div className="mt-4 flex flex-wrap items-center gap-3">
-                        <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
-                          {t.scheduled.add}
-                        </Button>
-                        <ReqTag id="FE-003" />
-                      </div>
-                      <Rationale>{t.scheduled.logNote}</Rationale>
-                    </Panel>
+                    /*
+                      FE-003 is *"schemalagda rapportuttag"*, and the schedule
+                      was a read-only table with a `disabled` *Nytt schemalagt
+                      uttag* beneath it reading "Ej aktiv i demon". A list an
+                      administrator can only read is not a schedule anybody
+                      keeps — and that phrase states a fact about the demo,
+                      which is never the answer to why a system refuses
+                      something.
+                    */
+                    <ScheduledExtracts lang={lang} initial={scheduleItems} />
                   ),
                 },
               ]),

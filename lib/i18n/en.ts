@@ -39,6 +39,7 @@ export const en: Dictionary = {
     save: "Save",
     cancel: "Cancel",
     required: "Required",
+    action: "Action",
     requiredLegend: "Fields marked Required must be filled in.",
     add: "Add",
     choose: "Choose",
@@ -926,6 +927,44 @@ export const en: Dictionary = {
   },
 
   rapporter: {
+    document: {
+      withheld: {
+        sv: "Avtalet är sekretessmarkerat. Uppgifterna lämnas inte ut i den här rapporten.",
+        en: "The agreement is confidentiality-marked. Its details are not released in this report.",
+      },
+      identity: { sv: "Avtalet", en: "The agreement" },
+      rounds: { sv: "Avtalsrörelser", en: "Bargaining rounds" },
+      noRounds: { sv: "Inget löneavtal registrerat", en: "No wage agreement registered" },
+      lifecycle: { sv: "Uppsägning och prolongering", en: "Termination and prolongation" },
+      scope: { sv: "Avtalets omfattning", en: "Scope of the agreement" },
+      agreement: { sv: "Avtal", en: "Agreement" },
+      employerOrg: { sv: "Arbetsgivarorganisation", en: "Employer organisation" },
+      employeeOrg: { sv: "Arbetstagarorganisation", en: "Employee organisation" },
+      agreementType: { sv: "Avtalstyp", en: "Agreement type" },
+      sector: { sv: "Sektor", en: "Sector" },
+      industryCode: { sv: "Branschkod", en: "Industry code" },
+      signedDate: { sv: "Avtalet tecknades", en: "Agreement signed" },
+      validity: { sv: "Löptid", en: "Validity" },
+      year: { sv: "Årtal", en: "Year" },
+      construction: { sv: "Avtalskonstruktion", en: "Agreement construction" },
+      wageScope: { sv: "Löneutrymme (%)", en: "Wage scope (%)" },
+      costFrame: { sv: "Kostnadsram (%)", en: "Cost frame (%)" },
+      period: { sv: "Period", en: "Period" },
+      expiresWithoutRenewal: { sv: "Upphör utan uppsägning", en: "Expires without notice" },
+      earlyTermination: { sv: "Uppsagt i förtid", en: "Terminated early" },
+      terminated: { sv: "Avtalet upphört", en: "Agreement ended" },
+      employees: { sv: "Anställda", en: "Employees" },
+      emptyPopulation: "No agreement is included in this extract.",
+    },
+    population: {
+      pension: "Pension agreements and other agreements",
+      pensionNote:
+        "Agreements with a registered agreement type. The selection criteria above narrow the population.",
+      website: "Publication material for mi.se",
+      eurofound: "Eurofound and minimum-wage reporting",
+      selectionNote:
+        "The selection is governed by the agreement's own report selection rather than by the party criteria — MI decides per agreement what goes out where.",
+    },
     title: "Reports",
     subtitle: "Report extracts, monitoring lists and scheduled distribution",
     tabs: {
@@ -978,6 +1017,9 @@ export const en: Dictionary = {
       export: "Print the report",
       exportFormats: "Word · Excel · PDF",
       markExported: "Mark as exported",
+      markExportedNothing: "No agreement is selected for the extract.",
+      markExportedDone: (n: number, date: string) =>
+        `${n} agreements marked as exported on ${date}.`,
       markExportedNote:
         "The extract is noted per agreement, so the next extract shows what has already been delivered to the report.",
     },
@@ -1114,6 +1156,22 @@ export const en: Dictionary = {
     },
     scheduled: {
       heading: "Scheduled extracts",
+      addHeading: "New scheduled extract",
+      paused: "Paused",
+      pause: "Pause",
+      resume: "Resume",
+      addedNote: (report: string) => `${report} is now sent on the schedule.`,
+      pausedNote: (report: string) => `${report} is paused and will not be sent until resumed.`,
+      resumedNote: (report: string) => `${report} is sent on the schedule again.`,
+      pauseNote:
+        "An extract is paused, not deleted. One that has run has sent e-mails, and those are in the event log — the same reason a user is deactivated rather than removed.",
+      form: {
+        report: "Report",
+        schedule: "Schedule",
+        scheduleHint: "e.g. Quarterly, first working day",
+        recipients: "Recipients",
+        incomplete: "Schedule and recipients must be filled in.",
+      },
       intro:
         "Recurring report extracts are sent as e-mail with the report attached and a link into MIIS. Every send is recorded in the event log.",
       table: {
@@ -1124,7 +1182,6 @@ export const en: Dictionary = {
         status: "Status",
       },
       active: "Active",
-      paused: "Paused",
       add: "New scheduled extract",
       logNote: "Sent e-mail is recorded in the event log with time, recipients and attachment.",
       items: [

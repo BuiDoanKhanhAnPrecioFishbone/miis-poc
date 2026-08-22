@@ -130,7 +130,10 @@ export function constructionCounts(
  *   löneavtal, lönerevision — i.e. the agreement view, printed, which is why it
  *   points at `/avtal/[id]` rather than duplicating it.
  * - **FR-009** (MI's website) and **FR-010** (Eurofound, Minimilön) are Steg 2
- *   in MI's own table and are listed as such rather than drawn.
+ *   in MI's own table for *delivery*, but their selection is a property the
+ *   officer already sets on the agreement, so the report shows which agreements
+ *   it would carry. Listing them with no result made the catalogue a menu with
+ *   two items that were not on it.
  *
  * Pure domain — no React, no data access, no I/O.
  */
@@ -186,27 +189,41 @@ export const REPORT_FORMAT_LABEL: Record<ReportFormat, string> = {
   json: "JSON",
 };
 
-/** Where a generated report actually appears in MIIS. */
-export type ReportResult =
-  /** Built here, from the register. */
-  | {
-      kind: "inline";
-      component: "constructions" | "bargaining-round" | "expiry" | "mediator-release";
-    }
-  /**
-   * A screen that already is this printout — the report sends you there.
-   *
-   * `detailBase` is the route a *single* agreement lives under, and it is what
-   * makes the selection screen mean anything. Bilaga F's Rapport 1, 4 and 6 are
-   * each one agreement — their own `produces` says so — and their criteria
-   * exist to pick which. Without this the officer chose an agreement and the
-   * button landed them on a register of seventeen, having discarded the choice:
-   * an *urvalsbild* that selects nothing is the same dead control as a
-   * `<Button>` with no `onClick`, wearing MI's own report name.
-   */
-  | { kind: "screen"; href: string; detailBase?: string }
-  /** Named in MI's table as Steg 2, and stated rather than drawn. */
-  | { kind: "stage-2" };
+/**
+ * Where a generated report actually appears in MIIS.
+ *
+ * There is one kind now, and that is the point. Six of the ten reports used to
+ * resolve to a link to another screen or to the word *Steg 2*, so pressing
+ * *Generera rapport* on them produced no report — Bilaga 3 §7 opens with
+ * *"For varje rapport visas urvalsbild och resultat"*, and half the catalogue
+ * had the first and not the second.
+ *
+ * The single-agreement reports were the hardest case and the reasoning that
+ * sent them elsewhere was sound: the agreement's own view already *is* that
+ * printout with FR-011 and D-002 applied, and rendering it twice risks two
+ * places disagreeing about one confidentiality rule. The resolution is not to
+ * render it twice and not to navigate away — `agreementDocument` runs the rule
+ * **once, on the server**, and what the audience may not read is absent from
+ * the document rather than hidden in it.
+ */
+export type ReportResult = {
+  kind: "inline";
+  component:
+    | "constructions"
+    | "bargaining-round"
+    | "expiry"
+    | "mediator-release"
+    /* One agreement as a document — §7.1 internal, §7.3 released. */
+    | "agreement-main"
+    | "agreement-public"
+    /* §7.5, whose population is the pension and other agreements. */
+    | "pension"
+    /* FR-008's own view: the watch list is the selection. */
+    | "short-term-wage"
+    /* FR-009 and FR-010 select on the agreement's own reportSelection. */
+    | "report-selection-website"
+    | "report-selection-eurofound";
+};
 
 export interface ReportDefinition {
   id: string;
@@ -316,7 +333,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 1,
     criteria: AGREEMENT_CRITERIA,
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/allmanheten", detailBase: "/allmanheten" },
+    result: { kind: "inline", component: "agreement-public" },
     bilagaF: 1,
     externalRoles: ["public"],
   },
@@ -360,7 +377,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 1,
     criteria: AGREEMENT_CRITERIA,
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/avtal", detailBase: "/avtal" },
+    result: { kind: "inline", component: "agreement-main" },
     bilagaF: 4,
   },
   {
@@ -425,7 +442,7 @@ export const REPORTS: readonly ReportDefinition[] = [
       },
     ],
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/avtal", detailBase: "/avtal" },
+    result: { kind: "inline", component: "pension" },
     bilagaF: 6,
   },
   {
@@ -463,7 +480,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     */
     criteria: [],
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/rapporter#konjunkturlon" },
+    result: { kind: "inline", component: "short-term-wage" },
   },
   {
     id: "hemsida",
@@ -479,7 +496,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 2,
     criteria: POPULATION_CRITERIA,
     formats: ["pdf", "excel", "csv"],
-    result: { kind: "stage-2" },
+    result: { kind: "inline", component: "report-selection-website" },
   },
   {
     id: "eurofound",
@@ -492,9 +509,208 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 2,
     criteria: POPULATION_CRITERIA,
     formats: ["excel", "csv"],
-    result: { kind: "stage-2" },
+    result: { kind: "inline", component: "report-selection-eurofound" },
   },
 ] as const;
+
+/* ------------------------------------------------------------------------- */
+/* The report as a document — Bilaga 3 §7                                      */
+/* ------------------------------------------------------------------------- */
+
+/**
+ * What a report actually produces.
+ *
+ * Bilaga 3 §7 opens by saying it: *"För varje rapport visas urvalsbild och
+ * resultat."* Six of the ten reports in the catalogue had a urvalsbild and no
+ * resultat — four handed the officer a link to another screen and two said
+ * *Steg 2*. A report function whose result is a link to the register is not a
+ * report function, and no amount of correct selection criteria above it makes
+ * it one.
+ *
+ * The single-agreement reports were the worst of it, and the reasoning that put
+ * them there was sound and still wrong: the agreement's own view already *is*
+ * that printout with FR-011 and D-002 applied, so rendering it twice risked two
+ * places disagreeing about one confidentiality rule. The resolution is not to
+ * render it twice and not to navigate away — it is to build the document from a
+ * **rule that runs once, on the server**, and hand down only what may be read.
+ *
+ * That is what makes this a data structure rather than markup. A value withheld
+ * under FR-011 is **absent from the document**, not hidden in it: CSS cannot
+ * meet a requirement about what may leave the building, and neither can a
+ * `<span>` a client component decided not to paint.
+ */
+export interface ReportFact {
+  label: Text;
+  /** Already formatted — dates are ISO, numbers carry the language's decimal. */
+  value: string;
+}
+
+export interface ReportPart {
+  heading: Text;
+  facts?: readonly ReportFact[];
+  table?: { headers: readonly Text[]; rows: readonly (readonly string[])[] };
+  /** Why a part is empty, where empty is a fact rather than a gap. */
+  note?: Text;
+}
+
+export interface ReportDocument {
+  /** The record the document is about, where it is about one. */
+  id?: string;
+  title: string;
+  parts: readonly ReportPart[];
+  /**
+   * Set where the whole document is withheld.
+   *
+   * FR-011 and D-002: a sekretessmarkerat agreement has no public report at
+   * all, rather than a report with the values taken out. The reader is told
+   * that something exists and is not being shown, which is a different and
+   * truer answer than an empty page.
+   */
+  withheld?: Text;
+}
+
+/** Who the document is being produced for — it decides what is in it. */
+export type ReportAudience = "internal" | "public" | "mediator";
+
+/**
+ * §7.1 Avtal – Huvudrapport and §7.3 Avtal – Allmänheten.
+ *
+ * One function, two audiences, because they are one document with different
+ * disclosure — and the disclosure is the thing that must not be decided twice.
+ * MI's own §7.3 prints the parties, the area, the signing date, the period and
+ * the rounds; it does not print the cost frame or the wage scope, because those
+ * are MI's working material rather than the release.
+ */
+export function agreementDocument(
+  a: ReportAgreement,
+  rounds: readonly {
+    year: number;
+    construction?: number;
+    constructionLabel?: string;
+    wageScopePercent?: number;
+    costFramePercent?: number;
+    validFrom?: string;
+    validTo?: string;
+  }[],
+  audience: ReportAudience,
+  labels: ReportDocumentLabels,
+): ReportDocument {
+  /* D-002 keeps the agreement *listed and counted*; FR-011 keeps its detail in.
+     The public and mediator audiences get the refusal, not the values. */
+  if (a.confidential && audience !== "internal") {
+    return { id: a.id, title: a.name, parts: [], withheld: labels.withheld };
+  }
+
+  const dash = labels.none;
+  const parts: ReportPart[] = [
+    {
+      /* §7.1's Rapporthuvud, in MI's own field order. */
+      heading: labels.identity,
+      facts: [
+        { label: labels.agreement, value: a.name },
+        { label: labels.employerOrg, value: a.employerOrg },
+        { label: labels.employeeOrg, value: a.employeeOrg },
+        { label: labels.agreementType, value: a.agreementType ?? dash },
+        { label: labels.sector, value: a.sector ?? dash },
+        { label: labels.industryCode, value: a.industryCode ?? dash },
+        { label: labels.signedDate, value: a.signedDate ?? dash },
+        { label: labels.validity, value: a.validity },
+      ],
+    },
+  ];
+
+  /*
+    The rounds. One row per avtalsrörelse — FA-002's own shape — and the two
+    columns that separate the audiences are dropped rather than blanked for a
+    reader who may not have them.
+  */
+  const internal = audience === "internal";
+  const headers = internal
+    ? [labels.year, labels.construction, labels.wageScope, labels.costFrame, labels.period]
+    : [labels.year, labels.construction, labels.period];
+  parts.push({
+    heading: labels.rounds,
+    ...(rounds.length === 0
+      ? { note: labels.noRounds }
+      : {
+          table: {
+            headers,
+            rows: rounds.map((r) => {
+              const period = r.validFrom || r.validTo ? `${r.validFrom ?? ""}–${r.validTo ?? ""}` : dash;
+              const construction =
+                r.constructionLabel ?? (r.construction === undefined ? dash : String(r.construction));
+              return internal
+                ? [
+                    String(r.year),
+                    construction,
+                    r.wageScopePercent === undefined ? dash : String(r.wageScopePercent),
+                    r.costFramePercent === undefined ? dash : String(r.costFramePercent),
+                    period,
+                  ]
+                : [String(r.year), construction, period];
+            }),
+          },
+        }),
+  });
+
+  /* §7.1 and §7.3 both carry termination and prolongation — FA-015, FA-016. */
+  parts.push({
+    heading: labels.lifecycle,
+    facts: [
+      {
+        label: labels.expiresWithoutRenewal,
+        value: a.expiresWithoutRenewal ? labels.yes : labels.no,
+      },
+      {
+        label: labels.earlyTermination,
+        value: a.earlyTermination
+          ? `${a.earlyTermination.date} · ${a.earlyTermination.party}`
+          : dash,
+      },
+      { label: labels.terminated, value: a.terminated ? labels.yes : labels.no },
+    ],
+  });
+
+  /* Scope figures are MI's working material and stay internal. */
+  if (internal) {
+    parts.push({
+      heading: labels.scope,
+      facts: [{ label: labels.employees, value: a.employees === undefined ? dash : String(a.employees) }],
+    });
+  }
+
+  return { id: a.id, title: a.name, parts };
+}
+
+/** Every label the document needs, resolved by the caller in one language. */
+export interface ReportDocumentLabels {
+  none: string;
+  yes: string;
+  no: string;
+  withheld: Text;
+  identity: Text;
+  rounds: Text;
+  noRounds: Text;
+  lifecycle: Text;
+  scope: Text;
+  agreement: Text;
+  employerOrg: Text;
+  employeeOrg: Text;
+  agreementType: Text;
+  sector: Text;
+  industryCode: Text;
+  signedDate: Text;
+  validity: Text;
+  year: Text;
+  construction: Text;
+  wageScope: Text;
+  costFrame: Text;
+  period: Text;
+  expiresWithoutRenewal: Text;
+  earlyTermination: Text;
+  terminated: Text;
+  employees: Text;
+}
 
 export function reportById(id: string): ReportDefinition | undefined {
   return REPORTS.find((r) => r.id === id);
@@ -682,6 +898,19 @@ export interface ReportAgreement {
   employerGroup?: string;
   cooperationGroup?: string;
   agreementType?: string;
+  /**
+   * Which reports the agreement is drawn into once it is published.
+   *
+   * FR-009 (mi.se) and FR-010 (Eurofound, Minimilön) select on this rather than
+   * on the party criteria: MI decides per agreement what goes out where, and a
+   * report that re-derived the population from sector and branschkod would
+   * disagree with the officer who ticked the box.
+   */
+  reportSelection?: {
+    website: boolean;
+    eurofound: boolean;
+    minimumWage: boolean;
+  };
 }
 
 /**

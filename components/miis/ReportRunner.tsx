@@ -18,6 +18,7 @@ import {
   type ReportAgreement,
   type ReleaseDocument,
   type ReportCriterion,
+  type ReportDocument,
   type ReportFormat,
 } from "@/lib/domain/report";
 import { agreementStatus } from "@/lib/domain/status";
@@ -25,6 +26,8 @@ import { dictionary } from "@/lib/i18n";
 import { BargainingRoundReportView } from "./BargainingRoundReport";
 import { ExpiryReportView } from "./ExpiryReport";
 import { MediatorReleaseView } from "./MediatorRelease";
+import { PrintButton, PrintHeader } from "./Print";
+import { ReportDocumentView } from "./ReportDocumentView";
 import { IconForward } from "./icons";
 import {
   Badge,
@@ -120,6 +123,7 @@ export function ReportRunner({
   lang,
   options,
   results,
+  agreementDocuments,
   agreements,
   documents,
   role,
@@ -129,6 +133,16 @@ export function ReportRunner({
   options: CriterionOptions;
   /** The report bodies this screen can render, keyed by `ReportResult.component`. */
   results: Record<string, ReactNode>;
+  /**
+   * One agreement as a document, per audience, keyed by the agreement's name —
+   * which is what the *Avtal* criterion holds.
+   *
+   * Built on the server by `agreementDocument`, so a value the audience may not
+   * read is **absent** rather than unpainted. That is the reason this crosses
+   * the boundary as data instead of as a rendered node: the client picks which
+   * finished document to show and decides nothing about its contents.
+   */
+  agreementDocuments: Record<string, { internal: ReportDocument; public: ReportDocument }>;
   /**
    * The register, reduced to what a selection can be applied to.
    *
@@ -169,6 +183,25 @@ export function ReportRunner({
 
   /* Nine string comparisons; the React compiler memoizes what is worth memoizing. */
   const summary = selectionSummary(report, values, lang, t.all);
+
+  /*
+    Where the selection came down to exactly one agreement, the report can offer
+    a way to the record itself. This used to *be* the result — press *Generera
+    rapport* and receive a link — which is what made the report function feel
+    unbuilt. It is a follow-up now: read the document, then go and correct it.
+
+    `detailBase` is decided here rather than stored on the report, because it
+    depends on the audience: an internal report opens the register, a released
+    one opens the public view, and a role with neither gets no link at all.
+  */
+  const matched = filterForReport(agreements, values);
+  const only = matched.length === 1 ? matched[0]! : undefined;
+  const detailBase =
+    report.result.component === "agreement-main"
+      ? "/avtal"
+      : report.result.component === "agreement-public"
+        ? "/allmanheten"
+        : undefined;
 
   function choose(id: string) {
     setReportId(id);
@@ -320,15 +353,21 @@ export function ReportRunner({
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            {report.stage === 2 ? (
-              <Button disabled disabledReason={t.stage2Reason}>
-                {t.generate}
-              </Button>
-            ) : (
-              <Button id="report-run" onClick={() => setGenerated(report.id)}>
-                {t.generate}
-              </Button>
-            )}
+            {/*
+              It runs for every report, including MI's two Steg 2 ones.
+
+              *Generera rapport* was `disabled` on those with the reason "Steg
+              2" — the same dead control this screen keeps growing, wearing a
+              true fact as an excuse. The fact is about **delivery**: FR-009 and
+              FR-010 are scheduled extracts MI receives in the second stage. The
+              population is not a Steg 2 question at all, because the selection
+              is a property the officer already sets on each agreement, so the
+              report can show exactly which agreements it would carry. The
+              staging is said on the result instead, where it belongs.
+            */}
+            <Button id="report-run" onClick={() => setGenerated(report.id)}>
+              {t.generate}
+            </Button>
             {format !== "pdf" && (
               <span className="text-label text-muted-foreground">{t.formatNote}</span>
             )}
@@ -338,7 +377,19 @@ export function ReportRunner({
       </div>
 
       {generated === report.id && (
-        <div id="rapportresultat" className="mt-5 scroll-mt-4">
+        <div id="rapportresultat" className="print-document mt-5 scroll-mt-4">
+          {/*
+            The document's own letterhead — the mark and the *Utskriftsdatum och
+            tid* Bilaga 3 §7 names for MI's report header, plus the report's
+            name, which is what tells a reader on paper which of the ten they
+            are holding.
+
+            It lives inside the document rather than in the shell because the
+            print rule lifts the document out on its own: what is not inside it
+            does not reach the paper, and a report with no title and no date
+            would be a table nobody could file.
+          */}
+          <PrintHeader lang={lang} title={report.label[lang]} />
           {/*
             The printed Urvalskriterier block, above the result and inside the
             print. MI's own reports carry it on every page; ours carries it once
@@ -365,6 +416,14 @@ export function ReportRunner({
             transcription that silently ignores it would be the one thing a
             report about data accuracy must not do.
           */}
+          {report.stage === 2 && (
+            <div className="mt-5">
+              <Callout tone="attention" label={t.stage2}>
+                {t.stage2Reason}
+              </Callout>
+            </div>
+          )}
+
           {report.id === "avtalskonstruktioner" && (
             <div className="mt-5">
               <Callout tone="attention" label={t.transcribedLabel}>
@@ -374,8 +433,7 @@ export function ReportRunner({
           )}
 
           <div className="mt-5">
-            {report.result.kind === "inline" ? (
-              report.result.component === "bargaining-round" ? (
+            {report.result.component === "bargaining-round" ? (
                 /*
                   Aggregated here, from the rows the selection left. This is the
                   difference between a selection screen and a picture of one: a
@@ -415,88 +473,61 @@ export function ReportRunner({
                     Number(values["year"] ?? "") || options.defaultYear,
                   )}
                 />
+              ) : report.result.component === "agreement-main" ||
+                report.result.component === "agreement-public" ? (
+                /*
+                  §7.1 and §7.3 — one agreement, as a document.
+
+                  These used to be `kind: "screen"`: pressing *Generera rapport*
+                  handed the officer a link to the register or to the public
+                  view. The reasoning was that the agreement's own view already
+                  *is* the printout and rendering it twice risked two places
+                  disagreeing about one confidentiality rule — sound, and still
+                  wrong, because a report function whose result is a link to a
+                  list is not a report function. The rule still runs once; it
+                  runs on the server and hands down a finished document.
+                */
+                (() => {
+                  const chosen = values["agreement"];
+                  const pair = chosen ? agreementDocuments[chosen] : undefined;
+                  if (!pair) {
+                    return (
+                      <Panel title={report.label[lang]} headingLevel={2}>
+                        <p className="text-table text-muted-foreground">{t.chooseAgreement}</p>
+                      </Panel>
+                    );
+                  }
+                  const doc =
+                    report.result.component === "agreement-public" ? pair.public : pair.internal;
+                  return <ReportDocumentView doc={doc} lang={lang} />;
+                })()
               ) : (
                 (results[report.result.component] ?? (
                   <Panel title={report.label[lang]}>
                     <p className="text-table text-muted-foreground">{t.notBuilt}</p>
                   </Panel>
                 ))
-              )
-            ) : report.result.kind === "screen" ? (
-              /*
-                The selection has to reach the destination.
-
-                Three of MI's own reports — Bilaga F's Rapport 1, 4 and 6 — are
-                *one agreement*, and their criteria exist to say which. The
-                button used to open the register regardless, so an officer who
-                had just chosen Teknikavtalet arrived at a list of seventeen
-                with the choice thrown away. `filterForReport` is the same
-                narrowing the inline reports use; when it leaves exactly one
-                agreement the button opens that agreement's own view, which
-                *is* the printout — same data, same confidentiality rules,
-                because it is the same page rather than a second rendering of
-                it.
-              */
-              (() => {
-                const matched = report.result.detailBase
-                  ? filterForReport(agreements, values)
-                  : [];
-                const only = matched.length === 1 ? matched[0]! : undefined;
-                /*
-                  Where the selection does not come down to one agreement, it
-                  still has to travel: an officer who narrowed to an employer
-                  organisation and pressed the button arrived at an unfiltered
-                  list, having done the narrowing twice. The destination reads
-                  these back and pre-fills its own controls, so the screen opens
-                  on the selection rather than on everything.
-
-                  `fran=rapport` is the return ticket. The public view has no
-                  menu — that is the point of it — so an officer who followed
-                  the report there had the browser's Back button and nothing
-                  else.
-                */
-                const carry = new URLSearchParams();
-                for (const [k, v] of Object.entries(values)) {
-                  if (v.trim()) carry.set(k, v);
-                }
-                carry.set("fran", "rapport");
-                const listHref = `${report.result.href}?${carry.toString()}`;
-                return (
-                  <Panel title={report.label[lang]} tags={report.requirements}>
-                    <p className="max-w-4xl text-table">{t.onScreen}</p>
-                    {report.result.detailBase && (
-                      <p className="mt-2 max-w-4xl text-table">
-                        {only
-                          ? t.onScreenOne(only.name)
-                          : matched.length === 0
-                            ? t.onScreenNone
-                            : t.onScreenMany(matched.length)}
-                      </p>
-                    )}
-                    <div className="mt-4">
-                      <LinkButton
-                        href={
-                          only && report.result.detailBase
-                            ? `${report.result.detailBase}/${only.id}?fran=rapport`
-                            : report.result.detailBase
-                              ? listHref
-                              : report.result.href
-                        }
-                        iconEnd={<IconForward />}
-                      >
-                        {only ? t.openAgreement(only.name) : t.openView}
-                      </LinkButton>
-                    </div>
-                  </Panel>
-                );
-              })()
-            ) : (
-              <Panel title={report.label[lang]} tags={report.requirements}>
-                <Callout tone="attention" label={t.stage2}>
-                  {t.stage2Reason}
-                </Callout>
-              </Panel>
             )}
+
+            {/*
+              The report opens on the record it produced, where there is one.
+
+              Not as the result — that was the defect — but underneath it, so an
+              officer who has read the document can go and correct it. The link
+              appears only for a role that may read the screen it points at, and
+              only when the selection came down to one agreement.
+            */}
+            <div className="print-hide mt-5 flex flex-wrap items-center gap-3">
+              {/* The print belongs beside the result it prints, not only in the
+                  page heading forty rows up: the officer decides to keep the
+                  document while reading it. */}
+              <PrintButton lang={lang} />
+              {only && detailBase && (
+                <LinkButton href={`${detailBase}/${only.id}?fran=rapport`} iconEnd={<IconForward />}>
+                  {t.openAgreement(only.name)}
+                </LinkButton>
+              )}
+            </div>
           </div>
         </div>
       )}
