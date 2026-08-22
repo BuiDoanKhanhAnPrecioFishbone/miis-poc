@@ -343,6 +343,20 @@ reviewer to a screen its own role would be refused.
    grows, or only displays, does not answer any of those. **A register whose
    rows are all read-only is the defect to look for**, and the way to find it is
    to read §3.1's verb column and the requirement's own verb, not the screen.
+   **A `disabled` button with "Ej aktiv i demon" on a register's only act is
+   the same defect wearing a reason.** The mediation case had three of them —
+   link an agreement (FF-008), appoint a mediator (FF-009), and the outcome —
+   and FF-010's panel rendered *only when an outcome already existed*, so the
+   act that ends a mediation and produces MI's published strike statistics
+   could be read on a finished case and never performed on a live one. A panel
+   that appears only once its content does is a panel that cannot be reached.
+   **A picker offers only what may actually be chosen** — active mediators who
+   take this case's mediation type — because an option that has to be undone
+   after it is picked is worse than one never offered. And **a field that only
+   means something in one state appears only in that state**: the lost working
+   days and affected employees show when there was industrial action, because
+   asking how many days a strike cost when there was no strike invites a zero,
+   and a zero in that column is a measurement rather than an absence.
    **What is derived is never editable, and the panel says so** — a mediator's
    assignment statistics come from their history the way organisationsgrad comes
    from two figures; typing either would be entering a claim about work or about

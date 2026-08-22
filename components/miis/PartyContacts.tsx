@@ -83,9 +83,9 @@ export function PartyContacts({
           {contacts.map((c) => (
             <li
               key={`${c.name}-${c.email}`}
-              className="flex flex-wrap items-start justify-between gap-3 border-t border-border pt-3 first:border-t-0 first:pt-0"
+              className="flex items-start justify-between gap-3 border-t border-border pt-3 first:border-t-0 first:pt-0"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="font-semibold">{c.name}</p>
                 <p className="text-label text-muted-foreground">{c.title}</p>
                 <p className="text-label tabular-nums text-muted-foreground">

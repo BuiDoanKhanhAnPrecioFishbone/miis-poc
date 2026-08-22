@@ -5,10 +5,14 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { DocumentTemplate } from "@/components/miis/DocumentTemplate";
+import {
+  CaseAgreements,
+  CaseMediators,
+  CaseOutcome,
+} from "@/components/miis/MediationCaseAdmin";
 import { IconBack, IconForward } from "@/components/miis/icons";
 import {
   AiRegion,
-  Badge,
   Button,
   Callout,
   Field,
@@ -19,12 +23,13 @@ import {
   StatusDot,
 } from "@/components/miis/primitives";
 import { getCurrentBenchmark } from "@/lib/data/benchmark";
+import { listAgreements } from "@/lib/data/agreements";
 import { getMediationCase } from "@/lib/data/mediation";
+import { listMediators, mediatorStats } from "@/lib/data/mediators";
 import { t } from "@/lib/domain/lang";
 import {
   caseNumber,
   MEDIATION_TYPE_LABEL,
-  MEDIATOR_POSITION_LABEL,
   miAppointsMediators,
 } from "@/lib/domain/mediation";
 import { amount, percent } from "@/lib/format";
@@ -59,6 +64,37 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
 
   const { mediationCase, linkedAgreements, events } = detail;
   const benchmark = await getCurrentBenchmark();
+
+  /*
+    What may be linked and who may be appointed, decided on the server.
+
+    The mediator list is narrowed here rather than in the browser: only someone
+    active who takes this case's mediation type can be appointed, and a picker
+    offering anyone else is a control whose choice has to be undone. The
+    agreement rows are server-rendered for the same reason the public search's
+    are — they carry FR-012's status marker, which is a decision that belongs on
+    the server.
+  */
+  const [allAgreements, allMediators] = await Promise.all([listAgreements(), listMediators()]);
+  const mediatorCandidates = allMediators
+    .filter((m) => m.active && m.types.includes(mediationCase.type))
+    .map((m) => ({
+      id: m.id,
+      name: m.name,
+      previousAssignments: mediatorStats(m).assignments,
+    }));
+  const agreementCandidates = allAgreements.map((a) => ({ id: a.id, name: a.name }));
+  const linkedRows: Record<string, React.ReactNode> = {};
+  for (const a of linkedAgreements) {
+    linkedRows[a.id] = (
+      <span className="flex flex-wrap items-center gap-3 text-table">
+        <StatusDot status={a.status} showLabel />
+        <span>
+          {a.name} · {a.validity}
+        </span>
+      </span>
+    );
+  }
   const miAppoints = miAppointsMediators(mediationCase);
   const c = i18n.mediationCase;
   const ds = i18n.decisionSupport;
@@ -98,52 +134,31 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
             </div>
           </Panel>
 
-          <Panel
-            title={c.linkedAgreements(linkedAgreements.length)}
-            tags={["FF-008"]}
-            action={<Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{c.linkAgreement}</Button>}
-          >
-            <ul className="space-y-3">
-              {linkedAgreements.map((a) => (
-                <li key={a.id} className="flex flex-wrap items-center gap-3 text-table">
-                  <StatusDot status={a.status} showLabel />
-                  <span>
-                    {a.name} · {a.validity}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <Rationale>{c.linkedNote}</Rationale>
-          </Panel>
+          {/*
+            FF-008 — *"ett medlingsärende ska kunna kopplas till flera avtal"*.
+            The control was `disabled` with "Ej aktiv i demon", so a case could
+            be read and never told which agreements it was about.
+          */}
+          <CaseAgreements
+            linked={linkedAgreements.map((a) => ({ id: a.id, label: a.name }))}
+            candidates={agreementCandidates}
+            rowFor={linkedRows}
+            lang={lang}
+          />
 
-          <Panel
-            title={c.mediators}
-            tags={["FF-009"]}
-            action={<Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{c.addMediator}</Button>}
-          >
-            {mediationCase.mediators.length === 0 ? (
-              <p className="text-table text-muted-foreground">{c.noMediators}</p>
-            ) : (
-              <ul className="space-y-2 text-table">
-                {mediationCase.mediators.map((m) => (
-                  <li key={m.id}>
-                    {m.name} · {MEDIATION_TYPE_LABEL[lang][mediationCase.type]} ·{" "}
-                    {c.position(MEDIATOR_POSITION_LABEL[lang][m.position])} ·{" "}
-                    {c.previousAssignments(m.previousAssignments)}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <Rationale>{c.mediatorStatsNote}</Rationale>
-          </Panel>
+          {/*
+            FF-009 — appointing a mediator, with the position that FF-009's own
+            statistics count. Also a `disabled` button until now.
+          */}
+          <CaseMediators
+            mediators={mediationCase.mediators}
+            candidates={mediatorCandidates}
+            type={mediationCase.type}
+            lang={lang}
+          />
         </div>
 
+        {/* The right-hand column: what the case is read against. */}
         <div className="space-y-5">
           <Panel title={c.procedureAgreement} tags={["FF-006", "FA-017"]} tone="mint">
             <p className="text-table">{miAppoints ? c.coveredNot : c.covered}</p>
@@ -317,47 +332,19 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           ]}
         />
 
-        {mediationCase.outcome && (
-          <Panel title={c.outcome} tags={["FF-010"]}>
-            <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-5">
-              <Field
-                label={c.outcomeType}
-                value={MEDIATION_TYPE_LABEL[lang][mediationCase.outcome.mediationType]}
-              />
-              <Field
-                label={c.industrialAction}
-                value={mediationCase.outcome.industrialAction ? i18n.common.yes : i18n.common.no}
-              />
-              <Field
-                label={c.industrialActionType}
-                value={mediationCase.outcome.industrialActionType ?? i18n.common.none}
-              />
-              <Field
-                label={c.lostWorkingDays}
-                value={
-                  mediationCase.outcome.lostWorkingDays
-                    ? amount(mediationCase.outcome.lostWorkingDays, lang)
-                    : i18n.common.none
-                }
-              />
-              <Field
-                label={c.affectedEmployees}
-                value={
-                  mediationCase.outcome.affectedEmployees
-                    ? amount(mediationCase.outcome.affectedEmployees, lang)
-                    : i18n.common.none
-                }
-              />
-            </div>
-            <Rationale>{c.outcomeNote}</Rationale>
-            <div className="mt-4">
-              <Button variant="secondary"
-        disabled
-        disabledReason={i18n.common.notInDemo}
-      >{c.registerStanding}</Button>
-            </div>
-          </Panel>
-        )}
+        {/*
+          FF-010's outcome, always shown.
+
+          It rendered only when an outcome already existed, so the act that ends
+          a mediation — and produces the statistics MI publishes on industrial
+          action — was demonstrable on a case that had already ended and
+          impossible on a live one.
+        */}
+        <CaseOutcome
+          outcome={mediationCase.outcome}
+          type={mediationCase.type}
+          lang={lang}
+        />
 
         {/*
           No status marker here. These are events, not agreements, and the log

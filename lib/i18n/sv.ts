@@ -834,6 +834,32 @@ export const sv = {
     finaliseNote: "Notifierings-epost med länk skickas till medlaradministratör och loggas",
     templateNote:
       "Dokumentmallarna förifylls med information från MIIS och kan redigeras före färdigställande",
+    admin: {
+      remove: "Ta bort",
+      mediatorLabel: "Medlare ur registret",
+      mediatorPlaceholder: "Välj medlare",
+      positionLabel: "Position",
+      appoint: "Förordna medlaren",
+      pickMediator: "Välj en medlare först.",
+      noCandidates:
+        "Alla aktiva medlare som tar den här medlingstypen är redan förordnade i ärendet.",
+      mediatorAdded: (name: string, position: string) =>
+        `${name} är förordnad som ${position.toLocaleLowerCase("sv")}. Förordnandet räknas i medlarens statistik.`,
+      mediatorRemoved: (name: string) => `${name} är inte längre förordnad i ärendet.`,
+      mediatorNote:
+        "Bara aktiva medlare som tar den här medlingstypen visas i listan. Positionen ettan eller tvåan är det som räknas i statistiken per medlare.",
+      noAgreements: "Inget avtal är kopplat till ärendet ännu.",
+      agreementLabel: "Avtal ur avtalsregistret",
+      agreementPlaceholder: "Välj avtal",
+      link: "Koppla avtalet",
+      pickAgreement: "Välj ett avtal först.",
+      noAgreementCandidates: "Samtliga avtal i datamängden är redan kopplade till ärendet.",
+      agreementAdded: (name: string) => `${name} är kopplat till medlingsärendet.`,
+      agreementRemoved: (name: string) => `${name} är inte längre kopplat till ärendet.`,
+      noOutcome:
+        "Inget utfall registrerat. Utfallet registreras när medlingen är avslutad och är underlaget för Medlingsinstitutets statistik över stridsåtgärder.",
+      actionTypePlaceholder: "T.ex. strejk, blockad, lockout",
+    },
     outcome: "Medlingsresultat",
     outcomeType: "Typ av medling",
     industrialAction: "Stridsåtgärder",
@@ -1754,6 +1780,25 @@ export const sv = {
       supplementary: "Tilläggsöverenskommelser",
       registered: "Registrerat",
       none: "Inget märke registrerat för perioden.",
+    },
+    admin: {
+      newHeading: "Registrera Märket för en ny period",
+      newIntro:
+        "Märket registreras per avtalsrörelse. Tidigare perioder ligger kvar – avtal som tecknats under dem jämförs mot den kostnadsram som gällde då.",
+      open: "Registrera ny period",
+      save: "Registrera perioden",
+      registered: (period: string) =>
+        `Märket för ${period} är registrerat och gäller nu i de vyer där det visas.`,
+      incomplete: "Period, giltighetstid och kostnadsram måste fyllas i.",
+      costFrameInput: "Kostnadsram (%)",
+      periodHint: "Så som perioden skrivs i MI:s egna underlag",
+      periodPlaceholder: "T.ex. 2027–2029",
+      validFrom: "Gäller från",
+      validTo: "Gäller till",
+      periodisationHint: "Fritext – hur kostnadsramen fördelas över perioden",
+      periodisationPlaceholder: "T.ex. 3,2 % / 3,2 %",
+      supplementaryHint: "Fritext, flera separeras med ·",
+      note: "En ny period släcker larmet för de datum den täcker: larmet finns för att ett avtalsprotokoll på Industriavtalet inte ska registreras för en period utan märkesdefinition.",
     },
     history: {
       heading: "Registrerade perioder",

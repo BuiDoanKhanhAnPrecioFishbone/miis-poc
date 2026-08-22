@@ -52,6 +52,7 @@ export function EditablePanel({
   saveBlockedReason,
   savedAt,
   headingLevel,
+  tone,
   children,
 }: {
   title: string;
@@ -68,6 +69,8 @@ export function EditablePanel({
   /** Set once a save has happened, so the panel can confirm it — FH-001. */
   savedAt?: string | null;
   headingLevel?: 2 | 3;
+  /** Passed through — Märket keeps its sand panel while gaining an edit control. */
+  tone?: "default" | "sand" | "mint" | "demo";
   /** The fields, rendered by the caller as values or as inputs. */
   children: ReactNode;
 }) {
@@ -75,7 +78,12 @@ export function EditablePanel({
   const t = d.avtal.detail;
 
   return (
-    <Panel title={title} {...(tags ? { tags } : {})} {...(headingLevel ? { headingLevel } : {})}>
+    <Panel
+      title={title}
+      {...(tags ? { tags } : {})}
+      {...(headingLevel ? { headingLevel } : {})}
+      {...(tone ? { tone } : {})}
+    >
       {intro && <p className="mb-4 max-w-4xl text-table">{intro}</p>}
 
       {/*

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { BenchmarkAdmin } from "@/components/miis/BenchmarkAdmin";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import {
   Callout,
-  Field,
   PageHeading,
   Panel,
   Rationale,
@@ -108,30 +108,13 @@ export default async function MarketPage() {
         it. FM-002 is a state, not a section.
       */}
       <div className="grid grid-cols-1 gap-5">
-        <Panel title={t.current.heading} tags={["FM-001", "FM-003"]} tone="sand">
-          {current ? (
-            <>
-              <p className="mb-4 max-w-3xl text-table text-sand-foreground">{t.current.intro}</p>
-              <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3">
-                <Field label={t.current.period} value={current.period} />
-                <Field label={t.current.costFrame} value={percent(current.costFramePercent, lang)} />
-                <Field label={t.current.periodisation} value={current.periodisation} />
-                <Field label={t.current.months} value={String(current.months)} />
-                <Field
-                  label={t.current.supplementary}
-                  value={
-                    current.supplementaryAgreements.length > 0
-                      ? current.supplementaryAgreements.join(" · ")
-                      : i18n.common.none
-                  }
-                />
-                <Field label={t.current.registered} value={current.registeredDate} />
-              </div>
-            </>
-          ) : (
-            <p className="text-table text-sand-foreground">{t.current.none}</p>
-          )}
-        </Panel>
+        {/*
+          FM-001's heading is the word *Registrering*, and the panel displayed
+          a benchmark with no way to enter one. Every other requirement in §5.10
+          depends on it — FM-002's alarm fires when a period has no definition,
+          and registering the definition is the only way out of that state.
+        */}
+        <BenchmarkAdmin current={current} lang={lang} />
 
         {/*
           FM-002 as a state rather than a promise. The alarm has a resting form —

@@ -837,6 +837,32 @@ export const en: Dictionary = {
       "A notification e-mail with a link is sent to the mediator administrator and logged",
     templateNote:
       "The document templates are pre-filled with information from MIIS and can be edited before completion",
+    admin: {
+      remove: "Remove",
+      mediatorLabel: "Mediator from the register",
+      mediatorPlaceholder: "Choose a mediator",
+      positionLabel: "Position",
+      appoint: "Appoint the mediator",
+      pickMediator: "Choose a mediator first.",
+      noCandidates:
+        "Every active mediator who takes this mediation type is already appointed to the case.",
+      mediatorAdded: (name: string, position: string) =>
+        `${name} is appointed as ${position.toLowerCase()}. The appointment counts in the mediator's statistics.`,
+      mediatorRemoved: (name: string) => `${name} is no longer appointed to the case.`,
+      mediatorNote:
+        "Only active mediators who take this mediation type are listed. The first-chair or second-chair position is what counts in the statistics per mediator.",
+      noAgreements: "No agreement is linked to the case yet.",
+      agreementLabel: "Agreement from the register",
+      agreementPlaceholder: "Choose an agreement",
+      link: "Link the agreement",
+      pickAgreement: "Choose an agreement first.",
+      noAgreementCandidates: "Every agreement in the dataset is already linked to the case.",
+      agreementAdded: (name: string) => `${name} is linked to the mediation case.`,
+      agreementRemoved: (name: string) => `${name} is no longer linked to the case.`,
+      noOutcome:
+        "No outcome registered. The outcome is registered when the mediation has ended and is the basis for Medlingsinstitutet's statistics on industrial action.",
+      actionTypePlaceholder: "e.g. strike, blockade, lockout",
+    },
     outcome: "Mediation outcome",
     outcomeType: "Type of mediation",
     industrialAction: "Industrial action",
@@ -1760,6 +1786,25 @@ export const en: Dictionary = {
       supplementary: "Supplementary agreements",
       registered: "Registered",
       none: "No benchmark registered for the period.",
+    },
+    admin: {
+      newHeading: "Register Märket for a new period",
+      newIntro:
+        "Märket (industry benchmark) is registered per bargaining round. Previous periods stay — agreements signed under them are compared against the cost frame that was in force then.",
+      open: "Register a new period",
+      save: "Register the period",
+      registered: (period: string) =>
+        `Märket for ${period} is registered and now applies in the views where it is shown.`,
+      incomplete: "Period, validity and cost frame must be filled in.",
+      costFrameInput: "Cost frame (%)",
+      periodHint: "As the period is written in MI's own material",
+      periodPlaceholder: "e.g. 2027-2029",
+      validFrom: "Valid from",
+      validTo: "Valid to",
+      periodisationHint: "Free text - how the cost frame is spread over the period",
+      periodisationPlaceholder: "e.g. 3,2 % / 3,2 %",
+      supplementaryHint: "Free text; separate several with ·",
+      note: "A new period clears the alarm for the dates it covers: the alarm exists so that an Industry Agreement protocol is not registered for a period with no benchmark definition.",
     },
     history: {
       heading: "Registered periods",
