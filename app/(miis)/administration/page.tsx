@@ -7,7 +7,8 @@ import { SectionTabs } from "@/components/miis/SectionTabs";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Button, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { listChangeLog, listEvents } from "@/lib/data/events";
-import { listWatchwords } from "@/lib/data/watchwords";
+import { listWatchwords, predefinedTerms } from "@/lib/data/watchwords";
+import { WatchwordTable } from "@/components/miis/WatchwordTable";
 import { EVENT_TYPE_LABEL } from "@/lib/domain/event";
 import { getSession } from "@/lib/session";
 
@@ -197,18 +198,17 @@ export default async function AdministrationPage() {
                 registration flow: the terms are set ahead of the bargaining
                 round, and the screen that reads them is not the screen that
                 owns them.
+
+                §4.1 calls the table *fördefinierad och anpassningsbar*, and
+                only the first half was built — Administration showed a list an
+                administrator could read and never change, on the one screen
+                whose purpose is maintaining things.
               */
-              <Panel title={t.watchwords.heading} tags={["FAI-004"]}>
-                <p className="mb-3 max-w-3xl text-table">{t.watchwords.intro}</p>
-                <DataTable
-                  columns={watchwordColumns}
-                  rows={watchwordRows}
-                  lang={lang}
-                  caption={t.watchwords.heading}
-                  minWidth="26rem"
-                />
-                <Rationale>{t.watchwords.note}</Rationale>
-              </Panel>
+              <WatchwordTable
+                watchwords={watchwords}
+                predefined={predefinedTerms()}
+                lang={lang}
+              />
             ),
           },
         ]}

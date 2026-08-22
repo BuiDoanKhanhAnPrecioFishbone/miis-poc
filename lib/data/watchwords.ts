@@ -19,3 +19,15 @@ export async function listWatchwords(): Promise<Watchword[]> {
   const added = decodeWatchwords(raw);
   return [...PREDEFINED_WATCHWORDS, ...added];
 }
+
+/**
+ * Which of the terms are MI's own baseline.
+ *
+ * The merged list loses the distinction, and Administration needs it: the
+ * table is *fördefinierad **och** anpassningsbar*, so an administrator removes
+ * what this authority added and not what MI maintains centrally. `origin` will
+ * not do the job — every term carries one, including MI's own.
+ */
+export function predefinedTerms(): string[] {
+  return PREDEFINED_WATCHWORDS.map((w) => w.term);
+}

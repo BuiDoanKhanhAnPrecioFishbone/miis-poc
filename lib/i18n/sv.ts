@@ -1441,6 +1441,17 @@ export const sv = {
       industryCodeHint: "Gäller organisationer inom Svenskt Näringsliv",
       sectorEmployeeHint: "Sektor registreras på arbetsgivarsidan",
       contacts: "Kontaktpersoner",
+      contactAdd: "Lägg till kontaktperson",
+      contactName: "Namn",
+      contactTitle: "Titel",
+      contactPhone: "Telefon",
+      contactEmail: "E-post",
+      contactSave: "Spara kontaktpersonen",
+      contactRemove: "Ta bort",
+      contactNameRequired: "Kontaktpersonen måste ha ett namn.",
+      contactAdded: (name: string) =>
+        `${name} är tillagd som kontaktperson. Ändringen skrivs till ändringsloggen med tidpunkt och användare.`,
+      contactRemoved: (name: string) => `${name} är borttagen som kontaktperson.`,
       noContacts: "Inga kontaktpersoner registrerade.",
       contactNote:
         "Kontaktpersoner registreras för både AGO och ATO och följer parten, inte det enskilda avtalet.",
@@ -1679,6 +1690,21 @@ export const sv = {
     },
     active: "Aktiv",
     inactive: "Inaktiv",
+    edit: {
+      action: "Åtgärd",
+      open: "Ändra",
+      heading: (name: string) => `Ändra uppgifter för ${name}`,
+      nameRequired: "Medlaren måste ha ett namn.",
+      deactivate: "Inaktivera",
+      activate: "Aktivera",
+      savedNote: (name: string, date: string) =>
+        `Uppgifterna för ${name} är sparade ${date}. Ändringen skrivs till ändringsloggen med tidpunkt och användare.`,
+      deactivatedNote: (name: string) =>
+        `${name} är inaktiverad och föreslås inte längre vid förordnande. Tidigare uppdrag räknas fortfarande i statistiken.`,
+      activatedNote: (name: string) => `${name} är aktiv igen och kan förordnas.`,
+      derivedNote:
+        "Uppdrag, ettan, tvåan och senaste år räknas ur uppdragshistoriken och går inte att skriva in. En medlare tas aldrig bort, bara inaktiveras – statistiken per medlare skulle annars försvinna med personen.",
+    },
     filters: {
       type: "Medlingstyp",
       status: "Status",
@@ -1819,9 +1845,23 @@ export const sv = {
         "Tabellen underhålls inför avtalsrörelsen. Orden markeras i uppladdade protokoll och styr vad AI-analysen lyfter fram.",
       term: "Ord",
       source: "Ursprung",
+      action: "Åtgärd",
       predefined: "Fördefinierat",
-      added: "Tillagt i sessionen",
-      note: "Ord som lagts till från en partsträff gäller i den här demonstrationen bara den egna sessionen.",
+      added: "Tillagt",
+      addedHere: "Tillagt i administrationen",
+      predefinedLocked:
+        "Fördefinierade ord ingår i Medlingsinstitutets grundtabell och tas inte bort här.",
+      remove: "Ta bort",
+      add: "Lägg till ordet",
+      newTerm: "Nytt bevakningsord",
+      newTermHint: "Matchas oberoende av versaler i protokoll och avtal",
+      newTermPlaceholder: "T.ex. arbetstidskonto",
+      newTermRequired: "Skriv ett ord först.",
+      addedNote: (term: string) =>
+        `${term} är tillagt. Det markeras nu i uppladdade protokoll och avtal.`,
+      duplicate: (term: string) => `${term} finns redan i tabellen.`,
+      removedNote: (term: string) => `${term} är borttaget och markeras inte längre.`,
+      note: "Ord som läggs till här eller från en partsträff gäller i den här demonstrationen bara den egna sessionen.",
     },
     retention: {
       heading: "Bevarande och åtkomst",

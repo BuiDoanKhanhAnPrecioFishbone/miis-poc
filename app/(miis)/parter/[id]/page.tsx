@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/miis/AppShell";
 import { IconBack } from "@/components/miis/icons";
 import { NameChange } from "@/components/miis/NameChange";
+import { PartyContacts } from "@/components/miis/PartyContacts";
 import { Badge, Field, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { agreementsForParty, getParty } from "@/lib/data/parties";
 import { SECTOR_LABEL } from "@/lib/domain/agreement";
@@ -90,25 +91,13 @@ export default async function PartyPage({ params }: { params: Promise<{ id: stri
         />
       </div>
 
+      {/*
+        FP-006's verb is *"stödja **koppling till** kontaktpersoner"*, and the
+        panel could only display one. An organisation's negotiator changes every
+        bargaining round; a list with no way in supports nothing.
+      */}
       <div className="mt-5">
-        <Panel title={t.detail.contacts} tags={["FP-006"]}>
-          {party.contacts.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.detail.noContacts}</p>
-          ) : (
-            <ul className="space-y-3">
-              {party.contacts.map((c) => (
-                <li key={c.email} className="border-t border-border pt-3 first:border-t-0 first:pt-0">
-                  <p className="font-semibold">{c.name}</p>
-                  <p className="text-label text-muted-foreground">{c.title}</p>
-                  <p className="text-label tabular-nums text-muted-foreground">
-                    {c.phone} · {c.email}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-          <Rationale>{t.detail.contactNote}</Rationale>
-        </Panel>
+        <PartyContacts contacts={party.contacts} lang={lang} />
       </div>
 
       <div className="mt-5">

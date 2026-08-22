@@ -334,6 +334,22 @@ reviewer to a screen its own role would be refused.
    page — because a setting that does not reach the behaviour is a setting that
    only looks like one. Its bound is a **ceiling**: MI may shorten the limit, and
    raising it past thirty minutes would weaken NFÅ-002 rather than configure it.
+   **A register a role may *redigera* has to be editable, and §3.1 says which.**
+   Four roles carry the verb — Behörighetsadministratör (användare),
+   Avtalsadministratör (avtalsinformation), Medlingsadministratör (medling),
+   Medlaradministratör (medlare) — and the requirement tables add their own:
+   FAI-004's watchword table is *"fördefinierad **och** anpassningsbar"*, and
+   FP-006 is *"stödja **koppling till** kontaktpersoner"*. A list that only
+   grows, or only displays, does not answer any of those. **A register whose
+   rows are all read-only is the defect to look for**, and the way to find it is
+   to read §3.1's verb column and the requirement's own verb, not the screen.
+   **What is derived is never editable, and the panel says so** — a mediator's
+   assignment statistics come from their history the way organisationsgrad comes
+   from two figures; typing either would be entering a claim about work or about
+   the labour market that nothing backs. And a register is **deactivated, never
+   deleted, wherever something counts it**: a removed mediator takes FF-009's
+   statistics with them, a removed user takes NFL-001's sign-ins. A contact
+   person counts nothing and is removed outright.
    **Users and role assignment are editable; the permission matrix is not.**
    NFÅ-005 names exactly what MI administers without us — *"upplägg och
    redigering av användare och rolltilldelning"* — so `/administration/anvandare`

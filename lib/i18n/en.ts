@@ -1446,6 +1446,17 @@ export const en: Dictionary = {
       industryCodeHint: "Applies to organisations inside Svenskt Näringsliv",
       sectorEmployeeHint: "Sector is registered on the employer side",
       contacts: "Contact people",
+      contactAdd: "Add a contact person",
+      contactName: "Name",
+      contactTitle: "Title",
+      contactPhone: "Telephone",
+      contactEmail: "E-mail",
+      contactSave: "Save the contact person",
+      contactRemove: "Remove",
+      contactNameRequired: "The contact person must have a name.",
+      contactAdded: (name: string) =>
+        `${name} has been added as a contact person. The change is written to the change log with the time and the user.`,
+      contactRemoved: (name: string) => `${name} has been removed as a contact person.`,
       noContacts: "No contact people registered.",
       contactNote:
         "Contact people are registered for both AGO and ATO and follow the party, not the individual agreement.",
@@ -1685,6 +1696,21 @@ export const en: Dictionary = {
     },
     active: "Active",
     inactive: "Inactive",
+    edit: {
+      action: "Action",
+      open: "Change",
+      heading: (name: string) => `Change details for ${name}`,
+      nameRequired: "The mediator must have a name.",
+      deactivate: "Deactivate",
+      activate: "Activate",
+      savedNote: (name: string, date: string) =>
+        `The details for ${name} were saved ${date}. The change is written to the change log with the time and the user.`,
+      deactivatedNote: (name: string) =>
+        `${name} is inactive and is no longer proposed when a mediator is appointed. Previous assignments still count in the statistics.`,
+      activatedNote: (name: string) => `${name} is active again and can be appointed.`,
+      derivedNote:
+        "Assignments, first chair, second chair and latest year are calculated from the assignment history and cannot be typed in. A mediator is never deleted, only deactivated — the statistics per mediator would otherwise leave with the person.",
+    },
     filters: {
       type: "Mediation type",
       status: "Status",
@@ -1824,9 +1850,23 @@ export const en: Dictionary = {
         "The table is maintained ahead of the bargaining round. The terms are marked in uploaded protocols and govern what the AI analysis highlights.",
       term: "Term",
       source: "Origin",
+      action: "Action",
       predefined: "Predefined",
-      added: "Added in this session",
-      note: "In this demonstration, terms added from a party meeting apply only to your own session.",
+      added: "Added",
+      addedHere: "Added in administration",
+      predefinedLocked:
+        "Predefined terms belong to Medlingsinstitutet's base table and are not removed here.",
+      remove: "Remove",
+      add: "Add the term",
+      newTerm: "New watchword",
+      newTermHint: "Matched regardless of case in protocols and agreements",
+      newTermPlaceholder: "e.g. arbetstidskonto",
+      newTermRequired: "Type a term first.",
+      addedNote: (term: string) =>
+        `${term} has been added. It is now marked in uploaded protocols and agreements.`,
+      duplicate: (term: string) => `${term} is already in the table.`,
+      removedNote: (term: string) => `${term} has been removed and is no longer marked.`,
+      note: "In this demonstration, terms added here or from a party meeting apply only to your own session.",
     },
     retention: {
       heading: "Retention and access",
