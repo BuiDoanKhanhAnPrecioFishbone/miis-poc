@@ -390,3 +390,32 @@ describe("mediatorRelease — Bilaga 3 §7.4", () => {
     expect(mediatorRelease(register[5]!, documents, register)).toBeNull();
   });
 });
+
+/*
+  A report whose criteria pick one agreement has to be able to open that
+  agreement.
+
+  Bilaga F's Rapport 1, 4 and 6 each print *one* agreement — their own
+  `produces` says so — and their selection screen exists to say which. Before
+  `detailBase` the button opened the register regardless, so choosing an
+  agreement and pressing the control landed the officer on a list of seventeen
+  with the choice discarded. That is the fault this locks: a screen result whose
+  criteria include the agreement must name the route a single one lives on.
+*/
+describe("a screen result that selects one agreement can open it", () => {
+  const screenReports = REPORTS.filter((r) => r.result.kind === "screen");
+
+  it("has at least one such report", () => {
+    expect(screenReports.length).toBeGreaterThan(0);
+  });
+
+  it.each(screenReports.map((r) => [r.id, r] as const))(
+    "%s names a detail route where it offers an agreement criterion",
+    (_id, report) => {
+      const picksAnAgreement = report.criteria.some((c) => c.kind === "agreement");
+      if (!picksAnAgreement) return;
+      const result = report.result as { kind: "screen"; href: string; detailBase?: string };
+      expect(result.detailBase).toBeTruthy();
+    },
+  );
+});

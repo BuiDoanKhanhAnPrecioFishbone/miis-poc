@@ -193,8 +193,18 @@ export type ReportResult =
       kind: "inline";
       component: "constructions" | "bargaining-round" | "expiry" | "mediator-release";
     }
-  /** A screen that already is this printout — the report sends you there. */
-  | { kind: "screen"; href: string }
+  /**
+   * A screen that already is this printout — the report sends you there.
+   *
+   * `detailBase` is the route a *single* agreement lives under, and it is what
+   * makes the selection screen mean anything. Bilaga F's Rapport 1, 4 and 6 are
+   * each one agreement — their own `produces` says so — and their criteria
+   * exist to pick which. Without this the officer chose an agreement and the
+   * button landed them on a register of seventeen, having discarded the choice:
+   * an *urvalsbild* that selects nothing is the same dead control as a
+   * `<Button>` with no `onClick`, wearing MI's own report name.
+   */
+  | { kind: "screen"; href: string; detailBase?: string }
   /** Named in MI's table as Steg 2, and stated rather than drawn. */
   | { kind: "stage-2" };
 
@@ -306,7 +316,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 1,
     criteria: AGREEMENT_CRITERIA,
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/allmanheten" },
+    result: { kind: "screen", href: "/allmanheten", detailBase: "/allmanheten" },
     bilagaF: 1,
     externalRoles: ["public"],
   },
@@ -350,7 +360,7 @@ export const REPORTS: readonly ReportDefinition[] = [
     stage: 1,
     criteria: AGREEMENT_CRITERIA,
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/avtal" },
+    result: { kind: "screen", href: "/avtal", detailBase: "/avtal" },
     bilagaF: 4,
   },
   {
@@ -415,7 +425,7 @@ export const REPORTS: readonly ReportDefinition[] = [
       },
     ],
     formats: ["pdf", "word", "excel"],
-    result: { kind: "screen", href: "/avtal" },
+    result: { kind: "screen", href: "/avtal", detailBase: "/avtal" },
     bilagaF: 6,
   },
   {

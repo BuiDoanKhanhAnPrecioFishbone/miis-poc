@@ -169,6 +169,19 @@ reviewer to a screen its own role would be refused.
    record has been in since April is a state word plus its facts.
    `reportSelection.website` is adjacent and is not the same thing: it is which
    *reports* the agreement is drawn into once it is out.
+   **A report's selection has to reach its result.** Three of MI's own reports —
+   Bilaga F's Rapport 1, 4 and 6 — print *one agreement*, and their criteria
+   exist to say which. Their result is `kind: "screen"`, because the agreement's
+   own view already **is** that printout with FR-011 and D-002 applied in the
+   markup, and rendering it a second time would be two places for one
+   confidentiality rule to disagree. But the button opened the register
+   regardless: an officer who had just picked Teknikavtalet landed on a list of
+   seventeen with the choice discarded. `detailBase` is the route a single
+   agreement lives on, and `filterForReport` — the same narrowing the inline
+   reports use — decides whether the selection leaves exactly one. **An
+   urvalsbild that selects nothing is the same dead control as a `<Button>`
+   with no `onClick`**, wearing MI's own report name; the result now says what
+   the selection matched and the button names where it goes.
    **A report a role may run has to produce something that role may read.**
    *Avtal – Medlare* pointed at `/avtal`, and §3.1 gives Medlare Start and
    Rapporter — so the picker offered a report whose only outcome was the

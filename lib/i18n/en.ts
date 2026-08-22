@@ -954,6 +954,13 @@ export const en: Dictionary = {
       onScreen:
         "The report is a printout of a view MIIS already has. Open the view and print it there, so the printout follows the same confidentiality rules as the screen.",
       openView: "Open the view",
+      onScreenOne: (name: string) =>
+        `The selection identifies one agreement: ${name}. The button opens that agreement, not the list.`,
+      openAgreement: (name: string) => `Open ${name}`,
+      onScreenMany: (n: number) =>
+        `The selection matches ${n} agreements, and this report is printed one agreement at a time. Narrow the selection above until one remains, or open the view and choose there.`,
+      onScreenNone:
+        "No agreement matches the selection. Widen it above, or open the view and search there.",
       notBuilt: "The report's content is not built in the mockup.",
       chooseAgreement: "Choose an agreement in the selection above. The report releases one agreement at a time.",
       notReleasable:

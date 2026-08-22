@@ -423,14 +423,52 @@ export function ReportRunner({
                 ))
               )
             ) : report.result.kind === "screen" ? (
-              <Panel title={report.label[lang]} tags={report.requirements}>
-                <p className="max-w-4xl text-table">{t.onScreen}</p>
-                <div className="mt-4">
-                  <LinkButton href={report.result.href} iconEnd={<IconForward />}>
-                    {t.openView}
-                  </LinkButton>
-                </div>
-              </Panel>
+              /*
+                The selection has to reach the destination.
+
+                Three of MI's own reports — Bilaga F's Rapport 1, 4 and 6 — are
+                *one agreement*, and their criteria exist to say which. The
+                button used to open the register regardless, so an officer who
+                had just chosen Teknikavtalet arrived at a list of seventeen
+                with the choice thrown away. `filterForReport` is the same
+                narrowing the inline reports use; when it leaves exactly one
+                agreement the button opens that agreement's own view, which
+                *is* the printout — same data, same confidentiality rules,
+                because it is the same page rather than a second rendering of
+                it.
+              */
+              (() => {
+                const matched = report.result.detailBase
+                  ? filterForReport(agreements, values)
+                  : [];
+                const only = matched.length === 1 ? matched[0]! : undefined;
+                return (
+                  <Panel title={report.label[lang]} tags={report.requirements}>
+                    <p className="max-w-4xl text-table">{t.onScreen}</p>
+                    {report.result.detailBase && (
+                      <p className="mt-2 max-w-4xl text-table">
+                        {only
+                          ? t.onScreenOne(only.name)
+                          : matched.length === 0
+                            ? t.onScreenNone
+                            : t.onScreenMany(matched.length)}
+                      </p>
+                    )}
+                    <div className="mt-4">
+                      <LinkButton
+                        href={
+                          only && report.result.detailBase
+                            ? `${report.result.detailBase}/${only.id}`
+                            : report.result.href
+                        }
+                        iconEnd={<IconForward />}
+                      >
+                        {only ? t.openAgreement(only.name) : t.openView}
+                      </LinkButton>
+                    </div>
+                  </Panel>
+                );
+              })()
             ) : (
               <Panel title={report.label[lang]} tags={report.requirements}>
                 <Callout tone="attention" label={t.stage2}>

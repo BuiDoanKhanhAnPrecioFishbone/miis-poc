@@ -951,6 +951,13 @@ export const sv = {
       onScreen:
         "Rapporten är en utskrift av en vy som redan finns i MIIS. Öppna vyn och skriv ut den där, så följer utskriften samma sekretessregler som skärmen.",
       openView: "Öppna vyn",
+      onScreenOne: (name: string) =>
+        `Urvalet pekar ut ett avtal: ${name}. Knappen öppnar just det avtalet, inte listan.`,
+      openAgreement: (name: string) => `Öppna ${name}`,
+      onScreenMany: (n: number) =>
+        `Urvalet matchar ${n} avtal, och den här rapporten skrivs ut för ett avtal i taget. Smalna av urvalet ovan tills ett avtal återstår, eller öppna vyn och välj där.`,
+      onScreenNone:
+        "Inget avtal matchar urvalet. Bredda urvalet ovan, eller öppna vyn och sök där.",
       notBuilt: "Rapportens innehåll är inte byggt i mockupen.",
       chooseAgreement: "Välj ett avtal i urvalet ovan. Rapporten lämnar ut ett avtal i taget.",
       notReleasable:
