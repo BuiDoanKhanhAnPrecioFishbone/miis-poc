@@ -138,7 +138,13 @@ export function WatchwordTable({
   }));
 
   return (
-    <Panel title={t.heading} tags={["FAI-004"]}>
+    /*
+      `id` so the settings row can link here. Administration is tabbed now, and
+      the setting that describes this table sits in a different panel — a row
+      naming a table with no way to it is the reader being told to go and look
+      for something. `SectionTabs` opens the tab that owns the id.
+    */
+    <Panel id="bevakningsord" title={t.heading} tags={["FAI-004"]}>
       <p className="mb-4 max-w-3xl text-table">{t.intro}</p>
 
       {note && (

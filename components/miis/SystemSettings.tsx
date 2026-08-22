@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -146,7 +147,8 @@ export function SystemSettings({
         </div>
       </section>
 
-      {/* FAI-004 — the example US-13 names. The table is below; this is the row. */}
+      {/* FAI-004 — the example US-13 names. This is the row; the table it
+          describes is a tab of its own, and the link opens it. */}
       <section className="mt-6 border-t border-border pt-4">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-display text-section font-semibold">{watchwords.label[lang]}</h3>
@@ -155,6 +157,21 @@ export function SystemSettings({
         </div>
         <p className="mt-1 max-w-3xl text-table">{watchwords.description[lang]}</p>
         <p className="mt-2 text-label text-muted-foreground">{t.watchwordCount(watchwordCount)}</p>
+        <div className="mt-2">
+          {/*
+            A plain anchor, not `Link`. The target is a section of the screen
+            the reader is already on, and Next's soft navigation changes the
+            hash without firing `hashchange` — so the tab never opened. A
+            same-page anchor is also the honest element: nothing is being
+            navigated to.
+          */}
+          <a
+            href="#bevakningsord"
+            className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
+          >
+            {t.openWatchwords}
+          </a>
+        </div>
       </section>
 
       {/*

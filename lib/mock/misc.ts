@@ -80,6 +80,46 @@ export const REMINDERS: Reminder[] = [
 ];
 
 export const EVENTS: AuditEvent[] = [
+  /*
+    Stål- och metallindustrin's own history — FH-002, on the agreement the
+    guided walkthrough sends an evaluator to.
+
+    It had none, so the panel read *"Inga händelser registrerade på avtalet
+    ännu"* on the one record a reviewer is asked to look at: a section that is
+    always empty demonstrates the requirement's absence rather than the
+    requirement. FH-002 asks for *övergripande händelser kopplade till ett
+    avtal*, and gives two examples — *avtal tecknat*, *medling startar*. These
+    are the round this agreement actually went through: the old one was
+    terminated ahead of the bargaining round, the new one was signed on the day
+    the protocol carries, and MI released it two working days later.
+
+    Note what is **not** here. "Anställda ändrade från 24 300 till 24 500" is a
+    change to a field, and belongs in the ändringslogg (FH-001) with its old
+    and new value. The two logs answer two different questions and neither can
+    be derived from the other.
+  */
+  {
+    id: "H-10",
+    timestamp: "2027-04-03 11:20",
+    type: "email-sent",
+    detail: "Stål- och metallindustrin publicerat – avisering till Analysenheten",
+    agreementId: "A-001",
+  },
+  {
+    id: "H-11",
+    timestamp: "2027-03-31 16:45",
+    type: "agreement-signed",
+    detail: "Stål- och metallindustrin, Industriarbetsgivarna / IF Metall – märkessättande",
+    agreementId: "A-001",
+    color: "green",
+  },
+  {
+    id: "H-12",
+    timestamp: "2027-01-15 08:30",
+    type: "agreement-terminated",
+    detail: "Stål- och metallindustrin 2025–2027 uppsagt inför avtalsrörelsen",
+    agreementId: "A-001",
+  },
   {
     id: "H-1",
     timestamp: "2027-05-12 14:02",

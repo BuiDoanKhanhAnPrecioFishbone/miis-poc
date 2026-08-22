@@ -1883,6 +1883,7 @@ export const sv = {
         "Gäller direkt i hela systemet – varningen visas två minuter innan gränsen nås.",
       savedNote: (minutes: number) =>
         `Tidsgränsen är satt till ${minutes} minuter och gäller från och med nu. Ändringen registreras i ändringsloggen.`,
+      openWatchwords: "Underhåll bevakningsorden",
       watchwordCount: (n: number) =>
         n === 1 ? "1 ord i tabellen nedan" : `${n} ord i tabellen nedan`,
       retentionValue: (months: number) => `Minst ${months} månader`,

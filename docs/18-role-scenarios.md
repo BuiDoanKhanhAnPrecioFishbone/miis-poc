@@ -125,7 +125,13 @@ part is that **two of them are deliberately not editable**:
 - **The watchword table** (FAI-004) is maintained before a bargaining round, and
   what is in it decides what the AI analysis marks in every protocol that arrives
   afterwards. It is the clearest case in the system of an administrator's setting
-  having a visible effect on a case officer's day.
+  having a visible effect on a case officer's day — and it is *maintained*, not
+  merely displayed: §4.1 calls the table *"fördefinierad **och**
+  anpassningsbar"*, and both adjectives are answered. The administrator adds
+  terms and removes them again on the **Bevakningsord** tab, and MI's own
+  predefined four cannot be removed there, with the reason on the row. A term
+  added before the round starts marking text in every protocol that arrives
+  after it.
 - **Log retention** is shown with a padlock and its reason. NFL-003 names this
   role in the prohibition — *"ska inte kunna ändras eller raderas av vanliga
   användare **eller systemadministratörer**"* — so a field an administrator could
@@ -137,6 +143,12 @@ part is that **two of them are deliberately not editable**:
 Showing the two that are fixed beside the two that are not is the point of the
 panel. Four editable boxes would say we built a settings form; this says we read
 the sentences.
+
+Administration is **four tabs, not one page** — settings, the change log, the
+event log and the watchword table. They are four different jobs that happen to
+belong to one role, and stacking them made an administrator who came to do one
+scroll past the other three. Every one of them still prints: a tab is a view
+state and paper has none.
 
 MI's fifth bullet invites *"annan administration som leverantören bedömer vara
 central för systemets förvaltning"*, and our answer is **the logs**. The
@@ -222,24 +234,40 @@ different tasks:
   agreement with no wage agreement under it is not a finished record.
 - **An incoming protocol** runs MI's own five steps (§4.4): upload, AI analysis,
   the matched agreement, the wage agreement and general terms, and linking the
-  document. OCR, watchword marking and matching run automatically. Every AI
+  document. The flow **ends on the agreement it registered** rather than on the
+  register: after five steps of work on one record, being handed a list of
+  seventeen and told to find it again is the system losing the officer's place. OCR, watchword marking and matching run automatically. Every AI
   proposal is **source-linked** — select it and the passage it was read from is
   highlighted in the protocol beside the form (FAI-001, FAI-004) — and every one
   needs an explicit approve or reject (FAI-002). One proposal in the demo is
   deliberately wrong, so the rejected path is *shown* rather than asserted.
 
 **2 · Adding or updating information on the agreement.** FA-001 is to register
-*and edit* agreement information. The edit happens **on the values themselves**
+*and edit* agreement information, and **every section that can be corrected
+carries its own edit control**. The change happens on the values themselves
 rather than on a second screen: the officer is looking at the record being
-corrected, and moving to a form would make them remember what it said. The change
-is written to the change log with the time and the user (FH-001).
+corrected, and moving to a form would make them remember what it said. It is
+written to the change log with the time and the user (FH-001).
 
-The rest of the agreement view is Bilaga F's **Rapport 4, Huvudrapporten**, on
-screen: the four scope figures MI registers (*Anställda*, *Årsarbetare*,
-*Fackmedlemmar*, *Medellön*, each dated, with *Organisationsgrad* derived rather
-than stored), Basfakta's flags each paired with its comment, working groups,
-*Särskilda frågor* in §3.11's three numbered slots, minimum wages, lifecycle and
-the event log.
+Two things about *what* is editable are the design rather than the scope. Two
+fields are deliberately locked **and say why on their own row** — the agreement
+type follows from which wage agreements exist under it, and the parties are a
+relation into the party register where FA-006's name history lives, so retyping
+one here would break the merger history quietly. And *Organisationsgrad* is
+never an input: it recomputes while the two figures above it are typed, which is
+the demonstration that it is derived rather than stored.
+
+The agreement view is Bilaga F's **Rapport 4, Huvudrapporten** — all of it, in
+**three tabs** rather than one column. *Avtalet* is what the agreement is
+(identity and the four scope figures MI registers: *Anställda*, *Årsarbetare*,
+*Fackmedlemmar*, *Medellön*, each dated). *Löneavtal* is what the round produced
+— the row per bargaining round and the minimum wages under it. *Frågor och
+grupper* is what it left open: working groups and *Särskilda frågor* in §3.11's
+three numbered slots. What every one of those jobs is done *against* stays
+outside the tabs, in the column beside them: FR-012's status, the publication
+state, Basfakta, the Märket flags, the lifecycle. A tab that hid those would
+have the officer switching back to see what they were editing. On paper it is
+one document again — every panel prints, the tab strip does not.
 
 **3 · Handling versions or changes.** An agreement in MI's model has no version
 list — it has **a row per bargaining round**. FA-002 gives every renegotiation
@@ -249,7 +277,11 @@ and not a stack of panels. What changed *within* a period is in the event log,
 with the old and the new value.
 
 **4 · Publishing the agreement.** Publication is an **act, with a date and a
-person** — not a property that follows from the record being complete. MI decides
+person** — not a property that follows from the record being complete. It sits
+beside the status it changes rather than inside editing, because correcting a
+detail and releasing an agreement are two different acts with two different
+consequences, and one heading over both made the first look like it might do the
+second. MI decides
 when an agreement is released, and until then it exists in the register and not
 in the public interface. The control is offered only on a registration marked
 complete whose agreement is signed; on a half-registered one it is refused and
@@ -266,9 +298,9 @@ a claim rather than a result.
 | `registrera-uppladdning` | Step 1 — the upload and the four automatic stages |
 | `registrera-protokoll` | Steps 2–5 — the protocol pinned beside the form |
 | `registrera-protokoll-kallkoppling` | An AI proposal source-linked to its passage |
-| `ai-assistenten` | The AI support: what can be asked for here, and what awaits approval |
-| `avtal-huvudrapport` | One agreement in full — Bilaga F's Rapport 4 — with editing and publication |
-| `rapporter-urvalsbild` | The report selection screen, in MI's own shape |
+| `ai-assistenten` | The AI support: ask the register a question, what runs on this page, and what awaits approval |
+| `avtal-huvudrapport` | One agreement — Bilaga F's Rapport 4, tabbed, with the facts it is read against beside it |
+| `rapporter-urvalsbild` | The report selection screen, in MI's own shape — the criteria narrow, and the result opens what they picked |
 | `start-avtalsadministrator` | The role's start page |
 
 ### Usability, efficiency and accessibility

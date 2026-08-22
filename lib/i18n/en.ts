@@ -1888,6 +1888,7 @@ export const en: Dictionary = {
       effectNote: "Applies immediately across the system — the warning appears two minutes before the limit.",
       savedNote: (minutes: number) =>
         `The time limit is set to ${minutes} minutes and applies from now. The change is recorded in the change log.`,
+      openWatchwords: "Maintain the watchwords",
       watchwordCount: (n: number) =>
         n === 1 ? "1 term in the table below" : `${n} terms in the table below`,
       retentionValue: (months: number) => `At least ${months} months`,
