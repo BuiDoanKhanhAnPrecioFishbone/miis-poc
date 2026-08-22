@@ -154,7 +154,9 @@ export function Select({
         </select>
         <SelectChevron />
       </div>
-      {hint && <p className="mt-1 text-label text-muted-foreground">{hint}</p>}
+      {/* `field-hint`, so print can drop it: a prompt for someone filling the
+          form in is not part of the document the form produces. */}
+      {hint && <p className="field-hint mt-1 text-label text-muted-foreground">{hint}</p>}
     </div>
   );
 }

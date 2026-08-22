@@ -7,7 +7,16 @@ import { hasCriteria, publicSearch, type PublicSearchable } from "@/lib/domain/p
 import { dictionary } from "@/lib/i18n";
 import { DataTable, type Column, type Row } from "./DataTable";
 import { PrintButton } from "./Print";
-import { Button, FilterChips, FormGrid, Panel, Rationale, ReqTags, TextField } from "./primitives";
+import {
+  Button,
+  Callout,
+  FilterChips,
+  FormGrid,
+  Panel,
+  Rationale,
+  ReqTags,
+  TextField,
+} from "./primitives";
 import { Select } from "./Select";
 
 /**
@@ -49,6 +58,8 @@ export function PublicSearch({
   lang,
   columns,
   rowFor,
+  initial,
+  fromReport,
 }: {
   agreements: PublicSearchable[];
   employerOrgs: { id: string; name: string }[];
@@ -72,14 +83,35 @@ export function PublicSearch({
    * are shown and nothing else.
    */
   rowFor: Record<string, Row>;
+  /**
+   * The selection the report carried here, by the report's own criterion ids.
+   *
+   * Values are *names* rather than ids, because that is what MI's own report
+   * criteria offer and what the visitor sees in these lists — matching on the
+   * name keeps the two screens speaking the same language.
+   */
+  initial?: { employerOrgId?: string; employeeOrgId?: string; agreementId?: string };
+  /** Said once, when an officer arrived from the report rather than walked in. */
+  fromReport?: string;
 }) {
   const d = dictionary(lang);
   const t = d.allmanheten;
 
+  /* The report's criteria are names; these lists are keyed by id, so the
+     incoming value is resolved once here rather than on every render. */
+  const idOf = (list: { id: string; name: string }[], name: string | undefined) =>
+    (name && list.find((x) => x.name === name)?.id) ?? "";
+
   const [text, setText] = useState("");
-  const [employerOrgId, setEmployerOrgId] = useState("");
-  const [employeeOrgId, setEmployeeOrgId] = useState("");
-  const [agreementId, setAgreementId] = useState("");
+  const [employerOrgId, setEmployerOrgId] = useState(() =>
+    idOf(employerOrgs, initial?.employerOrgId),
+  );
+  const [employeeOrgId, setEmployeeOrgId] = useState(() =>
+    idOf(employeeOrgs, initial?.employeeOrgId),
+  );
+  const [agreementId, setAgreementId] = useState(
+    () => agreements.find((a) => a.name === initial?.agreementId)?.id ?? "",
+  );
   const [industryCode, setIndustryCode] = useState("");
   const [validAt, setValidAt] = useState("");
 
@@ -145,6 +177,16 @@ export function PublicSearch({
     <>
       <Panel title={t.selection.title} tags={["FR-001", "FR-003", "FR-011"]}>
         <p className="mb-4 max-w-3xl text-table">{t.selection.lead}</p>
+
+        {/* Only for someone who came from a report — the visitor at the
+            computer in the lobby never sees it. */}
+        {fromReport && (
+          <div className="print-hide mb-4">
+            <Callout tone="ok" label={t.publicMarker}>
+              {fromReport}
+            </Callout>
+          </div>
+        )}
 
         {/*
           One field, first, and wide. Everything below it is a narrowing of what

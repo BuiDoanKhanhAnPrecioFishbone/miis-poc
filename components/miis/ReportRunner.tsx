@@ -442,6 +442,25 @@ export function ReportRunner({
                   ? filterForReport(agreements, values)
                   : [];
                 const only = matched.length === 1 ? matched[0]! : undefined;
+                /*
+                  Where the selection does not come down to one agreement, it
+                  still has to travel: an officer who narrowed to an employer
+                  organisation and pressed the button arrived at an unfiltered
+                  list, having done the narrowing twice. The destination reads
+                  these back and pre-fills its own controls, so the screen opens
+                  on the selection rather than on everything.
+
+                  `fran=rapport` is the return ticket. The public view has no
+                  menu — that is the point of it — so an officer who followed
+                  the report there had the browser's Back button and nothing
+                  else.
+                */
+                const carry = new URLSearchParams();
+                for (const [k, v] of Object.entries(values)) {
+                  if (v.trim()) carry.set(k, v);
+                }
+                carry.set("fran", "rapport");
+                const listHref = `${report.result.href}?${carry.toString()}`;
                 return (
                   <Panel title={report.label[lang]} tags={report.requirements}>
                     <p className="max-w-4xl text-table">{t.onScreen}</p>
@@ -458,8 +477,10 @@ export function ReportRunner({
                       <LinkButton
                         href={
                           only && report.result.detailBase
-                            ? `${report.result.detailBase}/${only.id}`
-                            : report.result.href
+                            ? `${report.result.detailBase}/${only.id}?fran=rapport`
+                            : report.result.detailBase
+                              ? listHref
+                              : report.result.href
                         }
                         iconEnd={<IconForward />}
                       >

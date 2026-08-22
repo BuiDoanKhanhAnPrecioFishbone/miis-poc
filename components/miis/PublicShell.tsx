@@ -8,6 +8,7 @@ import type { Lang } from "@/lib/domain/lang";
 import type { Role } from "@/lib/domain/role";
 import type { WalkthroughPosition } from "@/lib/domain/walkthrough";
 import { dictionary } from "@/lib/i18n";
+import { IconBack } from "./icons";
 import { DemoBar } from "./DemoBar";
 
 /**
@@ -29,6 +30,7 @@ export function PublicShell({
   role,
   reqTags,
   walkthrough,
+  back,
   children,
 }: {
   lang: Lang;
@@ -37,6 +39,16 @@ export function PublicShell({
   reqTags: boolean;
   /** The reviewer's place in `/genomgang`, carried into the demo strip. */
   walkthrough?: WalkthroughPosition | null;
+  /**
+   * The way back, for a member of MI's own staff who arrived from a report.
+   *
+   * The public view deliberately has no menu — a visitor at the computer in
+   * the lobby has one screen and no way to wander — so an officer who followed
+   * *Avtal – Allmänheten* here had the browser's Back button and nothing else.
+   * This appears only when the officer came from somewhere and only when their
+   * role may read that somewhere; the public computer never renders it.
+   */
+  back?: { href: string; label: string };
   children: ReactNode;
 }) {
   const t = dictionary(lang);
@@ -90,8 +102,21 @@ export function PublicShell({
       </header>
 
       <main id="innehall" className="@container mx-auto max-w-6xl px-5 py-8 sm:px-8">
+        {/* Above the content and `print-hide`: a control is not part of a
+            document, and this one is not part of the public view either. */}
+        {back && (
+          <div className="print-hide mb-4">
+            <Link
+              href={back.href}
+              className="inline-flex min-h-11 items-center gap-2 font-semibold text-primary underline underline-offset-2"
+            >
+              <IconBack />
+              {back.label}
+            </Link>
+          </div>
+        )}
         {children}
-        <p className="mt-8 border-t border-border pt-4 text-label text-muted-foreground">
+        <p className="print-hide mt-8 border-t border-border pt-4 text-label text-muted-foreground">
           <Link href="/" className="font-semibold text-primary underline underline-offset-2">
             {t.common.appName}
           </Link>{" "}

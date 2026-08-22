@@ -1149,6 +1149,9 @@ export const en: Dictionary = {
     subtitle:
       "Public view at the Mediation Office. Access is from a dedicated client computer on MI's premises, without signing in.",
     publicMarker: "Public view",
+    backToReport: "Back to the report",
+    fromReport:
+      "The selection comes from the report Agreement – The public. It can be changed here, and the list narrows for real.",
     publicExplain:
       "This is the same system in a reduced, read-only version. No registration, no editing and no confidentiality-marked agreement information.",
     selection: {

@@ -8,6 +8,7 @@ import { PublicAgreementActions } from "@/components/miis/PublicAgreementActions
 import { PublicShell } from "@/components/miis/PublicShell";
 import { Callout, Field, FormGrid, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { getPublicAgreement } from "@/lib/data/public";
+import { accessLevel } from "@/lib/domain/role";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata({
@@ -44,11 +45,16 @@ export async function generateMetadata({
  */
 export default async function PublicAgreementPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [{ id }, session] = await Promise.all([params, getSession()]);
+  const [{ id }, session, query] = await Promise.all([params, getSession(), searchParams]);
   const { i18n, lang } = session;
+  /* An officer who followed *Avtal – Allmänheten* here needs the way back; the
+     public view has no menu, which is deliberate and is why this is a prop. */
+  const fromReport = query["fran"] === "rapport";
   const agreement = await getPublicAgreement(id, lang);
   if (!agreement) notFound();
 
@@ -61,6 +67,9 @@ export default async function PublicAgreementPage({
       dataset={session.dataset}
       role={session.role.id}
       reqTags={session.reqTags}
+      {...(fromReport && accessLevel(session.role, "rapporter") !== "none"
+        ? { back: { href: "/rapporter", label: i18n.allmanheten.backToReport } }
+        : {})}
     >
       <PrintHeader lang={lang} />
       <PageHeading

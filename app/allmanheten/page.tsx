@@ -16,6 +16,7 @@ import { listPublicAgreements } from "@/lib/data/public";
 import { listEmployeeOrgs, listEmployerOrgs, listParties } from "@/lib/data/parties";
 import { validityLabel } from "@/lib/domain/agreement";
 import type { PublicSearchable } from "@/lib/domain/public-search";
+import { accessLevel } from "@/lib/domain/role";
 import { agreementStatus } from "@/lib/domain/status";
 import { getSession } from "@/lib/session";
 
@@ -40,9 +41,33 @@ export async function generateMetadata(): Promise<Metadata> {
  * decisions about what may be *shown*, and those stay on the server; the browser
  * decides only which rows are in the selection.
  */
-export default async function AllmanhetenPage() {
-  const session = await getSession();
+export default async function AllmanhetenPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const [session, query] = await Promise.all([getSession(), searchParams]);
   const { i18n, lang } = session;
+
+  /*
+    The selection the report carried here.
+
+    *Avtal – Allmänheten* is Bilaga F's Rapport 1 and its criteria are AGO, ATO
+    and Avtal; an officer who narrowed on the report screen and pressed the
+    button used to arrive at an unfiltered list, having done the narrowing
+    twice. The criterion ids are the report's own, so nothing has to be
+    translated between the two screens.
+  */
+  const one = (key: string) => {
+    const v = query[key];
+    return typeof v === "string" ? v : "";
+  };
+  const initial = {
+    employerOrgId: one("employerOrg"),
+    employeeOrgId: one("employeeOrg"),
+    agreementId: one("agreement"),
+  };
+  const fromReport = one("fran") === "rapport";
   const [agreements, employerOrgs, employeeOrgs, parties] = await Promise.all([
     /* Only what MI has published — Bilaga 2 §3.5, Scenario 2's fourth bullet
        seen from the other end. An agreement nobody released is in the register
@@ -154,6 +179,9 @@ export default async function AllmanhetenPage() {
       dataset={session.dataset}
       role={session.role.id}
       reqTags={session.reqTags}
+      {...(fromReport && accessLevel(session.role, "rapporter") !== "none"
+        ? { back: { href: "/rapporter", label: t.backToReport } }
+        : {})}
     >
       <PrintHeader lang={lang} />
       <PageHeading
@@ -161,13 +189,18 @@ export default async function AllmanhetenPage() {
         subtitle={t.subtitle}
         tags={["FR-011", "NFÅ-006", "D-002"]}
         marker={
-          <p className="max-w-3xl rounded-md border-2 border-public-border bg-public px-4 py-3 text-table text-public-foreground">
+          /* `print-hide`: this explains what the *view* is — a limited,
+             read-only version of MIIS — which is a fact about the screen the
+             reader is no longer looking at. */
+          <p className="print-hide max-w-3xl rounded-md border-2 border-public-border bg-public px-4 py-3 text-table text-public-foreground">
             {t.publicExplain}
           </p>
         }
       />
 
       <PublicSearch
+        initial={initial}
+        {...(fromReport ? { fromReport: t.fromReport } : {})}
         agreements={searchable}
         employerOrgs={employerOrgs.map((p) => ({ id: p.id, name: p.name }))}
         employeeOrgs={employeeOrgs.map((p) => ({ id: p.id, name: p.name }))}

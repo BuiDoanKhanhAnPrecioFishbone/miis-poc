@@ -187,6 +187,14 @@ reviewer to a screen its own role would be refused.
    Rapporter — so the picker offered a report whose only outcome was the
    authorisation notice. `ReportResult.kind` is `"screen"` only when the
    audience has that screen.
+   **A selection has to reach the screen it opens, and there has to be a way
+   back.** Bilaga F's Rapport 1 sends the officer to `/allmanheten`, and the
+   criteria travel as query parameters the destination pre-fills from — an
+   officer who narrowed on the report and then narrowed again on the register
+   did the same work twice. The return link is the other half: the public view
+   has no menu on purpose, so someone who followed a report there had the
+   browser's Back button and nothing else. It appears only for a role that may
+   read the screen it points at, so **the public computer never renders it**.
    **The public view's reader has never seen the vocabulary.** Same data, same
    requirements, different reader — so `/allmanheten` orders and words itself
    for a visitor with no training and one attempt. The **agreement name leads**
@@ -434,6 +442,17 @@ reviewer to a screen its own role would be refused.
    (whose Ja/Nej word is beside it), and the *chosen* option of a radiogroup.
    It was being done per screen, so every screen added since brought its buttons
    back onto the paper.
+   **A field prints its value and nothing that was there to help someone type
+   it.** The public register printed the placeholder *"T.ex. Apotek, Unionen
+   eller Spårtrafik"* as though it were an answer, every hint under every list
+   as body text, and an empty date criterion as the browser's own `mm/dd/yyyy`.
+   A reader cannot tell a prompt from a value, so on paper none of them is one:
+   placeholders go transparent, `.field-hint` is dropped, and a date input is
+   hidden unless `data-filled` says it holds something — CSS cannot ask an input
+   whether it is empty, so the component has to say. `FilterChips` is
+   `print-hide` for the opposite reason: with its removal controls gone it comes
+   out as a bare count, and the criteria are already above it as label and
+   value.
    **A field prints its value, not its box** — which is how a register's filter
    row becomes Bilaga F's *Urvalskriterier* with no second component to keep in
    step. `select`, `input`, `textarea` and `.field-input` lose their border and

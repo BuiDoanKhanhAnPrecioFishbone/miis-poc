@@ -588,7 +588,14 @@ export function FilterChips({
 }) {
   const t = dictionary(lang).common;
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-2">
+    /*
+      `print-hide`. On paper the criteria are already there: the fields above
+      print as label-and-value, which is Bilaga F's *Urvalskriterier*. The chips
+      are a second copy of the same thing, and with their removal controls
+      dropped they come out as a bare count — "1 filter" — which says less than
+      the row it duplicates.
+    */
+    <div className="print-hide mt-3 flex flex-wrap items-center gap-2">
       <span aria-live="polite" className="text-label text-muted-foreground">
         {active.length === 0 ? t.filtersNone : t.filtersCount(active.length)}
       </span>
@@ -867,17 +874,29 @@ export function TextField({
       <FieldLabel htmlFor={id} required={required} lang={lang}>
         {label}
       </FieldLabel>
+      {/*
+        `data-filled` is read by the print stylesheet, not by the screen.
+
+        A date input paints the browser's own `åååå-mm-dd` skeleton whether or
+        not it holds a value, and CSS cannot ask an input whether it is empty.
+        On paper that skeleton reads as a value — the public register printed a
+        criterion of `mm/dd/yyyy` — so print hides the text unless this says
+        there is something to show.
+      */}
       <input
         id={id}
         type={type}
         aria-required={required || undefined}
+        data-filled={(value ?? defaultValue ?? "") !== "" ? "true" : undefined}
         {...(value === undefined
           ? { defaultValue }
           : { value, onChange: (e: ChangeEvent<HTMLInputElement>) => onChange?.(e.target.value) })}
         placeholder={placeholder}
         className={`field-input ${widthClass} ${numeric ? "tabular-nums" : ""}`}
       />
-      {hint && <p className="mt-1 max-w-[26rem] text-label text-muted-foreground">{hint}</p>}
+      {hint && (
+        <p className="field-hint mt-1 max-w-[26rem] text-label text-muted-foreground">{hint}</p>
+      )}
     </div>
   );
 }

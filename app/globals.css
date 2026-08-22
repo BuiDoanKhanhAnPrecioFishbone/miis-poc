@@ -804,6 +804,42 @@ select.demo-select {
   }
 
   /*
+    A field prints its value and nothing that was there to help someone type it.
+
+    The public register's selection printed as a page of form furniture: the
+    placeholder *"T.ex. Apotek, Unionen eller Spårtrafik"* read as if it were a
+    value, every hint under every list came out as body text, and the date
+    criterion printed the browser's own empty `mm/dd/yyyy`. A reader cannot tell
+    a prompt from an answer, so on paper none of it is an answer.
+  */
+  main input::placeholder,
+  main textarea::placeholder {
+    color: transparent !important;
+  }
+
+  main .field-hint {
+    display: none !important;
+  }
+
+  /*
+    An empty date input still paints the browser's own `åååå-mm-dd` skeleton and
+    its picker button. Neither is a value. The component supplies a `print-only`
+    reading of the field where one is needed — the same arrangement the checkbox
+    uses — so the widget itself has nothing left to say on paper.
+  */
+  main input[type="date"] {
+    color: transparent !important;
+  }
+
+  main input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+
+  main input[type="date"][data-filled="true"] {
+    color: inherit !important;
+  }
+
+  /*
     Bilaga 3 §7, in MI's own words: *"Markerad kryssruta skrivs ut som Ja."*
 
     A tick in a box is a control's rendering of a value, and on paper it is
