@@ -1783,6 +1783,8 @@ export const sv = {
       action: "Åtgärd",
       open: "Ändra",
       heading: (name: string) => `Ändra uppgifter för ${name}`,
+      editingNow: "Ändras",
+      alreadyOpen: "Öppen i formuläret ovanför",
       nameRequired: "Medlaren måste ha ett namn.",
       deactivate: "Inaktivera",
       activate: "Aktivera",
@@ -1805,6 +1807,7 @@ export const sv = {
       intro:
         "Registret är underlaget när Medlingsinstitutet utser medlare. En ny medlare läggs in med kontaktuppgifter och de medlingstyper hen tar uppdrag inom.",
       open: "Lägg till medlare",
+      newBadge: "Ny",
       name: "Namn",
       namePlaceholder: "T.ex. Gerald Lindberg",
       phone: "Telefon",

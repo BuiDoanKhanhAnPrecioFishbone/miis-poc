@@ -1784,6 +1784,8 @@ export const en: Dictionary = {
     edit: {
       action: "Action",
       open: "Change",
+      editingNow: "Being changed",
+      alreadyOpen: "Open in the form above",
       heading: (name: string) => `Change details for ${name}`,
       nameRequired: "The mediator must have a name.",
       deactivate: "Deactivate",
@@ -1807,6 +1809,7 @@ export const en: Dictionary = {
       intro:
         "The register is the basis when Medlingsinstitutet appoints mediators. A new mediator is entered with contact details and the mediation types they take assignments in.",
       open: "Add a mediator",
+      newBadge: "New",
       name: "Name",
       namePlaceholder: "e.g. Gerald Lindberg",
       phone: "Telephone",

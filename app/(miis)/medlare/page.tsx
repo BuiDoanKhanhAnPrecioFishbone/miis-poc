@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { MediatorAdmin } from "@/components/miis/MediatorAdmin";
-import { NewMediator } from "@/components/miis/NewMediator";
 import { Callout, PageHeading, Panel } from "@/components/miis/primitives";
 import { listMediators, mediatorStats } from "@/lib/data/mediators";
 import { MEDIATION_TYPE_LABEL } from "@/lib/domain/mediation";
@@ -63,20 +62,14 @@ export default async function MedlarePage() {
 
       {/*
         Bilaga 1 §3.1 gives Medlaradministratör *"registrerar och redigerar
-        medlare"* twice over, and the register could only be read and added to.
-        See `MediatorAdmin` for what is editable and what is derived.
+        medlare"* twice over, and both halves are this one panel.
+
+        They were two panels — an inline form above the table for *Ändra*, and a
+        separate `NewMediator` below it for *Lägg till*, with the same five
+        fields, its own disclosure button and its own confirmation. One register,
+        one form. See `MediatorAdmin` for what is editable and what is derived.
       */}
       <MediatorAdmin mediators={mediators} stats={stats} lang={lang} />
-
-      {/*
-        `NewMediator` was imported by this page and never rendered — the form
-        that adds a mediator to the register existed and could not be reached
-        from anywhere in the product. §3.1's *"registrerar och redigerar
-        medlare"* had neither half.
-      */}
-      <div className="mt-5">
-        <NewMediator lang={lang} />
-      </div>
 
       {/*
         FE-001's notification, stated where the register is — the mediator
