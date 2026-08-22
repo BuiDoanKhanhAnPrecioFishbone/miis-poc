@@ -868,6 +868,10 @@ export const en: Dictionary = {
       noOutcome:
         "No outcome registered. The outcome is registered when the mediation has ended and is the basis for Medlingsinstitutet's statistics on industrial action.",
       actionTypePlaceholder: "e.g. strike, blockade, lockout",
+      finalisedLabel: "Decision finalised",
+      finalisedNote: (date: string, by: string) =>
+        `Finalised ${date} by ${by}. A notification e-mail with a link to the case has been sent to the mediator administrator, and the dispatch is in the event log.`,
+      reopenDecision: "Undo the finalisation",
     },
     outcome: "Mediation outcome",
     outcomeType: "Type of mediation",

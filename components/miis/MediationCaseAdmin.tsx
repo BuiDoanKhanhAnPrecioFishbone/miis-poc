@@ -54,6 +54,7 @@ import { Toggle } from "./Toggle";
 
 /** Fixed, so a screenshot taken twice is the same image. */
 const TODAY = "2027-06-14";
+const DECIDING_OFFICER = "Per Persson";
 
 export function CaseMediators({
   mediators: initial,
@@ -476,5 +477,51 @@ export function CaseOutcome({
       )}
       <Rationale>{c.outcomeNote}</Rationale>
     </EditablePanel>
+  );
+}
+
+/**
+ * FE-001 — klarmarkera beslutet, which is the act the requirement is written
+ * around.
+ *
+ * *"Systemet ska ha en funktion som gör det möjligt att skicka notiser och
+ * påminnelser via epost, till exempel skickas notifierings-epost till
+ * medlaradministratör **när ett medlingsbeslut klarmarkerats**."* The control
+ * was `disabled` with "Ej aktiv i demon", so the trigger the requirement names
+ * could not be pulled — the notification was described beside a button that
+ * refused to send it.
+ *
+ * Marking it is reversible here, which it would not be in production. The demo
+ * has to be runnable twice by an evaluator who has already pressed it once, and
+ * the alternative is a screen that can only be shown in one state.
+ */
+export function CaseDecision({ lang }: { lang: Lang }) {
+  const d = dictionary(lang);
+  const c = d.mediationCase;
+
+  const [finalised, setFinalised] = useState<{ date: string; by: string } | null>(null);
+
+  return (
+    <div className="mt-4">
+      {finalised ? (
+        <>
+          <Callout tone="ok" live label={c.admin.finalisedLabel} tags={["FE-001", "FH-002"]}>
+            {c.admin.finalisedNote(finalised.date, finalised.by)}
+          </Callout>
+          <div className="print-hide mt-3">
+            <Button variant="secondary" onClick={() => setFinalised(null)}>
+              {c.admin.reopenDecision}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="print-hide flex flex-wrap items-center gap-4">
+          <Button onClick={() => setFinalised({ date: TODAY, by: DECIDING_OFFICER })}>
+            {c.finalise}
+          </Button>
+          <span className="text-label text-muted-foreground">{c.finaliseNote}</span>
+        </div>
+      )}
+    </div>
   );
 }

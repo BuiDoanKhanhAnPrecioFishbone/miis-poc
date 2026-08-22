@@ -865,6 +865,10 @@ export const sv = {
       noOutcome:
         "Inget utfall registrerat. Utfallet registreras när medlingen är avslutad och är underlaget för Medlingsinstitutets statistik över stridsåtgärder.",
       actionTypePlaceholder: "T.ex. strejk, blockad, lockout",
+      finalisedLabel: "Beslutet klarmarkerat",
+      finalisedNote: (date: string, by: string) =>
+        `Klarmarkerat ${date} av ${by}. Notifierings-epost med länk till ärendet har skickats till medlaradministratören, och utskicket ligger i händelseloggen.`,
+      reopenDecision: "Ångra klarmarkeringen",
     },
     outcome: "Medlingsresultat",
     outcomeType: "Typ av medling",

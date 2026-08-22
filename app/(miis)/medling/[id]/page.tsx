@@ -7,13 +7,13 @@ import { AppShell } from "@/components/miis/AppShell";
 import { DocumentTemplate } from "@/components/miis/DocumentTemplate";
 import {
   CaseAgreements,
+  CaseDecision,
   CaseMediators,
   CaseOutcome,
 } from "@/components/miis/MediationCaseAdmin";
 import { IconBack, IconForward } from "@/components/miis/icons";
 import {
   AiRegion,
-  Button,
   Callout,
   Field,
   PageHeading,
@@ -242,17 +242,15 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
               ? t(mediationCase.documents, lang)
               : mediationCase.dgDecision.document}
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Button disabled disabledReason={i18n.common.notInDemo}>
-              {c.finalise}
-            </Button>
+          {/*
+            FE-001 names this act as its own trigger — *"notifierings-epost
+            skickas till medlaradministratör när ett medlingsbeslut
+            klarmarkerats"* — and the control was disabled, so the requirement
+            was described beside a button that refused to perform it.
+          */}
+          <CaseDecision lang={lang} />
+          <div className="mt-2">
             <ReqTag id="FE-001" />
-            <span className="flex items-start gap-2 text-label text-muted-foreground">
-              <span className="flex h-6 items-center">
-                <IconForward size="sm" />
-              </span>
-              <span className="min-w-0">{c.finaliseNote}</span>
-            </span>
           </div>
           <Rationale>{c.templateNote}</Rationale>
         </Panel>
