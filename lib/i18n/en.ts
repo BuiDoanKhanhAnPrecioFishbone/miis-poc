@@ -893,9 +893,9 @@ export const en: Dictionary = {
     title: "Reports",
     subtitle: "Report extracts, monitoring lists and scheduled distribution",
     tabs: {
+      label: "Parts of the reports page",
+      run: "Report extract",
       shortTerm: "Short-Term Wage Report",
-      bargainingRound: "Bargaining Round Report",
-      constructions: "Agreement Constructions",
       scheduled: "Scheduled extracts",
     },
     shortTerm: {

@@ -275,12 +275,21 @@ reviewer to a screen its own role would be refused.
    **A screen whose sections are separate jobs is `SectionTabs`.** Stacking is
    right when the parts are one subject read in order — an agreement's identity,
    then its scope, then its wage agreements. It is wrong when they are separate
-   jobs sharing a role, which is what Administration is: settings to change, two
-   logs to read, a watchword table to maintain. **Every panel still prints** —
-   a tab is a view state and paper has none — and the inactive panels are hidden
-   by a *class*, never the `hidden` attribute, because Chrome's UA stylesheet
-   declares `[hidden] { display: none !important }` and author CSS cannot reach
-   past it.
+   jobs sharing a role: Administration is settings, two logs and a watchword
+   table, and Rapporter is the report catalogue, Konjunkturlönerapporten's
+   watch list and the schedule of recurring extracts. **Every panel still
+   prints** — a tab is a view state and paper has none — and the inactive panels
+   are hidden by a *class*, never the `hidden` attribute, because Chrome's UA
+   stylesheet declares `[hidden] { display: none !important }` and author CSS
+   cannot reach past it.
+   **A link into a section opens that section.** `/rapporter#konjunkturlon` is a
+   real destination — the report catalogue sends the officer there — and an
+   anchor inside an inactive panel scrolls to an element `display: none` has
+   given no position. `SectionTabs` reads the hash on mount and on every
+   `hashchange`, activates the panel that owns the id, and scrolls once it is
+   visible. **And a tablist of one is not a choice**: where a role sees a single
+   section, the strip is dropped and the section renders bare — one tab is
+   furniture implying somewhere else to go.
    **Three "pick one" controls, kept apart on purpose — and now they look it.**
    `Toggle` is a `switch` (a flag on or off). `Tabs` is a `tablist` (which panel
    is shown). `SegmentedControl` is a `radiogroup` (a value that is part of the

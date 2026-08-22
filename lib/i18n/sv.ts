@@ -890,9 +890,9 @@ export const sv = {
     title: "Rapporter",
     subtitle: "Rapportuttag, bevakningslistor och schemalagda utskick",
     tabs: {
+      label: "Rapportsidans delar",
+      run: "Rapportuttag",
       shortTerm: "Konjunkturlönerapporten",
-      bargainingRound: "Avtalsrörelserapporten",
-      constructions: "Avtalskonstruktioner",
       scheduled: "Schemalagda uttag",
     },
     shortTerm: {

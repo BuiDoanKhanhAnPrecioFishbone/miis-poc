@@ -5,6 +5,7 @@ import { ConstructionsReport } from "@/components/miis/ConstructionsReport";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { PrintButton } from "@/components/miis/Print";
 import { ReportRunner, type CriterionOptions } from "@/components/miis/ReportRunner";
+import { SectionTabs } from "@/components/miis/SectionTabs";
 import { Badge, Button, PageHeading, Panel, Rationale, ReqTag } from "@/components/miis/primitives";
 import { ShortTermWageReport } from "@/components/miis/ShortTermWageReport";
 import { getConstructionsReport } from "@/lib/data/constructions";
@@ -204,66 +205,108 @@ export default async function RapporterPage() {
       />
 
       {/*
-        §3.1 gives Medlare and Allmänhetens dator "Specifika rapporter", and
-        Bilaga 3 §4.3 and §5.1 name which. The picker is narrowed by the role
-        rather than by hiding options, so a URL cannot reach a report the role
-        was not given.
+        Three separate jobs, one at a time.
+
+        The screen carried all three stacked: the report catalogue with its own
+        selection screen and result, Konjunkturlönerapporten's watch list of
+        seventeen agreements, and the schedule of recurring extracts. That is a
+        very long page on which an officer who came to do one of the three
+        scrolls past the other two, and the third was below the fold on every
+        screen size — the same fault Administration had, and `SectionTabs` is
+        the same answer. Every section still prints; the strip does not.
+
+        The order is the order they are used in: a report is taken out far more
+        often than the watch list is reviewed, and the schedule is maintained
+        once a quarter.
       */}
-      <ReportRunner
+      <SectionTabs
+        label={t.tabs.label}
         lang={lang}
-        options={criterionOptions}
-        agreements={reportAgreements}
-        documents={releaseDocuments}
-        role={session.role.id}
-        isExternal={isExternal}
-        results={{
-          constructions: <ConstructionsReport report={constructionsReport} lang={lang} d={i18n} />,
-        }}
+        sections={[
+          {
+            id: "uttag",
+            label: t.tabs.run,
+            node: (
+              /*
+                §3.1 gives Medlare and Allmänhetens dator "Specifika rapporter",
+                and Bilaga 3 §4.3 and §5.1 name which. The picker is narrowed by
+                the role rather than by hiding options, so a URL cannot reach a
+                report the role was not given.
+              */
+              <ReportRunner
+                lang={lang}
+                options={criterionOptions}
+                agreements={reportAgreements}
+                documents={releaseDocuments}
+                role={session.role.id}
+                isExternal={isExternal}
+                results={{
+                  constructions: (
+                    <ConstructionsReport report={constructionsReport} lang={lang} d={i18n} />
+                  ),
+                }}
+              />
+            ),
+          },
+          /*
+            Not for the two roles §3.1 limits to specific reports: the
+            Short-Term Wage Report is not one of the three Bilaga 3 §5.1 names,
+            and a tab would hand a mediator a report the table does not give
+            them. With both of these gone the strip disappears too — one tab is
+            not a choice.
+          */
+          ...(isExternal
+            ? []
+            : [
+                {
+                  id: "konjunkturlon",
+                  label: t.tabs.shortTerm,
+                  node: (
+                    /*
+                      FR-008 puts this one on a screen rather than behind a
+                      selection: the report *"ska skrivas ut/exporteras från en
+                      vy som visar en lista med bevakade avtal"*, so the list is
+                      the selection and it is always visible within its tab. The
+                      id is the report catalogue's own link target, and
+                      `SectionTabs` opens the tab that owns it.
+                    */
+                    <div id="konjunkturlon" className="scroll-mt-4">
+                      <ShortTermWageReport
+                        rows={rows}
+                        lang={lang}
+                        periodValue={`${EXTRACT_PERIOD_START} – ${EXTRACT_PERIOD_END}`}
+                        lastExportValue={`${LAST_EXPORT_DATE} · ${i18n.common.agreementCount(exportedCount)}`}
+                      />
+                    </div>
+                  ),
+                },
+                {
+                  id: "schemalagt",
+                  label: t.tabs.scheduled,
+                  node: (
+                    <Panel title={t.scheduled.heading} tags={["FR-014", "FE-001", "FE-002"]}>
+                      <p className="max-w-4xl text-table">{t.scheduled.intro}</p>
+                      <DataTable
+                        columns={scheduleColumns}
+                        rows={scheduleRows}
+                        lang={lang}
+                        caption={t.scheduled.heading}
+                        minWidth="48rem"
+                      />
+
+                      <div className="mt-4 flex flex-wrap items-center gap-3">
+                        <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
+                          {t.scheduled.add}
+                        </Button>
+                        <ReqTag id="FE-003" />
+                      </div>
+                      <Rationale>{t.scheduled.logNote}</Rationale>
+                    </Panel>
+                  ),
+                },
+              ]),
+        ]}
       />
-
-      {/*
-        FR-008 puts this one on a screen rather than behind a selection: the
-        report "ska skrivas ut/exporteras från en vy som visar en lista med
-        bevakade avtal", so the list is the selection and it is always visible.
-
-        Not for the two roles §3.1 limits to specific reports, though — the
-        Short-Term Wage Report is not one of the three Bilaga 3 §5.1 names, and a
-        panel below the picker would hand a mediator a report the table does not
-        give them.
-      */}
-      {!isExternal && (
-        <div id="konjunkturlon" className="mt-5 scroll-mt-4">
-          <ShortTermWageReport
-            rows={rows}
-            lang={lang}
-            periodValue={`${EXTRACT_PERIOD_START} – ${EXTRACT_PERIOD_END}`}
-            lastExportValue={`${LAST_EXPORT_DATE} · ${i18n.common.agreementCount(exportedCount)}`}
-          />
-        </div>
-      )}
-
-      {!isExternal && (
-        <div className="mt-5">
-          <Panel title={t.scheduled.heading} tags={["FR-014", "FE-001", "FE-002"]}>
-            <p className="max-w-4xl text-table">{t.scheduled.intro}</p>
-            <DataTable
-              columns={scheduleColumns}
-              rows={scheduleRows}
-              lang={lang}
-              caption={t.scheduled.heading}
-              minWidth="48rem"
-            />
-
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <Button variant="secondary" disabled disabledReason={i18n.common.notInDemo}>
-                {t.scheduled.add}
-              </Button>
-              <ReqTag id="FE-003" />
-            </div>
-            <Rationale>{t.scheduled.logNote}</Rationale>
-          </Panel>
-        </div>
-      )}
     </AppShell>
   );
 }
