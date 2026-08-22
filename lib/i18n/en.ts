@@ -752,11 +752,31 @@ export const en: Dictionary = {
       clearAll: "Clear the selection",
       empty: "No selection made – the search covers all agreements.",
     },
+    saved: {
+      title: "Saved searches",
+      note: "Loads the selection, not a stored result — the register answers with what holds today.",
+      conditions: (n: number) => (n === 1 ? "1 condition" : `${n} conditions`),
+    },
     results: {
-      title: (hits: number, seconds: string, date: string) =>
-        `Results · ${hits} hits · ${seconds} s · Snapshot as at ${date}`,
+      title: (hits: number, seconds: string, date?: string) =>
+        `Results · ${hits} ${hits === 1 ? "hit" : "hits"} · ${seconds} s${date ? ` · Snapshot as at ${date}` : ""}`,
       liveNote: "The result below narrows as the selection changes.",
-      empty: "No agreement matches the selection. Remove a condition or change an operator.",
+      empty: "No record matches the selection. Remove a condition or change an operator.",
+      mediationCase: "Case",
+      mediationType: "Mediation type",
+      mediators: "Mediators",
+      negotiation: "Negotiation",
+      negotiationType: "Type",
+      party: "Party",
+      partyType: "Party type",
+      sector: "Sector",
+      linkedAgreements: "Linked agreements",
+      centralOrganisation: "Confederation",
+      negotiationStatus: {
+        ongoing: "Ongoing",
+        "closed-with-agreement": "Closed with agreement",
+        "closed-without-agreement": "Closed without agreement",
+      },
       responseNote: (seconds: string) =>
         `Response time ${seconds} s. The requirement is a response within 3 seconds for standard searches.`,
       status: "Status",

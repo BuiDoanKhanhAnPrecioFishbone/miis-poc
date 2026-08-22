@@ -10,14 +10,21 @@ import {
   type Searchable,
 } from "./query";
 
+const row = (
+  id: string,
+  facets: Record<string, string | undefined>,
+  validFrom?: string,
+  validTo?: string,
+): Searchable => ({ id, facets, ...(validFrom ? { validFrom } : {}), ...(validTo ? { validTo } : {}) });
+
 const rows: Searchable[] = [
-  { id: "A", construction: 1, sector: "private", validFrom: "2027-04-01", validTo: "2029-03-31", industryBenchmark: true },
-  { id: "B", construction: 2, sector: "private", validFrom: "2027-05-01", validTo: "2029-04-30", industryBenchmark: false },
-  { id: "C", construction: 3, sector: "municipal", validFrom: "2027-06-01", validTo: "2029-05-31", industryBenchmark: false },
+  row("A", { construction: "1", sector: "private", benchmarkFlag: "yes" }, "2027-04-01", "2029-03-31"),
+  row("B", { construction: "2", sector: "private", benchmarkFlag: "no" }, "2027-05-01", "2029-04-30"),
+  row("C", { construction: "3", sector: "municipal", benchmarkFlag: "no" }, "2027-06-01", "2029-05-31"),
   /* Kvarstående — no end date, and still in force. */
-  { id: "D", construction: 1, sector: "state", validFrom: "2025-01-01", industryBenchmark: false },
+  row("D", { construction: "1", sector: "state", benchmarkFlag: "no" }, "2025-01-01"),
   /* No wage agreement yet, so no construction to compare against. */
-  { id: "E", sector: "private", validFrom: "2027-04-01", validTo: "2029-03-31" },
+  row("E", { sector: "private" }, "2027-04-01", "2029-03-31"),
 ];
 
 const cond = (field: string, operator: string, value: string) =>

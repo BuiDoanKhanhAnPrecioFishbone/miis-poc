@@ -753,13 +753,37 @@ export const sv = {
       clearAll: "Rensa urvalet",
       empty: "Inget urval valt – sökningen omfattar alla avtal.",
     },
+    saved: {
+      title: "Sparade sökningar",
+      note: "Öppnar urvalet, inte ett sparat resultat – registret svarar med det som gäller idag.",
+      conditions: (n: number) => `${n} villkor`,
+    },
     results: {
-      title: (hits: number, seconds: string, date: string) =>
-        `Resultat · ${hits} träffar · ${seconds} s · Bokslut per ${date}`,
+      /* The bokslut is named only where the population has periods — a party
+         is not in force between two dates. */
+      title: (hits: number, seconds: string, date?: string) =>
+        `Resultat · ${hits} ${hits === 1 ? "träff" : "träffar"} · ${seconds} s${date ? ` · Bokslut per ${date}` : ""}`,
       responseNote: (seconds: string) =>
         `Svarstid ${seconds} s. Kravet är svar inom 3 sekunder för standardsökningar.`,
       liveNote: "Resultatet nedan smalnar av medan urvalet ändras.",
-      empty: "Inget avtal matchar urvalet. Ta bort ett villkor eller byt operator.",
+      empty: "Ingen post matchar urvalet. Ta bort ett villkor eller byt operator.",
+      /* One column set per information type — they are four registers, not one
+         table with a filter on it. */
+      mediationCase: "Ärende",
+      mediationType: "Typ av medling",
+      mediators: "Medlare",
+      negotiation: "Förhandling",
+      negotiationType: "Typ",
+      party: "Part",
+      partyType: "Partstyp",
+      sector: "Sektor",
+      linkedAgreements: "Kopplade avtal",
+      centralOrganisation: "Centralorganisation",
+      negotiationStatus: {
+        ongoing: "Pågående",
+        "closed-with-agreement": "Avslutad med avtal",
+        "closed-without-agreement": "Avslutad utan avtal",
+      },
       status: "Status",
       agreement: "Avtal",
       parties: "Parter",

@@ -19,6 +19,13 @@
 
 import { AGREEMENT_CONSTRUCTIONS, SECTOR_LABEL, type Sector } from "./agreement";
 import type { Lang, Text } from "./lang";
+import {
+  MEDIATION_TYPE_LABEL,
+  NEGOTIATION_TYPE_LABEL,
+  type MediationType,
+  type NegotiationType,
+} from "./mediation";
+import { PARTY_TYPE_LABEL, type PartyType } from "./party";
 
 export type OperatorId = "is" | "isNot" | "asOf";
 
@@ -28,7 +35,22 @@ export const OPERATOR_LABEL: Record<OperatorId, Text> = {
   asOf: { sv: "per", en: "as at" },
 };
 
-export type SearchFieldId = "construction" | "sector" | "validAt" | "benchmarkFlag";
+export type SearchFieldId =
+  /* Avtalsinformation */
+  | "construction"
+  | "sector"
+  | "validAt"
+  | "benchmarkFlag"
+  /* Medlingsinformation */
+  | "mediationType"
+  | "mediationOngoing"
+  | "procedureAgreement"
+  /* Förhandlingar */
+  | "negotiationType"
+  | "negotiationStatus"
+  /* Parter */
+  | "partyType"
+  | "partySector";
 
 export interface Choice {
   id: string;
@@ -94,8 +116,111 @@ export const SEARCH_FIELDS: SearchFieldDef[] = [
   },
 ];
 
+const MEDIATION_TYPE_CHOICES: Choice[] = (["special", "standing"] as const).map(
+  (m: MediationType) => ({
+    id: m,
+    label: { sv: MEDIATION_TYPE_LABEL.sv[m], en: MEDIATION_TYPE_LABEL.en[m] },
+  }),
+);
+
+const NEGOTIATION_TYPE_CHOICES: Choice[] = (["bargaining-round", "other"] as const).map(
+  (n: NegotiationType) => ({
+    id: n,
+    label: { sv: NEGOTIATION_TYPE_LABEL.sv[n], en: NEGOTIATION_TYPE_LABEL.en[n] },
+  }),
+);
+
+const NEGOTIATION_STATUS_CHOICES: Choice[] = [
+  { id: "ongoing", label: { sv: "Pågående", en: "Ongoing" } },
+  { id: "closed-with-agreement", label: { sv: "Avslutad med avtal", en: "Closed with agreement" } },
+  {
+    id: "closed-without-agreement",
+    label: { sv: "Avslutad utan avtal", en: "Closed without agreement" },
+  },
+];
+
+const PARTY_TYPE_CHOICES: Choice[] = (["employer", "employee"] as const).map((p: PartyType) => ({
+  id: p,
+  label: { sv: PARTY_TYPE_LABEL.sv[p], en: PARTY_TYPE_LABEL.en[p] },
+}));
+
+/**
+ * The criteria each information type offers.
+ *
+ * They share no field at all, which is the point: FR-002's *val av
+ * informationstyp* is a choice of **what is being searched**, not a filter on
+ * one register. Offering Avtalskonstruktion while Parter is selected would be
+ * offering a criterion no row can answer — the tab strip changed a variable
+ * nothing read, and a shared field list is the same defect one level down.
+ *
+ * `sector` appears twice under two ids because it means two different things:
+ * an agreement's sector comes from the agreement, a party's from FP-001's own
+ * link, and a criterion carried across the tabs would silently change subject.
+ */
+export const SEARCH_FIELDS_BY_TYPE: Record<InfoTypeId, SearchFieldDef[]> = {
+  agreements: SEARCH_FIELDS,
+  mediation: [
+    {
+      id: "mediationType",
+      label: { sv: "Typ av medling", en: "Mediation type" },
+      operators: ["is", "isNot"],
+      value: { kind: "choice", choices: MEDIATION_TYPE_CHOICES },
+    },
+    {
+      id: "mediationOngoing",
+      label: { sv: "Pågående", en: "Ongoing" },
+      operators: ["is"],
+      value: { kind: "choice", choices: YES_NO },
+    },
+    {
+      /* FF-006 — where the parties have a procedure agreement MI appoints
+         nobody, so this is the criterion that separates MI's own caseload
+         from the cases it merely registers. */
+      id: "procedureAgreement",
+      label: { sv: "Förhandlingsordning", en: "Procedure agreement" },
+      operators: ["is"],
+      value: { kind: "choice", choices: YES_NO },
+    },
+  ],
+  negotiations: [
+    {
+      id: "negotiationType",
+      label: { sv: "Typ av förhandling", en: "Negotiation type" },
+      operators: ["is", "isNot"],
+      value: { kind: "choice", choices: NEGOTIATION_TYPE_CHOICES },
+    },
+    {
+      id: "negotiationStatus",
+      label: { sv: "Status", en: "Status" },
+      operators: ["is", "isNot"],
+      value: { kind: "choice", choices: NEGOTIATION_STATUS_CHOICES },
+    },
+  ],
+  parties: [
+    {
+      id: "partyType",
+      label: { sv: "Partstyp", en: "Party type" },
+      operators: ["is", "isNot"],
+      value: { kind: "choice", choices: PARTY_TYPE_CHOICES },
+    },
+    {
+      id: "partySector",
+      label: { sv: "Sektor", en: "Sector" },
+      operators: ["is", "isNot"],
+      value: { kind: "choice", choices: SECTOR_CHOICES },
+    },
+  ],
+};
+
+const ALL_SEARCH_FIELDS: SearchFieldDef[] = Object.values(SEARCH_FIELDS_BY_TYPE).flat();
+
 export function searchField(id: SearchFieldId): SearchFieldDef {
-  return SEARCH_FIELDS.find((f) => f.id === id) ?? SEARCH_FIELDS[0]!;
+  return ALL_SEARCH_FIELDS.find((f) => f.id === id) ?? SEARCH_FIELDS[0]!;
+}
+
+/** The fields one information type offers, never empty. */
+export function fieldsForInfoType(type: InfoTypeId): SearchFieldDef[] {
+  return SEARCH_FIELDS_BY_TYPE[type];
 }
 
 /** The first value a field offers, used when the field changes under a condition. */

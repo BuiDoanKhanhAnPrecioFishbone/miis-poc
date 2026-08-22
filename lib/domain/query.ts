@@ -24,7 +24,8 @@
  * Pure domain — no React, no data access, no I/O.
  */
 
-import type { OperatorId, SearchFieldId } from "./options";
+import type { Lang, Text } from "./lang";
+import type { InfoTypeId, OperatorId, SearchFieldId } from "./options";
 
 /** OCH or ELLER, inside one group. */
 export type Join = "all" | "any";
@@ -52,31 +53,26 @@ export interface QueryGroup {
  */
 export interface Searchable {
   id: string;
-  /** The construction of the latest wage agreement, 1–7. */
-  construction?: number;
-  /** `private` | `state` | `municipal`, as the sector choices are keyed. */
-  sector?: string;
+  /**
+   * What the criteria compare against, keyed by field id.
+   *
+   * A bag rather than named columns, because FR-002's search runs over four
+   * information types — agreements, mediation cases, negotiations, parties —
+   * and they share no fields at all. Naming them here would make this rule know
+   * about every register in the system; the data layer knows about one each and
+   * hands the values over already resolved.
+   */
+  facets: Record<string, string | undefined>;
+  /** Both ends of a period, for the point-in-time question. Open ends allowed. */
   validFrom?: string;
   validTo?: string;
-  /** FA-012 — part of the norm-setting industry agreements. */
-  industryBenchmark?: boolean;
 }
 
 /** The value a field reads off a row, as the string the criteria compare to. */
 function readField(row: Searchable, field: SearchFieldId): string | undefined {
-  switch (field) {
-    case "construction":
-      return row.construction === undefined ? undefined : String(row.construction);
-    case "sector":
-      return row.sector;
-    case "benchmarkFlag":
-      return row.industryBenchmark === undefined ? undefined : row.industryBenchmark ? "yes" : "no";
-    case "validAt":
-      /* Handled by `asOf`, which needs both ends rather than one value. */
-      return undefined;
-    default:
-      return undefined;
-  }
+  /* `validAt` is answered by `coversDate`, which needs both ends of a period
+     rather than one value, so it never reaches here. */
+  return row.facets[field];
 }
 
 /**
@@ -125,4 +121,97 @@ export function runQuery<T extends Searchable>(
   groups: readonly QueryGroup[],
 ): T[] {
   return rows.filter((r) => matchesQuery(r, groups));
+}
+
+/**
+ * A saved search — the criteria, not the hits.
+ *
+ * The three names were printed at the foot of the screen as a sentence, which
+ * is a claim that the feature exists rather than the feature. A saved search is
+ * a selection somebody composed once and reruns; the value is that it *loads*,
+ * and the data it returns is whatever the register says today, so the result is
+ * never stored with it.
+ *
+ * They carry their information type, because a criterion means nothing without
+ * the register it was written against.
+ */
+export interface SavedSearch {
+  id: string;
+  name: Text;
+  /** What the officer would recognise it by — why they saved it. */
+  purpose: Text;
+  infoType: InfoTypeId;
+  groups: QueryGroup[];
+}
+
+export const SAVED_SEARCHES: SavedSearch[] = [
+  {
+    id: "sifferlosa",
+    name: { sv: "Sifferlösa avtal privat sektor", en: "Figureless agreements, private sector" },
+    purpose: {
+      sv: "Avtal utan angivet löneutrymme, inför avstämning mot Märket",
+      en: "Agreements with no stated wage scope, for checking against Märket",
+    },
+    infoType: "agreements",
+    groups: [
+      {
+        id: "g0",
+        join: "any",
+        conditions: [
+          { id: "g0c0", field: "construction", operator: "is", value: "1" },
+          { id: "g0c1", field: "construction", operator: "is", value: "2" },
+        ],
+      },
+      {
+        id: "g1",
+        join: "all",
+        conditions: [{ id: "g1c0", field: "sector", operator: "is", value: "private" }],
+      },
+    ],
+  },
+  {
+    id: "eurofound",
+    name: { sv: "Eurofound-urval", en: "Eurofound selection" },
+    purpose: {
+      sv: "Industrins avtal, underlag för internationell rapportering",
+      en: "Industry agreements, source for international reporting",
+    },
+    infoType: "agreements",
+    groups: [
+      {
+        id: "g0",
+        join: "all",
+        conditions: [{ id: "g0c0", field: "benchmarkFlag", operator: "is", value: "yes" }],
+      },
+    ],
+  },
+  {
+    id: "pagaende-medling",
+    name: { sv: "Pågående medlingar", en: "Ongoing mediations" },
+    purpose: {
+      sv: "Ärenden där MI utser medlare, dvs. utan förhandlingsordning",
+      en: "Cases where MI appoints mediators, i.e. with no procedure agreement",
+    },
+    infoType: "mediation",
+    groups: [
+      {
+        id: "g0",
+        join: "all",
+        conditions: [
+          { id: "g0c0", field: "mediationOngoing", operator: "is", value: "yes" },
+          { id: "g0c1", field: "procedureAgreement", operator: "is", value: "no" },
+        ],
+      },
+    ],
+  },
+];
+
+/** How many conditions a saved search carries, for the label beside its name. */
+export function conditionCount(search: SavedSearch): number {
+  return search.groups.reduce((n, g) => n + g.conditions.length, 0);
+}
+
+/** The saved search written out the way the builder writes the live one. */
+export function savedSearchSummary(search: SavedSearch, lang: Lang): string {
+  return search.purpose[lang];
 }

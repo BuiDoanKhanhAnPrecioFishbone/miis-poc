@@ -10,14 +10,25 @@ import {
   OPERATOR_LABEL,
   SEARCH_FIELDS,
   defaultValueFor,
+  fieldsForInfoType,
   searchField,
   valueLabel,
+  type InfoTypeId,
   type OperatorId,
+  type SearchFieldDef,
   type SearchFieldId,
 } from "@/lib/domain/options";
 import { dictionary } from "@/lib/i18n";
-import { coversDate, runQuery, type Searchable } from "@/lib/domain/query";
+import {
+  SAVED_SEARCHES,
+  conditionCount,
+  coversDate,
+  runQuery,
+  type SavedSearch,
+  type Searchable,
+} from "@/lib/domain/query";
 import { DataTable, type Column, type Row } from "./DataTable";
+import { PrintButton } from "./Print";
 import { Button, Callout, Chip, FilterChips, Panel, Rationale, ReqTag } from "./primitives";
 import { SegmentedControl, Select, Tabs } from "./Select";
 
@@ -99,21 +110,14 @@ const SEED: Group[] = [
   },
 ];
 
-export function SearchBuilder({
-  lang,
-  rows,
-  rowFor,
-  tableColumns,
-  seconds,
-  snapshotDate,
-}: {
-  lang: Lang;
+/** One information type's searchable population, assembled on the server. */
+export interface SearchPopulation {
   /**
-   * What the query runs over — the projection, not the agreements.
+   * What the query runs over — the projection, not the records.
    *
    * An agreement's construction lives on its latest wage agreement, so the data
-   * layer joins that once here rather than making a pure rule reach for a
-   * relation it cannot see.
+   * layer joins that once rather than making a pure rule reach for a relation
+   * it cannot see.
    */
   rows: Searchable[];
   /**
@@ -127,7 +131,26 @@ export function SearchBuilder({
   rowFor: Record<string, Row>;
   /** Named apart from the presentation-column state below, which is a different
       list entirely: these are the table's columns, those are the officer's pick. */
-  tableColumns: Column[];
+  columns: Column[];
+}
+
+export function SearchBuilder({
+  lang,
+  populations,
+  seconds,
+  snapshotDate,
+}: {
+  lang: Lang;
+  /**
+   * FR-002's *val av informationstyp*, with something behind each one.
+   *
+   * The tab strip used to set a state variable nothing read: four tabs, one
+   * result, no difference between them. A choice of information type is a
+   * choice of **what is being searched** — different register, different
+   * criteria, different columns — so each type brings its own population and
+   * the criteria are rebuilt when it changes.
+   */
+  populations: Record<InfoTypeId, SearchPopulation>;
   /** Already formatted for the language — 1,8 in Swedish, 1.8 in English. */
   seconds: string;
   snapshotDate: string;
@@ -136,7 +159,7 @@ export function SearchBuilder({
   const t = d.sok;
   const c = t.criteria;
 
-  const [infoType, setInfoType] = useState(INFO_TYPES[0]!.id);
+  const [infoType, setInfoType] = useState<InfoTypeId>("agreements");
   const [groups, setGroups] = useState<Group[]>(SEED);
   const [nextId, setNextId] = useState(100);
   const [columns, setColumns] = useState<boolean[]>(() => t.columns.items.map((_, i) => i < 4));
@@ -156,22 +179,68 @@ export function SearchBuilder({
   */
   const [asOf, setAsOf] = useState(snapshotDate);
 
+  /* The register being searched, and the criteria it can answer. */
+  const population = populations[infoType];
+  const fields = fieldsForInfoType(infoType);
+
+  /*
+    FH-003's bokslut applies to a population that has periods. An agreement is
+    in force between two dates; a party is not, and a date control over the
+    party register would be a criterion no row could answer — the same defect
+    as the tabs, one level down.
+  */
+  const hasPeriods = population.rows.some((r) => r.validFrom ?? r.validTo);
+
   /*
     The result, from the criteria and the snapshot. `runQuery` and `coversDate`
     are the tested rules; this only decides which server-rendered rows to hand
     the table.
   */
-  const matched = runQuery(rows, groups).filter((r) => coversDate(r, asOf));
-  const resultRows = matched.map((r) => rowFor[r.id]).filter((x): x is Row => Boolean(x));
+  const matched = runQuery(population.rows, groups).filter(
+    (r) => !hasPeriods || coversDate(r, asOf),
+  );
+  const resultRows = matched
+    .map((r) => population.rowFor[r.id])
+    .filter((x): x is Row => Boolean(x));
 
-  function newCondition(id: string): Condition {
-    const field = SEARCH_FIELDS[0]!;
+  function newCondition(id: string, from: SearchFieldDef[] = fields): Condition {
+    const field = from[0]!;
     return {
       id,
       field: field.id,
       operator: field.operators[0]!,
       value: defaultValueFor(field),
     };
+  }
+
+  /*
+    Switching the information type rebuilds the criteria rather than carrying
+    them across. They are not portable: no field is shared between the four
+    registers, and a criterion that survived the switch would either be a field
+    the new rows cannot answer or — worse, for `sector` — the same word asking a
+    different question of a different register.
+  */
+  /*
+    A saved search loads. The three names sat at the foot of the screen as a
+    sentence — a claim that the feature existed rather than the feature. What is
+    saved is the selection, never the hits: the register answers with whatever
+    it holds today, which is the whole reason an officer keeps one.
+  */
+  const [loaded, setLoaded] = useState<string | undefined>(undefined);
+
+  function loadSaved(search: SavedSearch) {
+    setInfoType(search.infoType);
+    setGroups(search.groups.map((g) => ({ ...g, conditions: g.conditions.map((c) => ({ ...c })) })));
+    setLoaded(search.id);
+  }
+
+  function changeInfoType(next: string) {
+    setLoaded(undefined);
+    const id = next as InfoTypeId;
+    setInfoType(id);
+    setGroups([
+      { id: "g0", join: "all", conditions: [newCondition("g0c0", fieldsForInfoType(id))] },
+    ]);
   }
 
   function addCondition(groupId: string) {
@@ -255,7 +324,7 @@ export function SearchBuilder({
         <Tabs
           label={c.infoTypeLabel}
           value={infoType}
-          onChange={setInfoType}
+          onChange={changeInfoType}
           tabs={INFO_TYPES.map((x) => ({ id: x.id, label: x.label[lang] }))}
         />
         <ReqTag id="FR-002" />
@@ -324,7 +393,7 @@ export function SearchBuilder({
                             label={c.fieldAria(gi + 1, ci + 1)}
                             value={cond.field}
                             onChange={(v) => changeField(cond.id, v)}
-                            options={SEARCH_FIELDS.map((f) => ({ id: f.id, label: f.label[lang] }))}
+                            options={fields.map((f) => ({ id: f.id, label: f.label[lang] }))}
                           />
                           <Select
                             id={`${cond.id}-operator`}
@@ -450,8 +519,12 @@ export function SearchBuilder({
             FH-003 — a snapshot is a date, not a mode. The "Bokslutsläge" select
             we had was a control we invented; the date carries it, and the
             results header states which date the figures are as at.
+
+            It appears only where the rows have periods. A party is not in force
+            between two dates, so a bokslut over the party register would be a
+            control that cannot change its own result.
           */}
-          <div className="mt-5 max-w-xs">
+          <div className="mt-5 max-w-xs" hidden={!hasPeriods}>
             <label htmlFor="snapshot-date" className="mb-1 block text-label font-bold">
               {c.snapshot}
             </label>
@@ -537,13 +610,42 @@ export function SearchBuilder({
         />
       </div>
 
+      {/*
+        The saved searches, as controls. They belong immediately above the
+        result because that is what they change; at the foot of the page they
+        read as a footnote about a feature somewhere else.
+      */}
+      <div className="print-hide mt-6">
+        <h2 className="text-label font-bold">{t.saved.title}</h2>
+        <p className="field-hint mt-1">{t.saved.note}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {SAVED_SEARCHES.map((s) => (
+            <Chip
+              key={s.id}
+              selected={loaded === s.id}
+              pressed={loaded === s.id}
+              onToggle={() => loadSaved(s)}
+            >
+              {s.name[lang]}
+              <span className="font-normal">
+                {` · ${t.saved.conditions(conditionCount(s))}`}
+              </span>
+            </Chip>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-5">
-        <Panel title={t.results.title(matched.length, seconds, asOf)} tags={["FH-003", "NFP-003"]}>
+        <Panel
+          title={t.results.title(matched.length, seconds, hasPeriods ? asOf : undefined)}
+          tags={["FH-003", "NFP-003"]}
+          action={<PrintButton lang={lang} />}
+        >
           <DataTable
-            columns={tableColumns}
+            columns={population.columns}
             rows={resultRows}
             lang={lang}
-            caption={t.results.title(matched.length, seconds, asOf)}
+            caption={t.results.title(matched.length, seconds, hasPeriods ? asOf : undefined)}
             empty={t.results.empty}
           />
           <Rationale>{t.results.responseNote(seconds)}</Rationale>
