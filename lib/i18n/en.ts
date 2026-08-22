@@ -1976,6 +1976,24 @@ export const en: Dictionary = {
       removedNote: (term: string) => `${term} has been removed and is no longer marked.`,
       note: "In this demonstration, terms added here or from a party meeting apply only to your own session.",
     },
+    gallring: {
+      heading: "Retention rules for personal data",
+      intro:
+        "Personal data is culled by rule, not by a decision in each case. Every rule states what is culled, what starts the clock and whether it happens automatically.",
+      table: {
+        subject: "Data",
+        trigger: "Period counted from",
+        months: "Retention (months)",
+        action: "Action",
+        automatic: "Automatic",
+      },
+      nowAutomatic: (subject: string) => `${subject} is now culled automatically.`,
+      nowManual: (subject: string) => `${subject} is now culled after a manual step.`,
+      anonymiseNote:
+        "A deactivated user account is anonymised rather than erased. The sign-ins are logged (NFL-001) and those entries have to remain — what goes is the name behind them, not the event.",
+      logNote:
+        "The logs are the one record nobody may define a rule for. NFL-003 puts them beyond the system administrator explicitly, and the row is shown anyway: a screen that left it out would have looked complete.",
+    },
     retention: {
       heading: "Retention and access",
       body:

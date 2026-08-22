@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { AppShell } from "@/components/miis/AppShell";
 import { PrintButton } from "@/components/miis/Print";
 import { SystemSettings } from "@/components/miis/SystemSettings";
+import { RetentionRules } from "@/components/miis/RetentionRules";
 import { SectionTabs } from "@/components/miis/SectionTabs";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Button, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
@@ -144,6 +145,14 @@ export default async function AdministrationPage() {
                   timeoutMinutes={session.sessionTimeoutMinutes}
                   watchwordCount={watchwords.length}
                 />
+                {/*
+                  D-004 is a ska-krav and names two halves — gallring *and*
+                  *"möjlighet att definiera automatiska gallringsregler"*. The
+                  second half existed as a Rationale on two other screens saying
+                  contact details fall under MI's retention routines, which is a
+                  sentence about a rule rather than the ability to define one.
+                */}
+                <RetentionRules lang={lang} />
                 <Panel title={t.retention.heading} tags={["NFL-003", "NFL-004"]}>
                   <Callout tone="ok" label={t.retention.heading}>
                     {t.retention.body}

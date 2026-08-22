@@ -822,9 +822,19 @@ export function TextField({
   required,
   lang,
   width = "medium",
+  srOnlyLabel,
 }: {
   id: string;
   label: string;
+  /**
+   * Hide the label visually while keeping it for a screen reader.
+   *
+   * For a control inside a table cell, where the column header carries the
+   * label for a sighted reader and repeating it in every row would be noise.
+   * `Select` has had this since the query builder; its two siblings did not, so
+   * a table could hold a labelled select beside an unlabelled input.
+   */
+  srOnlyLabel?: boolean;
   /**
    * Marks the field as one that must be filled in — the word beside the label
    * and `aria-required` on the control, so the rule reaches every reader.
@@ -871,9 +881,15 @@ export function TextField({
       different heights, and the eye follows the inputs, not the hints.
     */
     <div data-span={fieldSpan(width)}>
-      <FieldLabel htmlFor={id} required={required} lang={lang}>
-        {label}
-      </FieldLabel>
+      {srOnlyLabel ? (
+        <label htmlFor={id} className="sr-only">
+          {label}
+        </label>
+      ) : (
+        <FieldLabel htmlFor={id} required={required} lang={lang}>
+          {label}
+        </FieldLabel>
+      )}
       {/*
         `data-filled` is read by the print stylesheet, not by the screen.
 

@@ -1975,6 +1975,24 @@ export const sv = {
       removedNote: (term: string) => `${term} är borttaget och markeras inte längre.`,
       note: "Ord som läggs till här eller från en partsträff gäller i den här demonstrationen bara den egna sessionen.",
     },
+    gallring: {
+      heading: "Gallringsregler för personuppgifter",
+      intro:
+        "Personuppgifter gallras efter regel, inte efter beslut i det enskilda fallet. Varje regel anger vad som gallras, vad som startar tiden och om gallringen sker automatiskt.",
+      table: {
+        subject: "Uppgifter",
+        trigger: "Gallringstiden räknas från",
+        months: "Gallringstid (månader)",
+        action: "Åtgärd",
+        automatic: "Automatisk",
+      },
+      nowAutomatic: (subject: string) => `${subject} gallras nu automatiskt.`,
+      nowManual: (subject: string) => `${subject} gallras nu efter manuell åtgärd.`,
+      anonymiseNote:
+        "Ett inaktiverat användarkonto anonymiseras i stället för att gallras. Inloggningarna är loggade (NFL-001) och de posterna måste finnas kvar – det som försvinner är namnet bakom dem, inte händelsen.",
+      logNote:
+        "Loggarna är den enda posten ingen får definiera en regel för. NFL-003 undantar dem uttryckligen från systemadministratören, och raden visas ändå: en skärm som utelämnat dem hade sett komplett ut.",
+    },
     retention: {
       heading: "Bevarande och åtkomst",
       body:

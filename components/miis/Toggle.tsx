@@ -31,6 +31,7 @@ export function Toggle({
   onLabel,
   offLabel,
   children,
+  srOnlyLabel,
 }: {
   id: string;
   label: string;
@@ -51,6 +52,14 @@ export function Toggle({
   offLabel?: string;
   /** Shown only while the flag is on, e.g. the confidentiality marker. */
   children?: ReactNode;
+  /**
+   * Hide the label visually, keeping it for a screen reader.
+   *
+   * For a switch inside a table cell, where the column header labels it for a
+   * sighted reader. The label element still exists and is still what
+   * `aria-labelledby` points at — a hidden label is not an absent one.
+   */
+  srOnlyLabel?: boolean;
 }) {
   const common = dictionary(lang).common;
   const [internal, setInternal] = useState(defaultOn);
@@ -71,7 +80,13 @@ export function Toggle({
         neighbour whenever the label wrapped — "Industrimärke (märkessättande
         avtal)" takes two lines where "Jämställdhetsflagga" takes one.
       */}
-      <FieldLabel id={`${id}-label`}>{label}</FieldLabel>
+      {srOnlyLabel ? (
+        <span id={`${id}-label`} className="sr-only">
+          {label}
+        </span>
+      ) : (
+        <FieldLabel id={`${id}-label`}>{label}</FieldLabel>
+      )}
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
