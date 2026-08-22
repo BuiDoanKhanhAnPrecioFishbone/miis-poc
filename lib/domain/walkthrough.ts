@@ -107,8 +107,8 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
           en: "Add or update information",
         },
         detail: {
-          sv: "FA-001 är att registrera *och redigera* avtalsinformation. Ändringen sker på värdena själva i stället för på en andra skärm — handläggaren tittar på posten som ska rättas — och den skrivs till ändringsloggen med tidpunkt och användare. Resten av skärmen är Bilaga F:s Rapport 4: omfattning, basfakta, arbetsgrupper, särskilda frågor, lägstlöner och händelselogg.",
-          en: "FA-001 is to register *and edit* agreement information. The change happens on the values themselves rather than on a second screen — the officer is looking at the record being corrected — and it is written to the change log with the time and the user. The rest of the screen is Appendix F's Report 4: scope, base facts, working groups, special questions, minimum wages and the event log.",
+          sv: "FA-001 är att registrera *och redigera* avtalsinformation. Varje avsnitt som går att rätta har sin egen Redigera — identiteten och avtalets omfattning, de fyra mått Medlingsinstitutet faktiskt räknar om mellan ronderna. Ändringen sker på värdena själva i stället för på en andra skärm, och skrivs till ändringsloggen med tidpunkt och användare. Två fält är avsiktligt låsta och säger varför på sin egen rad: avtalstypen följer av vilka löneavtal som finns, och parterna ändras i partsregistret så att avtalshistoriken följer med. Organisationsgrad räknas fram medan de två talen ovanför skrivs in — den följer, den skrivs inte.",
+          en: "FA-001 is to register *and edit* agreement information. Every section that can be corrected carries its own Edit — the identity and the agreement's scope, the four measures Medlingsinstitutet actually revises between rounds. The change happens on the values themselves rather than on a second screen, and is written to the change log with the time and the user. Two fields are deliberately locked and say why on their own row: the agreement type follows from which wage agreements exist, and the parties are changed in the party register so that the agreement history follows. Union density is calculated while the two figures above it are typed — it follows, it is not entered.",
         },
         role: "agreement-admin",
         href: "/avtal/A-001",
@@ -130,8 +130,8 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Publicera avtalet", en: "Publish the agreement" },
         detail: {
-          sv: "Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Efteråt går det att öppna avtalet som allmänheten ser det.",
-          en: "Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. Afterwards the agreement can be opened as the public sees it.",
+          sv: "Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Den ligger i högerspalten bredvid statusen den ändrar, inte i redigeringen: att rätta en uppgift och att lämna ut avtalet är två olika saker. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Efteråt går det att öppna avtalet som allmänheten ser det.",
+          en: "Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. It sits in the right-hand column beside the status it changes, not inside editing: correcting a detail and releasing the agreement are two different things. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. Afterwards the agreement can be opened as the public sees it.",
         },
         role: "agreement-admin",
         href: "/avtal/A-010",
@@ -223,12 +223,12 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Ändrings- och händelselogg", en: "Change log and event log" },
         detail: {
-          sv: "Den övriga administration som gör att myndigheten kan svara för systemet själv. FH-001 kräver gammalt och nytt värde — skillnaden mellan en logg som registrerar att något ändrades och en som kan rekonstruera vad det var, och det som gör FAI-002:s garanti kontrollerbar i efterhand. Utskriften är NFL-004:s exportfunktion som faktiskt körs.",
-          en: "The other administration that lets the authority answer for the system itself. FH-001 requires the old and the new value — the difference between a log that records that something changed and one that can reconstruct what it was, and what makes FAI-002's guarantee checkable after the fact. The print is NFL-004's export function, and it runs.",
+          sv: "Den övriga administration som gör att myndigheten kan svara för systemet själv. FH-001 kräver gammalt och nytt värde — skillnaden mellan en logg som registrerar att något ändrades och en som kan rekonstruera vad det var, och det som gör FAI-002:s garanti kontrollerbar i efterhand. Utskriften är NFL-004:s exportfunktion som faktiskt körs. Under fliken Bevakningsord underhålls FAI-004:s tabell: §4.1 kallar den fördefinierad *och* anpassningsbar, så administratören lägger till egna ord och tar bort dem igen. Medlingsinstitutets egna fyra går inte att ta bort, och raden säger varför.",
+          en: "The other administration that lets the authority answer for the system itself. FH-001 requires the old and the new value — the difference between a log that records that something changed and one that can reconstruct what it was, and what makes FAI-002's guarantee checkable after the fact. The print is NFL-004's export function, and it runs. Under the Watchwords tab, FAI-004's table is maintained: §4.1 calls it predefined *and* adaptable, so the administrator adds their own terms and removes them again. Medlingsinstitutet's own four cannot be removed, and the row says why.",
         },
         role: "system-admin",
         href: "/administration",
-        requirements: ["FH-001", "FH-002", "NFL-003", "NFL-004"],
+        requirements: ["FH-001", "FH-002", "NFL-003", "NFL-004", "FAI-004"],
       },
     ],
   },
@@ -329,12 +329,12 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Medlingsärendet", en: "The mediation case" },
         detail: {
-          sv: "Skapat ur GD-beslutet, med §4.1:s beslutsstöd och dokumentmallen med och utan varsel.",
-          en: "Created from the Director-General decision, with §4.1's decision support and the document template with and without notice.",
+          sv: "Skapat ur GD-beslutet, med §4.1:s beslutsstöd och dokumentmallen med och utan varsel. Tre saker går att göra i ärendet: koppla fler avtal till det, förordna en medlare som ettan eller tvåan, och registrera utfallet. Medlarlistan visar bara aktiva medlare som tar den här medlingstypen. Utfallet är underlaget för Medlingsinstitutets statistik över stridsåtgärder — förlorade arbetsdagar och berörda anställda visas bara när det förekom en stridsåtgärd, eftersom en nolla i den kolumnen är en mätning och inte en frånvaro. GD-beslutets nummer och datum går inte att ändra: de kommer ur ett beslut, inte ur registret.",
+          en: "Created from the Director-General decision, with §4.1's decision support and the document template with and without notice. Three things can be done in the case: link further agreements to it, appoint a mediator as first or second chair, and register the outcome. The mediator list offers only active mediators who take this mediation type. The outcome is the basis for Medlingsinstitutet's statistics on industrial action — lost working days and affected employees appear only when there was industrial action, because a zero in that column is a measurement rather than an absence. The decision's number and date cannot be changed: they come from a decision, not from the register.",
         },
         role: "mediation-admin",
         href: "/medling/M-2027-12",
-        requirements: ["FF-006", "FF-007", "FSD-001"],
+        requirements: ["FF-006", "FF-007", "FF-008", "FF-009", "FF-010", "FSD-001"],
       },
       {
         label: { sv: "Partsträffen", en: "The party meeting" },
@@ -393,8 +393,8 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Medlarregistret", en: "The mediator register" },
         detail: {
-          sv: "Register, statistik per medlare och ett formulär för att lägga till en ny (FF-009).",
-          en: "Register, statistics per mediator, and a form for adding a new one (FF-009).",
+          sv: "Registret går att underhålla, inte bara läsa: kontaktuppgifter och medlingstyper ändras på raden, en ny medlare läggs till under tabellen, och en medlare som slutat inaktiveras i stället för att raderas — FF-009:s statistik per medlare skulle annars försvinna med personen. Uppdrag, ettan, tvåan och senaste år räknas ur uppdragshistoriken och går inte att skriva in.",
+          en: "The register can be maintained, not only read: contact details and mediation types are changed on the row, a new mediator is added under the table, and a mediator who has stopped is deactivated rather than deleted — FF-009's statistics per mediator would otherwise leave with the person. Assignments, first chair, second chair and latest year are calculated from the assignment history and cannot be typed in.",
         },
         role: "mediator-admin",
         href: "/medlare",

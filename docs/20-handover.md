@@ -36,10 +36,20 @@ the guided walkthrough, and it is what the 15-minute presentation runs from.
 | `docs/19-arbetsprocesser.md` | The §3.4 ska-krav — method, collaboration, timeline | **Drafted, English** |
 | `docs/16-verification.md` | Evidence for both: what runs, mapped to MI's chapter 9 | Current |
 | `docs/17-scenario-criterion.md` | The plan, and the bullet-by-bullet diff against §3.5 | All items closed |
-| `screenshots/` | 64 shots × Swedish and English, generated from the running build | Current |
+| `screenshots/` | 64 shots × Swedish and English, generated from the running build | **Not in git** — see below |
 
 Both drafts are **English with Swedish terms already in place**, so rendering
 them into Swedish is a translation pass, not a rewrite.
+
+**`screenshots/` is gitignored, and `docs/18` cites fourteen of the files by
+name.** So the images the scored section depends on exist on whichever machine
+last ran the pass and nowhere else. They were last regenerated **2026-08-22**,
+after the AI palette, the tab redesign, the required-field marker, the print
+rework, the agreement record and the three editable registers — anyone
+assembling the response either copies them from that machine or reruns
+`npm run screenshots` (both languages) against a dev server. Any UI change
+invalidates them silently: nothing fails, the document just shows a system that
+no longer exists.
 
 ---
 
