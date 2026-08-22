@@ -163,14 +163,13 @@ export function BenchmarkAdmin({
           The unit moves into the label and the value stays a bare number — a
           box that already carries the sign makes the user decide whether to
           keep it, and "6,4 %" is a string no report can compare.
-        */}
-        {/*
-          `medium`, not `short`, and only because it is required. A percentage
-          is a short field by the house rule, but "Kostnadsram (%)" plus the
-          *Obligatoriskt* tag needs about 205px and a short column is 192 — so
-          the label row wrapped and pushed this one input 16px below the three
-          beside it. A ragged row reads as a mistake; a slightly wide box for a
-          number does not.
+
+          `medium` rather than `short`, and only because it is required. A
+          percentage is a short field by the house rule, but "Kostnadsram (%)"
+          plus the *Obligatoriskt* tag needs about 205px and a short column is
+          192 — so the label row wrapped and pushed this one input 16px below
+          the three beside it. A ragged row reads as a mistake; a slightly wide
+          box for a number does not.
         */}
         <TextField
           id="bm-frame"
