@@ -13,7 +13,14 @@ import type { Lang } from "@/lib/domain/lang";
 import type { NavId } from "@/lib/domain/nav";
 import { accessLevel, type RoleInfo } from "@/lib/domain/role";
 import { dictionary } from "@/lib/i18n";
-import { IconAi, IconCheck, IconClose, IconFlag, IconForward } from "./icons";
+import {
+  IconAi,
+  IconCheck,
+  IconChevronDown,
+  IconClose,
+  IconFlag,
+  IconForward,
+} from "./icons";
 import { Badge, Button, TextField } from "./primitives";
 
 /**
@@ -37,9 +44,9 @@ import { Badge, Button, TextField } from "./primitives";
  *   tinted box. Two speakers need two shapes: the officer's turn is a plain
  *   bubble on the right, the machine's is a bordered compartment on the left
  *   with the `AI` letter-mark on it.
- * - **A suggestion stayed on offer after it was used.** Pressing it a second
- *   time produces an identical second bubble, which teaches the officer that
- *   the assistant is not listening. A used suggestion is spent.
+ * - **Question and answer were the same distance from the box.** The suggestions
+ *   now sit in a disclosure directly above the composer, open until the first
+ *   question and reopenable for good — see `Suggestions` below.
  *
  * **The violet frames, it does not tint.** The answer's rows are MI's own
  * register entries being read back, so they sit on card the way they do
@@ -59,7 +66,7 @@ import { Badge, Button, TextField } from "./primitives";
 const ROWS_SHOWN = 6;
 
 /**
- * The questions on offer.
+ * The questions on offer — the whole set, always.
  *
  * Not `Chip`. A chip's toggle shape carries a `+`, which says *add this to a
  * set* — a filter, a party, an option — and these are none of those: pressing
@@ -67,21 +74,28 @@ const ROWS_SHOWN = 6;
  * row of pills that each wrap to two lines is not a row. A left-aligned list of
  * quiet buttons is what a menu of questions looks like.
  *
- * It lives in the empty state rather than above the composer permanently. Four
- * suggestions took 190px of a 512px panel and pushed the transcript into a
- * slot two turns high; the officer who needs them is the one who has not asked
- * anything yet, and after that they are one press away in the answer to *what
- * can I ask about*.
+ * **A used question is not removed.** It was, on the reasoning that pressing it
+ * twice produces an identical second bubble — which is true and is the wrong
+ * trade. These five are the fastest route to the five things the assistant can
+ * answer, and an officer comes back to *"vilka registreringar är
+ * ofullständiga"* every morning; taking it away after one press is taking away
+ * the shortcut precisely at the moment it has been shown to be useful. It is
+ * marked *Ställd* instead, which answers "have I already asked this" without
+ * answering "may I ask it again" for them.
  */
 function Suggestions({
   intents,
+  asked,
   lang,
   onAsk,
 }: {
   intents: readonly { id: string; example: Record<Lang, string> }[];
+  /** Which have been used this session — a mark, not a removal. */
+  asked: readonly string[];
   lang: Lang;
   onAsk: (text: string, from: string) => void;
 }) {
+  const t = dictionary(lang).ai.chat;
   if (intents.length === 0) return null;
   return (
     <ul className="space-y-2">
@@ -93,8 +107,13 @@ function Suggestions({
             className="flex min-h-11 w-full items-center justify-between gap-3 rounded-sm border-2 border-input bg-card px-3 py-2 text-left text-table font-semibold text-foreground transition-colors hover:bg-secondary"
           >
             <span className="min-w-0">{intent.example[lang]}</span>
-            <span aria-hidden className="shrink-0 text-primary">
-              <IconForward />
+            <span className="flex shrink-0 items-center gap-2">
+              {asked.includes(intent.id) && (
+                <span className="mi-kicker text-muted-foreground">{t.asked}</span>
+              )}
+              <span aria-hidden className="text-primary">
+                <IconForward />
+              </span>
             </span>
           </button>
         </li>
@@ -141,8 +160,17 @@ export function AssistantChat({
     never asked for, on the one surface in MIIS that has no register behind it.
   */
   const [thread, setThread] = useState<Turn[]>([]);
-  /* A suggestion is a starter, and a starter is spent once it has been used. */
-  const [spent, setSpent] = useState<string[]>([]);
+  /* Which have been used — for the mark on them, not for removing them. */
+  const [asked, setAsked] = useState<string[]>([]);
+  /*
+    Open until the first question, then out of the way — and reopenable.
+
+    The list is 260px of a 512px panel, which is the right trade before there
+    is a transcript and the wrong one after. Collapsing rather than removing is
+    what keeps the shortcut: the control that reopens it says how many there
+    are and sits directly above the box it fills.
+  */
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const endRef = useRef<HTMLDivElement>(null);
 
   /* Only the questions this role could actually be answered — offering one that
@@ -151,7 +179,7 @@ export function AssistantChat({
   const suggestions = ASSISTANT_INTENTS.filter(
     (i) => i.id !== "capabilities" && accessLevel(role, i.nav) !== "none",
   );
-  const offered = suggestions.filter((i) => !spent.includes(i.id));
+
 
   /* The newest turn, not the top of the thread. Scrolling the transcript rather
      than the panel, so the composer below it never moves. */
@@ -164,7 +192,8 @@ export function AssistantChat({
     const trimmed = text.trim();
     if (!trimmed) return;
     setQuestion("");
-    if (from) setSpent((s) => (s.includes(from) ? s : [...s, from]));
+    setShowSuggestions(false);
+    if (from) setAsked((a) => (a.includes(from) ? a : [...a, from]));
     const answer = answerFor(
       trimmed,
       facts,
@@ -205,9 +234,14 @@ export function AssistantChat({
     <div className="flex h-full min-h-0 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
         {thread.length === 0 ? (
-          <div className="space-y-4 py-2">
+          /*
+            Bottom-aligned, because the suggestions and the box are below it.
+            Left at the top of a `flex-1` region it sat alone above 400px of
+            white with the list it introduces below the fold of the eye — one
+            block of reading broken in two by empty space.
+          */
+          <div className="flex h-full flex-col justify-end py-2">
             <p className="text-table">{t.openingLead}</p>
-            <Suggestions intents={offered} lang={lang} onAsk={ask} />
           </div>
         ) : (
           <div className="space-y-4" aria-live="polite">
@@ -252,7 +286,12 @@ export function AssistantChat({
                     */}
                     {turn.answer.intent === "capabilities" && (
                       <div className="mt-3">
-                        <Suggestions intents={suggestions} lang={lang} onAsk={ask} />
+                        <Suggestions
+                          intents={suggestions}
+                          asked={asked}
+                          lang={lang}
+                          onAsk={ask}
+                        />
                       </div>
                     )}
 
@@ -370,6 +409,36 @@ export function AssistantChat({
         produced.
       */}
       <div className="shrink-0 border-t border-border bg-card px-5 py-3">
+        {/*
+          One place for the suggestions, directly above the box they fill, and
+          reachable at every point in the conversation. They used to sit in the
+          empty state and then be gone for good — so the fastest route to the
+          five answers the assistant has existed only until the officer used it
+          once.
+        */}
+        <div className="mb-3">
+          <button
+            type="button"
+            onClick={() => setShowSuggestions((v) => !v)}
+            aria-expanded={showSuggestions}
+            aria-controls="ai-suggestions"
+            className="flex min-h-11 w-full items-center justify-between gap-3 text-left text-label font-bold text-primary"
+          >
+            {t.suggestions(suggestions.length)}
+            <span
+              aria-hidden
+              className={`flex h-5 items-center transition-transform ${
+                showSuggestions ? "rotate-180" : ""
+              }`}
+            >
+              <IconChevronDown />
+            </span>
+          </button>
+          <div id="ai-suggestions" className={showSuggestions ? "pt-2" : "hidden"}>
+            <Suggestions intents={suggestions} asked={asked} lang={lang} onAsk={ask} />
+          </div>
+        </div>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -400,7 +469,8 @@ export function AssistantChat({
               size="sm"
               onClick={() => {
                 setThread([]);
-                setSpent([]);
+                setAsked([]);
+                setShowSuggestions(true);
               }}
             >
               {t.clear}

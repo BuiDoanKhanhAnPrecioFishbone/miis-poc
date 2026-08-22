@@ -197,7 +197,7 @@ export function AiAssistantLauncher({ lang, role }: { lang: Lang; role: RoleInfo
       onClick={() => setOpen(true)}
       aria-haspopup="dialog"
       aria-label={waiting > 0 ? t.launcherWaiting(waiting) : t.launcher}
-      className="print-hide fixed bottom-6 right-6 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-ai-solid bg-ai-solid px-5 py-3 text-table font-bold text-ai-solid-foreground shadow-lg transition-colors hover:bg-[var(--mi-ai-700)]"
+      className="print-hide fixed bottom-6 right-6 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-ai-solid bg-ai-solid px-5 py-3 text-table font-bold text-ai-solid-foreground shadow-lg transition-colors hover:bg-[var(--mi-ai-800)]"
     >
       <IconAi />
       <span>{t.launcher}</span>
@@ -384,7 +384,7 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
             onChange={setTab}
             tabs={[
               { id: "ask", label: t.tabAsk },
-              { id: "tasks", label: t.tabTasks },
+              { id: "here", label: t.tabTasks },
               {
                 id: "queue",
                 label: t.tabQueue,
@@ -407,57 +407,97 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
           </div>
         ) : (
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
-            {tab === "tasks" &&
+            {tab === "here" && (
               /*
-                Two different screens, and the drawer used to show the first one
-                everywhere. `here.length > 0 ? here : elsewhere` fell back to
-                every function the role can reach, so on Rapporter, Parter, Sök
-                and the start page an officer was offered three protocol tasks
-                that had nothing to do with where they were standing.
+                Where the machine is, and where it is not.
 
-                On a screen where a function runs, the drawer names the functions
-                and points at the region on this page. Where none runs, it says
-                so in one sentence and offers one way to the nearest screen that
-                does, rather than three that look like they apply here.
+                This tab was a **launcher** — "here is what you can ask the AI
+                to do" — and nothing in §4.1 or §5.8 asks for one. §4.1's word
+                is *integrerat*: the AI lives on the screens where the work
+                happens, so a button that starts it from somewhere else is a
+                navigation shortcut wearing an AI hat. On Rapporter it had
+                degenerated into exactly that: one link to another screen.
+
+                What it answers now is a question an authority buying AI
+                genuinely has, on every screen, and that no competitor's demo
+                will answer: *is the machine touching this page, and what does
+                it do here?* Both halves are shown, because the half that says
+                **no** is the one that makes the other half credible — a
+                boundary an interface never states is a boundary the buyer has
+                to take on trust. Four functions, named, each either working on
+                this page with a way to the region, or named with the screen it
+                works on instead.
               */
-              (here.length > 0 ? (
-                <Section title={t.ask} lead={t.askLead}>
-                  {/*
-                    A plain sentence, not a `Rationale`. What a control will do
-                    when pressed is something the officer needs in order to use
-                    the screen correctly, and this tab had nothing of the kind in
-                    the product view — buttons with no statement of what pressing
-                    one starts, which is the whole of the report that the tab had
-                    no clear purpose.
-                  */}
-                  <p className="mb-3 text-table">{t.tasksLead}</p>
-                  <ul className="space-y-2">
-                    {here.map((f) => (
-                      <li key={f.id}>
-                        {/* The region on this page, not the page itself. */}
-                        <LinkButton
-                          href={aiTaskHref(f, pathname)}
-                          fullWidth
-                          iconEnd={<IconForward />}
-                        >
-                          {f.ask}
-                        </LinkButton>
-                      </li>
-                    ))}
-                  </ul>
-                </Section>
-              ) : (
-                <Section title={t.ask} lead={t.askElsewhere}>
-                  <p className="mb-3 text-table">{t.notHere}</p>
-                  {elsewhere.length === 0 ? (
-                    <p className="text-table text-muted-foreground">{t.onThisScreenNone}</p>
-                  ) : (
-                    <LinkButton href={elsewhere[0]!.href} fullWidth iconEnd={<IconForward />}>
-                      {t.goWhereItWorks(elsewhere[0]!.where)}
-                    </LinkButton>
-                  )}
-                </Section>
-              ))}
+              <Section title={t.here} lead={t.hereRationale}>
+                <p className="mb-4 text-table">{t.hereLead}</p>
+
+                {here.length > 0 ? (
+                  <>
+                    <h4 className="mi-kicker mb-2 text-muted-foreground">{t.hereActive}</h4>
+                    <p className="mb-3 text-table">{t.hereActiveLead}</p>
+                    <ul className="space-y-4">
+                      {here.map((f) => (
+                        <li key={f.id} className="border-l-4 border-ai-solid pl-3">
+                          <p className="font-semibold">{f.label}</p>
+                          <p className="mt-1 text-label text-muted-foreground">{f.what}</p>
+                          <div className="mt-2">
+                            {/* The region on this page, not the page itself. */}
+                            <LinkButton
+                              href={aiTaskHref(f, pathname)}
+                              size="sm"
+                              iconEnd={<IconForward />}
+                            >
+                              {f.ask}
+                            </LinkButton>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <p className="text-table">{t.hereNone}</p>
+                )}
+
+                {elsewhere.length > 0 && (
+                  <div className="mt-5 border-t border-border pt-4">
+                    <h4 className="mi-kicker mb-2 text-muted-foreground">{t.hereElsewhere}</h4>
+                    {/*
+                      Quiet rows, not buttons. These functions do not apply
+                      here, and drawing them as controls is what made the old
+                      tab offer three protocol tasks on Rapporter — every one
+                      of which navigated away from the screen the officer was
+                      standing on.
+
+                      The function's own name is the link, and where it works
+                      sits under it. Two wordings failed before this one.
+                      `f.where` is a sentence, not a place — *"I protokollvyn,
+                      och tabellen underhålls under Administration"* — so
+                      "Gå till …" produced a link that was a paragraph.
+                      Substituting the menu item's name gave three rows all
+                      reading *Gå till Avtal*, because three of the four
+                      functions belong to the same register: identical labels
+                      on controls that go to different places, which is the
+                      fault the walkthrough's step buttons were fixed for. The
+                      name is unique by construction.
+                    */}
+                    <ul className="space-y-3">
+                      {elsewhere.map((f) => (
+                        <li key={f.id}>
+                          <Link
+                            href={f.href}
+                            className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-primary underline underline-offset-2"
+                          >
+                            {f.label}
+                            <IconForward />
+                          </Link>
+                          <p className="text-label text-muted-foreground">{f.where}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </Section>
+            )}
 
             {tab === "queue" && (
               <Section title={t.queue} lead={canReview ? t.queueLead : t.readOnly}>

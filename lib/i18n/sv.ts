@@ -108,30 +108,34 @@ export const sv = {
         : `AI-stöd – ${n} förslag väntar på granskning`,
     title: "AI-assistenten",
     subtitle: "Integrerat AI-stöd för registreringsarbetet (Bilaga 1 §4.1)",
-    ask: "Be AI-stödet om hjälp",
-    askLead:
-      "Uppgifterna nedan är §4.1:s funktioner, körda på den skärm kravet placerar dem på. Varje körning ger förslag som en handläggare godkänner eller avvisar – ingenting sparas på vägen.",
-    askElsewhere:
-      "AI-stödet kör inte i den här vyn. Det här är vad du kan be det om, och var det görs.",
+    here: "AI-stödet på den här sidan",
+    hereLead:
+      "AI-stödet är ett bestämt antal funktioner, var och en placerad där arbetet görs. Här står vilka som gäller den här sidan och var de övriga arbetar. Funktioner utanför din behörighet visas inte.",
+    hereActive: "Arbetar här",
+    hereActiveLead:
+      "Knappen tar dig till den del av sidan där funktionen körs. Det den tar fram är förslag som du godkänner eller avvisar – ingenting sparas på vägen.",
+    hereNone:
+      "AI-stödet arbetar inte på den här sidan. Det är avsiktligt: stödet finns där arbetet görs, inte överallt.",
+    hereElsewhere: "Arbetar i stället i",
+    hereRationale:
+      "§4.1 beskriver AI-stödet som integrerat och räknar upp fyra funktioner, var och en placerad där arbetet görs. Den här vyn säger var de är och var de inte är – en gräns som gränssnittet aldrig uttalar är en gräns köparen får ta på förtroende.",
     tabAbout: "Om",
-    onThisScreenNone:
-      "AI-stödet är inte aktivt i den här vyn, och det är avsiktligt: AI finns där ett krav placerar det, inte överallt.",
     where: "Var",
     goThere: "Granska förslagen",
     tabsLabel: "AI-stödets delar",
     tabAsk: "Fråga",
     /* Verbs, because each tab is something the officer does. "Uppgifter" meant
        both *tasks* and *data*, and in a register it reads as the second. */
-    tabTasks: "Starta",
+    tabTasks: "På sidan",
     tabQueue: "Granska",
-    tasksLead:
-      "Det här kan du sätta i gång härifrån. Varje uppgift öppnar den del av sidan där AI-stödet arbetar, och resultatet blir förslag som du godkänner eller avvisar.",
     chat: {
       label: "Din fråga",
       placeholder: "T.ex. Vilka avtal löper ut inom 90 dagar?",
       ask: "Fråga",
       empty: "Skriv en fråga först.",
       notAuthorised: "Behörighet saknas",
+      suggestions: (n: number) => `Snabbfrågor (${n})`,
+      asked: "Ställd",
       openingLead:
         "Ställ en fråga om avtalen, medlingsärendena eller Märket. Svaret hämtas ur registret och visar de poster det räknade – du kan öppna varje post direkt härifrån.",
       seeAllIn: (screen: string) => `Visa alla i ${screen}`,
@@ -174,8 +178,6 @@ export const sv = {
       boundedNote:
         "Assistenten kör en fråga mot registret och visar posterna. Den formulerar inga svar om kollektivavtal, eftersom ett sådant svar vore ett nytt påstående om arbetsmarknaden utan en post bakom sig. Behörigheten gäller även när frågan skrivs – en roll som inte får läsa ett register får inte heller svar om det.",
     },
-    notHere:
-      "AI-stödet arbetar där registreringen sker. Härifrån kan du ställa en fråga om avtalen, eller gå till den skärm där stödet arbetar.",
     goWhereItWorks: (where: string) => `Gå till ${where}`,
     queue: "Väntar på din granskning",
     queueLead:

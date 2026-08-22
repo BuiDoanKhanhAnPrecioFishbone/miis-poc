@@ -107,23 +107,25 @@ export const en: Dictionary = {
         : `AI support – ${n} proposals awaiting review`,
     title: "The AI assistant",
     subtitle: "Integrated AI support for the registration work (Appendix 1 §4.1)",
-    ask: "Ask the AI support for help",
-    askLead:
-      "The tasks below are §4.1's functions, run on the screen the requirement puts them on. Every run produces proposals a case officer approves or rejects — nothing is saved on the way.",
-    askElsewhere:
-      "The AI support does not run in this view. This is what you can ask it for, and where it happens.",
+    here: "The AI support on this page",
+    hereLead:
+      "The AI support is a fixed set of functions, each placed where the work is done. This says which of them apply to this page and where the others work. Functions outside your authorisation are not listed.",
+    hereActive: "Works here",
+    hereActiveLead:
+      "The button takes you to the part of the page where the function runs. What it produces are proposals you approve or reject — nothing is saved on the way.",
+    hereNone:
+      "The AI support does not work on this page. That is deliberate: it belongs where the work is done, not everywhere.",
+    hereElsewhere: "Works instead in",
+    hereRationale:
+      "§4.1 describes the AI support as integrated and names four functions, each placed where the work is done. This view says where they are and where they are not — a boundary an interface never states is a boundary the buyer has to take on trust.",
     tabAbout: "About",
-    onThisScreenNone:
-      "The AI support is not active in this view, and that is deliberate: AI belongs where a requirement puts it, not everywhere.",
     where: "Where",
     goThere: "Review the proposals",
     tabsLabel: "Parts of the AI support",
     tabAsk: "Ask",
     /* Verbs, because each tab is something the officer does. */
-    tabTasks: "Start",
+    tabTasks: "This page",
     tabQueue: "Review",
-    tasksLead:
-      "These are the things you can set going from here. Each one opens the part of the page where the AI support works, and what it produces are proposals you approve or reject.",
     chat: {
       label: "Your question",
       placeholder: "E.g. Which agreements expire within 90 days?",
@@ -133,6 +135,8 @@ export const en: Dictionary = {
       seeAllIn: (screen: string) => `See all in ${screen}`,
       clear: "Clear the conversation",
       notStored: "The conversation is not stored.",
+      suggestions: (n: number) => `Quick questions (${n})`,
+      asked: "Asked",
       openingLead:
         "Ask a question about the agreements, the mediation cases or Märket (industry benchmark). The answer is fetched from the register and shows the records it counted - you can open each record straight from here.",
       feedback: {
@@ -169,8 +173,6 @@ export const en: Dictionary = {
       boundedNote:
         "The assistant runs a query against the register and shows the records. It composes no answers about collective agreements, because such an answer would be a new statement about the labour market with no record behind it. Authorisation applies to typed questions too — a role that may not read a register is not answered about it.",
     },
-    notHere:
-      "The AI support works where the registration happens. From here you can ask a question about the agreements, or go to the screen where the support runs.",
     goWhereItWorks: (where: string) => `Go to ${where}`,
     queue: "Awaiting your review",
     queueLead:

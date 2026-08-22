@@ -90,7 +90,21 @@ reviewer to a screen its own role would be refused.
    Never soften text with an opacity modifier; that is how contrast failures get in.
    **AI is violet, and it is the one deliberate step outside the MI palette.** An AI
    proposal is machine-generated and unverified; *Märket* and a sekretessmarkering are
-   MI's own information. They must not share a hue. Sand already carries Märket,
+   MI's own information. They must not share a hue.
+   **The hue is the step outside; the chroma is not.** The violets were
+   Material's Deep Purple at 54 % and 61 % saturation, against an identity that
+   sits between 12 % and 32 % — slate-800 is 23 %, sand-600 is 32 %, the ink is
+   31 %. One colour at twice the chroma of everything around it does not read
+   as emphasis, it reads as **imported**, which is the wrong thing to say about
+   the part of MIIS a public buyer is most cautious about. They are now 28 % on
+   the spine and 36 % on the solid at hue 255, so the separation from slate
+   (h201) and sand (h36) is untouched and every measured ratio is the same or
+   better. **The `ai-band` gradient ends in `--mi-slate-800`** — violet where
+   the `AI` letter-mark and the spine are, MI's own colour where it runs out.
+   A band that is violet edge to edge says "this belongs to something else";
+   this says what is true, machine-generated material inside MI's system. Every
+   stop stays dark, because text may only sit on a gradient whose lightest stop
+   clears 4.5:1. Sand already carries Märket,
    attention, requirement tags, the public view and watchword hits — do not add a sixth
    meaning to it.
    **Everything AI produces lives inside an `<AiRegion>`, and nothing else does.** A
@@ -403,16 +417,27 @@ reviewer to a screen its own role would be refused.
    as a module in its own right, so the launcher is fixed to the **bottom right**
    of every screen the role may act on — not in the header, which is where a user
    goes to leave.
-   **Four tabs, and three of them are one loop: Fråga · Starta · Granska · Om.**
-   Verbs, because each names something the officer does — ask, set the machine
-   going, judge what it produced (FAI-002's own word). *Uppgifter* was the worst
+   **Four tabs: Fråga · På sidan · Granska · Om.** *Uppgifter* was the worst
    label in the system: in a register it reads as **data**, so the tab offering
-   things the AI could *do* was named after the things it holds, and it was
-   reported as having no clear purpose. *Om* is a tab rather than a disclosure
-   under the content — the catalogue, MI's limits and the traceability are
-   reference material, and reference material sits beside the work, not beneath
-   it. Each tab states in one plain sentence what it is for; that sentence is
-   needed to use the screen, so it is a paragraph and not a `Rationale`.
+   things the AI could *do* was named after the things it holds. *Om* is a tab
+   rather than a disclosure under the content — the catalogue, MI's limits and
+   the traceability are reference material, and reference material sits beside
+   the work, not beneath it. Each tab states in one plain sentence what it is
+   for; that sentence is needed to use the screen, so it is a paragraph and not
+   a `Rationale`.
+   **"På sidan" states where the machine is and where it is not — it is not a
+   launcher.** Nothing in §4.1 or §5.8 asks for one, and §4.1's word is
+   *integrerat*: the AI lives on the screens where the work happens, so a
+   button that starts it from elsewhere is a navigation shortcut wearing an AI
+   hat — on Rapporter it had degenerated into exactly that, one link to another
+   screen. The tab answers a question an authority buying AI actually has, on
+   every screen: *is the machine touching this page, and what does it do here?*
+   Both halves are shown, because **the half that says no is what makes the
+   other half credible**. Functions that run here get their own compartment and
+   a control to the region on **this** page; the rest are quiet rows naming
+   where they work instead, and the row's link is the **function's own name** —
+   `f.where` is a sentence, not a place, and the menu item's name gave three
+   rows all reading *Gå till Avtal*.
    **The count on Granska has to fall.** It is FAI-002's guarantee as a number —
    *this many machine-made proposals exist and no human has accepted them* — and
    it did not move when the officer approved the extraction three screens away,
@@ -450,11 +475,17 @@ reviewer to a screen its own role would be refused.
    the transcript scrolls above it; the officer's turn is a plain bubble on the
    right, the machine's is a bordered compartment on the left carrying the `AI`
    mark. The violet **frames** it and never tints the rows inside, which are
-   MI's own register being read back. A suggestion is **spent** once used —
-   pressing it again produces an identical second bubble, which teaches the
-   officer the assistant is not listening — and the suggestions live in the
-   empty state, not permanently above the composer, where four of them took
-   190px of a 512px panel. The link to the register appears **only when the
+   MI's own register being read back. **A used suggestion is marked, never
+   removed.** Removing it was the wrong trade: these five are the fastest route
+   to the five things the assistant can answer, and an officer asks *"vilka
+   registreringar är ofullständiga"* every morning — taking the shortcut away
+   at the moment it proves useful is taking it away for good. *Ställd* answers
+   "have I asked this" without answering "may I ask it again" on their behalf.
+   The suggestions live in a disclosure directly above the composer — one
+   place, collapsed after the first question and reopenable at any point,
+   because expanded they take 260px of a 512px panel and that is the right
+   trade only before there is a transcript.
+   The link to the register appears **only when the
    answer was cut short**: every row already opens its own record, so *"öppna
    vyn med hela svaret"* beside six visible rows was a duplicate of the thing
    above it.
