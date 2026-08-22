@@ -1,7 +1,7 @@
 # Handover — where this stands, and what must not be undone
 
-*Written 2026-08-21, at the end of the working session that followed Bilaga 2's
-arrival. Read this after `CLAUDE.md` and before touching anything.*
+*Written 2026-08-21 after Bilaga 2 arrived; **updated 2026-08-22**. Read this
+after `CLAUDE.md` and before touching anything.*
 
 `CLAUDE.md` carries the **rules**. This file carries the **state**: what is done,
 what is decided and why, what is left, and who owns it. If the two ever
@@ -113,16 +113,15 @@ npm run build     production build; fails on a dangling mock reference
 
 Two more need the app running (`npm run dev`, port 8080):
 
-- `npm run screenshots` and `npm run screenshots -- --lang=en` — 64 each.
-- **The accessibility sweep and the requirement-text sweep.** Both are Playwright
-  scripts run ad hoc rather than committed npm scripts. The accessibility one
-  loads every route as every role with axe-core filtered to the WCAG 2.1 A/AA
-  tags and checks for horizontal scroll at 375–1920; it currently reports
-  **0 violations, 0 overflow**. The requirement-text one loads every route with
-  `miis_reqtags=off` and scans `main` plus the AI drawer for `§`, requirement IDs
-  and appendix names; it currently reports **0**. *Worth committing as
-  `scripts/audit.mjs` — they have caught real defects repeatedly and are
-  currently re-typed each time.*
+- **`npm run audit`** — the accessibility sweep and the requirement-text sweep,
+  committed as `scripts/audit.mjs` and exiting non-zero on any finding. The
+  first loads every route as every role with axe-core filtered to the WCAG 2.1
+  A/AA tags and checks for horizontal scroll at 375–1920; the second loads every
+  route with `miis_reqtags=off` and scans `main` plus the AI drawer for `§`,
+  requirement IDs and appendix names. Both report **0** as of 2026-08-22.
+  `-- --a11y` and `-- --copy` run one half.
+- `npm run screenshots` and `npm run screenshots -- --lang=en` — 64 each, and
+  see the note above about where they live.
 
 ---
 
