@@ -8,6 +8,7 @@ import { ROLES, type Role } from "@/lib/domain/role";
 import {
   changeRole,
   deactivateUser,
+  reactivateUser,
   mayChangeRole,
   mayDeactivate,
   type SystemUser,
@@ -207,7 +208,21 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
           </span>
         )
       ) : (
-        <Button key="d" size="sm" variant="secondary" disabled disabledReason={t.reactivateReason}>
+        /* §3.1 gives this role *redigera användare*, and a register that can
+           switch someone off and not on again is half a register. There is no
+           rule to check on the way back: `mayDeactivate` exists because losing
+           the last authorisation administrator locks MI out, and adding one
+           cannot lock anybody out of anything. */
+        <Button
+          key="d"
+          size="sm"
+          variant="secondary"
+          onClick={() => {
+            setUsers((list) => reactivateUser(list, u.id));
+            setChanged(t.reactivated(u.name));
+            setRevoked(null);
+          }}
+        >
           {t.reactivate}
         </Button>
       ),

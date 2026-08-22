@@ -77,7 +77,7 @@ export default async function DokumentPage() {
         tags={["FD-001"]}
         action={<Button variant="secondary"
         disabled
-        disabledReason={i18n.common.notInDemo}
+        disabledReason={i18n.common.uploadNeedsStore}
       >{t.upload}</Button>}
       />
 

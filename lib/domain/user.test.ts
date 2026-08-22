@@ -6,6 +6,7 @@ import {
   deactivateUser,
   mayChangeRole,
   mayDeactivate,
+  reactivateUser,
   unstaffedRoles,
   usersPerRole,
   type SystemUser,
@@ -131,5 +132,43 @@ describe("changing and revoking a role — Bilaga 2 §3.5", () => {
     expect(deactivateUser(users, "U-1").find((u) => u.id === "U-1")!.active).toBe(false);
     /* U-2 is the only active authorisation administrator. */
     expect(deactivateUser(users, "U-2").find((u) => u.id === "U-2")!.active).toBe(true);
+  });
+});
+
+/*
+  The other half of §3.1's *redigera användare*. A register that can switch
+  someone off and not on again is half a register, and the case is ordinary: a
+  colleague returns from leave, or a revocation made in error has to be undone
+  without involving the supplier — which is what NFÅ-005 exists for.
+*/
+describe("reactivateUser", () => {
+  const team = [
+    user("anna", "agreement-admin"),
+    user("bo", "permission-admin"),
+    user("cecilia", "statistics-user", false),
+  ];
+
+  it("puts the link back", () => {
+    const on = reactivateUser(team, "cecilia");
+    expect(on.find((u) => u.id === "cecilia")!.active).toBe(true);
+  });
+
+  it("leaves everybody else alone", () => {
+    const on = reactivateUser(team, "cecilia");
+    expect(on.filter((u) => u.id !== "cecilia").map((u) => u.active)).toEqual([true, true]);
+  });
+
+  /* Nothing to refuse on the way back: `mayDeactivate` exists because losing
+     the last authorisation administrator locks MI out, and adding one cannot
+     lock anybody out of anything. */
+  it("is a no-op on somebody already active", () => {
+    expect(reactivateUser(team, "anna")).toEqual(team);
+  });
+
+  /* The round trip, which is the act an administrator actually performs. */
+  it("undoes a deactivation", () => {
+    const off = deactivateUser(team, "anna");
+    expect(off.find((u) => u.id === "anna")!.active).toBe(false);
+    expect(reactivateUser(off, "anna").find((u) => u.id === "anna")!.active).toBe(true);
   });
 });

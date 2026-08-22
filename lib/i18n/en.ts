@@ -56,6 +56,8 @@ export const en: Dictionary = {
     notAuthorised: "Not authorised",
     notAuthorisedFor: (screen: string, role: string) =>
       `${screen} is not part of the permissions for the role ${role}. Switch role in demo mode to see the view. In MIIS this is governed by the authorisation administrator (NFÅ-003).`,
+    uploadNeedsStore:
+      "File upload needs the document store and is part of Steg 1. The protocol upload in the registration flow is the one that runs without it.",
     exportNeedsServer:
       "File export runs on the server and is part of Steg 1. The print below is the export that runs without one.",
     notInDemo: "Not active in the demo",
@@ -1992,7 +1994,8 @@ export const en: Dictionary = {
         `Access revoked for ${name}. The account remains as inactive — the sign-ins are in the log and have to stay resolvable (NFL-001).`,
       lastAdminReason:
         "The last active authorisation administrator cannot be deactivated — permissions could then only be restored by the supplier, which is what NFÅ-005 exists to prevent.",
-      reactivateReason: "Not active in the demo",
+      reactivated: (name: string) =>
+        `${name} is active again. The change is written to the change log with the time and the user.`,
       save: "Save the user",
       nameRequired: "A name is required.",
       savedNote: (name: string) =>

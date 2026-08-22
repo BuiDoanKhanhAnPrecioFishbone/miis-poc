@@ -176,19 +176,19 @@ export function ConstructionsReport({
         <span className="text-label font-bold">{d.common.exportLabel}</span>
         <Button variant="secondary" size="sm"
         disabled
-        disabledReason={d.common.notInDemo}
+        disabledReason={d.common.exportNeedsServer}
       >
           Excel
         </Button>
         <Button variant="secondary" size="sm"
         disabled
-        disabledReason={d.common.notInDemo}
+        disabledReason={d.common.exportNeedsServer}
       >
           CSV
         </Button>
         <Button variant="secondary" size="sm"
         disabled
-        disabledReason={d.common.notInDemo}
+        disabledReason={d.common.exportNeedsServer}
       >
           PDF
         </Button>

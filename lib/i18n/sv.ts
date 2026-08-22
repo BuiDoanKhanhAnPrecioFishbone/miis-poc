@@ -54,6 +54,8 @@ export const sv = {
     notAuthorised: "Behörighet saknas",
     notAuthorisedFor: (screen: string, role: string) =>
       `${screen} ingår inte i behörigheten för rollen ${role}. Byt roll i demoläget för att se vyn. I MIIS styrs detta av behörighetsadministratören (NFÅ-003).`,
+    uploadNeedsStore:
+      "Filuppladdning kräver dokumentlagret och ingår i steg 1. Protokolluppladdningen i registreringsflödet är den som körs utan det.",
     exportNeedsServer:
       "Filexport körs på servern och ingår i steg 1. Utskriften nedan är den export som körs utan serverdrift.",
     notInDemo: "Ej aktiv i demon",
@@ -1987,7 +1989,8 @@ export const sv = {
         `Behörigheten återkallad för ${name}. Kontot finns kvar som inaktivt – inloggningarna ligger i loggen och måste gå att härleda (NFL-001).`,
       lastAdminReason:
         "Den sista aktiva behörighetsadministratören kan inte inaktiveras – då kan behörigheter bara återställas av leverantören, vilket är det NFÅ-005 ska förhindra.",
-      reactivateReason: "Ej aktiv i demon",
+      reactivated: (name: string) =>
+        `${name} är aktiv igen. Ändringen skrivs till ändringsloggen med tidpunkt och användare.`,
       save: "Spara användaren",
       nameRequired: "Namn krävs.",
       savedNote: (name: string) =>

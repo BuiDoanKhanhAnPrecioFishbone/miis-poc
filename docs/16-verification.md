@@ -8,28 +8,33 @@ built, the row says so.
 The point of writing it down is that §16 judges this criterion on *konkretionsgrad* among
 other things. A claim about testing is worth what it can be shown to be.
 
-## The four commands
+## The five commands
 
 ```
-npm test          254 unit tests over the domain layer and the mock data
+npm test          282 unit tests over the domain layer and the mock data
 npm run lint      ESLint, including the architectural rules below
 npx tsc --noEmit  types, which is also what keeps the English translation complete
 npm run build     production build, which fails on broken mock references
+npm run audit     accessibility and product-view copy, against the running app
 ```
 
-Plus two that need the app running: `npm run screenshots` and the axe sweep described
-below.
+`npm run audit` is `scripts/audit.mjs`, committed rather than re-typed, and it exits
+non-zero on any finding so it can gate a merge. It runs two sweeps: axe-core over every
+route as every role filtered to the WCAG 2.1 A/AA tags with a horizontal-scroll check from
+375 px to 1920 px, and a scan of every route with the requirement tags off for requirement
+IDs, § references and appendix names in the product view. Both currently report **0**.
+`npm run screenshots` also needs the app running.
 
 ## MI's chapter 9, requirement by requirement
 
 | | MI asks for | Where it stands |
 |---|---|---|
-| **T-001** | Unit, integration and system tests before go-live, documented | **Unit: built.** 254 tests over `lib/domain/` and `lib/mock/`. Integration and system tests belong to the delivered system and are described, not built — there is no database or IdP to integrate against yet |
+| **T-001** | Unit, integration and system tests before go-live, documented | **Unit: built.** 282 tests over `lib/domain/` and `lib/mock/`. Integration and system tests belong to the delivered system and are described, not built — there is no database or IdP to integrate against yet |
 | **T-002** | Testing against anonymised or fictitious protocols and agreements representing variations in the Swedish landscape | **Built.** `lib/mock/` holds three datasets with real party names — Teknikföretagen, IF Metall, Almega, Unionen, Kommunal, Seko, Sveriges Lärare — across private, municipal and industry sectors. The sample protocol is MI's own from Bilaga D. A test asserts the variation rather than assuming it |
 | **T-003** | Test data including edge cases, such as entirely new agreements with no previous version | **Built.** The `quiet` dataset is deliberately near-empty so empty states are designed rather than discovered; `peak` is the same register under load. US-02's brand-new agreement is the named edge case |
-| **T-004** | Regression testing on system or AI-model updates | **Partly built.** The unit suite, the lint rules and the accessibility sweep run on every change and have caught real regressions. Regression against an *AI model* update needs the model, and is described |
+| **T-004** | Regression testing on system or AI-model updates | **Partly built.** The unit suite, the lint rules and `npm run audit` run on every change and have caught real regressions — most recently a query builder whose criteria composed correctly and then returned every agreement regardless, found by running the scenarios in `docs/21` rather than by review. Regression against an *AI model* update needs the model, and is described |
 | **T-005** | A UAT environment | **Described.** The Vercel deployment is the current equivalent — every push is reviewable at a URL — but a real UAT environment with MI's own data is delivery work |
-| **T-006** | Every Ska-krav verified and approved by MI before final delivery | **Groundwork built.** Both requirement chapters are diffed against MI's own tables, every requirement ID on screen resolves to MI's own sentence, and the traceability layer exists so a requirement can be walked to the interface that satisfies it. Approval itself is MI's act |
+| **T-006** | Every Ska-krav verified and approved by MI before final delivery | **Groundwork built, with a known gap.** Both requirement chapters are diffed against MI's own tables, every requirement ID on screen resolves to MI's own sentence, and the traceability layer exists so a requirement can be walked to the interface that satisfies it. The catalogue holds **112 IDs and is not complete**: `L-001…008` (§7), `T-001…008` (§9) and part of `D-*` (§8) are absent, because it grew from what the interface needed rather than from the specification. They are not interface requirements and no screen can tag them — but T-006 makes verification per requirement contractual, so they have to be answered in prose. Approval itself is MI's act |
 | **T-007** | Migration verified for data quality and completeness | **Not started.** Delivery work, and it needs W3D3 and the Access database |
 | **T-008** | Production verification by MI after go-live | **Not started.** Delivery work |
 
@@ -40,7 +45,7 @@ React, no Next, no data access — so the business rules are plain functions ove
 values and need no harness. The suite covers FR-012's colour derivation and all four of
 its branches, FAI-002 and FH-001's adjusted-versus-untouched rule, FA-021's empty-field
 rule, FF-004's meeting phases, FF-005's coordinated-demand backing, FP-002's
-name-at-a-date, Bilaga F's report catalogue — that all six of MI's reports are present and numbered as MI numbers them, that each carries the criteria MI's own selection screen shows, and that the bargaining-round report buckets by expiry month and counts employees separately — NFÅ-005's user register, including the rule that the last authorisation administrator cannot lock MI out, the public computer's search — free text over the four fields a visitor knows an agreement by, and FA-020's valid-at-date with both open ends — NFÅ-002's configurable session limit, where the ceiling is MI's own thirty minutes and a stored value that cannot be trusted falls back to the default rather than to zero, and the rule that NFL-003 and NFÅ-006 stay out of the system administrator's hands — the guided walkthrough, where the assertion that matters is that none of its sixteen steps sends a reviewer to a screen its own role would be refused, §4.1's AI catalogue — that the four functions MI names are the four
+name-at-a-date, Bilaga F's report catalogue — that all six of MI's reports are present and numbered as MI numbers them, that each carries the criteria MI's own selection screen shows, and that the bargaining-round report buckets by expiry month and counts employees separately — NFÅ-005's user register, including the rule that the last authorisation administrator cannot lock MI out, the public computer's search — free text over the four fields a visitor knows an agreement by, and FA-020's valid-at-date with both open ends — NFÅ-002's configurable session limit, where the ceiling is MI's own thirty minutes and a stored value that cannot be trusted falls back to the default rather than to zero, and the rule that NFL-003 and NFÅ-006 stay out of the system administrator's hands — the guided walkthrough, where the assertion that matters is that none of its twenty-two steps sends a reviewer to a screen its own role would be refused, §4.1's AI catalogue — that the four functions MI names are the four
 present, that every requirement ID they cite resolves, that no screen claims AI a
 requirement does not put there, and that NFÅ-003 filters the review queue by write access
 so an officer is never shown work they cannot clear — and FAI-004's watchword matching — case-insensitivity, longest-term
@@ -57,10 +62,9 @@ break is worth more than one everybody agrees with:
   typed as the Swedish one. The second language cannot silently rot.
 - A dangling reference in the mock data fails `next build`.
 
-**Accessibility.** NFUI-003 makes WCAG 2.1 AA a requirement rather than a preference. axe
-runs across every route **as every role**, at five width and language combinations,
-currently 0 violations, alongside a check that no route scrolls horizontally at any width
-from 375 to 1920 in either language. Both have caught defects that review missed — a
+**Accessibility.** NFUI-003 makes WCAG 2.1 AA a requirement rather than a preference.
+`npm run audit` runs axe across every route **as every role**, currently 0 violations,
+alongside a check that no route scrolls horizontally at any width from 375 to 1920. Both have caught defects that review missed — a
 page-wide horizontal scrollbar caused by screen-reader-only text escaping its container,
 which was live on the deployed build and invisible to the eye; and a 404 whose display
 numeral measured 2.4:1, which `aria-hidden` had hidden from a screen reader and from us,
@@ -84,6 +88,9 @@ adjectives: *0 violations across 50 runs*, *page movement 0px, measured*, *disti
 positions equal the layout row count at every width*.
 
 ## What this does not claim
+
+`docs/21-definition-of-done.md` carries the twelve scenarios this repository is tested
+against, written so a failure is unambiguous, and the state of each at the last run.
 
 The prototype has no database, no authentication and no AI model, so anything downstream
 of those is described rather than demonstrated. Integration tests, the UAT environment,

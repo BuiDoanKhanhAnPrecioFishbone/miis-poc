@@ -14,6 +14,7 @@ import { addWatchword, encodeWatchwords, suggestTerm } from "@/lib/domain/watchw
 
 import { dictionary } from "@/lib/i18n";
 import { DocumentTemplate } from "./DocumentTemplate";
+import { PrintButton } from "./Print";
 import { IconPlus } from "./icons";
 import { Select } from "./Select";
 import { Stepper, type StepState } from "./Stepper";
@@ -683,16 +684,22 @@ export function PartyMeetingView({
               </>
             )}
 
-            {/* FF-004 names printing explicitly — "registrering och utskrift". */}
-            <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-              <Button variant="secondary"
-        disabled
-        disabledReason={d.common.notInDemo}
-      >{t.after.print}</Button>
-              <Button variant="secondary"
-        disabled
-        disabledReason={d.common.notInDemo}
-      >{t.after.upload}</Button>
+            {/*
+              FF-004 names printing explicitly — *"registrering och utskrift av
+              partsträffsinformation"* — and the control was disabled with "Ej
+              aktiv i demon" on the one screen whose requirement says the word.
+              Printing is the export that runs without a server everywhere else
+              in the system; there was nothing to refuse.
+            */}
+            <div className="print-hide mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+              <PrintButton lang={lang} />
+              <Button
+                variant="secondary"
+                disabled
+                disabledReason={d.common.uploadNeedsStore}
+              >
+                {t.after.upload}
+              </Button>
               <ReqTags ids={["FF-004", "FD-001"]} />
             </div>
             <Rationale>{t.after.logNote}</Rationale>

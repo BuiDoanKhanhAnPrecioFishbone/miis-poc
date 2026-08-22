@@ -141,3 +141,19 @@ export function changeRole(
 export function deactivateUser(users: readonly SystemUser[], id: string): SystemUser[] {
   return users.map((u) => (u.id === id && mayDeactivate(u, users) ? { ...u, active: false } : u));
 }
+
+/**
+ * Putting the link back — the other half of §3.1's *redigera användare*.
+ *
+ * A register where an administrator can switch someone off and not on again is
+ * half a register, and the case is ordinary rather than exotic: a colleague
+ * returns from leave, or a revocation was made in error and has to be undone
+ * without involving the supplier, which is the whole point of NFÅ-005.
+ *
+ * There is no rule to check on the way back. `mayDeactivate` exists because
+ * removing the last authorisation administrator locks MI out; adding one back
+ * cannot lock anybody out of anything.
+ */
+export function reactivateUser(users: readonly SystemUser[], id: string): SystemUser[] {
+  return users.map((u) => (u.id === id ? { ...u, active: true } : u));
+}

@@ -68,11 +68,13 @@ merge if it fails:
 
 | Gate | What it protects |
 |---|---|
-| **Unit tests over the domain layer** | The rules — authorisation, status, report selection, publication, the AI's own boundaries. Currently **236 tests** |
+| **Unit tests over the domain layer** | The rules — authorisation, status, report selection, publication, the query builder's own composition, the AI's boundaries. Currently **282 tests** |
 | **Architectural lint rules** | The data seam. An import of the data layer from a screen fails the build, so the mock→database swap stays invisible to the interface |
 | **Type-checked translations** | The second language cannot silently rot: a missing or misspelt key fails compilation |
 | **Referential integrity at build** | A dangling reference in the data fails the build rather than showing an empty screen |
-| **WCAG 2.1 AA sweep** | NFUI-003, as a gate rather than a review. axe-core across every route, as every role, in both languages. Currently **0 violations**, and no horizontal scroll between 375 px and 1920 px |
+| **WCAG 2.1 AA sweep** | NFUI-003, as a gate rather than a review. `npm run audit` runs axe-core across every route as every role, exits non-zero on any finding. Currently **0 violations**, and no horizontal scroll between 375 px and 1920 px |
+| **No specification text in the product view** | The same command scans every route with the requirement tags off for requirement IDs, § references and appendix names. A system MI will use does not argue with its user about the specification. Currently **0** |
+| **Named scenarios, run against the build** | `docs/21-definition-of-done.md` carries twelve, written so a failure is unambiguous — that every act ends on what it produced, that every derived count moves, that a printout is a document, that confidentiality-marked information is not served at all |
 | **Screenshot pass** | The tender document and the running system cannot drift apart |
 
 `docs/16-verification.md` maps MI's chapter 9 — T-001 to T-008 — to what is
@@ -251,9 +253,12 @@ it. If the model service is delayed, registration still works.
 no identity provider and no AI model. What it demonstrates is the interface, the
 rules and the method — and the method is the claim §3.4 asks about.
 
-**The numbers above are current and will move.** 236 tests and 0 accessibility
+**The numbers above are current and will move.** 282 tests and 0 accessibility
 violations are true of the build this response was generated from; they are
-evidence that the gates exist and run, not a promise about a final count.
+evidence that the gates exist and run, not a promise about a final count. The
+gates have earned their place: the most recent thing they caught was a query
+builder whose criteria composed correctly and then returned every agreement
+regardless — found by running the scenarios, not by looking at the screen.
 
 **The timeline is an outline, not a project plan.** §3.4 asks for *en
 övergripande tidplan*. The detailed plan is agreed with MI at the uppstartsmöte,
