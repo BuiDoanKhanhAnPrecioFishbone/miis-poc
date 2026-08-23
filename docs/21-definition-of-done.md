@@ -71,7 +71,7 @@ criterion is worth.
 | Criterion | Max mervärde | Where the instruction lives | Our answer |
 |---|---|---|---|
 | Anbudssumma | — | Bilaga 4 | **Missing** |
-| Arbetsgrupp | 500 000 | Bilaga 2 §3.1 | **Missing** — named consultants + CVs |
+| Arbetsgrupp | 500 000 | Bilaga 2 §3.1 | `docs/23-arbetsgrupp.md` (submitted) — **names and CVs outstanding** |
 | Arbetsprocesser och metoder | 500 000 | Bilaga 2 §3.4 | `docs/19-arbetsprocesser-SV.md` (submitted) · `-.md` (English draft) |
 | **Rollbaserade användarscenarier och användargränssnitt** | **1 000 000** | Bilaga 2 §3.5 | `docs/18-role-scenarios-SV.md` (submitted) + the prototype |
 | Muntlig presentation | 500 000 | Bilaga 2 §3.6 | `/genomgang` — not rehearsed |
@@ -189,7 +189,7 @@ the visualisations aid understanding · the extent of value created.
 
 **Bilaga 2 §3.1.** Done is:
 
-- [ ] The group described — **what competence each member brings**
+- [x] The group described — **what competence each member brings** (`docs/23-arbetsgrupp.md`: six roles, what each brings, and what the CV must evidence)
 - [ ] Consultants **named**
 - [ ] **CVs attached**, numbered as appendices
 - [ ] Hourly cost per consultant/competence in Bilaga 4
