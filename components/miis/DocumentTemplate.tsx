@@ -4,7 +4,8 @@ import { useId, useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
-import { IconCheck, IconPlus, IconPrint } from "./icons";
+import { IconCheck, IconPlus } from "./icons";
+import { PrintButton, PrintHeader } from "./Print";
 import { Badge, Button, Callout, Field, FormGrid, Panel, Rationale, ReqTags } from "./primitives";
 import { SegmentedControl } from "./Select";
 
@@ -97,40 +98,77 @@ export function DocumentTemplate({
     if (!edited) setBody(variants.find((v) => v.id === id)?.body ?? "");
   }
 
-  if (saved) {
-    return (
-      <Panel title={heading} tags={requirements}>
-        <Callout tone="ok" live>
-          {t.createdNote}
-        </Callout>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Badge tone="ok">{t.created}</Badge>
-          <span className="min-w-0 break-all font-semibold">{saved}</span>
-        </div>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <Button variant="secondary" onClick={() => window.print()} iconStart={<IconPrint />}>
-            {d.print.action}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setSaved(null);
-              setOpen(true);
-            }}
-          >
-            {t.reopen}
-          </Button>
-        </div>
-        <Rationale>{logNote}</Rationale>
-      </Panel>
-    );
-  }
-
   return (
     <Panel title={heading} tags={requirements}>
-      <p className="max-w-4xl text-table">{intro}</p>
+      <p className="print-hide max-w-4xl text-table">{intro}</p>
 
-      {!open ? (
+      {/*
+        The document it produced, kept on screen.
+
+        Saving used to `return` a receipt in place of the whole panel: the
+        pre-filled values, the variant and the body all disappeared, so an
+        officer who created a GD-beslut could not read the GD-beslut. That is
+        the same fault the mediator register had — an act that produces
+        something has to end **on that thing** — and it is worse here, because
+        FSD-001 asks for a document *"utifrån en dokumentmall, där förinmatad
+        information från MIIS ska kunna redigeras"*: showing which register each
+        value came from is half the requirement, and the save destroyed the
+        evidence.
+
+        It is `print-document`, so printing it prints the document rather than
+        the screen around it — the same rule the report result follows.
+      */}
+      {saved && (
+        <div className="print-document mt-4">
+          <PrintHeader lang={lang} title={saved} />
+          <div className="print-hide">
+            <Callout tone="ok" live tags={requirements}>
+              {t.createdNote}
+            </Callout>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <Badge tone="ok">{t.created}</Badge>
+              <span className="min-w-0 break-all font-semibold">{saved}</span>
+            </div>
+          </div>
+
+          {/*
+            The values and where they came from, still named. A document a
+            reader cannot trace back to its registers is a document nobody can
+            check after the fact.
+          */}
+          <div className="mt-4">
+            <h3 className="mi-kicker mb-2 text-muted-foreground">{t.prefilled}</h3>
+            <FormGrid>
+              {fields.map((f) => (
+                <Field key={f.label} label={f.label} value={f.value} hint={f.source} />
+              ))}
+            </FormGrid>
+          </div>
+
+          {/* The body as it was saved — the document itself, not a box to type
+              in. `whitespace-pre-wrap` keeps the template's own line breaks,
+              which are what make it read as a decision rather than a paragraph. */}
+          <div className="mt-4">
+            <h3 className="mi-kicker mb-2 text-muted-foreground">{t.body}</h3>
+            <p className="whitespace-pre-wrap text-table leading-relaxed">{body}</p>
+          </div>
+
+          <div className="print-hide mt-4 flex flex-wrap items-center gap-3">
+            <PrintButton lang={lang} />
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setSaved(null);
+                setOpen(true);
+              }}
+            >
+              {t.reopen}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {saved ? null : !open ? (
         <div className="mt-4">
           <Button variant="secondary" onClick={() => setOpen(true)} iconStart={<IconPlus />}>
             {t.open}

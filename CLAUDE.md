@@ -500,6 +500,15 @@ reviewer to a screen its own role would be refused.
    *not* narrowed. And **the criteria narrow the data**, except where the figures
    are MI's own published population (Avtalskonstruktioner), where the screen
    says so instead of pretending.
+   **A confirmation is added to the work, never substituted for it.** Saving a
+   document template `return`ed a receipt *in place of* the whole panel, so an
+   officer who had just created a GD-beslut could no longer read it — the
+   pre-filled values, the variant and the body all gone. A receipt naming a file
+   that cannot be opened is the least useful thing a screen can say. The
+   document stays, the callout sits above it, and the controls become **Skriv
+   ut** and **Öppna mallen igen**. Same fault as the mediator register's save,
+   and the general rule is the one already written: an act that produces
+   something ends **on that thing**.
    **A document template shows what it pre-filled.** FSD-001 and FSD-002 ask for
    documents *"utifrån en dokumentmall, där förinmatad information från MIIS ska
    kunna redigeras"* — both halves. `DocumentTemplate` lists each pre-filled
