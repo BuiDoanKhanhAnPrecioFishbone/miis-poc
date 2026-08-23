@@ -317,7 +317,12 @@ reviewer to a screen its own role would be refused.
    meaning. A form with required fields carries `common.requiredLegend` once,
    above them.
    **A screen whose sections are separate jobs is `SectionTabs`.** Stacking is
-   right when the parts are one subject read in order. It is wrong when they are
+   right when the parts are one subject read in order. Four screens have now
+   failed that test the same way — Administration, Rapporter, the agreement and
+   the mediation case — so the question to ask of any detail view is *how many
+   different reasons is someone here*, not *how long is the page*. A mediation
+   case is four: what the GD decided and which avtal it covers, the appointment,
+   the handlingar, and the utfall. It is wrong when they are
    separate jobs sharing a role: Administration is settings, two logs and a
    watchword table; Rapporter is the report catalogue, Konjunkturlönerapporten's
    watch list and the schedule of recurring extracts; and the agreement record

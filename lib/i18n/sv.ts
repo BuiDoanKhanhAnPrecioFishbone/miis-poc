@@ -822,6 +822,13 @@ export const sv = {
   },
 
   mediationCase: {
+      tabs: {
+        label: "Delar av medlingsärendet",
+        case: "Ärendet",
+        mediators: "Medlare",
+        documents: "Handlingar",
+        outcome: "Utfall",
+      },
     heading: (number: string, type: string) => `Medlingsärende ${number} – ${type}`,
     uploaded: (number: string) => `${number} – uppladdat, ärende skapat automatiskt`,
     registryNumber: "Diarienummer (diariesystemet)",

@@ -819,6 +819,13 @@ export const en: Dictionary = {
   },
 
   mediationCase: {
+      tabs: {
+        label: "Parts of the mediation case",
+        case: "The case",
+        mediators: "Mediators",
+        documents: "Documents",
+        outcome: "Outcome",
+      },
     heading: (number: string, type: string) => `Mediation case ${number} – ${type}`,
     uploaded: (number: string) => `${number} – uploaded, case created automatically`,
     registryNumber: "Registry number (registry system)",
