@@ -18,6 +18,7 @@ import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { IconBack } from "@/components/miis/icons";
 import { PrintButton } from "@/components/miis/Print";
 import { SectionTabs } from "@/components/miis/SectionTabs";
+import { WageAgreementAdmin } from "@/components/miis/WageAgreementAdmin";
 import {
   Badge,
   Callout,
@@ -258,25 +259,48 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
                 label: t.tabs.pay,
                 node: (
                   <>
-                  <Panel title={t.wageAgreements} tags={["FA-002", "FA-007", "FA-008", "FA-009"]}>
-                    <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
-                    {wageRows.length === 0 ? (
+                  {/*
+                    FA-001 is *"registrera **och redigera** avtalsinformation"*
+                    and §3.1 gives this role the verb twice. The tab held two
+                    tables and not one control, so the versions could be read and
+                    never corrected — and a löneutrymme read off a scanned
+                    protocol under time pressure is the figure most likely to be
+                    wrong in the whole register.
+                  */}
+                  {wageRows.length === 0 ? (
+                    <Panel title={t.wageAgreements} tags={["FA-002", "FA-007"]}>
+                      <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
                       <p className="text-table text-muted-foreground">{t.noWageAgreements}</p>
-                    ) : (
-                      <DataTable
-                        columns={wageColumns}
-                        rows={wageRows}
-                        lang={lang}
-                        caption={t.wageAgreements}
-                        /* What the six headers actually need unconstrained (706px
-                           measured), not a round number. 46rem left the table 30px
-                           wider than its own column at 1440 and scrolling for no
-                           reason; below this it still scrolls, which is the guard
-                           doing its job rather than columns collapsing to slivers. */
-                        minWidth="44rem"
-                      />
-                    )}
-                  </Panel>
+                    </Panel>
+                  ) : (
+                    <WageAgreementAdmin
+                      lang={lang}
+                      rounds={wageAgreements.map((w) => ({
+                        id: w.id,
+                        validFrom: w.validFrom,
+                        validTo: w.validTo,
+                        construction: w.construction,
+                        ...(w.wageScopePercent !== undefined
+                          ? { wageScopePercent: w.wageScopePercent }
+                          : {}),
+                        ...(w.costFramePercent !== undefined
+                          ? { costFramePercent: w.costFramePercent }
+                          : {}),
+                        individualGuarantee: w.individualGuarantee,
+                      }))}
+                      /* The revision is MI's own recorded figure rather than
+                         something this form sets, so it is handed down already
+                         formatted and stays read-only on the row. */
+                      hasRevision={Object.fromEntries(
+                        wageAgreements
+                          .filter((w) => w.wageRevision)
+                          .map((w) => [
+                            w.id,
+                            `${w.wageRevision!.date} · ${percent(w.wageRevision!.percent, lang)}`,
+                          ]),
+                      )}
+                    />
+                  )}
 
                   {hideMinimumWages ? (
                     <LimitedSectionPanel title={t.minimumWages} lang={lang} tags={["FA-013"]} />

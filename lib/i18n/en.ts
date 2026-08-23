@@ -1522,7 +1522,21 @@ export const en: Dictionary = {
       publicationNote:
         "Publication is an act with a date and a person, not a consequence of the record being complete. Medlingsinstitutet decides when an agreement is released — a half-registered agreement on the public computer would be the authority publishing a draft.",
       statusHeading: "Status and validity",
-      wageAgreements: "Wage agreements by bargaining round",
+      wageEdit: {
+      edit: "Edit",
+      editingNow: "Being changed",
+      alreadyOpen: "Open in the form above",
+      heading: (period: string) => `Change the wage agreement for ${period}`,
+      scopeLabel: "Wage scope (%)",
+      costLabel: "Cost frame (%)",
+      savedNote: (period: string) =>
+        `The wage agreement for ${period} has been changed. The change is written to the change log with time and user.`,
+      periodElsewhere:
+        "The validity period is changed on the agreement, not here — a bargaining round cannot run longer than the agreement it belongs to.",
+      logNote:
+        "A bargaining round is the agreement's version. FA-002 gives every renegotiation its own wage agreement with its own construction, wage scope and cost frame, so the comparison against the last round is the table — and a version history nobody can correct is a printout.",
+    },
+    wageAgreements: "Wage agreements by bargaining round",
       wageIntro:
         "One row per bargaining round and period. The construction is one of MI's seven, ordered by bargaining level.",
       construction: "Agreement construction",
@@ -2129,7 +2143,7 @@ export const en: Dictionary = {
       intro:
         "The system's eight roles. The role decides both what the user may do and which menu items appear.",
       role: "Role",
-      held: "Users",
+      held: "Number of users",
       unstaffed: "No user",
       unstaffedNote: (roles: string) =>
         `These roles have no active user: ${roles}. Parts of the system are then unstaffed — the role exists but nobody can reach it.`,

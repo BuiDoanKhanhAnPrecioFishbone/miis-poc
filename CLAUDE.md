@@ -500,6 +500,26 @@ reviewer to a screen its own role would be refused.
    *not* narrowed. And **the criteria narrow the data**, except where the figures
    are MI's own published population (Avtalskonstruktioner), where the screen
    says so instead of pretending.
+   **An act that says it happened has to have happened where the reader will
+   look.** Four of §3.5's thirteen scored bullets announced an act and then
+   denied it: a user created and absent from the register below it, an agreement
+   registered and missing from the register the confirmation linked to, a
+   publication invisible on the public computer — which is bullet nine's own
+   wording, *"så att det blir tillgängligt för användare med åtkomst till
+   publicerad information"*. The cause was never architecture. Watchwords,
+   reminders, the session limit and the walkthrough all survive a navigation
+   through a cookie the server reads; the three acts the criterion scores did
+   not use the mechanism the rest of the prototype runs on. 
+   owns the encoding,  the browser half, and
+    merges it in **one accessor** — and the second
+   register-reading module has to use that same accessor, or a published
+   agreement appears in the officer's list and not the public one.
+   **A column header must be unique in its own table, and the cell must be what
+   the header says.** The permission matrix had two columns headed *Användare*
+   twelve apart — the people holding the role, and the Användare module — and the
+   first rendered a persona's *name* in a column declared  and sorted by
+   an invisible count. A fix applied to the header and the sort and never to the
+   cell is worse than no fix.
    **A confirmation is added to the work, never substituted for it.** Saving a
    document template `return`ed a receipt *in place of* the whole panel, so an
    officer who had just created a GD-beslut could no longer read it — the

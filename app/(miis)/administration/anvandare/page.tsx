@@ -85,7 +85,24 @@ export default async function AnvandarePage() {
       <span key="r" className="font-semibold">
         {r.label[lang]}
       </span>,
-      r.person,
+      /*
+        The count, which is what the header says and what the sort uses.
+
+        The cell rendered `r.person` — a demo persona's name — in a column
+        declared `numeric`, headed with a count's label, and sorted by
+        `counts[r.id]`. So the column right-aligned a name as though it were a
+        figure and ordered the table by a number the reader could not see: a fix
+        applied to the header and the sort and never to the cell.
+
+        Nought is not a quiet zero. NFÅ-003 defines access by these eight roles,
+        so a role nobody holds is a part of the system nobody can reach, and the
+        page says so underneath — the row should say it too.
+      */
+      (counts[r.id] ?? 0) === 0 ? (
+        <Badge key="h" tone="attention">{t.roles.unstaffed}</Badge>
+      ) : (
+        <span key="h" className="tabular-nums">{counts[r.id]}</span>
+      ),
       ...MODULES.map((m) => {
         const level = accessLevel(r, m);
         /* An em dash for "none": an empty cell reads as data we did not have. */

@@ -1521,7 +1521,21 @@ export const sv = {
       publicationNote:
         "Publicering är en handling med datum och person, inte en följd av att posten är komplett. Medlingsinstitutet avgör när ett avtal lämnas ut – ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.",
       statusHeading: "Status och löptid",
-      wageAgreements: "Löneavtal per avtalsrörelse",
+      wageEdit: {
+      edit: "Redigera",
+      editingNow: "Ändras",
+      alreadyOpen: "Öppen i formuläret ovanför",
+      heading: (period: string) => `Ändra löneavtalet för ${period}`,
+      scopeLabel: "Löneutrymme (%)",
+      costLabel: "Kostnadsram (%)",
+      savedNote: (period: string) =>
+        `Löneavtalet för ${period} är ändrat. Ändringen skrivs till ändringsloggen med tidpunkt och användare.`,
+      periodElsewhere:
+        "Löptiden ändras på avtalet, inte här – en avtalsrörelse kan inte gälla längre än avtalet den tillhör.",
+      logNote:
+        "En avtalsrörelse är avtalets version. FA-002 ger varje omförhandling ett eget löneavtal med egen konstruktion, eget löneutrymme och egen kostnadsram, så jämförelsen mot förra rörelsen är tabellen – och en versionshistorik som ingen kan rätta är ett utskrivet papper.",
+    },
+    wageAgreements: "Löneavtal per avtalsrörelse",
       wageIntro:
         "En rad per avtalsrörelse och period. Konstruktionen är en av MI:s sju och ordnas efter förhandlingsnivå.",
       construction: "Avtalskonstruktion",
@@ -2128,7 +2142,9 @@ export const sv = {
       intro:
         "Systemets åtta roller. Rollen avgör både vad användaren får göra och vilka menyval som visas.",
       role: "Roll",
-      held: "Användare",
+      /* Not "Användare": the matrix also has a module column called Användare,
+         twelve columns to the right, and one word meant two things in one table. */
+      held: "Antal användare",
       unstaffed: "Ingen användare",
       unstaffedNote: (roles: string) =>
         `Följande roller har ingen aktiv användare: ${roles}. Delar av systemet är då inte bemannade – rollen finns men ingen kan nå den.`,
