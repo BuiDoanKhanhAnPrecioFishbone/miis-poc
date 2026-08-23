@@ -19,9 +19,18 @@ import {
   type WageAgreement,
   type WorkingGroup,
 } from "@/lib/domain/agreement";
+import { cookies } from "next/headers";
+
 import type { AuditEvent } from "@/lib/domain/event";
 import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import { agreementStatus } from "@/lib/domain/status";
+import { DRAFT_COOKIE, PUBLISHED_COOKIE } from "@/lib/cookies";
+import {
+  applyPublished,
+  decodeDrafts,
+  decodePublished,
+  draftToAgreement,
+} from "@/lib/domain/draft";
 import { getDataset } from "@/lib/mock";
 import { activeDataset } from "@/lib/session";
 
@@ -32,9 +41,44 @@ export interface AgreementFilter {
   employeeOrgId?: string;
 }
 
-async function agreements(): Promise<Agreement[]> {
-  return getDataset(await activeDataset()).agreements;
+/**
+ * The register, plus whatever this session created and published.
+ *
+ * One accessor, so every function below — the register, the detail view, the
+ * counts, the reports, the public search — sees the same thing without knowing
+ * that some of it was made a minute ago. That is the whole point of the seam:
+ * when this reads Supabase instead, none of them change.
+ *
+ * Bilaga 2 §3.5's bullets six and nine are what forced it. Registering an
+ * agreement and publishing one both ended in a client component's state, so the
+ * screen said the act had happened and every register denied it.
+ */
+/**
+ * Exported because `lib/data/public.ts` reads the same register.
+ *
+ * It used to reach for `getDataset(...).agreements` itself, so an agreement
+ * published this session appeared in the officer's register and not in the
+ * public view — the one screen bullet nine exists to change. Two modules, one
+ * register: they read it through the same function or they disagree.
+ */
+export async function agreements(): Promise<Agreement[]> {
+  const [base, jar] = await Promise.all([
+    activeDataset().then((d) => getDataset(d).agreements),
+    cookies(),
+  ]);
+  const drafts = decodeDrafts(jar.get(DRAFT_COOKIE)?.value).map(draftToAgreement);
+  const published = decodePublished(jar.get(PUBLISHED_COOKIE)?.value);
+  return applyPublished([...base, ...drafts], published, PUBLISHED_NOW);
 }
+
+/**
+ * Who published it and when, for a publication made during a demo session.
+ *
+ * Fixed rather than `new Date()`, for the reason every other date in this
+ * prototype is: a screenshot taken twice has to be the same image, and a
+ * server-rendered timestamp would differ from the browser's.
+ */
+const PUBLISHED_NOW = { date: "2027-06-14", by: "Anna Andersson" } as const;
 
 /** The read model every agreement table uses. */
 export function toRow(a: Agreement, lang: Lang = DEFAULT_LANG): AgreementRow {

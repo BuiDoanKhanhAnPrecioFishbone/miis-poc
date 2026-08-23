@@ -1419,6 +1419,7 @@ export const en: Dictionary = {
         "Link the protocol and the agreement print.",
         "Mark the registration complete and publish the agreement.",
       ],
+      toAgreement: "Open the agreement",
       toRegister: "To the agreement register",
       another: "Register another agreement",
     },
@@ -1516,6 +1517,7 @@ export const en: Dictionary = {
       publish: "Publish the agreement",
       publishBlocked:
         "Publishing requires the registration to be marked complete and the agreement to be signed.",
+      publishedConfirm: "The agreement is published and is now in the public view. The publication is logged with time and user.",
       viewPublic: "View as the public sees it",
       publicationNote:
         "Publication is an act with a date and a person, not a consequence of the record being complete. Medlingsinstitutet decides when an agreement is released — a half-registered agreement on the public computer would be the authority publishing a draft.",
@@ -2106,6 +2108,8 @@ export const en: Dictionary = {
       reactivated: (name: string) =>
         `${name} is active again. The change is written to the change log with the time and the user.`,
       save: "Save the user",
+      efosPending: "EFOS identity pending",
+      newBadge: "New",
       nameRequired: "A name is required.",
       savedNote: (name: string) =>
         `${name} is set up and has been given their role. The assignment is recorded in the change log with time and user.`,

@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 
+import { nextDraftId } from "@/lib/domain/draft";
+import { readDrafts, writeDrafts } from "@/lib/session-store";
+
 import { SECTOR_LABEL, type ReportSelection } from "@/lib/domain/agreement";
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
@@ -78,6 +81,8 @@ export function NewAgreement({
   const [confidential, setConfidential] = useState(false);
   const [reports, setReports] = useState<ReportSelection>(INITIAL);
   const [saved, setSaved] = useState<string | null>(null);
+  /* The id the register will hold it under — what makes the act openable. */
+  const [savedId, setSavedId] = useState<string | null>(null);
 
   const complete = name.trim() && area.trim() && employerOrg && employeeOrg;
 
@@ -92,6 +97,7 @@ export function NewAgreement({
     setConfidential(false);
     setReports(INITIAL);
     setSaved(null);
+    setSavedId(null);
     window.scrollTo({ top: 0 });
   }
 
@@ -111,7 +117,19 @@ export function NewAgreement({
           ))}
         </ul>
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <LinkButton href="/avtal" iconEnd={<IconForward />}>
+          {/*
+            The act ends on what it produced. It offered *Till avtalsregistret*
+            — a list of seventeen the officer then had to search for the record
+            they had spent a form filling in, and which was not in it. The
+            register is still offered, second, because an officer registering
+            three agreements in a row wants it.
+          */}
+          {savedId && (
+            <LinkButton href={`/avtal/${savedId}`} iconEnd={<IconForward />}>
+              {t.toAgreement}
+            </LinkButton>
+          )}
+          <LinkButton href="/avtal" variant="secondary" iconEnd={<IconForward />}>
             {t.toRegister}
           </LinkButton>
           <Button variant="secondary" onClick={reset}>
@@ -279,7 +297,35 @@ export function NewAgreement({
               iconStart={<IconCheck />}
               disabled={!complete}
               disabledReason={t.requiredReason}
-              onClick={() => setSaved(name.trim())}
+              onClick={() => {
+                /*
+                  Bilaga 2 §3.5, bullet six. This used to set a confirmation and
+                  nothing else: the agreement was announced, the officer was
+                  offered the register, and the register did not contain it.
+                  The draft goes to the session cookie `lib/data/agreements.ts`
+                  merges, so every screen downstream — the register, the detail
+                  view, the reports, the counts — holds it.
+                */
+                const existing = readDrafts();
+                const id = nextDraftId(existing);
+                writeDrafts([
+                  ...existing,
+                  {
+                    id,
+                    name: name.trim(),
+                    agreementArea: area.trim(),
+                    employerOrg,
+                    employeeOrg,
+                    agreementType,
+                    ...(signedDate ? { signedDate } : {}),
+                    ...(validFrom ? { validFrom } : {}),
+                    ...(validTo ? { validTo } : {}),
+                    confidential,
+                  },
+                ]);
+                setSavedId(id);
+                setSaved(name.trim());
+              }}
             >
               {t.save}
             </Button>

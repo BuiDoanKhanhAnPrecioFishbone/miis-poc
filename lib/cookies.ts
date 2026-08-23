@@ -45,6 +45,18 @@ export const REMINDER_COOKIE = "miis_reminders";
   It exists so the walkthrough can be walked from inside the product rather than
   by returning to a long page and finding your place in it.
 */
+/**
+ * Bilaga 2 §3.5's acts — an agreement registered, an agreement published — for
+ * the length of a demo session.
+ *
+ * The scored bullets end in acts, and each was held in a client component's
+ * state while every register is server-rendered. So the act announced itself
+ * and the register went on showing what it had before. These two put the result
+ * where `lib/data/` can read it, the way watchwords and reminders already do.
+ */
+export const DRAFT_COOKIE = "miis_drafts";
+export const PUBLISHED_COOKIE = "miis_published";
+
 export const WALKTHROUGH_COOKIE = "miis_walkthrough";
 
 export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;

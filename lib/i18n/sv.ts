@@ -1417,6 +1417,7 @@ export const sv = {
         "Koppla protokollet och avtalstrycket.",
         "Markera registreringen som klar och publicera avtalet.",
       ],
+      toAgreement: "Öppna avtalet",
       toRegister: "Till avtalsregistret",
       another: "Registrera ytterligare ett avtal",
     },
@@ -1515,6 +1516,7 @@ export const sv = {
       publish: "Publicera avtalet",
       publishBlocked:
         "Publicering kräver att registreringen är markerad som klar och att avtalet är tecknat.",
+      publishedConfirm: "Avtalet är publicerat och finns nu i den publika vyn. Publiceringen loggas med tidpunkt och användare.",
       viewPublic: "Visa som allmänheten ser det",
       publicationNote:
         "Publicering är en handling med datum och person, inte en följd av att posten är komplett. Medlingsinstitutet avgör när ett avtal lämnas ut – ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.",
@@ -2105,6 +2107,8 @@ export const sv = {
       reactivated: (name: string) =>
         `${name} är aktiv igen. Ändringen skrivs till ändringsloggen med tidpunkt och användare.`,
       save: "Spara användaren",
+      efosPending: "EFOS-identitet inväntas",
+      newBadge: "Ny",
       nameRequired: "Namn krävs.",
       savedNote: (name: string) =>
         `${name} är upplagd och har fått sin roll. Tilldelningen är registrerad i ändringsloggen med tidpunkt och användare.`,

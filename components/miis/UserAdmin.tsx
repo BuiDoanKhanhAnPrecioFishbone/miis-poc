@@ -92,6 +92,8 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("agreement-admin");
   const [saved, setSaved] = useState<string | null>(null);
+  /* Which rows this session created, so the register can say which. */
+  const [added, setAdded] = useState<string[]>([]);
 
   const roleLabel = (id: Role) => ROLES.find((r) => r.id === id)?.label[lang] ?? id;
 
@@ -100,7 +102,12 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
     if (!before) return;
     setUsers((list) => changeRole(list, id, nextRole, ACTING_ADMIN, TODAY));
     setChanged(`${before.name} · ${roleLabel(before.role)} → ${roleLabel(nextRole)}`);
+    /* One act, one message. The three confirmations were independent, so a
+       note about a user created earlier sat above a note about a role changed
+       just now — and if the earlier act had not worked, the stale line was
+       still asserting that it had. */
     setRevoked(null);
+    setSaved(null);
     setEditing(null);
   }
 
@@ -108,6 +115,46 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
     setUsers((list) => deactivateUser(list, id));
     setRevoked(name);
     setChanged(null);
+    setSaved(null);
+  }
+
+  /*
+    Bilaga 2 §3.5, Scenario 1, bullets two and three — *"Skapar en ny
+    användare"* and *"Tilldelar användaren lämplig roll och behörighet"*.
+
+    The save used to set the confirmation and clear the form, and never touch
+    `users`. So the screen said *N N är upplagd och har fått sin roll* and the
+    register below it went on showing nine rows: an evaluator following §3.5
+    creates a user, reads that it worked, looks down, and the user is not there.
+    The list was in this component's own state the whole time.
+
+    The new row carries `Ny` for the rest of the session, because a register of
+    nine identical-looking rows does not answer *which one did I just add*.
+  */
+  function addUser() {
+    const id = `U-${String(initial.length + added.length + 1).padStart(3, "0")}`;
+    const user: SystemUser = {
+      id,
+      name: name.trim(),
+      efosIdentity: efos.trim() || t.efosPending,
+      email: email.trim(),
+      /* MI's own units are the ones in the register; a new colleague joins one
+         of them rather than naming a new one. */
+      unit: initial[0]?.unit ?? { sv: "Medlingsinstitutet", en: "Medlingsinstitutet" },
+      role,
+      active: true,
+      /* FH-001's half of NFÅ-005: who assigned the role, and when. */
+      roleAssigned: { date: TODAY, by: ACTING_ADMIN },
+    };
+    setUsers((list) => [...list, user]);
+    setAdded((list) => [...list, id]);
+    setSaved(user.name);
+    setChanged(null);
+    setRevoked(null);
+    setAdding(false);
+    setName("");
+    setEfos("");
+    setEmail("");
   }
 
   const columns: Column[] = [
@@ -143,9 +190,12 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
       <span key="l" className="whitespace-nowrap tabular-nums">
         {u.lastSignIn ?? d.common.none}
       </span>,
-      <Badge key="s" tone={u.active ? "ok" : "neutral"}>
-        {u.active ? t.active : t.inactive}
-      </Badge>,
+      <span key="s" className="flex flex-wrap items-center gap-2">
+        <Badge tone={u.active ? "ok" : "neutral"}>{u.active ? t.active : t.inactive}</Badge>
+        {/* Which row this session added. A register of nine similar rows does
+            not answer "which one did I just create" on its own. */}
+        {added.includes(u.id) && <Badge tone="attention">{t.newBadge}</Badge>}
+      </span>,
       /*
         The actions, per row and per rule. A control that is refused says why on
         itself rather than failing when pressed — the last authorisation
@@ -337,13 +387,7 @@ export function UserAdmin({ users: initial, lang }: { users: SystemUser[]; lang:
           </FormGrid>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Button
-              onClick={() => {
-                setSaved(name.trim());
-                setAdding(false);
-                setName("");
-                setEfos("");
-                setEmail("");
-              }}
+              onClick={addUser}
               disabled={name.trim().length === 0}
               disabledReason={t.nameRequired}
               iconStart={<IconCheck />}

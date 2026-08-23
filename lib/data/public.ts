@@ -23,6 +23,7 @@ import {
   validityLabel,
 } from "@/lib/domain/agreement";
 import type { Lang } from "@/lib/domain/lang";
+import { agreements } from "./agreements";
 import { getDataset } from "@/lib/mock";
 import { PARTY_REGISTER } from "@/lib/mock/party-register";
 import { activeDataset } from "@/lib/session";
@@ -61,8 +62,8 @@ export interface PublicAgreement {
 }
 
 export async function getPublicAgreement(id: string, lang: Lang): Promise<PublicAgreement | null> {
-  const data = getDataset(await activeDataset());
-  const a = data.agreements.find((x) => x.id === id);
+  const [all, data] = await Promise.all([agreements(), activeDataset().then(getDataset)]);
+  const a = all.find((x) => x.id === id);
   if (!a) return null;
 
   /*
@@ -126,6 +127,5 @@ export async function getPublicAgreement(id: string, lang: Lang): Promise<Public
  * `lib/data/` is where the two halves meet, so the page cannot forget one.
  */
 export async function listPublicAgreements() {
-  const data = getDataset(await activeDataset());
-  return data.agreements.filter((a) => isPublished(a));
+  return (await agreements()).filter((a) => isPublished(a));
 }

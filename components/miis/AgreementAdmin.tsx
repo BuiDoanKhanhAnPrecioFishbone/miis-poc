@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useState } from "react";
 
 import {
   mayPublish,
@@ -11,13 +12,16 @@ import {
 import type { Lang } from "@/lib/domain/lang";
 import { amount, decimal } from "@/lib/format";
 import { dictionary } from "@/lib/i18n";
+import { markPublished } from "@/lib/session-store";
 import { IconForward } from "./icons";
 import { EditablePanel } from "./EditablePanel";
 import {
   Badge,
   Button,
+  Callout,
   Field,
   FormGrid,
+  LinkButton,
   Panel,
   Rationale,
   TextField,
@@ -376,6 +380,15 @@ export function AgreementPublication({
 }) {
   const t = dictionary(lang).avtal.detail;
   const [published, setPublished] = useState(agreement.published ?? null);
+  /*
+    Publication was the only consequential act on the screen that said nothing
+    when it succeeded — every edit, every role change, every appointment emits a
+    live confirmation. This is the act that puts MI's information in front of
+    the public, so it is the last one that should be silent about having
+    happened.
+  */
+  const [justPublished, setJustPublished] = useState(false);
+  const router = useRouter();
   const ready = mayPublish({ ...agreement, ...(published ? { published } : {}) });
 
   return (
@@ -389,6 +402,14 @@ export function AgreementPublication({
         just happened; this is a state the record has been in since April, and
         it reads better as the state word plus the facts under it.
       */}
+      {justPublished && (
+        <div className="print-hide mb-3">
+          <Callout tone="ok" live tags={["FR-009", "FR-011"]}>
+            {t.publishedConfirm}
+          </Callout>
+        </div>
+      )}
+
       {published ? (
         <>
           <div className="space-y-2">
@@ -398,14 +419,21 @@ export function AgreementPublication({
           <div className="print-hide mt-3">
             {/* Where it went. A publication the officer cannot go and look at
                 is a claim rather than a result. */}
-            <Button
+            {/*
+              A `LinkButton`, not a `Button` with `window.open`. It navigates,
+              so it is an `<a>`: it shows its destination on hover, it can be
+              opened in a new tab deliberately rather than always, and a
+              middle-click behaves. The house rule has said so since the seven
+              screens that hand-rolled it were fixed; this one was missed.
+            */}
+            <LinkButton
+              href={`/allmanheten/${agreement.id}`}
               variant="secondary"
               size="sm"
               iconEnd={<IconForward />}
-              onClick={() => window.open(`/allmanheten/${agreement.id}`, "_blank")}
             >
               {t.viewPublic}
-            </Button>
+            </LinkButton>
           </div>
         </>
       ) : (
@@ -415,7 +443,20 @@ export function AgreementPublication({
             <Button
               disabled={!ready}
               disabledReason={t.publishBlocked}
-              onClick={() => setPublished({ date: TODAY, by: ACTING_OFFICER })}
+              onClick={() => {
+                /*
+                  Bilaga 2 §3.5, bullet nine, whose own wording is *"publicerar
+                  avtalet **så att det blir tillgängligt för användare med
+                  åtkomst till publicerad information**"*. The visibility is the
+                  bullet. This used to set component state only, so an officer
+                  published an agreement, switched to Allmänhetens dator, and it
+                  was not there — the one screen the act exists to change.
+                */
+                markPublished(agreement.id);
+                setPublished({ date: TODAY, by: ACTING_OFFICER });
+                setJustPublished(true);
+                startTransition(() => router.refresh());
+              }}
             >
               {t.publish}
             </Button>
