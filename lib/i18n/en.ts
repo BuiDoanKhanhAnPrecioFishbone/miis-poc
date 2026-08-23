@@ -2088,10 +2088,16 @@ export const en: Dictionary = {
     },
   },
   anvandare: {
+    tabs: {
+      label: "Parts of permission administration",
+      users: "Users",
+      permissions: "Roles and permissions",
+      signIn: "Sign-in",
+    },
     users: {
       heading: "Users and role assignment",
       intro:
-        "The authorisation administrator sets up users and assigns roles. What a role may do is not changed here — that is shown in the permission matrix below.",
+        "The authorisation administrator sets up users and assigns roles. What a role may do is not changed here — that is shown in the permission matrix under the Roles and permissions tab.",
       add: "Add a user",
       name: "Name",
       namePlaceholder: "e.g. Sara Lindström",

@@ -2090,7 +2090,7 @@ export const sv = {
     users: {
       heading: "Användare och rolltilldelning",
       intro:
-        "Behörighetsadministratören lägger upp användare och tilldelar roller. Vad en roll får göra ändras inte här – det framgår av behörighetsmatrisen nedan.",
+        "Behörighetsadministratören lägger upp användare och tilldelar roller. Vad en roll får göra ändras inte här – det framgår av behörighetsmatrisen under fliken Roller och behörigheter.",
       add: "Lägg till användare",
       name: "Namn",
       namePlaceholder: "T.ex. Sara Lindström",
@@ -2138,6 +2138,12 @@ export const sv = {
     },
     title: "Användare",
     epic: "Behörighetsadministration",
+    tabs: {
+      label: "Delar av behörighetsadministrationen",
+      users: "Användare",
+      permissions: "Roller och behörigheter",
+      signIn: "Inloggning",
+    },
     subtitle: "Användare, roller och tilldelade behörigheter",
     roles: {
       heading: "Roller och behörigheter",

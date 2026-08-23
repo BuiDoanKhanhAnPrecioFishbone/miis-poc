@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
+import { SectionTabs } from "@/components/miis/SectionTabs";
 import { UserAdmin } from "@/components/miis/UserAdmin";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
 import { Badge, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
@@ -129,43 +130,76 @@ export default async function AnvandarePage() {
         tags={["NFÅ-001", "NFÅ-003", "NFÅ-005"]}
       />
 
-      <UserAdmin users={users} lang={lang} />
+      {/*
+        Three jobs, one at a time.
 
-      <div className="mt-5">
-        <Panel title={t.roles.heading} tags={["NFÅ-003"]}>
-          <p className="mb-4 max-w-4xl text-table">{t.roles.intro}</p>
-          <p className="mb-4 max-w-4xl text-label text-muted-foreground">{t.roles.matrixNote}</p>
-          <DataTable
-            columns={columns}
-            rows={rows}
-            lang={lang}
-            caption={t.roles.heading}
-            minWidth="96rem"
-          />
-          {unstaffed.length > 0 && (
-            <div className="mt-4">
-              <Callout tone="attention" label={t.roles.unstaffed}>
-                {t.roles.unstaffedNote(
-                  unstaffed
-                    .map((id) => ROLES.find((r) => r.id === id)?.label[lang] ?? id)
-                    .join(", "),
+        The register, the permission matrix and the sign-in note were stacked,
+        and only the first is work: the other two are what the work is done
+        against. That would argue for a sidebar, except the matrix is eight
+        roles against fourteen modules — `minWidth="96rem"` — so an
+        administrator who came to add one colleague scrolled the length of it
+        first. It is the same fault Administration and Rapporter had, and
+        `SectionTabs` is the same answer.
+
+        The order is the order they are used in: the register daily, the matrix
+        when a role assignment needs checking against what the role actually
+        means, and the sign-in note once.
+      */}
+      <SectionTabs
+        label={t.tabs.label}
+        lang={lang}
+        sections={[
+          {
+            id: "anvandare",
+            label: t.tabs.users,
+            node: <UserAdmin users={users} lang={lang} />,
+          },
+          {
+            id: "behorigheter",
+            label: t.tabs.permissions,
+            node: (
+              <Panel title={t.roles.heading} tags={["NFÅ-003"]}>
+                <p className="mb-4 max-w-4xl text-table">{t.roles.intro}</p>
+                <p className="mb-4 max-w-4xl text-label text-muted-foreground">
+                  {t.roles.matrixNote}
+                </p>
+                <DataTable
+                  columns={columns}
+                  rows={rows}
+                  lang={lang}
+                  caption={t.roles.heading}
+                  minWidth="96rem"
+                />
+                {unstaffed.length > 0 && (
+                  <div className="mt-4">
+                    <Callout tone="attention" label={t.roles.unstaffed}>
+                      {t.roles.unstaffedNote(
+                        unstaffed
+                          .map((id) => ROLES.find((r) => r.id === id)?.label[lang] ?? id)
+                          .join(", "),
+                      )}
+                    </Callout>
+                  </div>
                 )}
-              </Callout>
-            </div>
-          )}
-          <Rationale>{t.roles.readOnlyNote}</Rationale>
-        </Panel>
-      </div>
-
-      <div className="mt-5">
-        <Panel title={t.auth.heading} tags={["NFÅ-001", "NFL-001"]}>
-          <Callout tone="ok" label={t.auth.heading}>
-            {t.auth.body}
-          </Callout>
-          <p className="mt-3 max-w-4xl text-table">{t.auth.logging}</p>
-          <Rationale>{t.roles.intro}</Rationale>
-        </Panel>
-      </div>
+                <Rationale>{t.roles.readOnlyNote}</Rationale>
+              </Panel>
+            ),
+          },
+          {
+            id: "inloggning",
+            label: t.tabs.signIn,
+            node: (
+              <Panel title={t.auth.heading} tags={["NFÅ-001", "NFL-001"]}>
+                <Callout tone="ok" label={t.auth.heading}>
+                  {t.auth.body}
+                </Callout>
+                <p className="mt-3 max-w-4xl text-table">{t.auth.logging}</p>
+                <Rationale>{t.roles.intro}</Rationale>
+              </Panel>
+            ),
+          },
+        ]}
+      />
     </AppShell>
   );
 }
