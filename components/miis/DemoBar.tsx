@@ -94,7 +94,21 @@ export function DemoBar({
     if (!target) return;
     setCookie(ROLE_COOKIE, target.step.role);
     setCookie(WALKTHROUGH_COOKIE, encodePosition(target.position));
-    startTransition(() => router.push(target.step.href));
+    startTransition(() => {
+      router.push(target.step.href);
+      /*
+        A step may differ from the one before it only by its hash — two steps on
+        the same agreement, one about the record and one about the wage rounds.
+        `router.push` updates the URL without firing `hashchange`, so the
+        section that owns the hash never hears about it and the reviewer gets
+        the previous step's screen. Announcing it ourselves costs nothing when
+        the push is a real navigation, because the component remounts and reads
+        the hash anyway.
+      */
+      if (target.step.href.includes("#")) {
+        requestAnimationFrame(() => window.dispatchEvent(new HashChangeEvent("hashchange")));
+      }
+    });
   }
 
   const goNext = () => goTo(cursor?.next ?? null);

@@ -12,6 +12,7 @@ import {
   totalSteps,
   WALKTHROUGH,
   walkthroughRequirements,
+  stepRoute,
   walkthroughRoutes,
 } from "./walkthrough";
 
@@ -124,6 +125,8 @@ describe("every step is reachable by the role it names", () => {
      item: NFÅ-006 puts that role on a whitelisted machine with no sign-in, so
      there is nothing for `accessLevel` to answer about. */
   const isPublicRoute = (href: string) => href === "/allmanheten" || href.startsWith("/allmanheten/");
+  /* A step may deep-link into a section; the fragment is not part of the route. */
+  const routeOf = (href: string) => stepRoute(href);
 
   it("covers every route the walkthrough uses", () => {
     for (const href of walkthroughRoutes()) {
@@ -135,11 +138,11 @@ describe("every step is reachable by the role it names", () => {
   it("never sends a role somewhere it would be refused", () => {
     for (const scenario of WALKTHROUGH) {
       for (const step of scenario.steps) {
-        if (isPublicRoute(step.href)) {
+        if (isPublicRoute(routeOf(step.href))) {
           expect(step.role, "the public entrance is the public role's").toBe("public");
           continue;
         }
-        const owner = OWNER[step.href]!;
+        const owner = OWNER[routeOf(step.href)]!;
         expect(
           accessLevel(role(step.role), owner as never),
           `${scenario.id}: ${step.role} cannot open ${step.href}`,

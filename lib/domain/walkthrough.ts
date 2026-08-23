@@ -124,7 +124,9 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
           en: "An agreement has no version list but a row per bargaining round: FA-002 gives every renegotiation its own wage agreement with its own construction, scope and cost frame, so the comparison against the last round *is* the table. The row can be corrected: construction, wage scope, cost frame and individual guarantee are changed per bargaining round, from a form that names the period it applies to. The validity period is changed on the agreement instead — a round cannot run longer than the agreement it belongs to. What changed *within* a period is in the event log, with the old and the new value (FH-001).",
         },
         role: "agreement-admin",
-        href: "/avtal/A-001",
+        /* The rounds live in their own tab, so the step opens it — otherwise
+           this lands on the previous step's screen. */
+        href: "/avtal/A-001#loneavtal",
         requirements: ["FA-002", "FH-001", "FH-002"],
       },
       {
@@ -427,8 +429,21 @@ export function scenarioTitle(scenario: WalkthroughScenario, lang: Lang): string
 }
 
 /** Every distinct route the walkthrough sends a reviewer to. */
+/**
+ * The screen a step opens, without the part that only says where to look.
+ *
+ * A step may deep-link into a section — `/avtal/A-001#loneavtal` — and the
+ * fragment is not part of the route: authorisation is per screen (NFÅ-003), and
+ * `accessLevel` has never heard of a hash. Both the route check and the
+ * authorisation check ask through here, so neither can start disagreeing with
+ * what the strip actually pushes.
+ */
+export function stepRoute(href: string): string {
+  return href.split("#")[0]!;
+}
+
 export function walkthroughRoutes(): string[] {
-  return [...new Set(WALKTHROUGH.flatMap((s) => s.steps.map((step) => step.href)))];
+  return [...new Set(WALKTHROUGH.flatMap((s) => s.steps.map((step) => stepRoute(step.href))))];
 }
 
 /** Every requirement the walkthrough cites, deduplicated. */

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { Lang } from "@/lib/domain/lang";
 import { Tabs } from "./Select";
@@ -51,6 +51,10 @@ export function SectionTabs({
 }) {
   void lang;
   const [active, setActive] = useState(sections[0]?.id ?? "");
+  /* Joined so the effect below has a stable dependency: the array is rebuilt
+     on every render, the string is not. */
+  const idKey = sections.map((s) => s.id).join(",");
+  const ids = useMemo(() => idKey.split(","), [idKey]);
 
   /*
     Follow a deep link into a section. `setState` inside an effect is what this
@@ -62,14 +66,26 @@ export function SectionTabs({
     const open = () => {
       const id = window.location.hash.slice(1);
       if (!id) return;
+      /*
+        Two shapes of deep link, and only one of them used to work.
+
+        `/rapporter#konjunkturlon` names an element *inside* a panel, which is
+        what the lookup below finds. `/avtal/A-001#loneavtal` names the
+        **section itself** — there is no element carrying that id, so
+        `getElementById` returned null and the link opened the first tab
+        instead. The guided walkthrough had two consecutive steps on the same
+        agreement for exactly this reason, and the second showed the first
+        one's screen.
+      */
+      const named = ids.includes(id) ? id : undefined;
       const panel = document.getElementById(id)?.closest<HTMLElement>("[data-tab-panel]");
-      const owner = panel?.dataset.tabId;
+      const owner = named ?? panel?.dataset.tabId;
       if (owner) setActive(owner);
     };
     open();
     window.addEventListener("hashchange", open);
     return () => window.removeEventListener("hashchange", open);
-  }, []);
+  }, [ids]);
 
   /* Scroll after the panel is visible — an element the class still hides has no
      position to scroll to, so doing this in the effect above lands nowhere. */
