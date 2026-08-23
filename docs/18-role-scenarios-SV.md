@@ -78,7 +78,10 @@ ställs: **vem** som har åtkomst, **som vad**, **sedan när och av vem**, och *
 personen fortfarande finns kvar**. Var och en är en kolumn. Registret filtreras
 på roll och status, och urvalsmarkeringarna anger vad som har avgränsats.
 
-Under det ligger **behörighetsmatrisen** — var och en av §3.1:s åtta roller mot
+Behörighetsadministrationen är **tre flikar**, eftersom den är tre olika saker:
+registret där arbetet görs, och två uppslagsverk som arbetet görs mot. Under
+fliken **Roller och behörigheter** ligger **behörighetsmatrisen** — var och en av
+§3.1:s åtta roller mot
 varje modul, med läs, skriv eller ingen åtkomst. Den är **läsbar men inte
 redigerbar**, och det är ett designbeslut snarare än en utelämning: NFÅ-003
 definierar åtkomst utifrån de roller §3.1 skriver fram, så en matris som en
@@ -139,6 +142,16 @@ intressanta är att **två av dem avsiktligt inte går att ändra**:
 Att visa de två fasta bredvid de två ändringsbara är hela poängen med panelen.
 Fyra redigerbara rutor hade sagt att vi byggt ett inställningsformulär; detta
 säger att vi läst meningarna.
+
+Under inställningarna ligger **gallringsreglerna för personuppgifter**. D-004 är
+ett ska-krav med två halvor — gallring *"i enlighet med Medlingsinstitutets
+gallringsrutiner"* och *"möjlighet att definiera automatiska gallringsregler"* —
+och det är den andra halvan som kräver en skärm. Varje regel anger vad som
+gallras, vad som startar tiden och om det sker automatiskt. Tre går att ställa
+in; den fjärde är loggarna och den är fast, med NFL-003:s egen mening på raden.
+Ett inaktiverat användarkonto **anonymiseras i stället för att gallras**, eftersom
+NFL-001 loggade inloggningarna och de posterna måste finnas kvar — det som
+försvinner är namnet bakom dem, inte händelsen.
 
 Administration är **fyra flikar, inte en sida** — inställningar, ändringsloggen,
 händelseloggen och bevakningsordstabellen. Det är fyra olika arbetsuppgifter som
@@ -273,8 +286,18 @@ dokument igen — varje panel skrivs ut, flikraden gör det inte.
 har ingen versionslista — det har **en rad per avtalsrörelse**. FA-002 ger varje
 omförhandling sitt eget löneavtal med egen konstruktion, eget löneutrymme och egen
 kostnadsram, så jämförelsen mot förra avtalsrörelsen *är* tabellen, vilket är
-skälet till att det är en tabell och inte en stapel paneler. Vad som ändrats
-*inom* en period står i ändringsloggen, med gammalt och nytt värde.
+skälet till att det är en tabell och inte en stapel paneler.
+
+**Raden går att rätta.** Bilaga 1 §3.1 ger rollen verbet i egna ord —
+*"Registrerar och redigerar avtalsinformation"*, med behörigheten *"Läsa,
+skriva, redigera"* — och ett löneavtals konstruktion och löneutrymme är
+avtalsinformation — dessutom de siffror som oftast blir fel, eftersom de läses ur
+ett inskannat protokoll under tidspress. Konstruktion, löneutrymme, kostnadsram
+och individgaranti ändras per avtalsrörelse, från ett formulär som namnger den
+period det gäller. Löptiden ändras däremot på avtalet och inte där: en
+avtalsrörelse kan inte gälla längre än avtalet den tillhör, och fältet säger det i
+stället för att bara saknas. Vad som ändrats *inom* en period står i
+ändringsloggen, med gammalt och nytt värde.
 
 **4 · Publicera avtalet.** Publicering är en **åtgärd, med datum och person** —
 inte en egenskap som följer av att registreringen är fullständig. Den ligger
@@ -299,7 +322,7 @@ gå och titta på är ett påstående snarare än ett resultat.
 | `registrera-protokoll-kallkoppling` | Ett AI-förslag källkopplat till sitt avsnitt |
 | `ai-assistenten` | AI-stödet: att fråga registret, vad som körs på sidan, och vad som väntar på godkännande |
 | `avtal-huvudrapport` | Ett avtal — Bilaga F:s Rapport 4, med flikar, och de fakta det läses mot bredvid |
-| `rapporter-urvalsbild` | Rapporternas urvalsbild, i Medlingsinstitutets egen form — kriterierna avgränsar, och resultatet öppnar det som valdes |
+| `rapporter-urvalsbild` | Rapporternas urvalsbild, i Medlingsinstitutets egen form — kriterierna avgränsar, och varje rapport ger ett dokument med urvalskriterierna överst |
 | `start-avtalsadministrator` | Rollens startsida |
 
 ### Användbarhet, effektivitet och tillgänglighet

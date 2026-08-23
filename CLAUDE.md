@@ -248,8 +248,13 @@ reviewer to a screen its own role would be refused.
    (`matchedAgreementId`), so the flow ends there. The same rule caught the
    report picker: a control that produces something specific must not land on
    the list it came from.
-   **A record is corrected where it is read.** FA-001 is *"registrera **och
-   redigera** avtalsinformation"*, and the detail view answered the second half
+   **A record is corrected where it is read.** Bilaga 1 §3.1 gives
+   Avtalsadministratör the verb in its own words — *"Registrerar och redigerar
+   avtalsinformation"*, behörighet *"Läsa, skriva, redigera"*. Attribute it to
+   §3.1 and quote it as MI wrote it: FA-001 is about registering the agreement
+   area and the agreement as an overarching entity, and six places in this repo
+   had grown a paraphrase of §3.1 under FA-001's name because this line said so
+   first. The detail view answered the second half
    with a panel of its own sitting under the record and repeating three of its
    values as inputs. Two faults followed. The same values appeared **twice on
    the page** — read them here, type them there, forty pixels apart, with no way

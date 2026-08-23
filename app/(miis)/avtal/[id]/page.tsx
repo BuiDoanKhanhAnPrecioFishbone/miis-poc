@@ -181,7 +181,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
         tags={["FA-001", "FA-002", "FR-012"]}
         action={
           /*
-            FA-001 is "registrera och redigera avtalsinformation" — the detail
+            Bilaga 1 §3.1: "Registrerar och redigerar avtalsinformation" — the detail
             showed only the first half, so an agreement could be read and never
             corrected. Inert here because editing needs a store the mockup does
             not have; the point is that the capability is visible and named
@@ -260,7 +260,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
                 node: (
                   <>
                   {/*
-                    FA-001 is *"registrera **och redigera** avtalsinformation"*
+                    Bilaga 1 §3.1 — *"Registrerar och redigerar avtalsinformation"*
                     and §3.1 gives this role the verb twice. The tab held two
                     tables and not one control, so the versions could be read and
                     never corrected — and a löneutrymme read off a scanned

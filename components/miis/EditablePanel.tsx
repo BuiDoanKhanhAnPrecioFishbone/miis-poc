@@ -10,7 +10,8 @@ import { Button, Callout, Panel, ReqTags } from "./primitives";
 /**
  * A panel of the record that can be corrected where it stands.
  *
- * FA-001 is *"registrera **och redigera** avtalsinformation"*, and the detail
+ * Bilaga 1 §3.1 gives Avtalsadministratör *"Registrerar och redigerar
+ * avtalsinformation"*, with the access *"Läsa, skriva, redigera"*. The detail
  * view answered the second half with one panel of its own headed
  * *Administration*, sitting under the record and repeating three of its values
  * as inputs. Two faults followed from that, and both were reported:

@@ -81,7 +81,10 @@ asked: **who** has access, **as what**, **since when and granted by whom**, and
 **are they still here**. Each is a column. It filters by role and by status, and
 the chips say what has been narrowed.
 
-Underneath it is the **permission matrix** — every one of §3.1's eight roles
+Permission administration is **three tabs**, because it is three different
+things: the register where the work is done, and two references the work is done
+against. Under **Roles and permissions** is the **permission matrix** — every one
+of §3.1's eight roles
 against every module, showing read, write or no access. It is **read-only**, and
 that is a design decision rather than an omission: NFÅ-003 defines access by the
 roles §3.1 writes down, so a matrix an administrator could rearrange would
@@ -143,6 +146,16 @@ part is that **two of them are deliberately not editable**:
 Showing the two that are fixed beside the two that are not is the point of the
 panel. Four editable boxes would say we built a settings form; this says we read
 the sentences.
+
+Under the settings are the **retention rules for personal data**. D-004 is a
+ska-krav with two halves — culling *"i enlighet med Medlingsinstitutets
+gallringsrutiner"* and *"möjlighet att definiera automatiska gallringsregler"* —
+and it is the second half that needs a screen. Each rule states what is culled,
+what starts the clock and whether it runs automatically. Three are settable; the
+fourth is the logs and it is fixed, carrying NFL-003's own sentence on the row. A
+deactivated user account is **anonymised rather than erased**, because NFL-001
+logged its sign-ins and those entries have to survive — what goes is the name
+behind them, not the event.
 
 Administration is **four tabs, not one page** — settings, the change log, the
 event log and the watchword table. They are four different jobs that happen to
@@ -273,8 +286,18 @@ one document again — every panel prints, the tab strip does not.
 list — it has **a row per bargaining round**. FA-002 gives every renegotiation
 its own wage agreement with its own construction, wage scope and cost frame, so
 the comparison against the last round *is* the table, which is why it is a table
-and not a stack of panels. What changed *within* a period is in the event log,
-with the old and the new value.
+and not a stack of panels.
+
+**The row can be corrected.** Bilaga 1 §3.1 gives the role the verb in its own
+words — *"Registrerar och redigerar avtalsinformation"*, with the access
+*"Läsa, skriva, redigera"* — and a wage agreement's construction and wage scope are
+avtalsinformation — and the figures most likely to be wrong, because they are read
+off a scanned protocol under time pressure. Construction, wage scope, cost frame
+and individual guarantee are changed per bargaining round, from a form that names
+the period it applies to. The validity period is changed on the agreement instead:
+a round cannot run longer than the agreement it belongs to, and the field says so
+rather than simply being absent. What changed *within* a period is in the event
+log, with the old and the new value.
 
 **4 · Publishing the agreement.** Publication is an **act, with a date and a
 person** — not a property that follows from the record being complete. It sits
@@ -300,7 +323,7 @@ a claim rather than a result.
 | `registrera-protokoll-kallkoppling` | An AI proposal source-linked to its passage |
 | `ai-assistenten` | The AI support: ask the register a question, what runs on this page, and what awaits approval |
 | `avtal-huvudrapport` | One agreement — Bilaga F's Rapport 4, tabbed, with the facts it is read against beside it |
-| `rapporter-urvalsbild` | The report selection screen, in MI's own shape — the criteria narrow, and the result opens what they picked |
+| `rapporter-urvalsbild` | The report selection screen, in MI's own shape — the criteria narrow, and every report produces a document with the criteria at its head |
 | `start-avtalsadministrator` | The role's start page |
 
 ### Usability, efficiency and accessibility
