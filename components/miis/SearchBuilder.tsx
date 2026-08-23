@@ -29,7 +29,16 @@ import {
 } from "@/lib/domain/query";
 import { DataTable, type Column, type Row } from "./DataTable";
 import { PrintButton } from "./Print";
-import { Button, Callout, Chip, FilterChips, Panel, Rationale, ReqTag } from "./primitives";
+import {
+  Button,
+  Callout,
+  Chip,
+  FilterChips,
+  Panel,
+  Rationale,
+  ReqTag,
+  TextField,
+} from "./primitives";
 import { SegmentedControl, Select, Tabs } from "./Select";
 
 /**
@@ -280,14 +289,27 @@ export function SearchBuilder({
      ships with the system and what this officer just composed are visibly two
      things — the new one is marked. */
   const [mine, setMine] = useState<SavedSearch[]>([]);
+  const [saveName, setSaveName] = useState("");
 
+  /*
+    A saved search is saved to be found again, so the officer names it.
+
+    It used to name them itself — *Eget urval 1*, *2*, *3* — which is the one
+    thing a name must not be: three saved searches called that are three
+    searches nobody can tell apart, and the register they were composed against
+    is not in the name either. The composed expression goes underneath as the
+    description, so the name can be short and mean something.
+  */
   function saveCurrent() {
+    const label = saveName.trim();
+    if (!label) return;
     const n = mine.length + 1;
+    const id = `egen-${n}`;
     setMine((list) => [
       ...list,
       {
-        id: `egen-${n}`,
-        name: { sv: `${t.columns.ownSearch} ${n}`, en: `${t.columns.ownSearch} ${n}` },
+        id,
+        name: { sv: label, en: label },
         purpose: {
           sv: `${infoTypeLabel} · ${expression}`,
           en: `${infoTypeLabel} · ${expression}`,
@@ -296,7 +318,8 @@ export function SearchBuilder({
         groups: groups.map((g) => ({ ...g, conditions: g.conditions.map((c) => ({ ...c })) })),
       },
     ]);
-    setLoaded(`egen-${n}`);
+    setLoaded(id);
+    setSaveName("");
   }
 
   function loadSaved(search: SavedSearch) {
@@ -658,12 +681,25 @@ export function SearchBuilder({
               Rationale rather than a dead control.
             */}
             <p className="text-label text-muted-foreground">{t.results.liveNote}</p>
+            <TextField
+              id="save-search-name"
+              label={t.columns.saveNameLabel}
+              hint={t.columns.saveNameHint}
+              width="full"
+              value={saveName}
+              onChange={setSaveName}
+            />
             <Button
               variant="secondary"
               fullWidth
               onClick={saveCurrent}
-              disabled={allConditions.length === 0}
-              disabledReason={t.columns.nothingToSave}
+              disabled={allConditions.length === 0 || saveName.trim().length === 0}
+              /* Two refusals, and they are different questions: there is nothing
+                 to save, or it has not been given a name. A control that refuses
+                 has to say which. */
+              disabledReason={
+                allConditions.length === 0 ? t.columns.nothingToSave : t.columns.nameRequired
+              }
               iconStart={<IconPlus />}
             >
               {t.columns.saveSearch}

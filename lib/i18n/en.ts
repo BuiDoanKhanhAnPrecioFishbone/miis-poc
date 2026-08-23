@@ -735,7 +735,9 @@ export const en: Dictionary = {
       intro: "Untick a column to leave it out of the result and the printout.",
       identityLocked: "Carries the record's name and the link that opens it",
       nothingToSave: "No selection to save — add at least one condition.",
-      ownSearch: "Own selection",
+      saveNameLabel: "Name of the search",
+      saveNameHint: "e.g. Figureless agreements, private sector",
+      nameRequired: "Give the search a name first.",
       saveSearch: "Save search",
       savedSearchName: "Annual report 2026",
       savedSearchBlocked:

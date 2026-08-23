@@ -736,7 +736,9 @@ export const sv = {
       intro: "Bocka ur en kolumn för att utelämna den ur resultatet och utskriften.",
       identityLocked: "Bär postens namn och länken som öppnar den",
       nothingToSave: "Inget urval att spara – lägg till minst ett villkor.",
-      ownSearch: "Eget urval",
+      saveNameLabel: "Namn på sökningen",
+      saveNameHint: "T.ex. Sifferlösa avtal privat sektor",
+      nameRequired: "Ge sökningen ett namn först.",
       saveSearch: "Spara sökning",
       savedSearchName: "Årsrapport 2026",
       savedSearchBlocked:
