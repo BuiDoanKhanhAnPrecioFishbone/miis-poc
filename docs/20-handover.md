@@ -36,6 +36,7 @@ the guided walkthrough, and it is what the 15-minute presentation runs from.
 | `docs/18-role-scenarios.md` | The same, English. Working draft for the team | Drafted |
 | `docs/19-arbetsprocesser-SV.md` | **The §3.4 ska-krav, as submitted** — method, collaboration, timeline | **Drafted, Swedish** |
 | `docs/23-arbetsgrupp.md` | **The §3.1 criterion, as submitted** — six roles, the competence each brings, what each CV must evidence | **Drafted, Swedish.** Names and CVs outstanding |
+| `docs/24-cv-mall.md` | Not submitted. The CV template and the collection checklist for the six | Ready to send out |
 | `docs/19-arbetsprocesser.md` | The same, English. Working draft for the team | Drafted |
 | `docs/16-verification.md` | Evidence for both: what runs, mapped to MI's chapter 9 | Current |
 | `docs/17-scenario-criterion.md` | The plan, and the bullet-by-bullet diff against §3.5 | All items closed |
