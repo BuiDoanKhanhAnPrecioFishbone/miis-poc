@@ -437,7 +437,10 @@ export function AiRegion({
     <section
       id={id}
       aria-label={regionLabel}
-      className="min-w-0 overflow-hidden rounded-lg border-2 border-l-[6px] border-ai-border border-l-ai-solid bg-card shadow-card"
+      /* `ai-region` is what the print stylesheet drops. See the rule there: on
+         paper three of the four signals that mark this as machine-generated do
+         not survive, so it must not be on the paper at all. */
+      className="ai-region min-w-0 overflow-hidden rounded-lg border-2 border-l-[6px] border-ai-border border-l-ai-solid bg-card shadow-card"
     >
       <div className="ai-band flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5">
         <div className="flex min-w-0 flex-wrap items-center gap-2.5">

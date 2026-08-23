@@ -517,6 +517,21 @@ reviewer to a screen its own role would be refused.
    it states the requirement and demonstrates none of it. FSD-001's two variants
    are a `SegmentedControl`, because *med varsel* and *utan varsel* are one
    document with a property, not two documents.
+   **An `AiRegion` never prints.** Four signals mark machine-generated content —
+   the violet, the banded header, the 6px spine, the `AI` letter-mark — and on
+   paper three of them are gone, because browsers drop backgrounds and
+   gradients. Measured: the mediation case's beslutsstöd printed with
+   `background-image: none` and an ordinary heading, indistinguishable from MI's
+   own register on a sheet that will be filed. It is also the truer answer —
+   FAI-002 means an unapproved proposal is working material, and once approved
+   the value prints as the record's own.
+   **Isolating a document for print uses `display: contents` on its ancestors,
+   never `visibility` plus `position: absolute`.** The absolute version measures
+   correctly and fails at the thing it exists for: an absolutely positioned box
+   is not reliably broken across pages, so a two-page report loses page two.
+   Ancestors stop generating boxes, everything outside is `display: none`, and
+   the document stays an ordinary block the printer can paginate — verified at
+   2,1 A4 pages on Utlöpningstidpunkter.
    **A screen prints as a document, not as a screenshot.** `PrintHeader` gives it
    MI's mark and an *Utskriftsdatum* — **date and time**, which is what Bilaga 3
    §7 names for MI's own report header — the way Bilaga F's six printouts do;

@@ -344,8 +344,15 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
           />
         </div>
 
-        {/* The right-hand column: what the case is read against. */}
-        <div className="space-y-5">
+        {/* The right-hand column: what the case is read against.
+
+            `print-first` because it leads on paper. Whether a
+            förhandlingsordning applies decides whether MI appoints anybody at
+            all, and a reader who wants only that had to get past the GD-beslut,
+            the linked agreements, the appointment and the handlingar to find
+            it. The agreement view's sidebar has led its printout since it was
+            built; this one never had the rule applied. */}
+        <div className="print-first space-y-5">
           <Panel title={c.procedureAgreement} tags={["FF-006", "FA-017"]} tone="mint">
             <p className="text-table">{miAppoints ? c.coveredNot : c.covered}</p>
             {/* The consequence of the rule above, marked as one. */}

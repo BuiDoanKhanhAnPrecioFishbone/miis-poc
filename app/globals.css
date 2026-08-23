@@ -663,33 +663,34 @@ select.demo-select {
   /*
     A report prints as the report, not as the screen it was taken from.
 
-    When a `.print-document` is on the page — a generated report result — it is
-    the only thing that goes on the paper. Everything else is the application
-    around it: the catalogue, the selection screen, the other tabs, the page
-    heading, the shell's own letterhead.
+    When a `.print-document` is on the page — a generated report result, a
+    document produced from a template — it is the only thing that goes on the
+    paper. Everything else is the application around it: the catalogue, the
+    selection screen, the other tabs, the page heading, the shell's letterhead.
 
-    `visibility` rather than `display`, because visibility is inherited *and*
-    can be turned back on by a descendant: hiding an ancestor with `display`
-    would take the document with it, which is why the obvious version of this
-    rule does not work. The document is then lifted to the top of the sheet, so
-    it does not print after a page of blank space where the hidden furniture was.
+    **The document stays in normal flow**, which is the whole point of doing it
+    this way. The first version hid everything with `visibility` and then lifted
+    the document out with `position: absolute` — it measured correctly and would
+    have failed on the thing it exists for, because an absolutely positioned box
+    in paged media is not reliably broken across pages. Bilaga F's Rapport 4 runs
+    to several sheets; a one-page report that silently loses page two is worse
+    than one that prints the navigation.
 
-    The document carries its own letterhead — the mark and the utskriftsdatum
-    Bilaga 3 §7 names — so the shell's is suppressed rather than duplicated.
+    So the ancestors become `display: contents` — they stop generating boxes and
+    their children take their place — and everything that is neither an ancestor
+    nor the document nor inside it is dropped outright. The document is then an
+    ordinary block in an ordinary flow, and the printer paginates it.
+
+    The document carries its own letterhead — the mark and the *Utskriftsdatum
+    och tid* Bilaga 3 §7 names — so the shell's is suppressed rather than
+    duplicated.
   */
-  body:has(.print-document) * {
-    visibility: hidden;
+  body:has(.print-document) :has(.print-document) {
+    display: contents !important;
   }
 
-  body:has(.print-document) .print-document,
-  body:has(.print-document) .print-document * {
-    visibility: visible;
-  }
-
-  body:has(.print-document) .print-document {
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
+  body:has(.print-document) *:not(:has(.print-document), .print-document, .print-document *) {
+    display: none !important;
   }
 
   /* The letterhead exists only on paper. */
@@ -705,6 +706,28 @@ select.demo-select {
 
   .req-tag,
   .rationale {
+    display: none !important;
+  }
+
+  /*
+    An AI region does not print, and this is a requirement rather than a taste.
+
+    FAI-002 guarantees that nothing machine-generated is applied without a
+    human approving it, and the interface makes that visible with four signals
+    at once — the violet, the banded header, the 6px spine and the `AI`
+    letter-mark — precisely because any one of them can be lost. On paper three
+    of the four are: browsers drop background colours and gradients by default,
+    which takes the band, the spine's colour and the violet with them. Measured
+    on the mediation case, the decision support printed with
+    `background-image: none` and an ordinary heading — indistinguishable from
+    Medlingsinstitutet's own register content, on a sheet that will be filed.
+
+    Dropping it is also the truer answer. An unapproved proposal is working
+    material, not a record: FAI-002 means nothing reaches the register until an
+    officer accepts it, and once accepted the value prints as the record's own.
+    A printed case file does not carry the officer's scratch notes either.
+  */
+  .ai-region {
     display: none !important;
   }
 
