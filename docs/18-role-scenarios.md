@@ -471,6 +471,48 @@ the machine in the foyer is not necessarily a wide screen.
 
 ---
 
+## Beyond §4.1: two additions we propose
+
+Appendix 1 §4.1 names four AI functions, and the prototype builds those four.
+**The following two are the supplier's additions and are not part of §4.1.**
+They are set out here, clearly separated, for two reasons: an addition passed
+off as a requirement makes it harder for Medlingsinstitutet to judge what was
+actually asked for, and §3.6 means anything absent from the submitted response
+cannot be shown at the oral presentation either.
+
+**Describe the search** (*Sök*) and **Describe the report** (*Rapporter*). The
+officer writes a sentence — *"agreements in the private sector valid in 2027"* —
+and the system proposes a selection: which register to search and which criteria
+to set, or which report answers the question and with which selection criteria.
+
+Four properties make the addition reviewable, and they are the same ones that
+govern §4.1's four functions:
+
+- **The proposal sets nothing.** It is shown; the officer approves or rejects.
+  FAI-002 is a rule about proposals, not about which function produced them —
+  sitting outside §4.1 does not weaken it.
+- **Every proposed criterion names the words it was read from.** The same
+  guarantee the protocol functions give by highlighting the passage a value came
+  from. What could not be placed is printed, because a proposal that silently
+  drops half the question cannot be reviewed.
+- **It selects; it does not run.** Approving fills the query builder or the
+  selection screen, and the officer then uses the same controls as otherwise.
+  Appendix F opens by saying a report is *urvalsbild och resultat*; a machine
+  that skipped to the result would have skipped the half meant to be checked.
+- **Authorisation decides, not the interpretation.** NFÅ-003 applies to a
+  written question too: a report the role may not run is refused with the reason
+  rather than silently dropped, so the function does not become a way around the
+  menu.
+
+Interpretation runs against the register's own vocabulary — the query builder's
+criteria, the report catalogue, Medlingsinstitutet's sectors and agreement
+constructions. No free text is generated, and no statement about collective
+agreements is composed by the system.
+
+**What is already filled in is overwritten, and the proposal says so.**
+Approving replaces the selection rather than adding to it, so the proposal
+states how many conditions will be lost before the officer approves.
+
 ## What this section should not claim
 
 Three things, stated here so they are not accidentally claimed above.

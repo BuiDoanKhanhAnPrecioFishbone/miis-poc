@@ -474,6 +474,48 @@ en bred skärm.
 
 ---
 
+## Utöver §4.1: två tillägg vi föreslår
+
+Bilaga 1 §4.1 namnger fyra AI-funktioner, och prototypen bygger dessa fyra.
+**Följande två är leverantörens tillägg och ingår inte i §4.1.** De redovisas
+här, tydligt åtskilda, av två skäl: ett tillägg som utges för att vara ett krav
+gör det svårare för Medlingsinstitutet att bedöma vad som faktiskt begärts, och
+§3.6 innebär att det som inte står i avropssvaret inte heller kan visas vid den
+muntliga presentationen.
+
+**Beskriv sökningen** (*Sök*) och **Beskriv rapporten** (*Rapporter*).
+Handläggaren skriver en mening — *"avtal inom privat sektor som gällde 2027"* —
+och systemet föreslår ett urval: vilket register som ska sökas, vilka kriterier
+som ska sättas, eller vilken av rapporterna som svarar på frågan och med vilka
+urvalskriterier.
+
+Fyra egenskaper gör tillägget granskningsbart, och de är desamma som gäller
+§4.1:s fyra funktioner:
+
+- **Ingenting ställs in av förslaget.** Förslaget visas, handläggaren godkänner
+  eller avvisar. FAI-002 är en regel om förslag, inte om vilken funktion som
+  skapade dem — att stå utanför §4.1 gör den inte svagare.
+- **Varje föreslaget kriterium anger vilka ord det lästes ur.** Samma garanti som
+  protokollfunktionerna ger genom att markera stycket ett värde hämtats ur. Det
+  systemet inte kunde placera skrivs ut, eftersom ett förslag som tyst utelämnar
+  halva frågan inte går att granska.
+- **Det väljer, det kör inte.** Ett godkännande fyller sökbyggaren respektive
+  urvalsbilden, och handläggaren använder därefter samma kontroller som annars.
+  Bilaga F inleder med att en rapport är *urvalsbild och resultat*; en maskin som
+  hoppade till resultatet hade hoppat över den halva som ska kontrolleras.
+- **Behörigheten avgör, inte tolkningen.** NFÅ-003 gäller även en skriven fråga:
+  en rapport rollen inte får köra vägras med skälet i stället för att tyst
+  utelämnas, så att funktionen inte blir en väg runt menyn.
+
+Tolkningen sker mot registrets egen vokabulär — kriterierna i sökbyggaren,
+rapporterna i katalogen, Medlingsinstitutets sektorer och avtalskonstruktioner.
+Ingen fritext genereras, och ingen text om kollektivavtal formuleras av
+systemet.
+
+**Det som redan är ifyllt skrivs över, och det står i förslaget.** Ett
+godkännande ersätter urvalet i stället för att lägga till, så förslaget anger hur
+många villkor som försvinner innan handläggaren godkänner.
+
 ## Vad detta avsnitt inte ska påstå
 
 Tre saker, angivna här så att de inte påstås av misstag ovan.

@@ -724,6 +724,7 @@ export const sv = {
       label: "Vad vill du söka fram?",
       placeholder: "T.ex. avtal inom privat sektor som gällde 2027",
       hint: "Skriv en mening. Förslaget visas för granskning innan något ställs in.",
+      emptyReason: "Skriv en mening först – det finns inget att tolka än.",
       submit: "Tolka",
       proposalLead: "Förslag till urval. Ingenting är inställt förrän du godkänner.",
       infoTypeName: "Informationstyp",
@@ -731,6 +732,10 @@ export const sv = {
       assumed: "Antaget, inget ord angav register:",
       defaultRegister: "avtal",
       unused: (words: string) => `Kunde inte tolkas: ${words}. Lägg till kriteriet för hand om det behövs.`,
+      replaces: (n: number) =>
+        n === 1
+          ? "Godkänn ersätter sökningen du redan byggt (1 villkor)."
+          : `Godkänn ersätter sökningen du redan byggt (${n} villkor).`,
       approve: "Godkänn och fyll i sökningen",
       nothingLabel: "Inget förslag",
       nothing:
@@ -980,11 +985,14 @@ export const sv = {
       label: "Vilken rapport behöver du?",
       placeholder: "T.ex. vilka avtal löper ut 2027",
       hint: "Skriv en mening. Förslaget visas för granskning innan urvalsbilden fylls i.",
+      emptyReason: "Skriv en mening först – det finns inget att tolka än.",
       submit: "Tolka",
       proposalLead: "Förslag till rapport och urval. Rapporten körs inte av förslaget.",
       reportName: "Rapport",
       readFrom: "Läst ur",
       unused: (words: string) => `Kunde inte tolkas: ${words}. Komplettera urvalsbilden för hand om det behövs.`,
+      assumed: "Antaget, ingen rapport namngavs",
+      replaces: "Godkänn ersätter urvalsbilden du fyllt i och tar bort resultatet på skärmen.",
       approve: "Godkänn och fyll i urvalsbilden",
       nothingLabel: "Inget förslag",
       nothing:

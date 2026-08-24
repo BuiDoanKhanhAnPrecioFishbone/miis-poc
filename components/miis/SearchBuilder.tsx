@@ -452,7 +452,13 @@ export function SearchBuilder({
         selection and the hits, never the controls that produced them.
       */}
       <div className="print-hide mb-6">
-        <SearchIntentAssistant lang={lang} onApply={applyIntent} />
+        {/* The count travels so the proposal can say what approving costs:
+            `applyIntent` rebuilds the groups rather than adding to them. */}
+        <SearchIntentAssistant
+          lang={lang}
+          conditionCount={groups.reduce((n, g) => n + g.conditions.length, 0)}
+          onApply={applyIntent}
+        />
       </div>
 
       {/* FR-002 — "choice of information type", the sketch's four pill tabs. */}

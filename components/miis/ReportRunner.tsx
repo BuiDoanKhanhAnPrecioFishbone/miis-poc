@@ -251,9 +251,12 @@ export function ReportRunner({
       {/* Above the picker, because it proposes which report as well as what to
           select in it. `print-hide` with the picker, for the same reason. */}
       <div className="print-hide mb-5">
+        {/* `applyIntent` resets the criteria and clears the result, so the
+            proposal says so whenever there is something on screen to lose. */}
         <ReportIntentAssistant
           lang={lang}
           available={available.map((r) => r.id)}
+          replaces={Object.keys(values).length > 0 || generated !== null}
           onApply={applyIntent}
         />
       </div>

@@ -723,6 +723,7 @@ export const en: Dictionary = {
       label: "What do you want to find?",
       placeholder: "E.g. agreements in the private sector valid in 2027",
       hint: "Write a sentence. The proposal is shown for review before anything is set.",
+      emptyReason: "Write a sentence first — there is nothing to interpret yet.",
       submit: "Interpret",
       proposalLead: "Proposed selection. Nothing is set until you approve it.",
       infoTypeName: "Information type",
@@ -730,6 +731,10 @@ export const en: Dictionary = {
       assumed: "Assumed, no word named a register:",
       defaultRegister: "agreements",
       unused: (words: string) => `Could not be interpreted: ${words}. Add the criterion by hand if it is needed.`,
+      replaces: (n: number) =>
+        n === 1
+          ? "Approving replaces the search you have already built (1 condition)."
+          : `Approving replaces the search you have already built (${n} conditions).`,
       approve: "Approve and fill in the search",
       nothingLabel: "No proposal",
       nothing:
@@ -979,11 +984,14 @@ export const en: Dictionary = {
       label: "Which report do you need?",
       placeholder: "E.g. which agreements expire in 2027",
       hint: "Write a sentence. The proposal is shown for review before the selection screen is filled in.",
+      emptyReason: "Write a sentence first — there is nothing to interpret yet.",
       submit: "Interpret",
       proposalLead: "Proposed report and selection. The proposal does not run the report.",
       reportName: "Report",
       readFrom: "Read from",
       unused: (words: string) => `Could not be interpreted: ${words}. Complete the selection screen by hand if needed.`,
+      assumed: "Assumed, no report was named",
+      replaces: "Approving replaces the selection you have filled in and clears the result on screen.",
       approve: "Approve and fill in the selection",
       nothingLabel: "No proposal",
       nothing:
