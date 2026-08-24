@@ -1660,6 +1660,7 @@ export const en: Dictionary = {
       typeHint: "Decides which properties are registered",
       name: "Name of the party",
       namePlaceholder: "e.g. Sveriges Lärare",
+      nameRequired: "The party must have a name.",
       validFrom: "The name applies from",
       validFromHint: "The date the name starts to apply",
       validFromNote:
@@ -1694,6 +1695,7 @@ export const en: Dictionary = {
       contactsLater: "Contact people are registered on the party's own page once it is saved.",
     },
     nameChange: {
+      nameRequired: "Enter the new name first.",
       heading: "Name change and organisational change",
       intro:
         "A name change is registered in one place with a validity date. The name propagates to every current agreement, but never to historical ones — those show the name the party had when the agreement was signed.",
@@ -1750,6 +1752,9 @@ export const en: Dictionary = {
       "The negotiation is linked to the agreement when the protocol is registered — step 5 of Register an agreement protocol.",
   },
   partstraffar: {
+      termRequired: "Enter a search term first.",
+      noteRequired: "Write a note first.",
+      demandRequired: "Enter an agreement demand first.",
     editableNote:
       "The information can be supplemented both before and after the meeting — US-08 requires exactly that. No phase is locked; instead the change log records who changed what and when (FF-004, FH-001).",
     title: "Party meetings",

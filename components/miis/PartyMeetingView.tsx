@@ -140,7 +140,12 @@ function DemandRow({
                 className="field-input w-64"
               />
             </span>
-            <Button size="sm" onClick={onConfirm} disabled={term.trim().length === 0}>
+            <Button
+              size="sm"
+              onClick={onConfirm}
+              disabled={term.trim().length === 0}
+              disabledReason={t.termRequired}
+            >
               {t.watchwordConfirm}
             </Button>
             <Button variant="secondary" size="sm" onClick={onCancel}>
@@ -523,7 +528,11 @@ export function PartyMeetingView({
                   }}
                   className="field-input min-w-0 flex-1"
                 />
-                <Button onClick={addNote} disabled={draft.trim().length === 0}>
+                <Button
+                  onClick={addNote}
+                  disabled={draft.trim().length === 0}
+                  disabledReason={t.noteRequired}
+                >
                   {t.during.addNote}
                 </Button>
               </div>
@@ -629,7 +638,11 @@ export function PartyMeetingView({
                     )}
 
                     <div className="flex flex-wrap gap-3">
-                      <Button onClick={addDemand} disabled={topic.trim().length === 0}>
+                      <Button
+                        onClick={addDemand}
+                        disabled={topic.trim().length === 0}
+                        disabledReason={t.demandRequired}
+                      >
                         {t.demands.save}
                       </Button>
                       <Button variant="secondary" onClick={() => setAdding(false)}>

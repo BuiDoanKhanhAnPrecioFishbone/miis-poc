@@ -315,7 +315,11 @@ export function NewParty({ lang, register }: { lang: Lang; register: Party[] }) 
                 </div>
               </dl>
               <div className="flex flex-wrap items-center gap-3">
-                <Button onClick={save} disabled={name.trim().length === 0}>
+                <Button
+                  onClick={save}
+                  disabled={name.trim().length === 0}
+                  disabledReason={t.nameRequired}
+                >
                   {t.saveAction}
                 </Button>
                 <ReqTags ids={["FP-001", "FH-001"]} />

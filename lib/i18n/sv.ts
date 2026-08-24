@@ -1659,6 +1659,7 @@ export const sv = {
       typeHint: "Avgör vilka egenskaper som registreras",
       name: "Partens namn",
       namePlaceholder: "T.ex. Sveriges Lärare",
+      nameRequired: "Parten måste ha ett namn.",
       validFrom: "Namnet gäller från",
       validFromHint: "Datum då namnet börjar gälla",
       validFromNote:
@@ -1693,6 +1694,7 @@ export const sv = {
       contactsLater: "Kontaktpersoner registreras på partens sida när parten är sparad.",
     },
     nameChange: {
+      nameRequired: "Skriv det nya namnet först.",
       heading: "Namnbyte och organisationsförändring",
       intro:
         "Ett namnbyte registreras på ett ställe med giltighetsdatum. Namnet slår igenom på samtliga gällande avtal, men aldrig på historiska avtal – de visar det namn parten hade när avtalet tecknades.",
@@ -1749,6 +1751,9 @@ export const sv = {
       "Förhandlingen kopplas till avtalet när protokollet registreras – steg 5 i Registrera avtalsprotokoll.",
   },
   partstraffar: {
+      termRequired: "Skriv ett sökord först.",
+      noteRequired: "Skriv en anteckning först.",
+      demandRequired: "Skriv ett avtalskrav först.",
     editableNote:
       "Uppgifterna kan kompletteras både före och efter mötet – US-08 kräver det uttryckligen. Ingen fas låses; i stället registrerar ändringsloggen vem som ändrade vad och när (FF-004, FH-001).",
     title: "Partsträffar",

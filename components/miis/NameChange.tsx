@@ -116,7 +116,11 @@ export function NameChange({
           />
         </div>
         <div className="flex items-end">
-          <Button onClick={apply} disabled={draft.trim().length === 0}>
+          <Button
+            onClick={apply}
+            disabled={draft.trim().length === 0}
+            disabledReason={t.nameRequired}
+          >
             {t.apply}
           </Button>
         </div>

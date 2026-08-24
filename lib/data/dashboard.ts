@@ -96,7 +96,16 @@ export async function getDashboard(
           total,
           emptyText: s.reminders.empty,
           rationale: s.reminders.footnote,
-          ...(total > 0 ? { action: { text: i18n.common.showAll(total) } } : {}),
+          /*
+            A destination, not a refusal. This action rendered as a `disabled`
+            button reading "Ej aktiv i demon" because it carried no `href` —
+            the last of that phrase in the product. FA-022's reminders are set
+            and cleared on Konjunkturlönerapporten's watch list, so that is
+            where "show all" goes; the deep link opens the tab that owns it.
+          */
+          ...(total > 0
+            ? { action: { text: i18n.common.showAll(total), href: "/rapporter#konjunkturlon" } }
+            : {}),
         },
         {
           kind: "list",
