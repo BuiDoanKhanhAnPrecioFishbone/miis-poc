@@ -28,6 +28,7 @@ import {
   Panel,
   Rationale,
   StatusDot,
+  EmptyState,
 } from "@/components/miis/primitives";
 import { getAgreementDetail } from "@/lib/data/agreements";
 import {
@@ -270,7 +271,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
                   {wageRows.length === 0 ? (
                     <Panel title={t.wageAgreements} tags={["FA-002", "FA-007"]}>
                       <p className="mb-3 max-w-4xl text-table">{t.wageIntro}</p>
-                      <p className="text-table text-muted-foreground">{t.noWageAgreements}</p>
+                      <EmptyState text={t.noWageAgreements} />
                     </Panel>
                   ) : (
                     <WageAgreementAdmin
@@ -337,7 +338,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
                     <Panel title={t.workingGroups} tags={["FA-014"]}>
                       <p className="mb-3 max-w-4xl text-table">{t.workingGroupsIntro}</p>
                       {workingGroups.length === 0 ? (
-                        <p className="text-table text-muted-foreground">{t.noWorkingGroups}</p>
+                        <EmptyState text={t.noWorkingGroups} />
                       ) : (
                         <ul className="space-y-4">
                           {workingGroups.map((g) => (
@@ -433,7 +434,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
                 )}
               </div>
             ) : (
-              <p className="text-table text-muted-foreground">{t.noLifecycle}</p>
+              <EmptyState text={t.noLifecycle} />
             )}
             {agreement.mediationLinked && (
               <div className="mt-3">
@@ -457,7 +458,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
         <Panel title={t.eventLog} tags={["FH-002"]}>
           <p className="mb-3 max-w-4xl text-table">{t.eventLogIntro}</p>
           {events.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.noEvents}</p>
+            <EmptyState text={t.noEvents} />
           ) : (
             <ul className="divide-y divide-border">
               {events.map((e) => (

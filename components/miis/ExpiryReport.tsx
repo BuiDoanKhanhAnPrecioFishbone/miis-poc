@@ -2,7 +2,9 @@ import type { Lang } from "@/lib/domain/lang";
 import type { ExpiryReport, ExpirySection } from "@/lib/domain/report";
 import { amount, decimal } from "@/lib/format";
 import { dictionary } from "@/lib/i18n";
-import { Panel, Rationale } from "./primitives";
+import { Panel, Rationale,
+  EmptyState,
+} from "./primitives";
 
 /**
  * Avtal – Utlöpningstidpunkter, after Bilaga 3 §7.11.
@@ -64,7 +66,9 @@ function Section({
       </p>
 
       {section.totalAgreements === 0 ? (
-        <p className="mt-3 text-table text-muted-foreground">{t.emptySection}</p>
+        <div className="mt-3">
+          <EmptyState text={t.emptySection} />
+        </div>
       ) : (
         <>
           {/*

@@ -38,6 +38,7 @@ import {
   Panel,
   Rationale,
   ReqTags,
+  EmptyState,
 } from "./primitives";
 import { Select } from "./Select";
 
@@ -493,7 +494,7 @@ export function ReportRunner({
                   if (!pair) {
                     return (
                       <Panel title={report.label[lang]} headingLevel={2}>
-                        <p className="text-table text-muted-foreground">{t.chooseAgreement}</p>
+                        <EmptyState text={t.chooseAgreement} />
                       </Panel>
                     );
                   }
@@ -504,7 +505,7 @@ export function ReportRunner({
               ) : (
                 (results[report.result.component] ?? (
                   <Panel title={report.label[lang]}>
-                    <p className="text-table text-muted-foreground">{t.notBuilt}</p>
+                    <EmptyState text={t.notBuilt} />
                   </Panel>
                 ))
             )}

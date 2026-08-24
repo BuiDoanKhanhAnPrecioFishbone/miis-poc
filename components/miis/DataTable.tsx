@@ -5,6 +5,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import type { Lang } from "@/lib/domain/lang";
 import { IconSortable, IconSortAsc, IconSortDesc } from "./icons";
 import { dictionary } from "@/lib/i18n";
+import { EmptyState } from "./primitives";
 
 /**
  * The one table.
@@ -111,9 +112,7 @@ export function DataTable({
   */
   if (rows.length === 0) {
     return (
-      <p aria-live="polite" className="py-3 text-table text-muted-foreground">
-        {empty ?? t.empty}
-      </p>
+      <EmptyState live text={empty ?? t.empty} />
     );
   }
 

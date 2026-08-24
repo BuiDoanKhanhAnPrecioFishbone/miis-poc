@@ -8,6 +8,7 @@ import {
   PageHeading,
   Panel,
   Rationale,
+  EmptyState,
 } from "@/components/miis/primitives";
 import {
   getCurrentBenchmark,
@@ -147,7 +148,7 @@ export default async function MarketPage() {
         <Panel title={t.sources.heading} tags={["FA-012"]}>
           <p className="mb-3 max-w-4xl text-table">{t.sources.intro}</p>
           {sourceRows.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.sources.empty}</p>
+            <EmptyState text={t.sources.empty} />
           ) : (
             <DataTable
               columns={sourceColumns}

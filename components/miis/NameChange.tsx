@@ -6,7 +6,9 @@ import type { Lang } from "@/lib/domain/lang";
 import type { Party } from "@/lib/domain/party";
 import { nameAtDate } from "@/lib/domain/party";
 import { dictionary } from "@/lib/i18n";
-import { Badge, Button, Callout, Field, Panel, Rationale, ReqTag } from "./primitives";
+import { Badge, Button, Callout, Field, Panel, Rationale, ReqTag,
+  EmptyState,
+} from "./primitives";
 
 /**
  * FP-004, demonstrated rather than described.
@@ -145,7 +147,7 @@ export function NameChange({
             {t.currentHeading(current.length)}
           </h3>
           {current.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.noAgreements}</p>
+            <EmptyState text={t.noAgreements} />
           ) : (
             <ul className="space-y-2 text-table">
               {current.map((a) => (
@@ -166,7 +168,7 @@ export function NameChange({
             {t.historicalHeading(historical.length)}
           </h3>
           {historical.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.noAgreements}</p>
+            <EmptyState text={t.noAgreements} />
           ) : (
             <ul className="space-y-2 text-table">
               {historical.map((a) => (

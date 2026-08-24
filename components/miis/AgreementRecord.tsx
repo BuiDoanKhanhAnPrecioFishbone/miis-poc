@@ -7,7 +7,9 @@ import {
 } from "@/lib/domain/agreement";
 import { amount, decimal } from "@/lib/format";
 import { dictionary } from "@/lib/i18n";
-import { Badge, Callout, Field, FormGrid, Panel, Rationale } from "./primitives";
+import { Badge, Callout, Field, FormGrid, Panel, Rationale,
+  EmptyState,
+} from "./primitives";
 
 /**
  * The rest of MI's own agreement record — Bilaga 3 §3.3 and §3.11.
@@ -101,7 +103,7 @@ export function AgreementBasicFactsPanel({
       {flags.length > 0 && <p className="mb-4 max-w-4xl text-table">{t.basicFactsIntro}</p>}
 
       {!anything ? (
-        <p className="text-table text-muted-foreground">{t.noBasicFacts}</p>
+        <EmptyState text={t.noBasicFacts} />
       ) : (
         <>
           <ul className="space-y-3">
@@ -155,7 +157,7 @@ export function ReportSelectionPanel({ agreement, lang }: { agreement: Agreement
   return (
     <Panel title={t.reportSelection} tags={["FR-005", "FR-008", "FR-009", "FR-010"]}>
       {chosen.length === 0 ? (
-        <p className="text-table text-muted-foreground">{t.noReportSelection}</p>
+        <EmptyState text={t.noReportSelection} />
       ) : (
         <ul className="space-y-2 text-table">
           {chosen.map((label) => (
@@ -175,7 +177,7 @@ export function SpecialQuestionsPanel({ sets, lang }: { sets: SpecialQuestions[]
       <p className="mb-4 max-w-4xl text-table">{t.specialQuestionsIntro}</p>
 
       {sets.length === 0 ? (
-        <p className="text-table text-muted-foreground">{t.noSpecialQuestions}</p>
+        <EmptyState text={t.noSpecialQuestions} />
       ) : (
         <div className="space-y-6">
           {sets.map((set) => (

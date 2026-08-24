@@ -1109,10 +1109,37 @@ export function ConfidentialityMarker({
   );
 }
 
-/** Shown when a panel or table has nothing in it. */
-export function EmptyState({ text }: { text: string }) {
+/**
+ * "There is nothing here" — as a state, not as a quieter paragraph.
+ *
+ * This existed and almost nothing used it: eleven screens hand-rolled
+ * `<p class="text-table text-muted-foreground">` instead, which put the empty
+ * state **2.12:1** away from the prose above it. Both colours are far past AA
+ * against the card — 15.7 and 7.4 — so neither is hard to read. They are hard
+ * to tell *apart*, and a reader met two sentences that looked like one kind of
+ * thing without noticing that the second was the panel's answer rather than
+ * more explanation.
+ *
+ * Colour cannot carry that distinction at any separation this palette allows
+ * without pushing one of the two below AA. The carrier is **shape**: a dashed
+ * box makes it an object with edges, which is the same fix that rescued
+ * *Obligatoriskt* when 11:1 as bare text still lost to the label beside it —
+ * the eye reads form before it reads contrast. Dashed rather than solid for the
+ * reason a disabled control is dashed here: it says *nothing to act on*.
+ */
+export function EmptyState({
+  text,
+  /** For a result that empties without navigating — a filter, a search. */
+  live,
+}: {
+  text: string;
+  live?: boolean;
+}) {
   return (
-    <p className="rounded-md border border-dashed border-border px-4 py-6 text-center text-table text-muted-foreground">
+    <p
+      {...(live ? { "aria-live": "polite" as const } : {})}
+      className="rounded-md border border-dashed border-border px-4 py-6 text-center text-table text-muted-foreground"
+    >
       {text}
     </p>
   );

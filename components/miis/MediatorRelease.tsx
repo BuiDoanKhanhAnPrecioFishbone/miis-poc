@@ -4,7 +4,9 @@ import type { Lang } from "@/lib/domain/lang";
 import type { MediatorRelease, MediatorReleaseDocument } from "@/lib/domain/report";
 import { dictionary } from "@/lib/i18n";
 import { IconDocument } from "./icons";
-import { Callout, Panel } from "./primitives";
+import { Callout, Panel,
+  EmptyState,
+} from "./primitives";
 
 /**
  * *Avtal – Medlare* — Bilaga F Rapport 5, specified in Bilaga 3 §7.4.
@@ -34,7 +36,7 @@ function DocumentList({
   emptyText: string;
 }) {
   if (documents.length === 0) {
-    return <p className="text-table text-muted-foreground">{emptyText}</p>;
+    return <EmptyState text={emptyText} />;
   }
   return (
     <ul className="space-y-2">
@@ -142,7 +144,7 @@ export function MediatorReleaseView({
           <h3 className="font-display text-section font-semibold">{t.otherAgreements}</h3>
           <p className="mt-1 max-w-4xl text-label text-muted-foreground">{t.otherAgreementsNote}</p>
           {release.otherAgreements.length === 0 ? (
-            <p className="mt-2 text-table text-muted-foreground">{t.noOtherAgreements}</p>
+            <div className="mt-2"><EmptyState text={t.noOtherAgreements} /></div>
           ) : (
             <ul className="mt-2 space-y-2">
               {release.otherAgreements.map((a) => (

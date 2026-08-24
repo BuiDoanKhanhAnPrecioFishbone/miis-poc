@@ -6,7 +6,9 @@ import { IconBack } from "@/components/miis/icons";
 import { PrintHeader } from "@/components/miis/Print";
 import { PublicAgreementActions } from "@/components/miis/PublicAgreementActions";
 import { PublicShell } from "@/components/miis/PublicShell";
-import { Callout, Field, FormGrid, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { Callout, Field, FormGrid, PageHeading, Panel, Rationale,
+  EmptyState,
+} from "@/components/miis/primitives";
 import { getPublicAgreement } from "@/lib/data/public";
 import { accessLevel } from "@/lib/domain/role";
 import { getSession } from "@/lib/session";
@@ -115,7 +117,7 @@ export default async function PublicAgreementPage({
         <Panel title={t.periods} tags={["FA-002", "FA-003"]}>
           <p className="mb-3 max-w-4xl text-table">{t.periodsIntro}</p>
           {agreement.periods.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.noPeriods}</p>
+            <EmptyState text={t.noPeriods} />
           ) : (
             <ul className="divide-y divide-border">
               {agreement.periods.map((p) => (
@@ -153,14 +155,14 @@ export default async function PublicAgreementPage({
               )}
             </div>
           ) : (
-            <p className="text-table text-muted-foreground">{t.noLifecycle}</p>
+            <EmptyState text={t.noLifecycle} />
           )}
         </Panel>
 
         <Panel title={t.documents} tags={["FR-011", "FD-001"]}>
           <p className="mb-3 max-w-4xl text-table">{t.documentsIntro}</p>
           {agreement.documents.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.noDocuments}</p>
+            <EmptyState text={t.noDocuments} />
           ) : (
             <ul className="divide-y divide-border">
               {agreement.documents.map((doc) => (

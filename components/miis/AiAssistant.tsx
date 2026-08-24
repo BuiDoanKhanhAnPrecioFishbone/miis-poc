@@ -21,7 +21,9 @@ import type { AssistantFacts } from "@/lib/domain/assistant";
 import { dictionary } from "@/lib/i18n";
 import { IconAi, IconClose, IconForward } from "./icons";
 import { AssistantChat } from "./AssistantChat";
-import { Badge, LinkButton, Rationale, ReqTags } from "./primitives";
+import { Badge, LinkButton, Rationale, ReqTags,
+  EmptyState,
+} from "./primitives";
 import { Tabs } from "./Select";
 
 /**
@@ -450,7 +452,7 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
                 {!canReview ? (
                   <p className="text-table">{t.readOnly}</p>
                 ) : mine.length === 0 ? (
-                  <p className="text-table text-muted-foreground">{t.queueNew.empty}</p>
+                  <EmptyState text={t.queueNew.empty} />
                 ) : (
                   <>
                     <ul className="divide-y divide-border">

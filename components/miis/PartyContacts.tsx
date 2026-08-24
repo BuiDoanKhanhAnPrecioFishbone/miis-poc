@@ -6,7 +6,9 @@ import type { Lang } from "@/lib/domain/lang";
 import type { ContactPerson } from "@/lib/domain/party";
 import { dictionary } from "@/lib/i18n";
 import { IconClose, IconPlus } from "./icons";
-import { Button, Callout, FormGrid, Panel, Rationale, TextField } from "./primitives";
+import { Button, Callout, FormGrid, Panel, Rationale, TextField,
+  EmptyState,
+} from "./primitives";
 
 /**
  * FP-006's contact persons — *"stödja **koppling till** kontaktpersoner"*.
@@ -77,7 +79,7 @@ export function PartyContacts({
       )}
 
       {contacts.length === 0 ? (
-        <p className="text-table text-muted-foreground">{t.noContacts}</p>
+        <EmptyState text={t.noContacts} />
       ) : (
         <ul className="space-y-3">
           {contacts.map((c) => (

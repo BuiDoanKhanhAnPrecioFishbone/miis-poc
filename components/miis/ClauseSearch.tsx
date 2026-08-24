@@ -12,7 +12,9 @@ import type { SourceAnchor } from "@/lib/domain/extraction";
 import type { Lang } from "@/lib/domain/lang";
 import { dictionary } from "@/lib/i18n";
 import { IconCheck, IconClose } from "./icons";
-import { AiRegion, Badge, Button, Callout, Chip, Rationale, TextField } from "./primitives";
+import { AiRegion, Badge, Button, Callout, Chip, Rationale, TextField,
+  EmptyState,
+} from "./primitives";
 
 /**
  * §4.1's third AI function, as the field MI asks for.
@@ -124,7 +126,7 @@ export function ClauseSearch({
         <div className="mt-5">
           <h3 className="mi-kicker mb-2 text-muted-foreground">{t.results(searched)}</h3>
           {hits.length === 0 ? (
-            <p className="text-table text-muted-foreground">{t.noHits(searched)}</p>
+            <EmptyState text={t.noHits(searched)} />
           ) : (
             <ul className="space-y-3">
               {hits.map((hit) => {

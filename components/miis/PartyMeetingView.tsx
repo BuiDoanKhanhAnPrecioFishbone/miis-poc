@@ -30,6 +30,7 @@ import {
   ReqTag,
   ReqTags,
   TextField,
+  EmptyState,
 } from "./primitives";
 
 /**
@@ -392,7 +393,7 @@ export function PartyMeetingView({
 
             <h3 className="mt-5 mb-2 font-display text-body font-semibold">{t.before.agenda}</h3>
             {agenda.length === 0 ? (
-              <p className="text-table text-muted-foreground">{t.before.agendaEmpty}</p>
+              <EmptyState text={t.before.agendaEmpty} />
             ) : (
               <ol className="list-decimal space-y-1 pl-5 text-table">
                 {agenda.map((item, i) => (
@@ -499,7 +500,9 @@ export function PartyMeetingView({
               <p className="mb-4 text-table">{t.during.intro}</p>
 
               {notes.length === 0 && (
-                <p className="mb-4 text-table text-muted-foreground">{t.during.empty}</p>
+                <div className="mb-4">
+                  <EmptyState text={t.during.empty} />
+                </div>
               )}
               <ol className="mb-4 space-y-2 text-table">
                 {notes.map((note, i) => (
@@ -545,7 +548,7 @@ export function PartyMeetingView({
             <Panel title={t.demands.heading} tags={["FF-005"]}>
               <p className="mb-3 text-table">{t.demands.intro}</p>
               {demands.length === 0 ? (
-                <p className="text-table text-muted-foreground">{t.demands.empty}</p>
+                <EmptyState text={t.demands.empty} />
               ) : (
                 <ul>
                   {demands.map((demand) => (

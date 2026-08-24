@@ -6,7 +6,9 @@ import type {
 } from "@/lib/domain/report";
 import { dictionary, type Dictionary } from "@/lib/i18n";
 import { DataTable } from "./DataTable";
-import { Callout, Panel } from "./primitives";
+import { Callout, Panel,
+  EmptyState,
+} from "./primitives";
 
 /**
  * A report's result, as a document.
@@ -81,7 +83,7 @@ export function ReportDocumentView({ doc, lang }: { doc: ReportDocument; lang: L
 
           {/* An empty part is a sentence. "Inget löneavtal registrerat" is a
               fact about the record; an empty table with a header on it is not. */}
-          {part.note && <p className="text-table text-muted-foreground">{part.note[lang]}</p>}
+          {part.note && <EmptyState text={part.note[lang]} />}
         </Panel>
       ))}
     </div>

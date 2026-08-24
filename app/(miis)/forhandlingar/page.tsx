@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
-import { Badge, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { Badge, PageHeading, Panel, Rationale,
+  EmptyState,
+} from "@/components/miis/primitives";
 import { listNegotiations } from "@/lib/data/negotiations";
 import { NEGOTIATION_TYPE_LABEL } from "@/lib/domain/mediation";
 import { getSession } from "@/lib/session";
@@ -86,7 +88,7 @@ export default async function ForhandlingarPage() {
       <Panel title={t.register.heading} tags={["FF-001", "FF-004"]}>
         <p className="mb-4 max-w-4xl text-table">{t.register.intro}</p>
         {tableRows.length === 0 ? (
-          <p className="text-table text-muted-foreground">{i18n.common.empty}</p>
+          <EmptyState text={i18n.common.empty} />
         ) : (
           <DataTable
             columns={columns}

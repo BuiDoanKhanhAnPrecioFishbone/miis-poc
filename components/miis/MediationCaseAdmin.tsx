@@ -15,7 +15,9 @@ import { amount } from "@/lib/format";
 import { dictionary } from "@/lib/i18n";
 import { EditablePanel } from "./EditablePanel";
 import { IconClose, IconPlus } from "./icons";
-import { Button, Callout, Field, FormGrid, Panel, Rationale, TextField } from "./primitives";
+import { Button, Callout, Field, FormGrid, Panel, Rationale, TextField,
+  EmptyState,
+} from "./primitives";
 import { Select } from "./Select";
 import { Toggle } from "./Toggle";
 
@@ -112,7 +114,7 @@ export function CaseMediators({
       )}
 
       {mediators.length === 0 ? (
-        <p className="text-table text-muted-foreground">{c.noMediators}</p>
+        <EmptyState text={c.noMediators} />
       ) : (
         <ul className="space-y-2">
           {mediators.map((m) => (
@@ -241,7 +243,7 @@ export function CaseAgreements({
       )}
 
       {linked.length === 0 ? (
-        <p className="text-table text-muted-foreground">{c.admin.noAgreements}</p>
+        <EmptyState text={c.admin.noAgreements} />
       ) : (
         <ul className="space-y-3">
           {linked.map((l) => (
@@ -473,7 +475,7 @@ export function CaseOutcome({
           />
         </div>
       ) : (
-        <p className="text-table text-muted-foreground">{c.admin.noOutcome}</p>
+        <EmptyState text={c.admin.noOutcome} />
       )}
       <Rationale>{c.outcomeNote}</Rationale>
     </EditablePanel>
