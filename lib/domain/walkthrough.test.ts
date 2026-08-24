@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { aiFunctionsForPath } from "./ai";
 import { NAV_HREF } from "./nav";
 import { REQUIREMENTS } from "./requirements";
 import { accessLevel, ROLES } from "./role";
@@ -286,5 +287,40 @@ describe("stepping back through a scenario", () => {
     const middle = cursorAt({ scenarioId: first.id, stepIndex: 1 })!;
     expect(middle.previous).not.toBeNull();
     expect(middle.next).not.toBeNull();
+  });
+});
+
+/**
+ * Where the walkthrough says AI runs, an AI function actually runs.
+ *
+ * The flow document highlights AI, and the obvious way to decide which steps to
+ * highlight — does the step cite an `FAI-*` rule — marks the step where the AI
+ * is *forbidden*: explaining a prohibition means citing the rule that imposes
+ * it, so §4.1's "wholly new agreements are always registered manually" came out
+ * looking like a capability. The step says it outright instead, and this holds
+ * the claim to the catalogue so a function added or moved cannot leave it stale.
+ */
+describe("the AI marking", () => {
+  it("matches the catalogue, step for step", () => {
+    for (const scenario of WALKTHROUGH) {
+      for (const step of scenario.steps) {
+        const runs = aiFunctionsForPath(step.href.split(/[?#]/)[0]!).length > 0;
+        expect(Boolean(step.ai), `${scenario.id} · ${step.label.sv}`).toBe(runs);
+      }
+    }
+  });
+
+  /* The one that started it: §4.1 forbids the AI here, and the step cites
+     FAI-002 to say so. It must not be marked as a place the machine acts. */
+  it("does not mark the step where §4.1 forbids the AI", () => {
+    const step = WALKTHROUGH.find((s) => s.id === "agreement-admin")!.steps[0]!;
+    expect(step.href).toBe("/avtal/ny");
+    expect(step.requirements).toContain("FAI-002");
+    expect(step.ai).toBeUndefined();
+  });
+
+  it("marks the two screens the supplier's additions run on", () => {
+    const marked = WALKTHROUGH.flatMap((s) => s.steps).filter((s) => s.ai);
+    expect(marked.map((s) => s.href)).toEqual(expect.arrayContaining(["/sok", "/rapporter"]));
   });
 });

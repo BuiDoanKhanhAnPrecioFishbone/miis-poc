@@ -1,5 +1,7 @@
 "use client";
 
+import { ReportIntentAssistant } from "./IntentAssistant";
+import type { ReportIntent } from "@/lib/domain/nl-intent";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
@@ -220,8 +222,42 @@ export function ReportRunner({
     setGenerated(null);
   }
 
+  /**
+   * Approving a proposal sets the report and its criteria — and stops there.
+   *
+   * `available` has already decided what this role may run, so a refused report
+   * never reaches here; the assistant states the refusal instead. What it sets
+   * is the same thing the picker sets, so the officer carries on with the
+   * controls they would have used by hand.
+   */
+  function applyIntent(intent: ReportIntent) {
+    if (!intent.reportId) return;
+    setReportId(intent.reportId);
+    const next = reportById(intent.reportId);
+    /* Årtal is pre-filled the way `choose` pre-fills it — MI's own printouts
+       are titled "Avtalsrörelsen 2026", so this report has no "Alla" year. */
+    const base: Record<string, string> = next?.criteria.some((c) => c.kind === "year")
+      ? { year: String(options.defaultYear) }
+      : {};
+    setValues({
+      ...base,
+      ...Object.fromEntries(intent.criteria.map((c) => [c.id, c.value])),
+    });
+    setGenerated(null);
+  }
+
   return (
     <>
+      {/* Above the picker, because it proposes which report as well as what to
+          select in it. `print-hide` with the picker, for the same reason. */}
+      <div className="print-hide mb-5">
+        <ReportIntentAssistant
+          lang={lang}
+          available={available.map((r) => r.id)}
+          onApply={applyIntent}
+        />
+      </div>
+
       {/*
         The selection screen is on screen only. Bilaga F's own printouts are the
         *Urvalskriterier* block and the result — the picker is the control that

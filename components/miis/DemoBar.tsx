@@ -126,7 +126,14 @@ export function DemoBar({
   }
 
   return (
-    <div className="print-hide border-b-2 border-dashed border-demo-border bg-demo text-demo-foreground">
+    /* `data-demo-bar` so tooling can find the strip without matching a utility
+       class: the flow-screenshot pass hides it, because the flödesbilder in the
+       response are of MIIS and the strip is not part of MIIS. Same reason
+       `Badge` carries `data-badge`. */
+    <div
+      data-demo-bar
+      className="print-hide border-b-2 border-dashed border-demo-border bg-demo text-demo-foreground"
+    >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-2 sm:px-8">
         {/*
           The strip has to stay unmistakably not-MIIS (CLAUDE.md), which is what

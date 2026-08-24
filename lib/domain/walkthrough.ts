@@ -32,6 +32,16 @@ export interface WalkthroughStep {
   role: Role;
   href: string;
   requirements: readonly string[];
+  /**
+   * True where an AI function actually runs on this screen.
+   *
+   * Stated rather than inferred. The flow document highlights AI, and the
+   * obvious inference — does the step cite an `FAI-*` rule — marks the step
+   * where the AI is *forbidden*, because explaining a prohibition means citing
+   * the rule that imposes it. `walkthrough.test.ts` holds this to
+   * `aiFunctionsForPath`, so a function added or moved cannot leave it stale.
+   */
+  ai?: true;
 }
 
 export interface WalkthroughScenario {
@@ -90,6 +100,7 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         role: "agreement-admin",
         href: "/registrera",
         requirements: ["FAI-001", "FAI-002", "FAI-003", "FAI-004", "FA-021"],
+        ai: true,
       },
       {
         label: { sv: "Avtalsregistret", en: "The agreement register" },
@@ -142,12 +153,13 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Rapportuttag", en: "Report extract" },
         detail: {
-          sv: "Bilaga F inleds med att det för varje rapport visas urvalsbild och resultat. Välj rapport, fyll i urvalet — kriterierna skiljer sig mellan rapporterna — och generera. Urvalskriterierna skrivs ut överst i resultatet.",
-          en: "Appendix F opens by stating that for every report a selection screen and a result are shown. Choose the report, fill in the selection — the criteria differ per report — and generate. The criteria are printed at the head of the result.",
+          sv: "Behovet går att beskriva i en mening överst: förslaget namnger rapporten och fyller urvalsbilden, med de ord det lästes ur, och kör ingenting — en rapport en roll inte får köra avvisas med skälet i stället för att tyst utelämnas. Bilaga F inleds med att det för varje rapport visas urvalsbild och resultat. Välj rapport, fyll i urvalet — kriterierna skiljer sig mellan rapporterna — och generera. Urvalskriterierna skrivs ut överst i resultatet.",
+          en: "The need can be described in a sentence at the top: the proposal names the report and fills the selection screen, with the words it was read from, and runs nothing — a report the role may not run is refused with the reason rather than quietly dropped. Appendix F opens by stating that for every report a selection screen and a result are shown. Choose the report, fill in the selection — the criteria differ per report — and generate. The criteria are printed at the head of the result.",
         },
         role: "agreement-admin",
         href: "/rapporter",
-        requirements: ["FR-005", "FR-006", "FR-007", "FR-008"],
+        requirements: ["FR-005", "FR-006", "FR-007", "FR-008", "FAI-002"],
+        ai: true,
       },
     ],
   },
@@ -221,6 +233,7 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         role: "system-admin",
         href: "/administration",
         requirements: ["NFÅ-002", "NFL-003", "NFÅ-006", "FAI-004"],
+        ai: true,
       },
       {
         label: { sv: "Ändrings- och händelselogg", en: "Change log and event log" },
@@ -231,6 +244,7 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         role: "system-admin",
         href: "/administration",
         requirements: ["FH-001", "FH-002", "NFL-003", "NFL-004", "FAI-004"],
+        ai: true,
       },
     ],
   },
@@ -336,6 +350,7 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         },
         role: "mediation-admin",
         href: "/medling/M-2027-12",
+        ai: true,
         requirements: ["FF-006", "FF-007", "FF-008", "FF-009", "FF-010", "FSD-001"],
       },
       {
@@ -346,6 +361,7 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
         },
         role: "mediation-admin",
         href: "/partstraffar/PT-2027-05",
+        ai: true,
         requirements: ["FF-004", "FF-005", "FAI-004", "FSD-002"],
       },
     ],
@@ -368,12 +384,13 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Sökbyggaren", en: "The search builder" },
         detail: {
-          sv: "FR-002:s val av informationstyp är ett val av vilket register som söks: fyra flikar med var sina rader, var sina kriterier och var sina kolumner. Villkoren är fält, operator och värde; grupperna kombineras med OCH och villkoren inom en grupp med OCH eller ELLER, vilket är formen W3D3 inte klarar. Det finns ingen Sök-knapp — resultatet smalnar av medan urvalet ändras. Bokslutsdatumet visas bara där raderna har löptider. Varje träff öppnar sin egen post, presentationskolumnerna tas bort ur både tabellen och utskriften, och ett sparat urval laddas: det är urvalet som sparas, aldrig träffarna.",
-          en: "FR-002’s choice of information type is a choice of which register is searched: four tabs with their own rows, their own criteria and their own columns. A condition is field, operator and value; groups join with OCH and the conditions inside a group with OCH or ELLER, which is the shape W3D3 cannot express. There is no search button — the result narrows as the selection changes. The snapshot date appears only where the rows have periods. Every hit opens its own record, the presentation columns are removed from both the table and the printout, and a saved search loads: what is saved is the selection, never the hits.",
+          sv: "Ovanför byggaren går det att beskriva sökningen i en mening. Förslaget visar vilket register och vilka villkor maskinen läste ut, med de ord varje villkor lästes ur, och ingenting ställs in förrän handläggaren godkänt det — det som inte kunde tolkas står också där. FR-002:s val av informationstyp är ett val av vilket register som söks: fyra flikar med var sina rader, var sina kriterier och var sina kolumner. Villkoren är fält, operator och värde; grupperna kombineras med OCH och villkoren inom en grupp med OCH eller ELLER, vilket är formen W3D3 inte klarar. Det finns ingen Sök-knapp — resultatet smalnar av medan urvalet ändras. Bokslutsdatumet visas bara där raderna har löptider. Varje träff öppnar sin egen post, presentationskolumnerna tas bort ur både tabellen och utskriften, och ett sparat urval laddas: det är urvalet som sparas, aldrig träffarna.",
+          en: "Above the builder the search can be described in a sentence. The proposal shows which register and which conditions the machine read out, with the words each condition was read from, and nothing is set until the officer approves it — what could not be interpreted is shown too. FR-002’s choice of information type is a choice of which register is searched: four tabs with their own rows, their own criteria and their own columns. A condition is field, operator and value; groups join with OCH and the conditions inside a group with OCH or ELLER, which is the shape W3D3 cannot express. There is no search button — the result narrows as the selection changes. The snapshot date appears only where the rows have periods. Every hit opens its own record, the presentation columns are removed from both the table and the printout, and a saved search loads: what is saved is the selection, never the hits.",
         },
         role: "statistics-user",
         href: "/sok",
-        requirements: ["FR-002", "FR-003", "FR-004"],
+        requirements: ["FR-002", "FR-003", "FR-004", "FAI-002"],
+        ai: true,
       },
     ],
   },

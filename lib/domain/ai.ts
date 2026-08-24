@@ -26,11 +26,17 @@ import { DEFAULT_LANG, type Lang, type Text } from "./lang";
 import type { NavId } from "./nav";
 import { accessLevel, type RoleDefinition } from "./role";
 
-export type AiFunctionId =
+/** §4.1's own four. The union is closed on purpose — there is no fifth. */
+export type SpecAiFunctionId =
   | "quick-registration"
   | "watchwords"
   | "field-extraction"
   | "mediation-support";
+
+/** What the supplier adds on top; see `AI_ADDITIONS`. */
+export type AddedAiFunctionId = "search-intent" | "report-intent";
+
+export type AiFunctionId = SpecAiFunctionId | AddedAiFunctionId;
 
 export interface AiFunctionDefinition {
   id: AiFunctionId;
@@ -53,6 +59,12 @@ export interface AiFunctionDefinition {
   /**
    * The routes it runs on, as prefixes: `/medling` matches `/medling/M-2027-12`
    * so a detail view inherits its register's answer.
+   *
+   * **A route ending in `$` matches exactly.** Prefix matching is right for a
+   * detail view, which answers the same question its register does, and wrong
+   * for a sibling screen that merely shares a path segment:
+   * `/administration/anvandare` is the user register, owned by a different
+   * role, and the watchword table is not on it.
    */
   routes: readonly string[];
   /**
@@ -67,6 +79,15 @@ export interface AiFunctionDefinition {
   /** The menu item that owns those screens, so NFÅ-003 decides who may act. */
   nav: NavId;
   href: string;
+  /**
+   * True for a function the supplier offers beyond §4.1's four.
+   *
+   * Shown on screen rather than kept in a comment: an authority buying AI is
+   * entitled to know which capabilities its own specification asked for and
+   * which are the supplier's addition, and saying so is worth more than the
+   * addition itself.
+   */
+  beyondSpec?: true;
 }
 
 export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
@@ -104,7 +125,7 @@ export const AI_FUNCTIONS: readonly AiFunctionDefinition[] = [
       en: "In the protocol view, and the table is maintained under Administration",
     },
     requirements: ["FAI-004"],
-    routes: ["/registrera", "/partstraffar", "/administration"],
+    routes: ["/registrera", "/partstraffar", "/administration$"],
     anchor: "#steg-protokoll",
     nav: "avtal",
     href: "/administration",
@@ -182,6 +203,14 @@ export const AI_BOUNDARIES: readonly AiBoundary[] = [
     requirements: ["FAI-001"],
   },
   {
+    id: "beyond-spec-same-rule",
+    statement: {
+      sv: "Samma regel gäller varje AI-funktion, även de som ligger utanför det Medlingsinstitutet efterfrågat. Ett förslag är ett förslag oavsett vilken funktion som tog fram det, och ingenting sparas eller körs utan att en handläggare godkänt det.",
+      en: "The same rule applies to every AI function, including those outside what Medlingsinstitutet asked for. A proposal is a proposal whichever function produced it, and nothing is saved or run without a case officer approving it.",
+    },
+    requirements: ["FAI-002"],
+  },
+  {
     id: "no-analysis",
     statement: {
       sv: "AI-stödet gör inga bedömningar. Det tolkar och föreslår; det värderar inte ett avtal, rangordnar inte parter och skriver inte statistik eller rapporter.",
@@ -190,6 +219,60 @@ export const AI_BOUNDARIES: readonly AiBoundary[] = [
     requirements: ["FAI-002"],
   },
 ] as const;
+
+/**
+ * What the supplier offers beyond §4.1 — asked for by Medlingsinstitutet's side.
+ *
+ * Two functions, both the same shape: describe what you want in a sentence, and
+ * the machine proposes a *selection* — which register and which criteria, or
+ * which report and its urvalsbild — for a human to approve. Neither generates
+ * text, neither runs anything, and both source-link every proposed criterion to
+ * the words it was read from.
+ *
+ * They are listed apart from `AI_FUNCTIONS` on purpose. Bilaga 2 §3.6 forbids
+ * introducing new commitments at the oral presentation, so an addition has to
+ * be written down in the response to be showable at all — and a reader of that
+ * response has to be able to tell an answer to §4.1 from an offer on top of it.
+ */
+export const AI_ADDITIONS: readonly AiFunctionDefinition[] = [
+  {
+    id: "search-intent",
+    label: { sv: "Tolka en sökning i klartext", en: "Interpret a search in plain words" },
+    what: {
+      sv: "Läser en skriven mening mot sökningens egna kriterier och föreslår vilket register som ska sökas och vilka villkor som ska ställas in. Varje föreslaget villkor visar de ord det lästes ur, och ingenting ställs in förrän handläggaren godkänner.",
+      en: "Reads a written sentence against the search's own criteria and proposes which register to search and which conditions to set. Every proposed condition shows the words it was read from, and nothing is set until the officer approves.",
+    },
+    ask: { sv: "Beskriv sökningen i en mening", en: "Describe the search in a sentence" },
+    where: { sv: "Ovanför sökbyggaren", en: "Above the query builder" },
+    requirements: ["FR-002", "FAI-002"],
+    routes: ["/sok"],
+    anchor: "ai-sokforslag",
+    nav: "sok",
+    href: "/sok",
+    beyondSpec: true,
+  },
+  {
+    id: "report-intent",
+    label: { sv: "Tolka ett rapportbehov i klartext", en: "Interpret a report need in plain words" },
+    what: {
+      sv: "Läser en skriven mening mot rapportkatalogen och föreslår vilken rapport som avses och vad urvalsbilden ska fyllas i med. Rapporten körs inte av förslaget — Bilaga F:s rapporter är urvalsbild och resultat, och urvalet är det som ska granskas.",
+      en: "Reads a written sentence against the report catalogue and proposes which report is meant and what to fill the selection screen with. The proposal does not run the report — Appendix F's reports are a selection screen and a result, and the selection is what is there to be checked.",
+    },
+    ask: { sv: "Beskriv rapporten i en mening", en: "Describe the report in a sentence" },
+    where: { sv: "Ovanför rapportvalet", en: "Above the report picker" },
+    requirements: ["FR-005", "FAI-002"],
+    routes: ["/rapporter"],
+    anchor: "ai-rapportforslag",
+    nav: "rapporter",
+    href: "/rapporter",
+    beyondSpec: true,
+  },
+] as const;
+
+/** §4.1's four plus what the supplier adds — what actually runs in the system. */
+export function aiCatalogue(): readonly AiFunctionDefinition[] {
+  return [...AI_FUNCTIONS, ...AI_ADDITIONS];
+}
 
 /** One AI function resolved into the reader's language. */
 export interface AiFunctionInfo {
@@ -245,8 +328,15 @@ export function aiTaskHref(
  * start page would claim all four.
  */
 export function aiFunctionsForPath(pathname: string): readonly AiFunctionDefinition[] {
-  return AI_FUNCTIONS.filter((f) =>
-    f.routes.some((route) => pathname === route || pathname.startsWith(`${route}/`)),
+  /* The whole catalogue, not just §4.1's four: the drawer's answer to *is the
+     machine touching this page* has to be true, and it stopped being true the
+     moment a function ran on `/sok`. */
+  return aiCatalogue().filter((f) =>
+    f.routes.some((route) =>
+      route.endsWith("$")
+        ? pathname === route.slice(0, -1)
+        : pathname === route || pathname.startsWith(`${route}/`),
+    ),
   );
 }
 

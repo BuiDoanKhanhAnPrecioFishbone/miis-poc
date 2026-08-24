@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchIntentAssistant } from "./IntentAssistant";
+import type { SearchIntent } from "@/lib/domain/nl-intent";
 import { IconClose, IconPlus } from "./icons";
 import { useState } from "react";
 
@@ -337,6 +339,35 @@ export function SearchBuilder({
     ]);
   }
 
+  /**
+   * Approving a proposal fills the builder — and stops there.
+   *
+   * It sets the register and replaces the conditions, then leaves the officer
+   * in front of the same controls they would have used by hand. Running the
+   * search as well would have made the proposal an action rather than a
+   * selection, and FAI-002's whole point is the pause between the two.
+   *
+   * The conditions land in one group joined with OCH, because that is what a
+   * sentence means: "privat sektor 2027" is both, not either. A parser that
+   * guessed at ELLER would be inventing a relationship the officer never typed.
+   */
+  function applyIntent(intent: SearchIntent) {
+    setLoaded(undefined);
+    setInfoType(intent.infoType);
+    setGroups([
+      {
+        id: "g-ai",
+        join: "all",
+        conditions: intent.conditions.map((c, i) => ({
+          id: `g-ai-c${i}`,
+          field: c.field,
+          operator: c.operator,
+          value: c.value,
+        })),
+      },
+    ]);
+  }
+
   function addCondition(groupId: string) {
     const id = `c${nextId}`;
     setNextId((n) => n + 1);
@@ -413,6 +444,17 @@ export function SearchBuilder({
 
   return (
     <>
+      {/*
+        Above the builder, not inside it: the proposal covers the *whole*
+        selection — which register as well as which criteria — so it cannot sit
+        in a panel that is already showing one register's conditions.
+        `print-hide` for the same reason the builder is: a printed search is the
+        selection and the hits, never the controls that produced them.
+      */}
+      <div className="print-hide mb-6">
+        <SearchIntentAssistant lang={lang} onApply={applyIntent} />
+      </div>
+
       {/* FR-002 — "choice of information type", the sketch's four pill tabs. */}
       <div className="print-hide mb-6 flex flex-wrap items-center gap-3">
         <Tabs

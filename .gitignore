@@ -33,6 +33,9 @@ next-env.d.ts
 .claude/settings.local.json
 .playwright/
 screenshots/
+
+# Generated documents — rebuilt by `npm run flows` + `npm run flow-export`.
+export/
 .playwright-mcp/
 
 # staged only while running the accessibility check (npm run a11y:stage)

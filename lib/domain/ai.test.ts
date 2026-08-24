@@ -10,6 +10,8 @@ import {
   visibleQueue,
   aiTaskHref,
   type AiQueueItem,
+  AI_ADDITIONS,
+  aiCatalogue,
 } from "./ai";
 import { REQUIREMENTS } from "./requirements";
 import { ROLES } from "./role";
@@ -70,9 +72,63 @@ describe("aiFunctionsForPath", () => {
     expect(aiFunctionsForPath("/")).toHaveLength(0);
   });
 
-  it("claims nothing on a screen no requirement puts AI on", () => {
-    expect(aiFunctionsForPath("/rapporter")).toHaveLength(0);
+  it("claims nothing on a screen no function runs on", () => {
     expect(aiFunctionsForPath("/parter")).toHaveLength(0);
+    expect(aiFunctionsForPath("/market")).toHaveLength(0);
+    expect(aiFunctionsForPath("/forhandlingar")).toHaveLength(0);
+  });
+
+  /* `/sok` and `/rapporter` used to be in the list above. They run a supplier
+     addition now, and the drawer's answer to *is the machine touching this
+     page* has to be the true one. */
+  it("finds the added functions on the screens they run on", () => {
+    expect(aiFunctionsForPath("/sok").map((f) => f.id)).toEqual(["search-intent"]);
+    expect(aiFunctionsForPath("/rapporter").map((f) => f.id)).toEqual(["report-intent"]);
+  });
+});
+
+/**
+ * What the supplier offers beyond §4.1, kept visibly apart from what MI asked for.
+ *
+ * The value of `AI_FUNCTIONS` is its claim — these are the four, and there is no
+ * fifth — which is the evidence the specification was read rather than skimmed.
+ * Six entries in a list called "MI's four" would be a worse answer than two
+ * lists that say which is which.
+ */
+describe("AI_ADDITIONS", () => {
+  it("is not folded into MI's four", () => {
+    const spec = AI_FUNCTIONS.map((f) => f.id);
+    for (const added of AI_ADDITIONS) expect(spec).not.toContain(added.id);
+  });
+
+  it("marks every addition as the supplier's, so a reader can tell", () => {
+    for (const added of AI_ADDITIONS) expect(added.beyondSpec).toBe(true);
+    for (const spec of AI_FUNCTIONS) expect(spec.beyondSpec).toBeUndefined();
+  });
+
+  it("is what the whole catalogue is made of, together with the four", () => {
+    expect(aiCatalogue()).toHaveLength(AI_FUNCTIONS.length + AI_ADDITIONS.length);
+  });
+
+  it("cites only requirement IDs that exist", () => {
+    for (const id of AI_ADDITIONS.flatMap((f) => f.requirements)) {
+      expect(REQUIREMENTS[id], id).toBeDefined();
+    }
+  });
+
+  it("is written in both languages", () => {
+    for (const f of AI_ADDITIONS) {
+      for (const text of [f.label, f.what, f.ask, f.where]) {
+        expect(text.sv.length).toBeGreaterThan(0);
+        expect(text.en.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  /* Sitting outside §4.1 does not loosen FAI-002, and the boundary list says so
+     rather than leaving it to be assumed. */
+  it("is covered by a stated boundary of its own", () => {
+    expect(AI_BOUNDARIES.map((x) => x.id)).toContain("beyond-spec-same-rule");
   });
 });
 
@@ -184,5 +240,27 @@ describe("aiTaskHref", () => {
         expect(f.anchor, `${f.id} has no anchor`).toBeDefined();
       }
     }
+  });
+});
+
+/**
+ * A sibling screen is not a detail view.
+ *
+ * Prefix matching is right for `/medling/M-2027-12`, which answers the same
+ * question `/medling` does. It was wrong for `/administration/anvandare`: the
+ * user register is a different screen owned by a different role, and the
+ * watchword table is not on it — so the drawer told the authorisation
+ * administrator a function ran on their screen when none did.
+ */
+describe("exact routes", () => {
+  it("keeps the watchword function off the user register", () => {
+    expect(aiFunctionsForPath("/administration").map((f) => f.id)).toContain("watchwords");
+    expect(aiFunctionsForPath("/administration/anvandare")).toHaveLength(0);
+  });
+
+  it("still lets a real detail view inherit its register", () => {
+    expect(aiFunctionsForPath("/medling/M-2027-12").map((f) => f.id)).toContain(
+      "mediation-support",
+    );
   });
 });
