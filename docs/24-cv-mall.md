@@ -143,6 +143,13 @@ rollens minimikrav tvingar bedömaren att leta, och det som inte hittas räknas
 inte. Om ingen av personens uppdrag uppfyller raden är det bättre att veta det
 nu än efter inlämning — då byter man person eller omformulerar rollen.
 
+## Ett ifyllt exempel
+
+`docs/25-cv-exempel.md` visar sex ifyllda CV i den här mallens form. **De är
+påhittade och lämnas inte in** — de finns för att visa längden, detaljnivån i
+uppdragsraderna och hur blockcitatet sist besvarar rollens minimikrav. Läs ett av
+dem innan formuläret skickas ut, så vet man vad svaren ska räcka till.
+
 ## Vad som händer sedan
 
 När svaren kommit in skrivs de om till mallens sex rubriker, i samma ordning och
