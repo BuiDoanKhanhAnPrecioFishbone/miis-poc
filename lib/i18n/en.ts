@@ -106,6 +106,22 @@ export const en: Dictionary = {
   },
 
   ai: {
+    catalogue: {
+      title: "How the AI support works",
+      lead: "The AI support is four named functions, each placed where the work happens. All four are listed below with where they run — the ones that apply to this page first. Functions outside your authorisation are not shown.",
+      hereBadge: "Runs on this page",
+      openRegion: "Go to the function on this page",
+      openScreen: "Open the screen where it runs",
+      noneHere: "None of the AI functions run on this page. That is the answer rather than a gap — each one is placed where the work happens.",
+      approvalNote: "Everything they produce is a proposal. Nothing is saved until a case officer has approved it.",
+    },
+    queueNew: {
+      title: "Awaiting review",
+      countLabel: (n: number) => `${n} proposals waiting`,
+      shared: "The list is shared by everyone who may register in the register concerned — it is not personal, and it empties as proposals are approved or rejected.",
+      empty: "Nothing is awaiting review at the moment.",
+      review: "Review the proposals",
+    },
     launcher: "AI support",
     launcherWaiting: (n: number) =>
       n === 1
@@ -193,7 +209,7 @@ export const en: Dictionary = {
       "The limits are stated in §4.1 and are part of what is being procured – a case officer who cannot see where the machine stops cannot review it.",
     traceability: "Traceability",
     traceabilityBody:
-      "Both the AI's proposal and the officer's change are recorded in the change log with old value, new value, time and user (FH-001).",
+      "Both the AI's proposal and the officer's change are recorded in the change log with old value, new value, time and user.",
     traceabilityAction: "Open the change log",
     readOnly:
       "Your role reads the AI proposals but does not approve them. Approval belongs to the role that may register in each register (NFÅ-003).",

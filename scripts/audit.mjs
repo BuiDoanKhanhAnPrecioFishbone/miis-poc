@@ -82,12 +82,18 @@ const WIDTHS = [375, 768, 1280, 1920];
 /**
  * What must not appear in the product view.
  *
+ * `§N.N` catches a specification citation — §3.5, §4.1, §9.2 — and deliberately
+ * not a bare `§ 5`, which is how a collective agreement numbers its own clauses:
+ * the scanned protocol on `/registrera` contains "§ 5 Parterna är överens om …",
+ * which is MI's document being read rather than our specification being quoted.
+ * The cost is that a section cited without a decimal — §16, §7 — slips through.
+ *
  * `Bilaga A`–`Bilaga F` are deliberately absent from this pattern: MI's own
  * scanned protocol names its appendices that way, and the transcription of a
  * document is not our copy.
  */
 const REQUIREMENT_TEXT =
-  /\b(?:NF[ÅAULMP]?|FA|FR|FH|FD|FF|FM|FE|FS|FSD|FAI|FP|D|T|L)-\d{3}\b|Bilaga \d|Appendix \d|kravspecifikation|demoläge|demo mode/gi;
+  /\b(?:NF[ÅAULMP]?|FA|FR|FH|FD|FF|FM|FE|FS|FSD|FAI|FP|D|T|L)-\d{3}\b|Bilaga \d|Appendix \d|kravspecifikation|demoläge|demo mode|§\s?\d+\.\d/gi;
 
 /** `/registrera` opens on an empty drop zone; every check past it needs a file. */
 async function uploadProtocol(page) {

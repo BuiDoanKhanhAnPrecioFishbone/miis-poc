@@ -658,27 +658,36 @@ reviewer to a screen its own role would be refused.
    as a module in its own right, so the launcher is fixed to the **bottom right**
    of every screen the role may act on — not in the header, which is where a user
    goes to leave.
-   **Four tabs: Fråga · På sidan · Granska · Om.** *Uppgifter* was the worst
-   label in the system: in a register it reads as **data**, so the tab offering
-   things the AI could *do* was named after the things it holds. *Om* is a tab
-   rather than a disclosure under the content — the catalogue, MI's limits and
-   the traceability are reference material, and reference material sits beside
-   the work, not beneath it. Each tab states in one plain sentence what it is
-   for; that sentence is needed to use the screen, so it is a paragraph and not
-   a `Rationale`.
-   **"På sidan" states where the machine is and where it is not — it is not a
-   launcher.** Nothing in §4.1 or §5.8 asks for one, and §4.1's word is
-   *integrerat*: the AI lives on the screens where the work happens, so a
-   button that starts it from elsewhere is a navigation shortcut wearing an AI
-   hat — on Rapporter it had degenerated into exactly that, one link to another
-   screen. The tab answers a question an authority buying AI actually has, on
-   every screen: *is the machine touching this page, and what does it do here?*
-   Both halves are shown, because **the half that says no is what makes the
-   other half credible**. Functions that run here get their own compartment and
-   a control to the region on **this** page; the rest are quiet rows naming
-   where they work instead, and the row's link is the **function's own name** —
-   `f.where` is a sentence, not a place, and the menu item's name gave three
-   rows all reading *Gå till Avtal*.
+   **Three tabs: Fråga · Granska · Om.** An officer has three relationships with
+   this AI — ask it something, decide on what it proposed, and know what it is.
+   The first two are acts; the third is reference. It was four, and two of them
+   rendered **the same catalogue**: *På sidan* listed the four functions with
+   their descriptions and a control, *Om* listed the same four with the same
+   descriptions and their location. The officer read "Snabbregistrering av nya
+   avtal / Läser det uppladdade protokollet …" word for word under two tab
+   names. Two tabs showing one thing is why neither had a legible job, and with
+   three of four being explanation the drawer read as a brochure with a chat box
+   attached. *Om* stays a tab rather than a disclosure under the content:
+   reference material sits beside the work, not beneath it.
+   **Where the machine is on this page is a state on a catalogue row, not a
+   tab.** That is a *stronger* answer than the tab was, which is why the tab
+   could go: all four functions are listed at once with their locations — the
+   ones for this page first, marked, carrying a control into the region on
+   **this** page — so the half that says **no** cannot be missed rather than
+   living under a subheading further down. Where none of them runs here, the
+   list says so in a sentence, because *is the machine touching this page* is a
+   question an authority buying AI actually has and the honest answer is often
+   no. Nothing in §4.1 or §5.8 asks for a launcher, and §4.1's word is
+   *integrerat*: a button that starts the AI from elsewhere is a navigation
+   shortcut wearing an AI hat. A row that runs elsewhere prints its location as
+   **a label and its sentence** — `f.where` is a sentence, not a place, so
+   "Körs i " + it produced *"Körs i I protokollvyn"*; that is the third time
+   this trap has been walked into.
+   **A panel leads with its work, not with an explanation of itself.** *Granska*
+   spent three lines saying what the number counted before showing a single
+   item — the explanation was longer than the thing explained. The two questions
+   it must answer are still answered, as a caption **under** the list: what the
+   count is, and that the queue is shared rather than personal.
    **The count on Granska has to fall.** It is FAI-002's guarantee as a number —
    *this many machine-made proposals exist and no human has accepted them* — and
    it did not move when the officer approved the extraction three screens away,

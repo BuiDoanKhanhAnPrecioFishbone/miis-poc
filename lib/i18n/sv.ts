@@ -107,6 +107,22 @@ export const sv = {
 
   /* AI-assistenten – Bilaga 1 §4.1. */
   ai: {
+    catalogue: {
+      title: "Så här arbetar AI-stödet",
+      lead: "AI-stödet är fyra namngivna funktioner, var och en placerad där arbetet görs. Nedan står alla fyra och var de körs — de som gäller den här sidan först. Funktioner utanför din behörighet visas inte.",
+      hereBadge: "Körs på den här sidan",
+      openRegion: "Gå till funktionen på sidan",
+      openScreen: "Öppna skärmen där den körs",
+      noneHere: "Ingen av AI-funktionerna körs på den här sidan. Det är svaret, inte en lucka – var och en är placerad där arbetet görs.",
+      approvalNote: "Allt de tar fram är förslag. Ingenting sparas förrän en handläggare har godkänt det.",
+    },
+    queueNew: {
+      title: "Väntar på granskning",
+      countLabel: (n: number) => `${n} förslag väntar`,
+      shared: "Listan är gemensam för alla som får registrera i respektive register – den är inte personlig, och töms när förslagen godkänns eller avvisas.",
+      empty: "Ingenting väntar på granskning just nu.",
+      review: "Granska förslagen",
+    },
     launcher: "AI-stöd",
     launcherWaiting: (n: number) =>
       n === 1
@@ -198,7 +214,7 @@ export const sv = {
       "Gränserna står i §4.1 och är en del av det som upphandlas – en handläggare som inte ser var maskinen slutar kan inte granska den.",
     traceability: "Spårbarhet",
     traceabilityBody:
-      "Både AI:ns förslag och handläggarens ändring registreras i ändringsloggen med gammalt värde, nytt värde, tidpunkt och användare (FH-001).",
+      "Både AI:ns förslag och handläggarens ändring registreras i ändringsloggen med gammalt värde, nytt värde, tidpunkt och användare.",
     traceabilityAction: "Öppna ändringsloggen",
     readOnly:
       "Din roll läser AI-förslagen men godkänner dem inte. Godkännande hör till den roll som får registrera i respektive register (NFÅ-003).",

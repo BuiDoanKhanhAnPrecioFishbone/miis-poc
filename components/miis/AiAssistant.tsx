@@ -300,6 +300,16 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
   const here = aiFunctionsForPath(pathname).map((f) => aiFunctionInfo(f, lang));
   const reachable = aiFunctionsForRole(role).map((f) => aiFunctionInfo(f, lang));
   const elsewhere = reachable.filter((f) => !here.some((h) => h.id === f.id));
+  /*
+    The catalogue in reading order: what runs here, then what runs elsewhere.
+    One list rather than two, so the four functions are read as one set of four
+    with different locations — which is what they are — instead of as two
+    groups that happen to share a vocabulary.
+  */
+  const catalogue = [
+    ...here.map((fn) => ({ fn, isHere: true })),
+    ...elsewhere.map((fn) => ({ fn, isHere: false })),
+  ];
   const mine = visibleQueue(queue, role).filter((i) => !cleared.includes(i.id));
   const waiting = queueTotal(mine);
   const canReview = mayReviewAi(role);
@@ -382,9 +392,25 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
             label={t.tabsLabel}
             value={tab}
             onChange={setTab}
+            /*
+              Three tabs, because an officer has three relationships with this
+              AI: ask it something, decide on what it proposed, and know what it
+              is. The first two are acts; the third is reference.
+
+              It was four, and two of them — *På sidan* and *Om* — rendered the
+              same catalogue. The officer read "Snabbregistrering av nya avtal /
+              Läser det uppladdade protokollet …" under one tab and again, word
+              for word, under the next. Two tabs showing one thing is why
+              neither had a legible job, and three of the four being explanation
+              made the drawer read as a brochure with a chat box attached.
+
+              *Where the machine is on this page* is not a tab now. It is a
+              **state on each catalogue row**, which is a stronger answer than
+              the tab was: all four functions are visible at once with their
+              locations, so the half that says **no** cannot be missed.
+            */
             tabs={[
               { id: "ask", label: t.tabAsk },
-              { id: "here", label: t.tabTasks },
               {
                 id: "queue",
                 label: t.tabQueue,
@@ -407,154 +433,127 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
           </div>
         ) : (
           <div className="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-4">
-            {tab === "here" && (
+            {tab === "queue" && (
               /*
-                Where the machine is, and where it is not.
+                The work first, the explanation under it.
 
-                This tab was a **launcher** — "here is what you can ask the AI
-                to do" — and nothing in §4.1 or §5.8 asks for one. §4.1's word
-                is *integrerat*: the AI lives on the screens where the work
-                happens, so a button that starts it from somewhere else is a
-                navigation shortcut wearing an AI hat. On Rapporter it had
-                degenerated into exactly that: one link to another screen.
-
-                What it answers now is a question an authority buying AI
-                genuinely has, on every screen, and that no competitor's demo
-                will answer: *is the machine touching this page, and what does
-                it do here?* Both halves are shown, because the half that says
-                **no** is the one that makes the other half credible — a
-                boundary an interface never states is a boundary the buyer has
-                to take on trust. Four functions, named, each either working on
-                this page with a way to the region, or named with the screen it
-                works on instead.
+                This panel used to spend three lines saying what the number
+                counted before showing a single item — the explanation was
+                longer than the thing being explained. The two questions it has
+                to answer are still answered, but as a caption beneath the list
+                rather than a wall in front of it: the count is FAI-002's
+                guarantee as a number, and the list is **shared** by everyone who
+                may register in that register, so an officer does not read a
+                colleague's work as their own backlog.
               */
-              <Section title={t.here} lead={t.hereRationale}>
-                <p className="mb-4 text-table">{t.hereLead}</p>
-
-                {here.length > 0 ? (
+              <Section title={t.queueNew.title}>
+                {!canReview ? (
+                  <p className="text-table">{t.readOnly}</p>
+                ) : mine.length === 0 ? (
+                  <p className="text-table text-muted-foreground">{t.queueNew.empty}</p>
+                ) : (
                   <>
-                    <h4 className="mi-kicker mb-2 text-muted-foreground">{t.hereActive}</h4>
-                    <p className="mb-3 text-table">{t.hereActiveLead}</p>
-                    <ul className="space-y-4">
-                      {here.map((f) => (
-                        <li key={f.id} className="border-l-4 border-ai-solid pl-3">
-                          <p className="font-semibold">{f.label}</p>
-                          <p className="mt-1 text-label text-muted-foreground">{f.what}</p>
+                    <ul className="divide-y divide-border">
+                      {mine.map((item) => (
+                        <li key={item.id} className="py-3 first:pt-0">
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <p className="min-w-0 font-semibold">{text(item.subject, lang)}</p>
+                            <Badge tone="ai">{t.queueCount(item.proposals)}</Badge>
+                          </div>
+                          <p className="mt-1 text-label text-muted-foreground">
+                            {text(item.detail, lang)}
+                          </p>
                           <div className="mt-2">
-                            {/* The region on this page, not the page itself. */}
-                            <LinkButton
-                              href={aiTaskHref(f, pathname)}
-                              size="sm"
-                              iconEnd={<IconForward />}
-                            >
-                              {f.ask}
+                            <LinkButton href={item.href} size="sm" iconEnd={<IconForward />}>
+                              {t.queueNew.review}
                             </LinkButton>
                           </div>
                         </li>
                       ))}
                     </ul>
+                    <p className="field-hint mt-4 border-t border-border pt-3">
+                      {t.queueNew.shared}
+                    </p>
                   </>
-                ) : (
-                  <p className="text-table">{t.hereNone}</p>
-                )}
-
-                {elsewhere.length > 0 && (
-                  <div className="mt-5 border-t border-border pt-4">
-                    <h4 className="mi-kicker mb-2 text-muted-foreground">{t.hereElsewhere}</h4>
-                    {/*
-                      Quiet rows, not buttons. These functions do not apply
-                      here, and drawing them as controls is what made the old
-                      tab offer three protocol tasks on Rapporter — every one
-                      of which navigated away from the screen the officer was
-                      standing on.
-
-                      The function's own name is the link, and where it works
-                      sits under it. Two wordings failed before this one.
-                      `f.where` is a sentence, not a place — *"I protokollvyn,
-                      och tabellen underhålls under Administration"* — so
-                      "Gå till …" produced a link that was a paragraph.
-                      Substituting the menu item's name gave three rows all
-                      reading *Gå till Avtal*, because three of the four
-                      functions belong to the same register: identical labels
-                      on controls that go to different places, which is the
-                      fault the walkthrough's step buttons were fixed for. The
-                      name is unique by construction.
-                    */}
-                    <ul className="space-y-3">
-                      {elsewhere.map((f) => (
-                        <li key={f.id}>
-                          <Link
-                            href={f.href}
-                            className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-primary underline underline-offset-2"
-                          >
-                            {f.label}
-                            <IconForward />
-                          </Link>
-                          <p className="text-label text-muted-foreground">{f.where}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </Section>
-            )}
-
-            {tab === "queue" && (
-              <Section title={t.queue} lead={canReview ? t.queueLead : t.readOnly}>
-                {/*
-                  What the number counts, and whose it is — the two questions
-                  asked of this tab, answered above the list rather than left to
-                  be worked out from it. The queue is not personal: it is every
-                  unapproved proposal in the registers this role may write to, so
-                  two agreement administrators see the same list and either of
-                  them can clear it. Saying so matters, because a list headed
-                  "waiting for your review" that is in fact shared would have an
-                  officer read a colleague's work as their own backlog.
-                */}
-                <p className="mb-3 text-table">{canReview ? t.queueWhat : t.readOnly}</p>
-                {mine.length === 0 ? (
-                  <p className="text-table text-muted-foreground">{t.queueEmpty}</p>
-                ) : (
-                  <ul className="divide-y divide-border">
-                    {mine.map((item) => (
-                      <li key={item.id} className="py-3 first:pt-0">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <p className="min-w-0 font-semibold">{text(item.subject, lang)}</p>
-                          <Badge tone="ai">{t.queueCount(item.proposals)}</Badge>
-                        </div>
-                        <p className="mt-1 text-label text-muted-foreground">
-                          {text(item.detail, lang)}
-                        </p>
-                        <div className="mt-2">
-                          <LinkButton href={item.href} size="sm" iconEnd={<IconForward />}>
-                            {t.goThere}
-                          </LinkButton>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
                 )}
               </Section>
             )}
 
             {tab === "about" && (
               <>
-                <Section title={t.functions}>
-                  <ul className="space-y-3">
-                    {reachable.map((f) => (
-                      <li key={f.id}>
-                        <p className="font-semibold">{f.label}</p>
-                        <p className="mt-1 text-table">{f.what}</p>
-                        <p className="mt-1 text-label text-muted-foreground">
-                          <span className="font-bold">{t.where}: </span>
-                          {f.where}
-                        </p>
+                {/*
+                  One catalogue, four rows, each saying where it runs.
+
+                  The ones that run on this page sort first and carry the
+                  control **into the region** rather than to the route the
+                  officer is already on; the rest name their screen. That is the
+                  whole of what the old *På sidan* tab did, minus the second
+                  copy of every description.
+                */}
+                <Section title={t.catalogue.title}>
+                  {/*
+                    A plain paragraph, not a `Rationale`. It is not justifying
+                    the design — it is what makes the list readable: that these
+                    are all four functions, that the ones for this page come
+                    first, and that a role sees only what it may reach. Without
+                    it an officer counts three rows and wonders where the fourth
+                    went.
+                  */}
+                  <p className="mb-4 text-table">{t.catalogue.lead}</p>
+                  {here.length === 0 && (
+                    <p className="mb-4 text-table font-semibold">{t.catalogue.noneHere}</p>
+                  )}
+                  <ul className="space-y-4">
+                    {catalogue.map(({ fn, isHere }) => (
+                      <li
+                        key={fn.id}
+                        className={isHere ? "border-l-4 border-ai-solid pl-3" : "pl-3"}
+                      >
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-semibold">{fn.label}</p>
+                          {isHere && <Badge tone="ai">{t.catalogue.hereBadge}</Badge>}
+                        </div>
+                        <p className="mt-1 text-table">{fn.what}</p>
+                        {!isHere && (
+                          /*
+                            A label and its sentence, not a preposition and a
+                            place. `f.where` is written as a sentence — "I
+                            protokollvyn, och tabellen underhålls under
+                            Administration" — so "Körs i " + that produced
+                            "Körs i I protokollvyn". The old tab hit this twice
+                            and left a comment about it; this is the third time.
+                          */
+                          <p className="mt-1 text-label text-muted-foreground">
+                            <span className="font-bold">{t.where}: </span>
+                            {fn.where}
+                          </p>
+                        )}
+                        <div className="mt-2">
+                          {isHere ? (
+                            <LinkButton
+                              href={aiTaskHref(fn, pathname)}
+                              size="sm"
+                              iconEnd={<IconForward />}
+                            >
+                              {t.catalogue.openRegion}
+                            </LinkButton>
+                          ) : (
+                            <Link
+                              href={fn.href}
+                              className="inline-flex min-h-11 items-center gap-1.5 text-label font-semibold text-primary underline underline-offset-2"
+                            >
+                              {t.catalogue.openScreen}
+                              <IconForward />
+                            </Link>
+                          )}
+                        </div>
                         <div className="mt-1">
-                          <ReqTags ids={f.requirements} />
+                          <ReqTags ids={fn.requirements} />
                         </div>
                       </li>
                     ))}
                   </ul>
+                  <p className="field-hint mt-4">{t.catalogue.approvalNote}</p>
                 </Section>
 
                 <Section title={t.boundaries} lead={t.boundariesLead}>
