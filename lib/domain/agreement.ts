@@ -229,6 +229,73 @@ export function mayPublish(
   return !a.published && a.registrationStatus === "complete" && Boolean(a.signedDate);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Completion — the act `mayPublish` was waiting for                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * What a finished registration would normally carry, and this one does not.
+ *
+ * Read off the list `/avtal/ny` already hands the officer after saving, so the
+ * two cannot drift: the confirmation names what remains, and this is the same
+ * answer computed from the record.
+ *
+ * **Deliberately not a gate.** MI's own register disagrees with every rule we
+ * could write here — seven of the eleven complete agreements in the sample have
+ * no wage agreement under them and two have no signing date, because a
+ * *kvarstående* agreement is a complete registration of an agreement that was
+ * not renegotiated this round. A rule refusing those would invent a
+ * requirement MI never wrote and then contradict MI's own data with it.
+ *
+ * So this is information, and the officer decides. That is what MI's wording
+ * asks for: *"markerad som klar"* — marked, by a person, the way publication is
+ * an act with a date and a name rather than a consequence of the fields being
+ * full.
+ */
+export type RegistrationGap = "wageAgreement" | "validity" | "scope" | "signedDate";
+
+export function registrationGaps(
+  a: Pick<Agreement, "signedDate" | "validTo" | "employees"> & {
+    /** How many bargaining rounds are registered under it (FA-002). */
+    wageAgreementCount: number;
+  },
+): RegistrationGap[] {
+  const gaps: RegistrationGap[] = [];
+  if (a.wageAgreementCount === 0) gaps.push("wageAgreement");
+  if (!a.validTo) gaps.push("validity");
+  if (a.employees === undefined) gaps.push("scope");
+  if (!a.signedDate) gaps.push("signedDate");
+  return gaps;
+}
+
+/**
+ * Whether the registration can be marked complete.
+ *
+ * One condition, because completion is a state the record is in rather than a
+ * threshold it crosses: it is not already complete. `registrationGaps` says
+ * what is thin about it; this says whether the act is available.
+ */
+export function mayMarkComplete(
+  a: Pick<Agreement, "registrationStatus">,
+): boolean {
+  return a.registrationStatus === "incomplete";
+}
+
+/**
+ * Whether a complete registration can be reopened.
+ *
+ * The mirror of the mediation case's *Ångra klarmarkeringen*, and refused once
+ * the agreement is out: reopening a published record would leave MI's public
+ * computer showing an agreement whose registration the authority has just
+ * called unfinished. Unpublish is not modelled, because MI withdrawing a
+ * published agreement is a decision with its own paperwork rather than an undo.
+ */
+export function mayReopenRegistration(
+  a: Pick<Agreement, "registrationStatus" | "published">,
+): boolean {
+  return a.registrationStatus === "complete" && !a.published;
+}
+
 /**
  * Whether one section of an agreement is information-restricted.
  *

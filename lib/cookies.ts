@@ -57,6 +57,19 @@ export const REMINDER_COOKIE = "miis_reminders";
 export const DRAFT_COOKIE = "miis_drafts";
 export const PUBLISHED_COOKIE = "miis_published";
 
+/*
+  The third act, and the one that was missing.
+
+  `mayPublish` refuses a registration that is not marked complete, and the
+  publish control said so in MI's own words — *"registreringen är markerad som
+  klar"* — while nothing anywhere could mark it. So an officer who registered a
+  new agreement could never publish it: §3.5 Scenario 2's four bullets could not
+  be walked on one record. This travels the way publication does, for the same
+  reason: the act happens in the browser and every register is rendered on the
+  server.
+*/
+export const COMPLETED_COOKIE = "miis_completed";
+
 export const WALKTHROUGH_COOKIE = "miis_walkthrough";
 
 export const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;

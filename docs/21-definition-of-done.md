@@ -296,7 +296,7 @@ English key is a build error — that is what keeps the translation complete.
 
 `npm test`.
 
-**Passes if:** 268 tests pass, including `lib/mock/integrity.ts`, which fails the
+**Passes if:** 362 tests pass, including `lib/mock/integrity.ts`, which fails the
 build on a dangling reference between records.
 
 ### T11 · The document describes the system that exists
@@ -346,7 +346,7 @@ testing per Bilaga 1 §9.2.
 
 ## 7 · Where this bid stands, 2026-08-22
 
-**Done and verified:** the prototype (268 tests, 0 accessibility violations, 0
+**Done and verified:** the prototype (362 tests, 0 accessibility violations, 0
 requirement-text leaks, production build clean), `docs/18` audited against the
 build today, `docs/19` drafted, 128 screenshots current in both languages,
 `/genomgang` walked end to end as every role.

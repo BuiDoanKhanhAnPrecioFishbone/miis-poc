@@ -60,6 +60,7 @@ await ctx.addCookies([
      transition it never performed. */
   cookie("miis_drafts", ""),
   cookie("miis_published", ""),
+  cookie("miis_completed", ""),
 ]);
 const page = await ctx.newPage();
 
@@ -116,6 +117,10 @@ for (const id of ["#na-ago", "#na-ato", "#na-type", "#na-sector"]) {
   const opts = await page.locator(`${id} option`).all();
   if (opts.length > 1) await page.selectOption(id, await opts[1].getAttribute("value"));
 }
+/* Signed, because `mayPublish` has two conditions and transition 3 goes on to
+   test the other one. The refusal transition 2 asserts is about the
+   registration being incomplete, which a signing date does not change. */
+await page.fill("#na-signed", "2027-04-01");
 await page.getByRole("button", { name: /Spara avtalet/ }).click();
 await page.waitForTimeout(600);
 
@@ -134,6 +139,80 @@ check(
 await page.goto(BASE + "/avtal", { waitUntil: "networkidle" });
 check("avtalet finns i registret", (await rows().count()) === registerBefore + 1,
   `${registerBefore} → ${await rows().count()}`);
+
+/* ── 3 · Klarmarkera → publicera → hitta det som allmänheten ──────────────
+   Där transition 2 slutade, och det var där defekten bodde: vägran var rätt,
+   och ingen frågade vad handläggaren gör sedan. Ingenting gjorde det. */
+console.log("\n3 · klarmarkera den ofullständiga registreringen → publicera");
+await asRole("public");
+await page.goto(BASE + "/allmanheten", { waitUntil: "networkidle" });
+const publicBeforeMark = await rows().count();
+
+await asRole("agreement-admin");
+await page.goto(BASE + "/avtal", { waitUntil: "networkidle" });
+const newest = page.getByRole("link", { name: /Testflödesavtalet/ });
+if ((await newest.count()) === 0) {
+  unreachable("klarmarkeringen finns", "avtalet från steg 2 gick inte att hitta");
+} else {
+  await newest.first().click();
+  await settle();
+
+  const mark = page.getByRole("button", { name: /^Markera registreringen som klar$/ });
+  if ((await mark.count()) === 0) {
+    unreachable("klarmarkeringen finns", "kontrollen fanns inte på en ofullständig registrering");
+  } else {
+    /* Vad som saknas ska stå på posten — annars är klarmarkeringen en knapp
+       utan upplysning om vad man skriver under på. */
+    check(
+      "posten säger vad registreringen saknar",
+      /Registreringen saknar/.test(await page.locator("main").innerText()),
+    );
+    await mark.click();
+    /* Wait for the state, not for a duration: the mark is written in the
+       browser and the badge is re-rendered on the server, so a fixed timeout
+       raced it. The signal is the control's own disappearance —
+       `mayMarkComplete` is false once the registration is complete, which is
+       unambiguous in a way that matching a badge's text is not. */
+    const marked = await mark
+      .waitFor({ state: "detached", timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    await settle();
+    check("registreringen är klarmarkerad", marked);
+    const pub = page.getByRole("button", { name: /^Publicera avtalet$/ });
+    check(
+      "publiceringen är nu möjlig på samma avtal",
+      (await pub.count()) > 0 && (await pub.isEnabled()),
+    );
+    if ((await pub.count()) > 0 && (await pub.isEnabled())) {
+      await pub.click();
+      await page.waitForTimeout(700);
+      check(
+        "publiceringen registreras",
+        (await page.getByText(/Publicerat \d{4}-\d{2}-\d{2}/).count()) > 0,
+      );
+      /* Ångra vägras när avtalet är ute — den publika datorn visar det redan. */
+      /* Absent, not disabled: `disabledReason` is a title attribute, so a
+         dashed control here would carry no visible reason at all. The panel
+         below says PUBLICERAT, which is the reason, where a reader looks. */
+      const reopen = page.getByRole("button", { name: /^Ångra klarmarkeringen$/ });
+      check(
+        "ångra erbjuds inte när avtalet är publicerat",
+        (await reopen.count()) === 0,
+      );
+    }
+
+    await asRole("public");
+    await page.goto(BASE + "/allmanheten", { waitUntil: "networkidle" });
+    const publicAfterMark = await rows().count();
+    check(
+      "avtalet handläggaren själv registrerade syns på allmänhetens dator",
+      publicAfterMark === publicBeforeMark + 1,
+      `${publicBeforeMark} → ${publicAfterMark}`,
+    );
+  }
+}
+await asRole("agreement-admin");
 
 /* ── 4 · Every report produces a document ──────────────────────────────── */
 console.log("\n4 · varje rapport ger ett dokument");

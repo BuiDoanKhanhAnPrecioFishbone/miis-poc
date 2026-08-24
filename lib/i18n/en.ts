@@ -56,7 +56,7 @@ export const en: Dictionary = {
     backTo: (page: string) => `Back to ${page}`,
     notAuthorised: "Not authorised",
     notAuthorisedFor: (screen: string, role: string) =>
-      `${screen} is not part of the permissions for the role ${role}. Switch role in demo mode to see the view. In MIIS this is governed by the authorisation administrator (NFÅ-003).`,
+      `${screen} is not part of the permissions for the role ${role}. Switch role in demo mode to see the view. In MIIS this is governed by the authorisation administrator.`,
     uploadNeedsStore:
       "File upload needs the document store and is part of Steg 1. The protocol upload in the registration flow is the one that runs without it.",
     exportNeedsServer:
@@ -718,6 +718,28 @@ export const en: Dictionary = {
   },
 
   sok: {
+    intent: {
+      title: "Describe the search",
+      label: "What do you want to find?",
+      placeholder: "E.g. agreements in the private sector valid in 2027",
+      hint: "Write a sentence. The proposal is shown for review before anything is set.",
+      submit: "Interpret",
+      proposalLead: "Proposed selection. Nothing is set until you approve it.",
+      infoTypeName: "Information type",
+      readFrom: "Read from",
+      assumed: "Assumed, no word named a register:",
+      defaultRegister: "agreements",
+      unused: (words: string) => `Could not be interpreted: ${words}. Add the criterion by hand if it is needed.`,
+      approve: "Approve and fill in the search",
+      nothingLabel: "No proposal",
+      nothing:
+        "No part of the sentence matched a criterion the search offers. Search on information type, sector, agreement construction, industry benchmark or a date — or build the conditions by hand below.",
+      appliedLabel: "Filled in",
+      applied:
+        "The criteria are filled into the query builder below. Change them as usual before continuing — the proposal does not run the search.",
+      rejectedLabel: "Rejected",
+      rejected: "The proposal was rejected. Nothing was set.",
+    },
     title: "Search",
     subtitle: "Composite search across several document types, with snapshots and export",
     criteria: {
@@ -952,6 +974,29 @@ export const en: Dictionary = {
   },
 
   rapporter: {
+    intent: {
+      title: "Describe the report",
+      label: "Which report do you need?",
+      placeholder: "E.g. which agreements expire in 2027",
+      hint: "Write a sentence. The proposal is shown for review before the selection screen is filled in.",
+      submit: "Interpret",
+      proposalLead: "Proposed report and selection. The proposal does not run the report.",
+      reportName: "Report",
+      readFrom: "Read from",
+      unused: (words: string) => `Could not be interpreted: ${words}. Complete the selection screen by hand if needed.`,
+      approve: "Approve and fill in the selection",
+      nothingLabel: "No proposal",
+      nothing:
+        "No report could be read out of the sentence. Name the report, or what it answers — for instance expiry dates, bargaining round or main report — or choose from the list below.",
+      refusedLabel: "Not part of the permissions",
+      refused: (name: string) =>
+        `${name} is not part of the permissions for this role, so the proposal is refused — which reports a role may run is decided by its permissions, not by what is typed here.`,
+      appliedLabel: "Filled in",
+      applied:
+        "The report is chosen and the selection screen filled in below. Check the criteria and run the report as usual.",
+      rejectedLabel: "Rejected",
+      rejected: "The proposal was rejected. Nothing was set.",
+    },
     document: {
       withheld: {
         sv: "Avtalet är sekretessmarkerat. Uppgifterna lämnas inte ut i den här rapporten.",
@@ -1064,7 +1109,7 @@ export const en: Dictionary = {
       bilagaF: (n: number) => `Appendix F, report ${n}`,
       noSelectionLabel: "No selection screen",
       noSelection:
-        "The Short-Term Wage Report is written out from the view of monitored agreements — the list is the selection. It is the only one of the reports that works that way, and that follows from the requirement text (FR-008).",
+        "The Short-Term Wage Report is written out from the view of monitored agreements — the list is the selection. It is the only one of the reports that works that way, and that follows from the requirement text.",
       onScreen:
         "The report is a printout of a view MIIS already has. Open the view and print it there, so the printout follows the same confidentiality rules as the screen.",
       openView: "Open the view",
@@ -1078,7 +1123,7 @@ export const en: Dictionary = {
       notBuilt: "The report's content is not built in the mockup.",
       chooseAgreement: "Choose an agreement in the selection above. The report releases one agreement at a time.",
       notReleasable:
-        "The agreement is not released to mediators. Either it is confidentiality-marked, or it has not been signed and is therefore not in force (Bilaga 3 §7.4: only valid agreements are shown).",
+        "The agreement is not released to mediators. Either it is confidentiality-marked, or it has not been signed and is therefore not in force. Only valid agreements are shown.",
       transcribedLabel: "Medlingsinstitutet's own figures",
       transcribed:
         "Agreement constructions counts employees across the whole Swedish labour market — 3,797,764 people in Medlingsinstitutet's own printout. The figures below are therefore Medlingsinstitutet's published ones, with the selection they were taken under (Employer org: Almega Tjänsteförbunden), and are not changed by the selection above. The bargaining round counts the register's own agreements and follows the selection in full.",
@@ -1417,7 +1462,7 @@ export const en: Dictionary = {
         "What the agreement is included in once registered. Publication to the public interface is an act of its own, performed on the agreement when the registration is complete.",
       confidential: "Confidentiality marking",
       confidentialHint:
-        "The details are withheld from mediators and the public. The agreement is still listed and still counted (D-002).",
+        "The details are withheld from mediators and the public. The agreement is still listed and still counted.",
       reportWebsite: "MI's website",
       reportShortTermWage: "Short-Term Wage Report",
       reportMinimumWage: "Minimum wages",
@@ -1428,7 +1473,7 @@ export const en: Dictionary = {
         "The agreement is saved as incomplete and unpublished. A new agreement with no wage agreement under it is not a finished record, and the registration gets a reminder (FA-021).",
       savedHeading: "The agreement is registered",
       savedNote: (name: string) =>
-        `${name} is registered as incomplete. The registration is written to the change log with the time and user (FH-001).`,
+        `${name} is registered as incomplete. The registration is written to the change log with the time and user.`,
       nextSteps: "This remains before the agreement can be published:",
       nextStepList: [
         "Register the wage agreement for the bargaining round — construction, wage scope and cost frame.",
@@ -1538,6 +1583,17 @@ export const en: Dictionary = {
       viewPublic: "View as the public sees it",
       publicationNote:
         "Publication is an act with a date and a person, not a consequence of the record being complete. Medlingsinstitutet decides when an agreement is released — a half-registered agreement on the public computer would be the authority publishing a draft.",
+      markComplete: "Mark the registration complete",
+      reopenRegistration: "Undo the completion",
+      completionGaps: (what: string) => `The registration is missing ${what}.`,
+      gapLabel: {
+        wageAgreement: "a wage agreement",
+        validity: "a validity period",
+        scope: "the scope figures",
+        signedDate: "a signing date",
+      },
+      completionNote:
+        "Completion is an act, not a consequence of the fields being full. A remaining agreement that was not renegotiated this year is a complete registration with no wage agreement under it, so what is missing is shown and does not decide — the officer does. Publication then also requires the agreement to have been signed.",
       statusHeading: "Status and validity",
       wageEdit: {
       edit: "Edit",
@@ -2020,7 +2076,7 @@ export const en: Dictionary = {
       timeoutHint: (min: number, max: number) => `${min}–${max} minutes`,
       notAllowed: "The value is not allowed",
       tooHigh: (max: number) =>
-        `NFÅ-002 states at most ${max} minutes of inactivity. The limit may be shortened but not extended — a longer limit weakens the requirement rather than configuring it.`,
+        `At most ${max} minutes of inactivity can be set. The limit may be shortened but not extended — a longer limit weakens the requirement rather than configuring it.`,
       tooLow: (min: number) =>
         `Shorter than ${min} minutes is impractical: a limit that expires during a coffee break is a limit users work around.`,
       notWhole: "Enter a whole number of minutes.",
@@ -2142,11 +2198,11 @@ export const en: Dictionary = {
       lastAdminChangeReason:
         "This is the last active authorisation administrator. Assign the role to somebody else first.",
       changedNote: (what: string) =>
-        `Role changed: ${what}. The change is written to the change log with the time and who made it (FH-001).`,
+        `Role changed: ${what}. The change is written to the change log with the time and who made it.`,
       revokedNote: (name: string) =>
-        `Access revoked for ${name}. The account remains as inactive — the sign-ins are in the log and have to stay resolvable (NFL-001).`,
+        `Access revoked for ${name}. The account remains as inactive — the sign-ins are in the log and have to stay resolvable.`,
       lastAdminReason:
-        "The last active authorisation administrator cannot be deactivated — permissions could then only be restored by the supplier, which is what NFÅ-005 exists to prevent.",
+        "The last active authorisation administrator cannot be deactivated — permissions could then only be restored by the supplier.",
       reactivated: (name: string) =>
         `${name} is active again. The change is written to the change log with the time and the user.`,
       save: "Save the user",

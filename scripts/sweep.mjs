@@ -36,6 +36,8 @@ const ROUTES = [
   ["agreement-admin", "/"],
   ["agreement-admin", "/avtal"],
   ["agreement-admin", "/avtal/A-001"],
+  /* Ofullständig: the state the mark and the gap sentence live in. */
+  ["agreement-admin", "/avtal/A-004"],
   ["agreement-admin", "/avtal/A-010"],
   ["agreement-admin", "/avtal/ny"],
   ["agreement-admin", "/registrera"],

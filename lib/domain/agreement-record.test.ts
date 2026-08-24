@@ -3,8 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   isPublished,
   isSectionLimited,
+  mayMarkComplete,
   mayPublish,
+  mayReopenRegistration,
   orderedQuestions,
+  registrationGaps,
   SPECIAL_QUESTION_NUMBERS,
   unionDensityPercent,
   type SpecialQuestions,
@@ -139,5 +142,89 @@ describe("publishing an agreement", () => {
     /* Published and later marked: the marking is what the public view honours. */
     expect(isPublished({ ...published, confidential: true })).toBe(false);
     expect(isPublished({ confidential: false })).toBe(false);
+  });
+});
+
+/**
+ * The act `mayPublish` had been waiting for.
+ *
+ * `registrationStatus` was written in two places — the sample data, and
+ * `draftToAgreement`, which hard-codes *incomplete* — and read in sixteen. So
+ * the publish control refused every agreement an officer registered themselves,
+ * in MI's own words: *"Publicering kräver att registreringen är markerad som
+ * klar"*, naming an act the interface offered nowhere. Bilaga 2 §3.5's Scenario
+ * 2 is four bullets ending in *publicerar avtalet*, and they could only be
+ * walked on the one agreement the sample data seeds complete.
+ */
+describe("marking a registration complete", () => {
+  it("is available exactly while the registration is incomplete", () => {
+    expect(mayMarkComplete({ registrationStatus: "incomplete" })).toBe(true);
+    expect(mayMarkComplete({ registrationStatus: "complete" })).toBe(false);
+  });
+
+  it("unblocks publication of a signed agreement", () => {
+    const a = { registrationStatus: "incomplete" as const, signedDate: "2027-04-01" };
+    expect(mayPublish(a)).toBe(false);
+    expect(mayPublish({ ...a, registrationStatus: "complete" })).toBe(true);
+  });
+
+  /* Undoing it is the mediation case's *Ångra klarmarkeringen*, on a different
+     record — and refused once the agreement is out, because the public computer
+     is already showing it. */
+  it("can be undone until the agreement is published", () => {
+    expect(mayReopenRegistration({ registrationStatus: "complete" })).toBe(true);
+    expect(
+      mayReopenRegistration({
+        registrationStatus: "complete",
+        published: { date: "2027-04-02", by: "A" },
+      }),
+    ).toBe(false);
+  });
+
+  it("cannot be undone on a registration that is not complete", () => {
+    expect(mayReopenRegistration({ registrationStatus: "incomplete" })).toBe(false);
+  });
+});
+
+/**
+ * What is thin about a record, named — and deliberately not a gate.
+ *
+ * Seven of the eleven complete agreements in the sample have no wage agreement
+ * and two have no signing date, because a *kvarstående* agreement is a complete
+ * registration of an agreement nobody renegotiated this round. A rule refusing
+ * those would invent a requirement MI never wrote and contradict MI's own data
+ * with it, which is why completion is an act and this is information.
+ */
+describe("registration gaps", () => {
+  const full = {
+    wageAgreementCount: 1,
+    validTo: "2028-03-31",
+    employees: 12000,
+    signedDate: "2027-04-01",
+  };
+
+  it("finds nothing on a record that carries all four", () => {
+    expect(registrationGaps(full)).toEqual([]);
+  });
+
+  it("names each missing part, in the order the officer would fill them", () => {
+    expect(registrationGaps({ wageAgreementCount: 0 })).toEqual([
+      "wageAgreement",
+      "validity",
+      "scope",
+      "signedDate",
+    ]);
+  });
+
+  it("treats a zero scope figure as a figure, not as an absence", () => {
+    /* MI's own printouts show `¤` for a missing value; 0 employees is a
+       measurement and has to survive the check that asks whether one was made. */
+    expect(registrationGaps({ ...full, employees: 0 })).toEqual([]);
+  });
+
+  it("does not gate the act it informs", () => {
+    const thin = { registrationStatus: "incomplete" as const };
+    expect(registrationGaps({ wageAgreementCount: 0 }).length).toBeGreaterThan(0);
+    expect(mayMarkComplete(thin)).toBe(true);
   });
 });

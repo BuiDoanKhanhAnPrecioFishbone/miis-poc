@@ -132,9 +132,9 @@ export default async function AvtalPage() {
               {i18n.registrera.title}
             </LinkButton>
             {/*
-              Two ways in, because they are two tasks. A protocol arrives about
-              an agreement MIIS already holds; a wholly new agreement has no
-              protocol to read and, by §4.1, is always registered by hand.
+              Two ways in, because they are two tasks. Which one to take is
+              answered by `register.howToRegister` in the panel below — one copy,
+              and it names why each path exists rather than only naming them.
             */}
             <LinkButton href="/avtal/ny" variant="secondary" iconStart={<IconPlus />}>
               {i18n.avtal.newAgreement.title}

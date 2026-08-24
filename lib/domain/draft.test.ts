@@ -10,6 +10,9 @@ import {
   encodePublished,
   nextDraftId,
   type DraftAgreement,
+  applyCompletion,
+  decodeCompletion,
+  encodeCompletion,
 } from "./draft";
 import type { Agreement } from "./agreement";
 
@@ -165,5 +168,77 @@ describe("the published cookie", () => {
   it("degrades to nothing", () => {
     expect(decodePublished(undefined)).toEqual([]);
     expect(decodePublished("%E0%A4%A")).toEqual([]);
+  });
+});
+
+/**
+ * Completion travels both ways, which is why it is not a list of ids.
+ *
+ * An agreement the sample data seeds complete can be reopened, and one seeded
+ * incomplete can be marked — so the cookie has to be able to say *no* as well
+ * as *yes*. A bare id list could only ever add.
+ */
+describe("applyCompletion", () => {
+  const reg = [
+    { id: "A-001", registrationStatus: "complete" },
+    { id: "A-004", registrationStatus: "incomplete" },
+  ] as unknown as Agreement[];
+
+  it("marks the one that was marked", () => {
+    const out = applyCompletion(reg, { "A-004": true });
+    expect(out.find((a) => a.id === "A-004")!.registrationStatus).toBe("complete");
+  });
+
+  it("reopens the one that was reopened", () => {
+    const out = applyCompletion(reg, { "A-001": false });
+    expect(out.find((a) => a.id === "A-001")!.registrationStatus).toBe("incomplete");
+  });
+
+  it("leaves the others alone", () => {
+    const out = applyCompletion(reg, { "A-004": true });
+    expect(out.find((a) => a.id === "A-001")!.registrationStatus).toBe("complete");
+  });
+
+  it("does not mutate what it was given", () => {
+    applyCompletion(reg, { "A-004": true });
+    expect(reg.find((a) => a.id === "A-004")!.registrationStatus).toBe("incomplete");
+  });
+
+  it("is a no-op with nothing marked", () => {
+    expect(applyCompletion(reg, {})).toEqual(reg);
+  });
+
+  /* A draft is registered as incomplete and then marked, in one visit. The two
+     have to compose, because that is Scenario 2's own sequence. */
+  it("marks a draft this session created", () => {
+    const drafts = [{ id: "A-N01", registrationStatus: "incomplete" }] as unknown as Agreement[];
+    expect(applyCompletion(drafts, { "A-N01": true })[0]!.registrationStatus).toBe("complete");
+  });
+});
+
+describe("the completion cookie", () => {
+  it("round-trips a mark and a reopening", () => {
+    expect(decodeCompletion(encodeCompletion({ "A-004": true, "A-001": false }))).toEqual({
+      "A-004": true,
+      "A-001": false,
+    });
+  });
+
+  it("lets the last write win, so undo does not need an order of operations", () => {
+    const once = decodeCompletion(encodeCompletion({ "A-004": true }));
+    expect(decodeCompletion(encodeCompletion({ ...once, "A-004": false }))).toEqual({
+      "A-004": false,
+    });
+  });
+
+  it("degrades to nothing", () => {
+    expect(decodeCompletion(undefined)).toEqual({});
+    expect(decodeCompletion("%E0%A4%A")).toEqual({});
+  });
+
+  /* A cookie carrying a bare separator, or a sign with no id behind it, must not
+     produce a mark on an agreement called "". */
+  it("ignores a record with no id", () => {
+    expect(decodeCompletion(encodeCompletion({ "": true }))).toEqual({});
   });
 });

@@ -172,6 +172,34 @@ reviewer to a screen its own role would be refused.
    interface, and `mayPublish` refuses a registration that is not complete and
    signed — MI decides when an agreement is released, and a half-registered
    record on the public computer would be the authority publishing a draft.
+   **And so is completion — a gate needs a way through it.** `mayPublish`
+   refused in MI's own words, *"registreringen är markerad som klar"*, and
+   nothing anywhere could mark it: `registrationStatus` was written in two
+   places, the sample data and `draftToAgreement`, and read in sixteen. So the
+   screen instructed the officer to perform an act it offered nowhere — the list
+   `/avtal/ny` hands them after saving ends *"Markera registreringen som klar
+   och publicera avtalet"*, and `/registrera`'s *"Godkänn och koppla ger status
+   Klar"* was a `useState` no register read. §3.5's Scenario 2 is four bullets
+   ending in *publicerar avtalet*, and they could only be walked on the one
+   agreement the sample data seeds complete. **A refusal is half a flow — look
+   for what performs the thing it names.** `mayMarkComplete` and
+   `mayReopenRegistration` are the act and its undo, refused once the agreement
+   is out, and the component owns the badge as well as the button so the state
+   and the control cannot disagree. **What is missing is shown and does not
+   gate.** Seven of the eleven complete agreements in the sample have no
+   löneavtal and two have no teckningsdatum, because a *kvarstående* agreement
+   is a complete registration of one nobody renegotiated this round — so
+   `registrationGaps` names what is thin and the officer decides, which is what
+   *markerad* means. A rule inferring completeness would invent a requirement MI
+   never wrote and then contradict MI's own register with it.
+   **And `disabledReason` is a `title` attribute, so it is not a visible
+   reason.** The undo was first rendered `disabled` on a published agreement, on
+   the argument that a control which vanishes teaches nothing — but a tooltip is
+   absent from a screenshot, from paper, and from a glance, so eleven of the
+   seventeen agreements carried a dashed button explaining nothing. Disabled is
+   right when the user would reasonably attempt the act and the refusal is the
+   lesson; it is wrong when the state beside it already says why. *Publicerat
+   2027-04-03 av …* is in the next panel down, which is where a reader looks.
    **It is also not editing, and the two do not share a panel.** They did, under
    one heading called *Redigera och publicera*, which made a routine correction
    look like it might put something in front of the public. Publication belongs
@@ -648,7 +676,35 @@ reviewer to a screen its own role would be refused.
    was read from (FAI-001, FAI-004). Show the rejected path too — a demo of only the
    happy path asserts human review instead of demonstrating it.
    AI belongs where a requirement puts it, and **`lib/domain/ai.ts` is where that
-   list lives** — §4.1's four functions, no fifth. `AI_FUNCTIONS` says what each
+   list lives** — §4.1's four functions, no fifth.
+   **What the supplier adds beyond §4.1 goes in `AI_ADDITIONS`, never in
+   `AI_FUNCTIONS`.** MI's side asked for natural-language selection on Sök and
+   Rapporter after the four were built. Folding them into the four was the easy
+   move and the wrong one: that list's whole value is its claim — *these are the
+   four MI asked for, and there is no fifth* — which is the evidence the
+   specification was read rather than skimmed, and a test asserts it. Six
+   entries under a heading saying four is a worse answer than two lists that say
+   which is which, and each addition carries `beyondSpec` so the drawer can show
+   the distinction to the buyer. Two rules follow. **Sitting outside §4.1 does
+   not loosen FAI-002** — a proposal is a proposal whichever function made it,
+   so both keep *Godkänn* and *Avvisa* and neither writes anything. And **an
+   addition has to be in the written response**, because Bilaga 2 §3.6 forbids
+   *"nya åtaganden"* at the oral presentation: a capability not described in the
+   submitted text cannot be shown on the day.
+   **The parser reads; it does not generate.** `lib/domain/nl-intent.ts` matches
+   the register's own vocabulary — the criteria in `options.ts`, the reports in
+   `REPORTS`, MI's sectors and constructions — so every proposed criterion can
+   name the words it was read from, which is the same guarantee the protocol
+   functions give by highlighting the passage a value came from. It also **shows
+   what it could not place**: `unused` is on screen, because a proposal that
+   silently drops half the question is one the officer cannot check, and
+   checking it is the whole of FAI-002. What is *not* reported as unread is
+   derived, never listed — the criteria's own names and the report labels come
+   out of `options.ts` and `REPORTS`, so a rename cannot leave a stale word
+   behind. **It selects and stops.** Approving fills the query builder or the
+   urvalsbild and hands the officer the same controls they would have used by
+   hand; running the search or generating the report would make a proposal an
+   action, and the pause between the two is the requirement. `AI_FUNCTIONS` says what each
    one does, which requirement it answers and which routes it runs on;
    `AI_BOUNDARIES` says what the AI must *not* do, in MI's own words
    (*"alla förslag … ska granskas och godkännas"*, *"Helt nya avtal … ska alltid
@@ -887,7 +943,7 @@ looking at here" sent the reviewer back to the guide — the thing the cursor
 exists to prevent. Without *Avsluta*, starting the walkthrough left the strip
 carrying it for the rest of the session with no way back to the plain system.
 `/genomgang` itself shows **one scenario at a time** under a
-contents list of all seven, and a step button names the step rather than the role —
+contents list of all six, and a step button names the step rather than the role —
 sixteen buttons reading *"Öppna som Avtalsadministratör"* said nothing about where you
 were about to land. The role is named only when it is about to **change**, which is the
 one case it is a warning rather than noise.

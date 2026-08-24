@@ -69,7 +69,7 @@ en sammanslagning om den fallerar:
 
 | Grind | Vad den skyddar |
 |---|---|
-| **Enhetstester över domänlagret** | Reglerna — behörighet, status, rapporturval, publicering, sökbyggarens egen sammansättning, AI-stödets gränser. För närvarande **305 tester** |
+| **Enhetstester över domänlagret** | Reglerna — behörighet, status, rapporturval, publicering, sökbyggarens egen sammansättning, AI-stödets gränser. För närvarande **362 tester** |
 | **Arkitekturregler i lint** | Datasömmen. En import av datalagret från en vy stoppar bygget, så att bytet från exempeldata till databas förblir osynligt för gränssnittet |
 | **Typkontrollerade översättningar** | Det andra språket kan inte tyst förfalla: en saknad eller felstavad nyckel stoppar kompileringen |
 | **Referensintegritet vid bygge** | En hängande referens i data stoppar bygget i stället för att visa en tom vy |
@@ -257,7 +257,7 @@ möjliggör det. Om modelltjänsten dröjer fungerar registreringen ändå.
 databas, ingen identitetsleverantör och ingen AI-modell. Det den demonstrerar är
 gränssnittet, reglerna och metoden — och metoden är det §3.4 frågar efter.
 
-**Siffrorna ovan är aktuella och kommer att röra sig.** 305 tester och 0
+**Siffrorna ovan är aktuella och kommer att röra sig.** 362 tester och 0
 tillgänglighetsavvikelser är sant om det bygge detta svar togs fram ur; de är
 belägg för att grindarna finns och körs, inte ett löfte om ett slutligt antal.
 Grindarna har förtjänat sin plats: det senaste de fångade var en sökbyggare vars

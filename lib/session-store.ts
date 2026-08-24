@@ -17,10 +17,17 @@
  * neither side can drift from the other's idea of the format.
  */
 
-import { COOKIE_MAX_AGE_SECONDS, DRAFT_COOKIE, PUBLISHED_COOKIE } from "./cookies";
 import {
+  COMPLETED_COOKIE,
+  COOKIE_MAX_AGE_SECONDS,
+  DRAFT_COOKIE,
+  PUBLISHED_COOKIE,
+} from "./cookies";
+import {
+  decodeCompletion,
   decodeDrafts,
   decodePublished,
+  encodeCompletion,
   encodeDrafts,
   encodePublished,
   type DraftAgreement,
@@ -51,4 +58,21 @@ export function readPublished(): string[] {
 /** Publication only ever adds — MI releasing an agreement is not undone here. */
 export function markPublished(id: string) {
   writeCookie(PUBLISHED_COOKIE, encodePublished([...readPublished(), id]));
+}
+
+export function readCompletion(): Record<string, boolean> {
+  return decodeCompletion(readCookie(COMPLETED_COOKIE));
+}
+
+/**
+ * Mark a registration complete, or reopen it.
+ *
+ * Both directions, because the mediation case's *Klarmarkera beslut* has its
+ * *Ångra klarmarkeringen* and this is the same act on a different record. An
+ * officer who marks the wrong agreement complete has to be able to say so
+ * before it is published — after that `mayReopenRegistration` refuses, because
+ * the public computer is already showing it.
+ */
+export function setRegistrationComplete(id: string, done: boolean) {
+  writeCookie(COMPLETED_COOKIE, encodeCompletion({ ...readCompletion(), [id]: done }));
 }

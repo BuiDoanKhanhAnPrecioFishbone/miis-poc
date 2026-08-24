@@ -24,9 +24,11 @@ import { cookies } from "next/headers";
 import type { AuditEvent } from "@/lib/domain/event";
 import { DEFAULT_LANG, type Lang } from "@/lib/domain/lang";
 import { agreementStatus } from "@/lib/domain/status";
-import { DRAFT_COOKIE, PUBLISHED_COOKIE } from "@/lib/cookies";
+import { COMPLETED_COOKIE, DRAFT_COOKIE, PUBLISHED_COOKIE } from "@/lib/cookies";
 import {
+  applyCompletion,
   applyPublished,
+  decodeCompletion,
   decodeDrafts,
   decodePublished,
   draftToAgreement,
@@ -67,8 +69,18 @@ export async function agreements(): Promise<Agreement[]> {
     cookies(),
   ]);
   const drafts = decodeDrafts(jar.get(DRAFT_COOKIE)?.value).map(draftToAgreement);
+  const completion = decodeCompletion(jar.get(COMPLETED_COOKIE)?.value);
   const published = decodePublished(jar.get(PUBLISHED_COOKIE)?.value);
-  return applyPublished([...base, ...drafts], published, PUBLISHED_NOW);
+  /*
+    Completion first. Publishing requires a complete registration and an officer
+    does both in one visit, so a publication applied before the mark would be
+    read against the status the mark replaced.
+  */
+  return applyPublished(
+    applyCompletion([...base, ...drafts], completion),
+    published,
+    PUBLISHED_NOW,
+  );
 }
 
 /**

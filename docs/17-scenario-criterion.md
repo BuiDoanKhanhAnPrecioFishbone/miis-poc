@@ -43,6 +43,13 @@ The extract said "use the user scenarios below as the starting point" and gave u
 Bilaga 2 gives **thirteen numbered bullets**, and they are not the US-* scenarios our
 walkthrough was cut from. Checked against the running build:
 
+> **The three tables below are the state on 2026-08-21, kept as the record of what
+> the criterion asked for that we did not have.** All thirteen bullets are now
+> built and walked — `/genomgang` covers them in six scenarios and 22 steps, and
+> `lib/domain/walkthrough.test.ts` asserts the coverage bullet by bullet, one test
+> per scenario. The plan from *§ The plan, in the order it should be done* onwards
+> records each item closing.
+
 ### Scenario 1 – Systemadministratör
 
 | MI's bullet | State |
@@ -337,7 +344,7 @@ The three scored roles first, each with the four elements the criterion asks for
 **every step is a control that switches to the role and opens the screen**. Switching is
 the point rather than a convenience: "the role decides what you see" is the claim, and a
 link that left the reviewer as the wrong persona would show them the authorisation notice
-instead of the screen. A test asserts that for all sixteen steps, from the same
+instead of the screen. A test asserts that for all twenty-two steps, from the same
 `accessLevel` the screen guard asks.
 
 It is **outside the `(miis)` route group** — no shell, no navigation, no menu entry — and
@@ -352,7 +359,7 @@ Sixteen buttons all read *"Öppna som Avtalsadministratör"*. And it was a page 
 opening step 2 took you to a screen, and the only route to step 3 was back here to find
 your place in the document.
 
-- **A contents list of all seven**, with role, step count and which three are scored, and
+- **A contents list of all six**, with role, step count and which three are scored, and
   **one scenario shown at a time**. 5 267px → 2 300px.
 - **A step names the step**, and names the role only when the persona is about to change —
   the one case it is a warning rather than noise.

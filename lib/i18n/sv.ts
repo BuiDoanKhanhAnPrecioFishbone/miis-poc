@@ -54,7 +54,7 @@ export const sv = {
     backTo: (page: string) => `Tillbaka till ${page}`,
     notAuthorised: "Behörighet saknas",
     notAuthorisedFor: (screen: string, role: string) =>
-      `${screen} ingår inte i behörigheten för rollen ${role}. Byt roll i demoläget för att se vyn. I MIIS styrs detta av behörighetsadministratören (NFÅ-003).`,
+      `${screen} ingår inte i behörigheten för rollen ${role}. Byt roll i demoläget för att se vyn. I MIIS styrs detta av behörighetsadministratören.`,
     uploadNeedsStore:
       "Filuppladdning kräver dokumentlagret och ingår i steg 1. Protokolluppladdningen i registreringsflödet är den som körs utan det.",
     exportNeedsServer:
@@ -719,6 +719,28 @@ export const sv = {
   },
 
   sok: {
+    intent: {
+      title: "Beskriv sökningen",
+      label: "Vad vill du söka fram?",
+      placeholder: "T.ex. avtal inom privat sektor som gällde 2027",
+      hint: "Skriv en mening. Förslaget visas för granskning innan något ställs in.",
+      submit: "Tolka",
+      proposalLead: "Förslag till urval. Ingenting är inställt förrän du godkänner.",
+      infoTypeName: "Informationstyp",
+      readFrom: "Läst ur",
+      assumed: "Antaget, inget ord angav register:",
+      defaultRegister: "avtal",
+      unused: (words: string) => `Kunde inte tolkas: ${words}. Lägg till kriteriet för hand om det behövs.`,
+      approve: "Godkänn och fyll i sökningen",
+      nothingLabel: "Inget förslag",
+      nothing:
+        "Ingen del av meningen matchade ett kriterium som sökningen har. Sök på informationstyp, sektor, avtalskonstruktion, industrimärke eller ett datum – eller bygg villkoren för hand nedan.",
+      appliedLabel: "Ifyllt",
+      applied:
+        "Kriterierna är ifyllda i sökbyggaren nedan. Ändra dem som vanligt innan du går vidare – sökningen körs inte av förslaget.",
+      rejectedLabel: "Avvisat",
+      rejected: "Förslaget avvisades. Ingenting ställdes in.",
+    },
     title: "Sök",
     subtitle: "Sammansatt sökning över flera handlingstyper, med bokslut och export",
     criteria: {
@@ -953,6 +975,29 @@ export const sv = {
   },
 
   rapporter: {
+    intent: {
+      title: "Beskriv rapporten",
+      label: "Vilken rapport behöver du?",
+      placeholder: "T.ex. vilka avtal löper ut 2027",
+      hint: "Skriv en mening. Förslaget visas för granskning innan urvalsbilden fylls i.",
+      submit: "Tolka",
+      proposalLead: "Förslag till rapport och urval. Rapporten körs inte av förslaget.",
+      reportName: "Rapport",
+      readFrom: "Läst ur",
+      unused: (words: string) => `Kunde inte tolkas: ${words}. Komplettera urvalsbilden för hand om det behövs.`,
+      approve: "Godkänn och fyll i urvalsbilden",
+      nothingLabel: "Inget förslag",
+      nothing:
+        "Ingen rapport kunde utläsas av meningen. Nämn rapporten vid namn eller vad den svarar på, till exempel utlöpningstidpunkter, avtalsrörelse eller huvudrapport – eller välj i listan nedan.",
+      refusedLabel: "Ingår inte i behörigheten",
+      refused: (name: string) =>
+        `${name} ingår inte i behörigheten för den här rollen. Rapportförslaget avvisas därför – vilka rapporter en roll får köra bestäms av behörigheten, inte av vad som skrivs här.`,
+      appliedLabel: "Ifyllt",
+      applied:
+        "Rapporten är vald och urvalsbilden ifylld nedan. Kontrollera kriterierna och kör rapporten som vanligt.",
+      rejectedLabel: "Avvisat",
+      rejected: "Förslaget avvisades. Ingenting ställdes in.",
+    },
     document: {
       withheld: {
         sv: "Avtalet är sekretessmarkerat. Uppgifterna lämnas inte ut i den här rapporten.",
@@ -1065,7 +1110,7 @@ export const sv = {
       bilagaF: (n: number) => `Bilaga F, rapport ${n}`,
       noSelectionLabel: "Ingen urvalsbild",
       noSelection:
-        "Konjunkturlönerapporten skrivs ut ur vyn med bevakade avtal — listan är urvalet. Det är den enda av rapporterna som fungerar så, och det följer av kravtexten (FR-008).",
+        "Konjunkturlönerapporten skrivs ut ur vyn med bevakade avtal — listan är urvalet. Det är den enda av rapporterna som fungerar så.",
       onScreen:
         "Rapporten är en utskrift av en vy som redan finns i MIIS. Öppna vyn och skriv ut den där, så följer utskriften samma sekretessregler som skärmen.",
       openView: "Öppna vyn",
@@ -1079,7 +1124,7 @@ export const sv = {
       notBuilt: "Rapportens innehåll är inte byggt i mockupen.",
       chooseAgreement: "Välj ett avtal i urvalet ovan. Rapporten lämnar ut ett avtal i taget.",
       notReleasable:
-        "Avtalet lämnas inte ut till medlare. Antingen är det sekretessmarkerat, eller så är det inte tecknat och därmed inte gällande (Bilaga 3 §7.4: endast giltiga avtal visas).",
+        "Avtalet lämnas inte ut till medlare. Antingen är det sekretessmarkerat, eller så är det inte tecknat och därmed inte gällande. Endast giltiga avtal visas.",
       transcribedLabel: "Medlingsinstitutets egna siffror",
       transcribed:
         "Avtalskonstruktioner räknar anställda på hela den svenska arbetsmarknaden – 3 797 764 personer i Medlingsinstitutets egen utskrift. Siffrorna nedan är därför Medlingsinstitutets publicerade, med det urval de togs med (Arbetsgivarorg: Almega Tjänsteförbunden), och ändras inte av urvalet ovan. Avtalsrörelsen räknar registrets egna avtal och följer urvalet fullt ut.",
@@ -1415,7 +1460,7 @@ export const sv = {
         "Vad avtalet ingår i när det är registrerat. Publicering till gränssnittet för allmänheten är en egen handling och görs på avtalet när registreringen är klar.",
       confidential: "Sekretessmarkering",
       confidentialHint:
-        "Detaljerna utelämnas för medlare och allmänhet. Avtalet listas och räknas ändå (D-002).",
+        "Detaljerna utelämnas för medlare och allmänhet. Avtalet listas och räknas ändå.",
       reportWebsite: "MI:s webbplats",
       reportShortTermWage: "Konjunkturlönerapporten",
       reportMinimumWage: "Lägstlöner",
@@ -1426,7 +1471,7 @@ export const sv = {
         "Avtalet sparas som ofullständigt och opublicerat. Ett nytt avtal utan löneavtal under sig är ingen färdig post, och registreringen får en påminnelse (FA-021).",
       savedHeading: "Avtalet är registrerat",
       savedNote: (name: string) =>
-        `${name} är registrerat som ofullständigt. Registreringen skrivs till ändringsloggen med tidpunkt och användare (FH-001).`,
+        `${name} är registrerat som ofullständigt. Registreringen skrivs till ändringsloggen med tidpunkt och användare.`,
       nextSteps: "Det här återstår innan avtalet kan publiceras:",
       nextStepList: [
         "Registrera löneavtalet för avtalsrörelsen – konstruktion, löneutrymme och kostnadsram.",
@@ -1537,6 +1582,17 @@ export const sv = {
       viewPublic: "Visa som allmänheten ser det",
       publicationNote:
         "Publicering är en handling med datum och person, inte en följd av att posten är komplett. Medlingsinstitutet avgör när ett avtal lämnas ut – ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.",
+      markComplete: "Markera registreringen som klar",
+      reopenRegistration: "Ångra klarmarkeringen",
+      completionGaps: (what: string) => `Registreringen saknar ${what}.`,
+      gapLabel: {
+        wageAgreement: "löneavtal",
+        validity: "löptid",
+        scope: "uppgift om omfattning",
+        signedDate: "teckningsdatum",
+      },
+      completionNote:
+        "Klarmarkeringen är en handling, inte en följd av att fälten är ifyllda. Ett kvarstående avtal som inte omförhandlats i år är en komplett registrering utan löneavtal under sig, så vad som saknas visas och avgör inte – handläggaren gör det. Publicering kräver därefter också att avtalet är tecknat.",
       statusHeading: "Status och löptid",
       wageEdit: {
       edit: "Redigera",
@@ -2018,7 +2074,7 @@ export const sv = {
       timeoutHint: (min: number, max: number) => `${min}–${max} minuter`,
       notAllowed: "Värdet är inte tillåtet",
       tooHigh: (max: number) =>
-        `NFÅ-002 anger högst ${max} minuters inaktivitet. Tidsgränsen får kortas men inte förlängas – en längre gräns försvagar kravet i stället för att konfigurera det.`,
+        `Högst ${max} minuters inaktivitet kan ställas in. Tidsgränsen får kortas men inte förlängas – en längre gräns försvagar kravet i stället för att konfigurera det.`,
       tooLow: (min: number) =>
         `Kortare än ${min} minuter är opraktiskt: en gräns som löper ut under en kafferast är en gräns som användarna arbetar runt.`,
       notWhole: "Ange ett helt antal minuter.",
@@ -2135,11 +2191,11 @@ export const sv = {
       lastAdminChangeReason:
         "Det här är den sista aktiva behörighetsadministratören. Tilldela rollen till någon annan först.",
       changedNote: (what: string) =>
-        `Rollen ändrad: ${what}. Ändringen skrivs till ändringsloggen med tidpunkt och vem som gjorde den (FH-001).`,
+        `Rollen ändrad: ${what}. Ändringen skrivs till ändringsloggen med tidpunkt och vem som gjorde den.`,
       revokedNote: (name: string) =>
-        `Behörigheten återkallad för ${name}. Kontot finns kvar som inaktivt – inloggningarna ligger i loggen och måste gå att härleda (NFL-001).`,
+        `Behörigheten återkallad för ${name}. Kontot finns kvar som inaktivt – inloggningarna ligger i loggen och måste gå att härleda.`,
       lastAdminReason:
-        "Den sista aktiva behörighetsadministratören kan inte inaktiveras – då kan behörigheter bara återställas av leverantören, vilket är det NFÅ-005 ska förhindra.",
+        "Den sista aktiva behörighetsadministratören kan inte inaktiveras – då kan behörigheter bara återställas av leverantören.",
       reactivated: (name: string) =>
         `${name} är aktiv igen. Ändringen skrivs till ändringsloggen med tidpunkt och användare.`,
       save: "Spara användaren",

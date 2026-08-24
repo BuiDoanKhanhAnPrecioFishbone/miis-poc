@@ -12,6 +12,7 @@ import {
   AgreementIdentity,
   AgreementPublication,
   AgreementScope,
+  RegistrationCompletion,
 } from "@/components/miis/AgreementAdmin";
 import { AppShell } from "@/components/miis/AppShell";
 import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
@@ -382,11 +383,18 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
           <Panel title={t.statusHeading} tags={["FR-012", "FA-021"]} headingLevel={2}>
             <div className="space-y-3">
               <StatusDot status={status} showLabel />
-              <div>
-                <Badge tone={agreement.registrationStatus === "complete" ? "ok" : "attention"}>
-                  {registrationStatusLabel(agreement.registrationStatus, lang)}
-                </Badge>
-              </div>
+              {/*
+                FA-021's state *and* the act that changes it, in one component.
+                This was a read-only badge, and nothing anywhere could move the
+                registration to *Klar* — so `mayPublish` refused every agreement
+                the officer had registered themselves, naming a control that did
+                not exist.
+              */}
+              <RegistrationCompletion
+                agreement={agreement}
+                wageAgreementCount={wageAgreements.length}
+                lang={lang}
+              />
               <p className="text-table tabular-nums">{validityLabel(agreement, lang)}</p>
               {agreement.confidential && (
                 <ConfidentialityMarker

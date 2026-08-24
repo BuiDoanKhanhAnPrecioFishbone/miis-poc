@@ -169,6 +169,60 @@ export function decodePublished(raw: string | undefined): string[] {
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/* Completion — the act that unblocks bullet nine                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Which registrations this session marked complete, and which it reopened.
+ *
+ * Unlike publication this goes both ways, so a bare id list will not do: an
+ * agreement the sample data seeds as complete can be reopened, and one seeded
+ * incomplete can be marked. The mark is `+id`, the reopening `-id`, last write
+ * wins — which is what lets *Ångra klarmarkeringen* undo a mark made a moment
+ * ago without the register having to remember an order of operations.
+ */
+export function encodeCompletion(marks: Readonly<Record<string, boolean>>): string {
+  const parts = Object.entries(marks).map(([id, done]) => (done ? "+" : "-") + id);
+  return encodeURIComponent(parts.join(RECORD));
+}
+
+export function decodeCompletion(raw: string | undefined): Record<string, boolean> {
+  if (!raw) return {};
+  try {
+    const out: Record<string, boolean> = {};
+    for (const part of decodeURIComponent(raw).split(RECORD)) {
+      const id = part.slice(1);
+      if (!id) continue;
+      if (part[0] === "+") out[id] = true;
+      else if (part[0] === "-") out[id] = false;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Applies this session's completion marks to the register.
+ *
+ * Runs **before** `applyPublished`, because publishing requires the record to
+ * be complete and an officer does both in one visit — mark it, then release it.
+ * Reversing the order would have the publication read the status the mark had
+ * just replaced.
+ */
+export function applyCompletion(
+  list: readonly Agreement[],
+  marks: Readonly<Record<string, boolean>>,
+): Agreement[] {
+  if (Object.keys(marks).length === 0) return [...list];
+  return list.map((a) =>
+    a.id in marks
+      ? { ...a, registrationStatus: marks[a.id] ? ("complete" as const) : ("incomplete" as const) }
+      : a,
+  );
+}
+
 /** Applies this session's publications to the register, leaving the rest alone. */
 export function applyPublished(
   list: readonly Agreement[],

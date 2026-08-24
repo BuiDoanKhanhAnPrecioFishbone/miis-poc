@@ -39,6 +39,8 @@ const ROUTES = [
   ["agreement-admin", "/"],
   ["agreement-admin", "/avtal"],
   ["agreement-admin", "/avtal/A-001"],
+  /* Ofullständig: the state the mark and the gap sentence live in. */
+  ["agreement-admin", "/avtal/A-004"],
   ["agreement-admin", "/avtal/A-010"],
   ["agreement-admin", "/avtal/ny"],
   ["agreement-admin", "/registrera"],
@@ -71,7 +73,8 @@ const cookies = (role) =>
   ].map(([name, value]) => ({ name, value, domain: "localhost", path: "/" }));
 
 /** Verbs that mean "commit what I typed". One idea, so one word. */
-const SAVE_VERB = /^(spara|registrera|lägg till|skapa|godkänn|publicera|byt|ändra|förordna|koppla)/i;
+const SAVE_VERB =
+  /^(spara|registrera|lägg till|skapa|godkänn|publicera|byt|ändra|förordna|koppla|markera|ångra)/i;
 
 const actions = new Map(); // label -> Set(route)
 const anchors = [];        // { route, href, resolves }

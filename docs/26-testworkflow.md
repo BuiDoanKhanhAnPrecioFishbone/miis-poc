@@ -130,18 +130,29 @@ Kör i den här ordningen; var och en avslutas med felkod och kan grinda en
 sammanslagning.
 
 ```bash
-npm test          # 344 enhetstester över domänlagret
+npm test          # 362 enhetstester över domänlagret
 npx tsc --noEmit  # typer, och det som håller den engelska översättningen komplett
 npm run lint      # arkitekturreglerna — datasömmen, inga råa button/table
 npm run build     # produktionsbygge, faller på trasiga mockreferenser
 npm run audit     # WCAG 2.1 AA per vy per roll, och kravtext i produktvyn
 npm run sweep     # döda kontroller, konsolfel, tomma paneler, länkar som inte går
-npm run scenario  # sex övergångar där rollen byts mitt i flödet
+npm run consistency  # ett system eller flera: en handling, ett namn; ankare; statusord
+npm run scenario  # tolv kontroller över tre flöden där rollen byts mitt i
 ```
 
-`npm run scenario` är den enda som byter roll mitt i ett flöde. Den kör 1.1–2.2
-och 2.9–2.10 och 4.1 ovan, och den återställer sessionens egna poster vid start
-så att en andra körning provar samma sak som den första.
+`npm run scenario` är den enda som byter roll mitt i ett flöde. Den kör 1.1–2.2,
+2.9–2.10 och 4.1 ovan, och den återställer sessionens egna poster vid start så
+att en andra körning provar samma sak som den första.
+
+**Den slutade tidigare vid en vägran, och det var där en defekt bodde.** Steg 2
+kontrollerade att publicering vägras på en ofullständig registrering — vilket är
+rätt beteende — och frågade inte vad handläggaren gör sedan. Svaret var
+*ingenting*: `registrationStatus` skrevs på två ställen och lästes på sexton, så
+avtalet gick aldrig att klarmarkera och därmed aldrig att publicera. Bilaga 2
+§3.5:s scenario 2 är fyra punkter som slutar i *publicerar avtalet*, och de gick
+bara att gå igenom på det enda avtal som är klarmarkerat i exempeldata. Steg 3
+går nu hela vägen: klarmarkera, publicera, byt roll, hitta det. **En kontroll som
+stannar vid en vägran har verifierat halva flödet och rapporterat hela.**
 
 **Två steg är avsiktligt inte automatiserade**, och det står i skriptet varför:
 den siste behörighetsadministratören (1.3) och att Granska-siffran faller (2.5).

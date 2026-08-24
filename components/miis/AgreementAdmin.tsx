@@ -4,15 +4,20 @@ import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 
 import {
+  mayMarkComplete,
   mayPublish,
+  mayReopenRegistration,
+  registrationGaps,
+  registrationStatusLabel,
   unionDensityPercent,
   type Agreement,
+  type RegistrationGap,
   type RegistrationStatus,
 } from "@/lib/domain/agreement";
 import type { Lang } from "@/lib/domain/lang";
 import { amount, decimal } from "@/lib/format";
 import { dictionary } from "@/lib/i18n";
-import { markPublished } from "@/lib/session-store";
+import { markPublished, setRegistrationComplete } from "@/lib/session-store";
 import { IconForward } from "./icons";
 import { EditablePanel } from "./EditablePanel";
 import {
@@ -351,6 +356,105 @@ export function AgreementScope({
       </div>
       <Rationale>{t.derivedNote}</Rationale>
     </EditablePanel>
+  );
+}
+
+/**
+ * FA-021 — marking a registration complete, which is what `mayPublish` waits for.
+ *
+ * This is the act the interface had been asking the officer to perform for
+ * weeks and offering nowhere. `registrationStatus` was written in two places —
+ * the sample data and `draftToAgreement`, which hard-codes *incomplete* — and
+ * read in sixteen. So an officer who registered a new agreement met a publish
+ * control refused in MI's own words, *"Publicering kräver att registreringen är
+ * markerad som klar"*, naming an act that did not exist. The five-item list
+ * `/avtal/ny` hands them after saving ends *"Markera registreringen som klar
+ * och publicera avtalet"*, and `/registrera`'s *"Godkänn och koppla ger status
+ * Klar"* was a `useState` that no register ever read.
+ *
+ * The consequence was the whole of Scenario 2: register an agreement · add
+ * information · handle versions · **publish**. Four bullets that could only be
+ * walked on A-010, because the sample data seeds that one complete.
+ *
+ * **It owns the badge as well as the button**, so the state and the act cannot
+ * disagree. The badge used to be rendered by the page and the officer had no
+ * way to change it; splitting them again would put a state word next to a
+ * control that changes it and let a stale render show both.
+ *
+ * The gaps are shown and do **not** gate it — see `registrationGaps` for why
+ * MI's own register rules that out.
+ */
+export function RegistrationCompletion({
+  agreement,
+  wageAgreementCount,
+  lang,
+}: {
+  agreement: Pick<
+    Agreement,
+    "id" | "published" | "signedDate" | "validTo" | "employees"
+  > & { registrationStatus: RegistrationStatus };
+  wageAgreementCount: number;
+  lang: Lang;
+}) {
+  const t = dictionary(lang).avtal.detail;
+  const [status, setStatus] = useState<RegistrationStatus>(agreement.registrationStatus);
+  const router = useRouter();
+
+  const record = { ...agreement, registrationStatus: status };
+  const gaps = registrationGaps({ ...agreement, wageAgreementCount });
+  const canComplete = mayMarkComplete(record);
+  const canReopen = mayReopenRegistration(record);
+
+  function set(done: boolean) {
+    setRegistrationComplete(agreement.id, done);
+    setStatus(done ? "complete" : "incomplete");
+    startTransition(() => router.refresh());
+  }
+
+  return (
+    <div className="space-y-2" aria-live="polite">
+      <Badge tone={status === "complete" ? "ok" : "attention"}>
+        {registrationStatusLabel(status, lang)}
+      </Badge>
+
+      {/*
+        What is thin about the record, named. Not a `Callout`: the sidebar is
+        320px and this is a standing property of the record rather than news
+        about something that just happened — the same reason the publication
+        note beside it is a badge and a sentence.
+      */}
+      {status === "incomplete" && gaps.length > 0 && (
+        <p className="text-label text-muted-foreground">
+          {t.completionGaps(gaps.map((g: RegistrationGap) => t.gapLabel[g]).join(", "))}
+        </p>
+      )}
+
+      <div className="print-hide">
+        {canComplete && (
+          <Button variant="secondary" size="sm" onClick={() => set(true)}>
+            {t.markComplete}
+          </Button>
+        )}
+        {canReopen && (
+          <Button variant="secondary" size="sm" onClick={() => set(false)}>
+            {t.reopenRegistration}
+          </Button>
+        )}
+        {/*
+          Published, so the undo is absent rather than disabled.
+
+          It was disabled with a `disabledReason` — which is a `title`
+          attribute, so on eleven of the seventeen agreements the sidebar
+          carried a dashed button whose explanation only a mouse could find, and
+          none at all on paper. The reason is already on screen in the panel
+          below, where a reader looks for it: *Publicerat 2027-04-03 av …*.
+          Withdrawing a released agreement is Medlingsinstitutet's own decision
+          with its own paperwork, not an undo, so a control for it would invent
+          an affordance rather than explain a refusal.
+        */}
+      </div>
+      <Rationale>{t.completionNote}</Rationale>
+    </div>
   );
 }
 
