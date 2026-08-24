@@ -104,9 +104,25 @@ export function Stepper({
             <span className="sr-only">— {d.registrera.stepState[state]}</span>
           </>
         );
+        /*
+          A step that has not been reached is not a destination.
+
+          The registration flow's five steps each carry an anchor into the
+          section that performs them — and four of those sections do not exist
+          until a protocol has been uploaded. So on the upload screen, steps
+          two to five rendered as links, labelled *Återstår*, pointing at ids
+          nothing had created yet: four dead links on the first screen of the
+          scored scenario, and a reader who pressed one stayed exactly where
+          they were with no explanation.
+
+          An upcoming step is text. It keeps its number, its label and its
+          state word — what it loses is the promise that pressing it does
+          something.
+        */
+        const reachable = state !== "upcoming";
         return (
           <li key={step.label}>
-            {step.href ? (
+            {step.href && reachable ? (
               <a
                 href={step.href}
                 aria-current={isSelected ? "step" : undefined}
@@ -114,6 +130,10 @@ export function Stepper({
               >
                 {content}
               </a>
+            ) : step.href ? (
+              <span aria-current={isSelected ? "step" : undefined} className={`${SHARED} ${look}`}>
+                {content}
+              </span>
             ) : (
               <button
                 type="button"

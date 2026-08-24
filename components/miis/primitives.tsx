@@ -313,6 +313,11 @@ const BADGE_TONE: Record<Tone, string> = {
 export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: Tone }) {
   return (
     <span
+      /* Identifiable by tooling. `scripts/consistency.mjs` looks for a state
+         word rendered as bare text rather than as a badge, and could not tell
+         the two apart while a badge was an anonymous span — so it reported
+         every badge in the system as a finding. */
+      data-badge={tone}
       className={`inline-block shrink-0 rounded-sm border px-2 py-0.5 text-meta font-bold uppercase tracking-[0.12em] ${BADGE_TONE[tone]}`}
     >
       {children}
@@ -1032,7 +1037,7 @@ export function StatusDot({
       : { backgroundColor: color, borderColor: color, borderWidth: "0px" };
 
   return (
-    <span className="inline-flex items-center gap-2">
+    <span data-status-dot className="inline-flex items-center gap-2">
       <span
         aria-hidden
         style={style}

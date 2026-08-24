@@ -128,7 +128,18 @@ function PanelBody({ panel, i18n, lang }: { panel: DashboardPanel; i18n: Diction
             <span key="v" className="tabular-nums">
               {row.validity}
             </span>,
-            registrationStatusLabel(row.registrationStatus, lang),
+            /*
+              A `Badge`, the way the register draws the same fact.
+
+              This cell printed the label as bare text while the panel directly
+              above it on this same screen — Ofullständiga registreringar — drew
+              it as a badge, and `/avtal` draws it as a badge too. One fact, two
+              dressings, forty pixels apart: a reader learns the state word
+              twice and cannot tell whether the difference means anything.
+            */
+            <Badge key="r" tone={row.registrationStatus === "complete" ? "ok" : "attention"}>
+              {registrationStatusLabel(row.registrationStatus, lang)}
+            </Badge>,
           ],
           sort: [
             status.label,

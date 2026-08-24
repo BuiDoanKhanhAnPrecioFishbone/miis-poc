@@ -98,12 +98,50 @@ export const EVENTS: AuditEvent[] = [
     and new value. The two logs answer two different questions and neither can
     be derived from the other.
   */
+  /*
+    The four notifications the system says it sends, each evidenced once.
+
+    The copy promises e-mail in four places — a publication, FE-001's
+    klarmarkering to the mediator administrator, FA-022's reminder, and FE-003's
+    scheduled extract with the report attached — and the log carried an example
+    of exactly one of them. A claim demonstrated in prose and nowhere in the
+    data is the same shape as a control that looks live: an evaluator who opens
+    the händelselogg to check "skickad e-post loggas med tidpunkt, mottagare och
+    bilaga" found one entry, and none with an attachment.
+
+    The requirement ids are deliberately not in these strings. Sample data is
+    product content, and rule 7 keeps requirement text off the product view —
+    the first draft of these three carried (FE-001) and friends, and the copy
+    sweep caught them on the next run.
+  */
   {
     id: "H-10",
     timestamp: "2027-04-03 11:20",
     type: "email-sent",
     detail: "Stål- och metallindustrin publicerat – avisering till Analysenheten",
     agreementId: "A-001",
+  },
+  {
+    id: "H-13",
+    timestamp: "2027-05-03 09:20",
+    type: "email-sent",
+    detail:
+      "GD-beslut nr 12/2027 klarmarkerat – notifiering till medlaradministratör Eva Ek, med länk till ärendet",
+  },
+  {
+    id: "H-14",
+    timestamp: "2027-04-02 06:00",
+    type: "email-sent",
+    detail:
+      "Påminnelse: Kommunikation – Almega/Seko behöver kompletteras – till Anna Andersson, med länk till avtalet",
+    agreementId: "A-004",
+  },
+  {
+    id: "H-15",
+    timestamp: "2027-04-01 03:00",
+    type: "email-sent",
+    detail:
+      "Schemalagt uttag: Konjunkturlönerapporten till Statistikenheten – rapporten bifogad som PDF",
   },
   {
     id: "H-11",
