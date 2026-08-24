@@ -104,3 +104,48 @@ Två platshållare i `docs/23-arbetsgrupp.md`:
 2. Timpriser och procentuell fördelning, som ligger i Bilaga 4
 
 Ingen av dem går att härleda ur något som finns i den här repositoryn.
+
+---
+
+## Insamlingsformulär — skicka det här till var och en
+
+Tio minuter per person. Svaren behöver inte vara välformulerade — de skrivs om
+till mallens form efteråt. Det som behövs är fakta, inte prosa.
+
+**Skicka med rollens rad ur tabellen ovan**, så personen vet vad som ska visas.
+
+```
+NAMN:
+TITEL:
+ROLL I UPPDRAGET:            (en av de sex)
+TILLGÄNGLIG OKT 2026–APR 2027:   ja / delvis, ange hur mycket
+SVENSKA:                     modersmål / flytande / arbetsnivå / nej
+
+TRE TILL FEM UPPDRAG, det mest relevanta först.
+För varje:
+  KUND:                      och om det är en myndighet, skriv det
+  PERIOD:                    från–till
+  DIN ROLL:                  din egen, inte teamets
+  VAD UPPDRAGET GICK UT PÅ:  en till två rader
+  VAD DU SJÄLV GJORDE:       och vad det ledde till
+  REFERENS MÖJLIG:           ja / nej
+
+ROLLENS MINIMIKRAV — svara direkt på raden ur tabellen:
+  [klistra in personens rad ur "CV:t ska visa"]
+  → uppfylls av vilket av uppdragen ovan?
+
+UTBILDNING:
+CERTIFIERINGAR SOM ÄR RELEVANTA FÖR ROLLEN:
+```
+
+**Den sista frågan är den viktigaste.** Ett CV som inte uttryckligen besvarar
+rollens minimikrav tvingar bedömaren att leta, och det som inte hittas räknas
+inte. Om ingen av personens uppdrag uppfyller raden är det bättre att veta det
+nu än efter inlämning — då byter man person eller omformulerar rollen.
+
+## Vad som händer sedan
+
+När svaren kommit in skrivs de om till mallens sex rubriker, i samma ordning och
+samma ton för alla sex, och numreras som bilagor. Namnen och bilagenumren förs in
+i tabellen i `docs/23-arbetsgrupp.md`. Det är ett skrivarbete på underlag som
+redan finns — inte en ny insamling.
