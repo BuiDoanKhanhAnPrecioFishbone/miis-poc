@@ -387,7 +387,6 @@ export function AgreementPublication({
     the public, so it is the last one that should be silent about having
     happened.
   */
-  const [justPublished, setJustPublished] = useState(false);
   const router = useRouter();
   const ready = mayPublish({ ...agreement, ...(published ? { published } : {}) });
 
@@ -402,17 +401,22 @@ export function AgreementPublication({
         just happened; this is a state the record has been in since April, and
         it reads better as the state word plus the facts under it.
       */}
-      {justPublished && (
-        <div className="print-hide mb-3">
-          <Callout tone="ok" live tags={["FR-009", "FR-011"]}>
-            {t.publishedConfirm}
-          </Callout>
-        </div>
-      )}
+      {/*
+        The act announces itself by changing state, not by stacking a callout on
+        top of the state it changed.
 
+        A confirmation was added here when publication turned out to say nothing
+        at all on success — but as a `Callout`, in a 320px column, directly under
+        the comment forbidding exactly that. It came out one to three words per
+        line and repeated what the badge and sentence beneath it already said.
+
+        The panel goes from a button to a state word, a date, a person and a way
+        to go and look — that *is* the confirmation, and `aria-live` on the
+        region gives a screen reader the same news at the same moment.
+      */}
       {published ? (
         <>
-          <div className="space-y-2">
+          <div className="space-y-2" aria-live="polite">
             <Badge tone="ok">{t.publishedLabel}</Badge>
             <p className="text-table">{t.publishedNote(published.date, published.by)}</p>
           </div>
@@ -454,7 +458,6 @@ export function AgreementPublication({
                 */
                 markPublished(agreement.id);
                 setPublished({ date: TODAY, by: ACTING_OFFICER });
-                setJustPublished(true);
                 startTransition(() => router.refresh());
               }}
             >

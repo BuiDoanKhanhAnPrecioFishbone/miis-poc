@@ -1534,7 +1534,6 @@ export const sv = {
       publish: "Publicera avtalet",
       publishBlocked:
         "Publicering kräver att registreringen är markerad som klar och att avtalet är tecknat.",
-      publishedConfirm: "Avtalet är publicerat och finns nu i den publika vyn. Publiceringen loggas med tidpunkt och användare.",
       viewPublic: "Visa som allmänheten ser det",
       publicationNote:
         "Publicering är en handling med datum och person, inte en följd av att posten är komplett. Medlingsinstitutet avgör när ett avtal lämnas ut – ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.",
