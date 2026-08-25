@@ -574,6 +574,18 @@ reviewer to a screen its own role would be refused.
    it states the requirement and demonstrates none of it. FSD-001's two variants
    are a `SegmentedControl`, because *med varsel* and *utan varsel* are one
    document with a property, not two documents.
+   **And switching variant asks once the officer has typed.** Untouched it just
+   switches; edited, it names the cost — *texten du har skrivit ersätts av den
+   mallens text* — and *Behåll min text* leaves the variant where it was. The
+   old behaviour kept the text and changed only the label, which its own comment
+   called the lesser of two failures: the officer asked for the other template
+   and got the first one's text under the second one's name, with nothing said.
+   A confirmation with no cost is worse than none, so an unedited switch is
+   never questioned. Same inline shape as replacing a protocol and unlinking an
+   agreement — one way of being asked, not three. **Before and after a meeting
+   are two documents, not two variants**, which is why the partsträff template
+   has one: the after phase has its own printout, which is the *utskrift*
+   FF-004 asks for.
    **An `AiRegion` never prints.** Four signals mark machine-generated content —
    the violet, the banded header, the 6px spine, the `AI` letter-mark — and on
    paper three of them are gone, because browsers drop backgrounds and
