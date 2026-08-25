@@ -26,6 +26,15 @@ interface Registration {
   setRegistered: (value: boolean) => void;
   incomplete: boolean;
   setIncomplete: (value: boolean) => void;
+  /**
+   * The agreement the officer matched the protocol to.
+   *
+   * FA-022 attaches the protocol to an agreement that already exists, and the
+   * act has to end on that agreement rather than on a register of seventeen.
+   * Which one it is used to be decided on the server and hard-coded; it is now
+   * the officer's choice, so it travels the way `stage` does.
+   */
+  matchedId?: string;
 }
 
 const RegistrationContext = createContext<Registration | null>(null);
@@ -117,7 +126,12 @@ export function RegistrationSave({
           hierarchy nobody intended.
         */}
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <LinkButton href={agreementHref} iconEnd={<IconForward />}>
+          {/* The officer's match wins over the page's default: they may have
+              corrected the AI's proposal, and the act ends on what they chose. */}
+          <LinkButton
+            href={ctx?.matchedId ? `/avtal/${ctx.matchedId}` : agreementHref}
+            iconEnd={<IconForward />}
+          >
             {t.registeredNext}
           </LinkButton>
           <Button variant="secondary" onClick={() => ctx?.setRegistered(false)}>

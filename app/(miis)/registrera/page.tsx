@@ -20,7 +20,7 @@ import {
   Rationale,
   ReqTag,
 } from "@/components/miis/primitives";
-import { listExtractionProposals, matchedAgreementId } from "@/lib/data/extraction";
+import { listExtractionProposals, protocolCandidates } from "@/lib/data/extraction";
 import { listWatchwords } from "@/lib/data/watchwords";
 import { AGREEMENT_CONSTRUCTIONS, registrationStatusLabel } from "@/lib/domain/agreement";
 import { statusInfo } from "@/lib/domain/status";
@@ -52,13 +52,20 @@ export default async function RegistreraPage({
 }) {
   const session = await getSession();
   const { i18n, lang } = session;
-  const [proposals, watchwords, params, matchedId] = await Promise.all([
+  const [proposals, watchwords, params, candidates] = await Promise.all([
     listExtractionProposals(),
     listWatchwords(),
     searchParams,
-    /* The agreement the protocol was matched to, so the flow can end on it. */
-    matchedAgreementId(),
+    /*
+      The agreements this protocol could concern, strongest reason first — read
+      off the register rather than hard-coded, so one registered by hand a
+      minute ago is among them. The officer picks; the first is what the AI
+      proposes.
+    */
+    protocolCandidates(),
   ]);
+  /* A fallback only: the picker owns the choice once the officer makes one. */
+  const matchedId = candidates[0]?.id ?? "";
   const t = i18n.registrera;
   const resume = params.forts === "1";
 
@@ -70,6 +77,7 @@ export default async function RegistreraPage({
       <ProtocolReview
         proposals={proposals}
         lang={lang}
+        candidates={candidates}
         watchwords={watchwords}
         resume={resume ? QUEUED_PROTOCOL : null}
       >

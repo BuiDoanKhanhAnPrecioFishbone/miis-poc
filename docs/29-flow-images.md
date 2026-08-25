@@ -22,7 +22,7 @@ A collective agreement has to get into the register, be kept current, and finall
 
 *Role: Agreement administrator · `/avtal/ny`*
 
-An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. The rest of the scenario follows a different agreement — the one the protocol in the next step concerns — because a first-time agreement has, by definition, no incoming protocol to read.
+An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. Create **Stål- och metallindustrin tjänstemän**, between Industriarbetsgivarna and Unionen: the protocol in the next step is between exactly those two parties, and no agreement in the register is — A-001 is the same industry with IF Metall. The next step therefore matches the protocol to the record created here, which is the point of §4.1’s order: a first-time agreement has nothing to match against until it exists.
 
 ![Register a new collective agreement](../screenshots/flow-en/agreement-admin-01-register-a-new-collective-agreement.png)
 
@@ -32,7 +32,7 @@ An agreement with no previous counterpart in MIIS. This is the one registration 
 
 *Role: Agreement administrator · `/registrera`*
 
-Upload the protocol and walk Medlingsinstitutet's own five steps (§4.4). OCR, watchwords and matching run automatically; the AI proposals are source-linked — select one and the passage it was read from is highlighted. One proposal is deliberately wrong, so the rejected path is shown rather than merely asserted.
+Upload the protocol and walk Medlingsinstitutet's own five steps (§4.4). The matched agreement is a list rather than an assertion: every candidate says what it was read from — the heading's agreement name, both parties, or the file name — and the agreement created in step 1 is among them. OCR, watchwords and matching run automatically; the AI proposals are source-linked — select one and the passage it was read from is highlighted. One proposal is deliberately wrong, so the rejected path is shown rather than merely asserted.
 
 ![Register the agreement protocol](../screenshots/flow-en/agreement-admin-02-register-the-agreement-protocol.png)
 

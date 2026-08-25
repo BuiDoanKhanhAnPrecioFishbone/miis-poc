@@ -13,12 +13,26 @@ import { dictionary, type Dictionary } from "@/lib/i18n";
 import { useAiQueueReview } from "./AiAssistant";
 import { ProtocolUpload } from "./ProtocolUpload";
 import { RegistrationProvider } from "./RegistrationSave";
+import { Select } from "./Select";
+import {
+  matchReasonLabel,
+  type MatchCandidate,
+} from "@/lib/domain/protocol-match";
 import { ClauseSearch } from "./ClauseSearch";
 import { Stepper, type StepState } from "./Stepper";
 import { Marked } from "./Marked";
 import { Tabs } from "./Select";
 import { IconAi, IconLock } from "./icons";
-import { AiRegion, Badge, Button, Callout, Panel, Rationale, ReqTag } from "./primitives";
+import {
+  AiRegion,
+  Badge,
+  Button,
+  Callout,
+  Field,
+  Panel,
+  Rationale,
+  ReqTag,
+} from "./primitives";
 
 /**
  * US-01 — the protocol and the form it pre-fills, side by side and linked.
@@ -325,12 +339,21 @@ function PreFilledField({
 export function ProtocolReview({
   proposals,
   lang,
+  candidates,
   watchwords,
   resume,
   children,
 }: {
   proposals: ExtractionProposal[];
   lang: Lang;
+  /**
+   * The agreements this protocol could concern, strongest reason first.
+   *
+   * Empty means the register holds nothing it could be about, which is §4.1's
+   * other case — a first-time agreement, registered by hand — and the screen
+   * says so rather than proposing the least-bad row.
+   */
+  candidates: readonly MatchCandidate[];
   /**
    * A protocol already uploaded and interpreted, waiting for review.
    *
@@ -373,6 +396,8 @@ export function ProtocolReview({
   const paneRef = useRef<HTMLDivElement>(null);
   const [activeSource, setActiveSource] = useState<SourceAnchor | null>(null);
   const [activeField, setActiveField] = useState<ProposalField | null>(null);
+  /* The AI's proposal is the default; the officer may pick another. */
+  const [matchedId, setMatchedId] = useState(candidates[0]?.id ?? "");
   const lineRefs = useRef<Partial<Record<SourceAnchor, HTMLElement | null>>>({});
 
   const adjustedCount = proposals.filter((p) => isAdjusted(p, values[p.id] ?? "")).length;
@@ -488,6 +513,33 @@ export function ProtocolReview({
     return order.map((id) => {
       const p = byId.get(id);
       if (!p) return null;
+      /*
+        The one proposal that is a choice between records rather than a value to
+        correct. Every option says why it is a candidate, because choosing
+        between reasons is a review and choosing between names is guessing.
+      */
+      if (id === "matched" && candidates.length > 0) {
+        const chosen = candidates.find((x) => x.id === matchedId) ?? candidates[0]!;
+        return (
+          <div key={id} className="@xl/form:col-span-2">
+            {approved ? (
+              <Field label={label(d, id)} value={chosen.label} width="full" />
+            ) : (
+              <Select
+                id="matched-agreement"
+                label={label(d, id)}
+                value={matchedId}
+                onChange={setMatchedId}
+                options={candidates.map((x) => ({ id: x.id, label: x.label }))}
+              />
+            )}
+            <p className="field-hint">
+              {t.analysis1.matchedReason(matchReasonLabel(chosen.reason, lang))}{" "}
+              <span className="italic">”{chosen.source}”</span>
+            </p>
+          </div>
+        );
+      }
       return (
         <PreFilledField
           key={id}
@@ -887,7 +939,9 @@ export function ProtocolReview({
             </div>
           )}
 
-          <RegistrationProvider value={{ stage, setRegistered, incomplete, setIncomplete }}>
+          <RegistrationProvider
+            value={{ stage, setRegistered, incomplete, setIncomplete, matchedId }}
+          >
             {children}
           </RegistrationProvider>
         </div>

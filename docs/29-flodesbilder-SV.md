@@ -22,7 +22,7 @@ Ett kollektivavtal ska in i registret, hållas aktuellt och till slut lämnas ut
 
 *Roll: Avtalsadministratör · `/avtal/ny`*
 
-Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Resten av scenariot följer ett annat avtal — det som protokollet i nästa steg gäller — eftersom ett förstagångsavtal per definition inte har något inkommet protokoll att läsa.
+Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Lägg upp **Stål- och metallindustrin tjänstemän**, mellan Industriarbetsgivarna och Unionen: protokollet i nästa steg är mellan just de två parterna, och inget avtal i registret är det — A-001 är samma bransch fast med IF Metall. Nästa steg matchar därför protokollet mot posten som skapades här, vilket är hela poängen med §4.1:s ordning: ett förstagångsavtal har ingenting att matchas mot förrän det finns.
 
 ![Registrera ett nytt kollektivavtal](../screenshots/flode/agreement-admin-01-registrera-ett-nytt-kollektivavtal.png)
 
@@ -32,7 +32,7 @@ Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringe
 
 *Roll: Avtalsadministratör · `/registrera`*
 
-Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). OCR, bevakningsord och matchning körs automatiskt; AI-förslagen är källkopplade — välj ett så markeras stycket det lästes ur. Ett förslag är avsiktligt fel, så den avvisade vägen visas och inte bara påstås.
+Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). Det matchade avtalet är en lista, inte ett påstående: varje kandidat säger vad den lästes ur — rubrikens avtalsnamn, båda parterna eller filnamnet — och avtalet som lades upp i steg 1 står bland dem. OCR, bevakningsord och matchning körs automatiskt; AI-förslagen är källkopplade — välj ett så markeras stycket det lästes ur. Ett förslag är avsiktligt fel, så den avvisade vägen visas och inte bara påstås.
 
 ![Registrera avtalsprotokoll](../screenshots/flode/agreement-admin-02-registrera-avtalsprotokoll.png)
 

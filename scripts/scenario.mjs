@@ -14,6 +14,7 @@
  *   npm run scenario
  */
 
+import { Buffer } from "node:buffer";
 import { chromium } from "playwright";
 
 const BASE = process.env.BASE ?? "http://localhost:8080";
@@ -219,6 +220,74 @@ if ((await newest.count()) === 0) {
   }
 }
 await asRole("agreement-admin");
+
+/* ── 5 · Register by hand, then match the protocol to that record ─────────
+   §4.1 forbids the AI from registering a first-time agreement because there is
+   nothing to match against. Once the officer has created it, there is — and
+   that is what lets the walkthrough follow one agreement rather than three. */
+console.log("\n5 · lägg upp avtalet för hand → matcha protokollet mot det");
+await asRole("agreement-admin");
+await page.goto(BASE + "/avtal/ny", { waitUntil: "networkidle" });
+await page.fill("#na-name", "Stål- och metallindustrin tjänstemän");
+await page.fill("#na-area", "Stål och metall");
+/* The protocol is between Industriarbetsgivarna and Unionen, and no agreement in
+   the register is: A-001 is the same industry's IF Metall agreement. So the
+   salaried-staff agreement is the record this protocol is actually about. */
+await page.selectOption("#na-ago", { label: "Industriarbetsgivarna" });
+await page.selectOption("#na-ato", { label: "Unionen" });
+for (const id of ["#na-type", "#na-sector"]) {
+  const opts = await page.locator(`${id} option`).all();
+  if (opts.length > 1) await page.selectOption(id, await opts[1].getAttribute("value"));
+}
+await page.getByRole("button", { name: /Spara avtalet/ }).click();
+await page.waitForTimeout(700);
+
+await page.goto(BASE + "/registrera", { waitUntil: "networkidle" });
+await page.setInputFiles('input[type="file"]', {
+  name: "Seko Kommunikation 2025-27.pdf",
+  mimeType: "application/pdf",
+  buffer: Buffer.alloc(184320),
+});
+await page.waitForSelector("#steg-ai", { timeout: 20000 });
+await page.waitForTimeout(600);
+
+const picker = page.locator("#matched-agreement");
+if ((await picker.count()) === 0) {
+  unreachable("det egna avtalet går att matcha protokollet mot", "ingen avtalsväljare");
+} else {
+  const options = await page
+    .locator("#matched-agreement option")
+    .evaluateAll((os) => os.map((o) => [o.value, o.textContent.trim()]));
+  const own = options.find(([value]) => value.startsWith("A-N"));
+  check(
+    "avtalet som lades upp för hand finns bland kandidaterna",
+    Boolean(own),
+    own ? own[1] : "(saknas)",
+  );
+  check(
+    "AI:t föreslår, men väljer inte åt handläggaren",
+    /Underlag för matchningen/.test(await page.locator("main").innerText()),
+  );
+  if (own) {
+    await page.selectOption("#matched-agreement", own[0]);
+    await page.waitForTimeout(300);
+    const approveAi = page.getByRole("button", { name: /^Godkänn AI-förslagen$/ });
+    if ((await approveAi.count()) === 0) {
+      unreachable("flödet slutar på det valda avtalet", "godkännandet gick inte att nå");
+    } else {
+      await approveAi.click();
+      await page.waitForTimeout(500);
+      await page.getByRole("button", { name: /Godkänn och koppla protokoll/ }).click();
+      await page.waitForTimeout(700);
+      const open = page.getByRole("link", { name: /Öppna avtalet/ });
+      check(
+        "flödet slutar på det avtal handläggaren valde",
+        (await open.getAttribute("href")) === `/avtal/${own[0]}`,
+        (await open.getAttribute("href")) ?? "(ingen)",
+      );
+    }
+  }
+}
 
 /* ── 4 · Every report produces a document ──────────────────────────────── */
 console.log("\n4 · varje rapport ger ett dokument");

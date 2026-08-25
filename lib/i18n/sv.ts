@@ -606,6 +606,7 @@ export const sv = {
       agreementType: "Avtalstyp",
       employerOrg: "Avtalspart AGO",
       employeeOrg: "Avtalspart ATO",
+      matchedReason: (reason: string) => `Underlag för matchningen: ${reason} –`,
       validation:
         "Validering och logiska kontroller: inga avvikelser. Framgår inte avtalsnamnet av protokollet används filnamnet eller parternas gemensamma avtal som underlag.",
     },
