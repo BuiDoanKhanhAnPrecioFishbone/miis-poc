@@ -710,6 +710,7 @@ export const sv = {
       reopen: "Ändra registreringen",
       saveIncomplete: "Spara som ofullständig",
       savedIncomplete: "Sparat som ofullständigt",
+      incompleteNext: "Öppna avtalet och se vad som återstår",
       savedIncompleteNote:
         "Registreringen ligger kvar med status Ofullständig och en påminnelse skickas tills uppgifterna kompletteras. Avtalet syns i avtalsregistret, märkt Ofullständig.",
       incompleteNote: "Ofullständig registrering följs upp med påminnelse",

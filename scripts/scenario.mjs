@@ -300,6 +300,43 @@ if ((await picker.count()) === 0) {
   }
 }
 
+/* ── 6 · The other ending: saved as incomplete, and still going somewhere ──
+   FA-021 makes *ofullständig* a real state with a reminder attached, so it is
+   one of the two ways this screen ends. It used to offer only a way back. */
+console.log("\n6 · spara som ofullständig → vidare till avtalet");
+await page.goto(BASE + "/registrera", { waitUntil: "networkidle" });
+await page.setInputFiles('input[type="file"]', {
+  name: "Seko Kommunikation 2025-27.pdf",
+  mimeType: "application/pdf",
+  buffer: Buffer.alloc(184320),
+});
+await page.waitForSelector("#steg-ai", { timeout: 20000 });
+await page.waitForTimeout(600);
+
+const incompleteBtn = page.getByRole("button", { name: /^Spara som ofullständig$/ });
+if ((await incompleteBtn.count()) === 0) {
+  unreachable("den ofullständiga registreringen slutar på avtalet", "kontrollen saknas");
+} else {
+  const picked = await page.locator("#matched-agreement").inputValue();
+  await incompleteBtn.click();
+  await page.waitForTimeout(600);
+  const onward = page.getByRole("link", { name: /Öppna avtalet och se vad som återstår/ });
+  check(
+    "den ofullständiga registreringen erbjuder en väg framåt",
+    (await onward.count()) > 0 && (await onward.getAttribute("href")) === `/avtal/${picked}`,
+    (await onward.getAttribute("href")) ?? "(ingen)",
+  );
+  /* And the thing it goes to answers the question pausing raises. */
+  if ((await onward.count()) > 0) {
+    await onward.click();
+    await settle();
+    check(
+      "avtalet säger hur långt registreringen kommit",
+      /Registrerat: \d+ av \d+/.test(await page.locator("main").innerText()),
+    );
+  }
+}
+
 /* ── 4 · Every report produces a document ──────────────────────────────── */
 console.log("\n4 · varje rapport ger ett dokument");
 await page.goto(BASE + "/rapporter", { waitUntil: "networkidle" });

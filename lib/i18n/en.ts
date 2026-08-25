@@ -709,6 +709,7 @@ export const en: Dictionary = {
       reopen: "Change the registration",
       saveIncomplete: "Save as incomplete",
       savedIncomplete: "Saved as incomplete",
+      incompleteNext: "Open the agreement and see what remains",
       savedIncompleteNote:
         "The registration keeps the status Incomplete and a reminder is sent until the details are completed. The agreement appears in the register, marked Incomplete.",
       incompleteNote: "An incomplete registration is followed up with a reminder",
