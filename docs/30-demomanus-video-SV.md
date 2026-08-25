@@ -152,6 +152,47 @@ det korten finns för. En övertoning gör ett kort till en effekt.
 
 ---
 
+## Körordning
+
+**Alla fjorton korten är med, i den här ordningen** — de är en följd, inte
+alternativ. Ett kort före varje scen, plus ett öppningskort och ett slutkort.
+Filnamnens nummer i `export/titelkort/` är kolumnen längst till vänster.
+
+| # | Klipp | Längd | Från–till |
+|---|---|---|---|
+| 00 | **Titelkort** · filmens titel | 4 s | 0:00–0:04 |
+| 01 | Titelkort · *Vad det här är* | 2 s | 0:04–0:06 |
+| | Scen 1 — Vad det här är | 70 s | 0:06–1:16 |
+| 02 | Titelkort · *Avtalet AI:t inte får röra* | 2 s | 1:16–1:18 |
+| | Scen 2 — Avtalet AI:t inte får röra | 60 s | 1:18–2:18 |
+| 03 | Titelkort · *Protokollet kommer in* | 2 s | 2:18–2:20 |
+| | Scen 3 — Protokollet kommer in | 50 s | 2:20–3:10 |
+| 04 | Titelkort · *Första stoppet — vilket avtal gäller det?* | 2 s | 3:10–3:12 |
+| | Scen 4 — Första stoppet — vilket avtal gäller det? | 60 s | 3:12–4:12 |
+| 05 | Titelkort · *Varifrån siffran kom* | 2 s | 4:12–4:14 |
+| | Scen 5 — Varifrån siffran kom | 25 s | 4:14–4:39 |
+| 06 | Titelkort · *Andra stoppet — det avvisade förslaget* | 2 s | 4:39–4:41 |
+| | Scen 6 — Andra stoppet — det avvisade förslaget | 45 s | 4:41–5:26 |
+| 07 | Titelkort · *AI-stödet, samlat* | 2 s | 5:26–5:28 |
+| | Scen 7 — AI-stödet, samlat | 75 s | 5:28–6:43 |
+| 08 | Titelkort · *Var registreringen hamnar* | 2 s | 6:43–6:45 |
+| | Scen 8 — Var registreringen hamnar | 35 s | 6:45–7:20 |
+| 09 | Titelkort · *Att rätta en uppgift* | 2 s | 7:20–7:22 |
+| | Scen 9 — Att rätta en uppgift | 55 s | 7:22–8:17 |
+| 10 | Titelkort · *Tredje stoppet — klarmarkering och publicering* | 2 s | 8:17–8:19 |
+| | Scen 10 — Tredje stoppet — klarmarkering och publicering | 55 s | 8:19–9:14 |
+| 11 | Titelkort · *Datorn i lokalerna* | 2 s | 9:14–9:16 |
+| | Scen 11 — Datorn i lokalerna | 20 s | 9:16–9:36 |
+| 12 | Titelkort · *Avslut* | 2 s | 9:36–9:38 |
+| | Scen 12 — Avslut | 35 s | 9:38–10:13 |
+| 13 | **Titelkort** · avslut | 4 s | 10:13–10:17 |
+| | **Färdig film** | | **10:17** |
+
+*Tiderna är den färdiga filmens, alltså inklusive korten. Tidsbudgeten ovan
+räknar bara scenerna, eftersom det är replikerna den kontrollerar.*
+
+---
+
 ## Scen 1 · Vad det här är — 0:00–1:10
 
 **Bild:** `/avtal` i produktvyn. Ingen rörelse de första två sekunderna.
