@@ -234,7 +234,7 @@ export const sv = {
     create: "Skapa dokument",
     created: "Dokument skapat",
     createdNote: "Dokumentet är skapat och kopplat till ärendet.",
-    reopen: "Öppna mallen igen",
+    reopen: "Ändra dokumentet",
     fileNote: (name: string) => `Filen får namnet ${name}`,
   },
 
@@ -929,6 +929,10 @@ export const sv = {
       "Dokumentmallarna förifylls med information från MIIS och kan redigeras före färdigställande",
     admin: {
       remove: "Ta bort",
+      removeWarning: (name: string) =>
+        `Ta bort kopplingen till ${name}? Ärendet slutar då gälla det avtalet, och ändringen skrivs till ändringsloggen.`,
+      removeConfirm: "Ja, ta bort kopplingen",
+      removeCancel: "Behåll kopplingen",
       mediatorLabel: "Medlare ur registret",
       mediatorPlaceholder: "Välj medlare",
       positionLabel: "Position",
@@ -1705,7 +1709,10 @@ export const sv = {
       identity: "Uppgifter om parten",
       industryCode: "Branschkod",
       industryCodeHint: "Gäller organisationer inom Svenskt Näringsliv",
-      sectorEmployeeHint: "Sektor registreras på arbetsgivarsidan",
+      sectorEmployeeHint: "Registreras på arbetsgivarsidan",
+      typeFixed: "Följer av vilken sida parten står på och ändras inte här",
+      employeeSideOnly:
+        "Sektor, arbetsgivargrupp och näringsgren registreras på arbetsgivarsidan — det finns inget att rätta här.",
       contacts: "Kontaktpersoner",
       contactAdd: "Lägg till kontaktperson",
       contactName: "Namn",

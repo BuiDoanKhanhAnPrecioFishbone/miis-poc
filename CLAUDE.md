@@ -559,7 +559,11 @@ reviewer to a screen its own role would be refused.
    pre-filled values, the variant and the body all gone. A receipt naming a file
    that cannot be opened is the least useful thing a screen can say. The
    document stays, the callout sits above it, and the controls become **Skriv
-   ut** and **Öppna mallen igen**. Same fault as the mediator register's save,
+   ut** and **Ändra dokumentet** — *edit*, because the body survives and the
+   control returns to it, and a label saying *Öppna mallen igen* described
+   discarding the officer's work. Wrong in the one direction that matters:
+   nobody presses a control that offers to throw away what they just wrote.
+   Same fault as the mediator register's save,
    and the general rule is the one already written: an act that produces
    something ends **on that thing**.
    **A document template shows what it pre-filled.** FSD-001 and FSD-002 ask for

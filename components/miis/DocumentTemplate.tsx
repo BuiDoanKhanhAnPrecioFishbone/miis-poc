@@ -155,6 +155,13 @@ export function DocumentTemplate({
 
           <div className="print-hide mt-4 flex flex-wrap items-center gap-3">
             <PrintButton lang={lang} />
+            {/*
+              *Ändra dokumentet*, not *Öppna mallen igen*. The body survives —
+              pressing this returns to the same text with the cursor in it — and
+              the old label described discarding it. Wrong in the one direction
+              that matters: an officer who had just written a GD-beslut would
+              reasonably not press a control offering to throw it away.
+            */}
             <Button
               variant="secondary"
               onClick={() => {
