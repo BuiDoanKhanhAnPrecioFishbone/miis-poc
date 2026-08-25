@@ -1421,6 +1421,18 @@ export const sv = {
     title: "Avtal",
     epic: "Avtalsregistrering och -hantering",
     subtitle: "Avtal, avtalsområden, löneavtal och allmänna villkor",
+    checklist: {
+      progress: (done: number, total: number) => `Registrerat: ${done} av ${total}`,
+      done: "registrerat",
+      remaining: "återstår",
+      item: {
+        wageAgreement: "Löneavtal för avtalsrörelsen",
+        validity: "Avtalets löptid",
+        scope: "Avtalets omfattning",
+        protocol: "Protokoll och avtalstryck",
+        signedDate: "Teckningsdatum",
+      },
+    },
     register: {
       heading: "Avtalsregister",
       intro:
@@ -1480,14 +1492,8 @@ export const sv = {
       savedHeading: "Avtalet är registrerat",
       savedNote: (name: string) =>
         `${name} är registrerat som ofullständigt. Registreringen skrivs till ändringsloggen med tidpunkt och användare.`,
-      nextSteps: "Det här återstår innan avtalet kan publiceras:",
-      nextStepList: [
-        "Registrera löneavtalet för avtalsrörelsen – konstruktion, löneutrymme och kostnadsram.",
-        "Registrera allmänna villkor med sin egen löptid.",
-        "Fyll i avtalets omfattning: anställda, årsarbetare, fackmedlemmar och medellön.",
-        "Koppla protokollet och avtalstrycket.",
-        "Markera registreringen som klar och publicera avtalet.",
-      ],
+      nextSteps:
+        "Så här långt har registreringen kommit. Den behöver markeras som klar innan avtalet kan publiceras.",
       toAgreement: "Öppna avtalet",
       toRegister: "Till avtalsregistret",
       another: "Registrera ytterligare ett avtal",
@@ -1597,6 +1603,7 @@ export const sv = {
         wageAgreement: "löneavtal",
         validity: "löptid",
         scope: "uppgift om omfattning",
+        protocol: "kopplat protokoll",
         signedDate: "teckningsdatum",
       },
       completionNote:

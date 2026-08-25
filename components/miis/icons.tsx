@@ -8,6 +8,7 @@ import {
   FileText,
   Flag,
   Lock,
+  Minus,
   Plus,
   Printer,
   Sparkles,
@@ -68,6 +69,15 @@ function icon(Component: LucideIcon, displayName: string) {
 
 /** A completed step, an approved form, a passed check. */
 export const IconCheck = icon(Check, "IconCheck");
+/**
+ * Its counterpart: a step still outstanding, on a checklist beside a tick.
+ *
+ * Deliberately not a ring — that is `StatusDot`'s shape for FR-012's
+ * *kvarstående*, and the two render in the same 320px column. Deliberately not
+ * a square either: an empty box reads as a checkbox to tick, and this is
+ * derived state rather than a control.
+ */
+export const IconOpen = icon(Minus, "IconOpen");
 /** Add — the unpressed state of a toggle chip. */
 export const IconPlus = icon(Plus, "IconPlus");
 /** Print — the one export that runs without a server. */

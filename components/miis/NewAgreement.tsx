@@ -7,6 +7,7 @@ import { readDrafts, writeDrafts } from "@/lib/session-store";
 
 import { SECTOR_LABEL, type ReportSelection } from "@/lib/domain/agreement";
 import type { Lang } from "@/lib/domain/lang";
+import { RegistrationChecklist } from "./RegistrationChecklist";
 import { dictionary } from "@/lib/i18n";
 import { IconCheck, IconForward } from "./icons";
 import {
@@ -101,6 +102,18 @@ export function NewAgreement({
     window.scrollTo({ top: 0 });
   }
 
+  /*
+    A record created a moment ago: no bargaining round under it and no document
+    attached, by definition. What it may already carry is what the form above
+    collects — a signing date and an end date.
+  */
+  const savedRecord = {
+    wageAgreementCount: 0,
+    protocolCount: 0,
+    ...(signedDate ? { signedDate } : {}),
+    ...(validTo ? { validTo } : {}),
+  };
+
   if (saved) {
     return (
       <Panel title={t.savedHeading} tags={["FA-001", "FA-005"]}>
@@ -109,13 +122,20 @@ export function NewAgreement({
         </Callout>
         {/* What is still missing. A new agreement with no wage agreement under
             it is not a finished record, and saying so is the difference between
-            a form and a workflow. */}
-        <p className="mt-4 max-w-4xl text-table">{t.nextSteps}</p>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-table">
-          {t.nextStepList.map((step: string) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ul>
+            a form and a workflow.
+
+            The same derivation the agreement's own page renders, so this list
+            is the one that will tick off as the work is done rather than a
+            second copy that stays frozen at five outstanding items. Everything
+            is outstanding here because the record was created a second ago —
+            except a löptid or a teckningsdatum entered on the form above, which
+            is exactly the difference a fixed list could not show. */}
+        <div className="mt-4 max-w-4xl">
+          <p className="text-table">{t.nextSteps}</p>
+          <div className="mt-3">
+            <RegistrationChecklist record={savedRecord} lang={lang} />
+          </div>
+        </div>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           {/*
             The act ends on what it produced. It offered *Till avtalsregistret*

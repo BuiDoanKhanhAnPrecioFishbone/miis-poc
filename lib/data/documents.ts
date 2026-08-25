@@ -25,3 +25,18 @@ export async function listDocuments(): Promise<StoredDocument[]> {
     }))
     .sort((a, b) => b.uploadedDate.localeCompare(a.uploadedDate));
 }
+
+/**
+ * The protocols and agreement prints linked to one agreement.
+ *
+ * For the registration checklist: FA-021 keeps a link to the protocol even on an
+ * incomplete registration, so *is the document attached* is one of the things an
+ * officer has to be able to see the answer to. The other document kinds —
+ * GD-beslut, medlarrapport, partsträff — hang off other records and say nothing
+ * about whether this registration is finished.
+ */
+export async function countAgreementProtocols(agreementId: string): Promise<number> {
+  return (await listDocuments()).filter(
+    (d) => d.agreementId === agreementId && (d.type === "protocol" || d.type === "agreement"),
+  ).length;
+}

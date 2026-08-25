@@ -252,20 +252,79 @@ export function mayPublish(
  * an act with a date and a name rather than a consequence of the fields being
  * full.
  */
-export type RegistrationGap = "wageAgreement" | "validity" | "scope" | "signedDate";
+export type RegistrationGap =
+  | "wageAgreement"
+  | "validity"
+  | "scope"
+  | "protocol"
+  | "signedDate";
 
-export function registrationGaps(
-  a: Pick<Agreement, "signedDate" | "validTo" | "employees"> & {
-    /** How many bargaining rounds are registered under it (FA-002). */
-    wageAgreementCount: number;
-  },
-): RegistrationGap[] {
-  const gaps: RegistrationGap[] = [];
-  if (a.wageAgreementCount === 0) gaps.push("wageAgreement");
-  if (!a.validTo) gaps.push("validity");
-  if (a.employees === undefined) gaps.push("scope");
-  if (!a.signedDate) gaps.push("signedDate");
-  return gaps;
+/** One line of the checklist: what it is, and whether the record carries it. */
+export interface RegistrationCheck {
+  id: RegistrationGap;
+  done: boolean;
+}
+
+export interface RegistrationInput {
+  signedDate?: string;
+  validTo?: string;
+  employees?: number;
+  /** How many bargaining rounds are registered under it (FA-002). */
+  wageAgreementCount: number;
+  /** Protocols and agreement prints linked to it (FD-001). */
+  protocolCount: number;
+}
+
+/**
+ * Everything a finished registration carries, each with whether this one has it.
+ *
+ * **Both halves, not only the missing one.** `/avtal/ny` printed a fixed list of
+ * five sentences after saving — the same five whatever the record held — so an
+ * officer who came back a week later, having registered the wage agreement and
+ * linked the protocol, was told to do both again. A list that cannot change is
+ * a picture of a checklist, which is the same fault as a filter that does not
+ * filter. And the detail view named only what was absent, so *how far have I
+ * got* had no answer anywhere: two lists of one idea, neither of them able to
+ * say *done*.
+ *
+ * One derivation, rendered in both places. What is ticked is ticked because the
+ * register says so.
+ *
+ * **Allmänna villkor is deliberately not a line here.** `GeneralTerms` is a
+ * declared type with no data behind it and no screen that writes one, so an
+ * entry for it could never be ticked — every agreement in MI's register would
+ * read as permanently unfinished, which is a worse answer than a shorter list.
+ * It belongs here the day the section exists.
+ */
+export function registrationChecklist(a: RegistrationInput): RegistrationCheck[] {
+  return [
+    { id: "wageAgreement", done: a.wageAgreementCount > 0 },
+    { id: "validity", done: Boolean(a.validTo) },
+    { id: "scope", done: a.employees !== undefined },
+    { id: "protocol", done: a.protocolCount > 0 },
+    { id: "signedDate", done: Boolean(a.signedDate) },
+  ];
+}
+
+/**
+ * What is still missing — the checklist, filtered.
+ *
+ * Derived rather than computed a second time, so the sentence beside the mark
+ * and the checklist above it can never disagree about the same record.
+ */
+export function registrationGaps(a: RegistrationInput): RegistrationGap[] {
+  return registrationChecklist(a)
+    .filter((c) => !c.done)
+    .map((c) => c.id);
+}
+
+/** How far the registration has got, for a count the officer can read at a glance. */
+export function registrationProgress(a: RegistrationInput): {
+  done: number;
+  total: number;
+} {
+  const list = registrationChecklist(a);
+  return { done: list.filter((c) => c.done).length, total: list.length };
 }
 
 /**

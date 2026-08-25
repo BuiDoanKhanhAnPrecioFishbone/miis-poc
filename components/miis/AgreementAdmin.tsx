@@ -20,6 +20,7 @@ import { dictionary } from "@/lib/i18n";
 import { markPublished, setRegistrationComplete } from "@/lib/session-store";
 import { IconForward } from "./icons";
 import { EditablePanel } from "./EditablePanel";
+import { RegistrationChecklist } from "./RegistrationChecklist";
 import {
   Badge,
   Button,
@@ -387,6 +388,7 @@ export function AgreementScope({
 export function RegistrationCompletion({
   agreement,
   wageAgreementCount,
+  protocolCount,
   lang,
 }: {
   agreement: Pick<
@@ -394,6 +396,8 @@ export function RegistrationCompletion({
     "id" | "published" | "signedDate" | "validTo" | "employees"
   > & { registrationStatus: RegistrationStatus };
   wageAgreementCount: number;
+  /** Protocols and agreement prints linked to it (FD-001). */
+  protocolCount: number;
   lang: Lang;
 }) {
   const t = dictionary(lang).avtal.detail;
@@ -401,7 +405,7 @@ export function RegistrationCompletion({
   const router = useRouter();
 
   const record = { ...agreement, registrationStatus: status };
-  const gaps = registrationGaps({ ...agreement, wageAgreementCount });
+  const checklistRecord = { ...agreement, wageAgreementCount, protocolCount };
   const canComplete = mayMarkComplete(record);
   const canReopen = mayReopenRegistration(record);
 
@@ -418,16 +422,17 @@ export function RegistrationCompletion({
       </Badge>
 
       {/*
-        What is thin about the record, named. Not a `Callout`: the sidebar is
-        320px and this is a standing property of the record rather than news
-        about something that just happened — the same reason the publication
-        note beside it is a badge and a sentence.
+        How far the registration has got, not only what is absent. Not a
+        `Callout`: the sidebar is 320px and this is a standing property of the
+        record rather than news about something that just happened — the same
+        reason the publication note beside it is a badge and a sentence.
+
+        Shown on a complete registration too. *Markerad som klar* is the
+        officer's judgement and a complete record can legitimately carry gaps —
+        a kvarstående agreement has no löneavtal this round — so hiding the list
+        once it is marked would hide exactly the case worth being able to check.
       */}
-      {status === "incomplete" && gaps.length > 0 && (
-        <p className="text-label text-muted-foreground">
-          {t.completionGaps(gaps.map((g: RegistrationGap) => t.gapLabel[g]).join(", "))}
-        </p>
-      )}
+      <RegistrationChecklist record={checklistRecord} lang={lang} compact />
 
       <div className="print-hide">
         {canComplete && (

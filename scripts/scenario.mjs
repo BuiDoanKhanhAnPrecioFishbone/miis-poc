@@ -163,10 +163,16 @@ if ((await newest.count()) === 0) {
   } else {
     /* Vad som saknas ska stå på posten — annars är klarmarkeringen en knapp
        utan upplysning om vad man skriver under på. */
+    /* The checklist, not the old inline sentence: a count and five lines, so
+       the officer can see both what is done and what is left before they sign
+       the registration off. */
+    const panel = await page.locator("main").innerText();
     check(
-      "posten säger vad registreringen saknar",
-      /Registreringen saknar/.test(await page.locator("main").innerText()),
+      "posten säger hur långt registreringen kommit",
+      /Registrerat: \d+ av \d+/.test(panel),
+      (panel.match(/Registrerat: \d+ av \d+/) ?? [""])[0],
     );
+    check("posten räknar upp vad som återstår", /återstår|Teckningsdatum/.test(panel));
     await mark.click();
     /* Wait for the state, not for a duration: the mark is written in the
        browser and the badge is re-rendered on the server, so a fixed timeout

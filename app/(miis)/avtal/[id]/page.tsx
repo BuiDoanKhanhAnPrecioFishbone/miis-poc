@@ -32,6 +32,7 @@ import {
   EmptyState,
 } from "@/components/miis/primitives";
 import { getAgreementDetail } from "@/lib/data/agreements";
+import { countAgreementProtocols } from "@/lib/data/documents";
 import {
   AGREEMENT_CONSTRUCTIONS,
   agreementTitle,
@@ -81,6 +82,8 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
   if (!detail) notFound();
 
   const { agreement, wageAgreements, workingGroups, specialQuestions, events } = detail;
+  /* FD-001 — one of the five things the registration checklist can answer. */
+  const protocolCount = await countAgreementProtocols(id);
   const t = i18n.avtal.detail;
   const status = agreementStatus(agreement, lang);
   const latest = wageAgreements[0];
@@ -393,6 +396,7 @@ export default async function AgreementDetailPage({ params }: { params: Promise<
               <RegistrationCompletion
                 agreement={agreement}
                 wageAgreementCount={wageAgreements.length}
+                protocolCount={protocolCount}
                 lang={lang}
               />
               <p className="text-table tabular-nums">{validityLabel(agreement, lang)}</p>

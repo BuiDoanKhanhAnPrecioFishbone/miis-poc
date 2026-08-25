@@ -7,7 +7,9 @@ import {
   mayPublish,
   mayReopenRegistration,
   orderedQuestions,
+  registrationChecklist,
   registrationGaps,
+  registrationProgress,
   SPECIAL_QUESTION_NUMBERS,
   unionDensityPercent,
   type SpecialQuestions,
@@ -198,20 +200,23 @@ describe("marking a registration complete", () => {
 describe("registration gaps", () => {
   const full = {
     wageAgreementCount: 1,
+    protocolCount: 1,
     validTo: "2028-03-31",
     employees: 12000,
     signedDate: "2027-04-01",
   };
+  const empty = { wageAgreementCount: 0, protocolCount: 0 };
 
-  it("finds nothing on a record that carries all four", () => {
+  it("finds nothing on a record that carries all five", () => {
     expect(registrationGaps(full)).toEqual([]);
   });
 
   it("names each missing part, in the order the officer would fill them", () => {
-    expect(registrationGaps({ wageAgreementCount: 0 })).toEqual([
+    expect(registrationGaps(empty)).toEqual([
       "wageAgreement",
       "validity",
       "scope",
+      "protocol",
       "signedDate",
     ]);
   });
@@ -224,7 +229,46 @@ describe("registration gaps", () => {
 
   it("does not gate the act it informs", () => {
     const thin = { registrationStatus: "incomplete" as const };
-    expect(registrationGaps({ wageAgreementCount: 0 }).length).toBeGreaterThan(0);
+    expect(registrationGaps(empty).length).toBeGreaterThan(0);
     expect(mayMarkComplete(thin)).toBe(true);
+  });
+});
+
+/**
+ * The checklist the officer reads, and the reason it is one derivation.
+ *
+ * `/avtal/ny` printed five fixed sentences after saving and the detail view named
+ * only what was absent, so *how far have I got* had no answer on any screen. Both
+ * now render this, and `registrationGaps` is this filtered — so the sentence
+ * beside the mark and the list above it cannot disagree about one record.
+ */
+describe("the registration checklist", () => {
+  const empty = { wageAgreementCount: 0, protocolCount: 0 };
+
+  it("carries every line whether or not the record has it", () => {
+    expect(registrationChecklist(empty)).toHaveLength(5);
+    expect(registrationChecklist(empty).every((c) => !c.done)).toBe(true);
+  });
+
+  it("ticks what the form already collected", () => {
+    /* A record created a second ago has no bargaining round and no document —
+       but the officer may have typed a signing date and an end date, and a list
+       that could not show that was the whole complaint. */
+    const justCreated = { ...empty, signedDate: "2027-04-01", validTo: "2029-03-31" };
+    const done = registrationChecklist(justCreated).filter((c) => c.done).map((c) => c.id);
+    expect(done).toEqual(["validity", "signedDate"]);
+  });
+
+  it("is the same answer as the gaps, from one derivation", () => {
+    const partial = { wageAgreementCount: 1, protocolCount: 0, employees: 900 };
+    const notDone = registrationChecklist(partial).filter((c) => !c.done).map((c) => c.id);
+    expect(notDone).toEqual(registrationGaps(partial));
+  });
+
+  it("counts progress for the line above the list", () => {
+    expect(registrationProgress(empty)).toEqual({ done: 0, total: 5 });
+    expect(
+      registrationProgress({ ...empty, employees: 12000, signedDate: "2027-04-01" }),
+    ).toEqual({ done: 2, total: 5 });
   });
 });

@@ -1423,6 +1423,18 @@ export const en: Dictionary = {
     title: "Agreements",
     epic: "Agreement registration and management",
     subtitle: "Agreements, agreement areas, wage agreements and general terms",
+    checklist: {
+      progress: (done: number, total: number) => `Registered: ${done} of ${total}`,
+      done: "registered",
+      remaining: "remaining",
+      item: {
+        wageAgreement: "Wage agreement for the bargaining round",
+        validity: "The agreement's validity period",
+        scope: "The agreement's scope",
+        protocol: "Protocol and agreement print",
+        signedDate: "Signing date",
+      },
+    },
     register: {
       heading: "Agreement register",
       intro:
@@ -1482,14 +1494,8 @@ export const en: Dictionary = {
       savedHeading: "The agreement is registered",
       savedNote: (name: string) =>
         `${name} is registered as incomplete. The registration is written to the change log with the time and user.`,
-      nextSteps: "This remains before the agreement can be published:",
-      nextStepList: [
-        "Register the wage agreement for the bargaining round — construction, wage scope and cost frame.",
-        "Register the general terms with their own validity period.",
-        "Fill in the agreement's scope: employees, annual workers, union members and average wage.",
-        "Link the protocol and the agreement print.",
-        "Mark the registration complete and publish the agreement.",
-      ],
+      nextSteps:
+        "This is how far the registration has got. It has to be marked complete before the agreement can be published.",
       toAgreement: "Open the agreement",
       toRegister: "To the agreement register",
       another: "Register another agreement",
@@ -1598,6 +1604,7 @@ export const en: Dictionary = {
         wageAgreement: "a wage agreement",
         validity: "a validity period",
         scope: "the scope figures",
+        protocol: "a linked protocol",
         signedDate: "a signing date",
       },
       completionNote:
