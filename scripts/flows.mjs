@@ -156,39 +156,53 @@ let shots = 0;
 /** The document's own prose. The steps' prose comes from the walkthrough. */
 const DOC_COPY = {
   sv: {
-    title: "Flödesbilder — huvudflödet i varje scenario",
-    generated:
-      "*Genererad ur `lib/domain/walkthrough.ts` av `npm run flows`. Skriv inte i den här filen — ändra steget i genomgången, kör om, och både bilderna och texten följer med. Det är samma flöde som den guidade genomgången på **miis-poc.vercel.app/genomgang** går igenom, och samma bygge som utvärderaren klickar i.*",
+    title: "Så arbetar man i MIIS — sex scenarier, steg för steg",
+    lead:
+      "Det här dokumentet är till för att Medlingsinstitutet ska kunna **pröva systemet själva** och se skälen bakom det som är byggt. Varje avsnitt är ett scenario: en roll, en arbetsuppgift, och de skärmar uppgiften går igenom i tur och ordning. Under varje bild står vad man ser och varför det är gjort så — inte vad knapparna heter, utan vilket problem lösningen svarar mot.",
+    tryIt:
+      "**Prova gärna samtidigt.** Systemet ligger på **miis-poc.vercel.app** och är samma bygge som bilderna är tagna ur. Varje steg anger vilken roll det utförs som och vilken adress det ligger på — rollen växlas i den grå raden överst. Vill man hellre bli guidad finns samma sex scenarier som en klickbar genomgång på **miis-poc.vercel.app/genomgang**, som byter roll åt en.",
     count: (n, steps) =>
-      `${n} scenarier, ${steps} steg. De tre första är de roller som bedöms och ligger först; de tre sista är med som belägg för att systemet är helt, inte som en del av det bedömda svaret.`,
+      `**${n} scenarier, ${steps} steg.** De tre första är de roller som avropsförfrågan bedömer och ligger därför först. De tre sista är med för att visa att systemet är helt — de ingår inte i det bedömda svaret, men de är byggda och går att klicka i.`,
     stripped:
-      "**Demoraden är borttagen ur bilderna.** Rollväxlaren och språkvalet är granskningshjälpmedel och ingår inte i MIIS, så de hör inte hemma i ett dokument som säger *så här ser systemet ut*. Rollen står i stället i texten vid varje steg.",
-    scored: "Bedömt scenario",
-    supporting: "Kompletterande scenario",
+      "**Den grå demoraden är bortklippt ur bilderna.** Rollväxlaren, språkvalet och kravnumren är hjälpmedel för granskningen och ingår inte i MIIS — de syns när man klickar själv, men de hör inte hemma i ett dokument som visar hur systemet ser ut i drift. Rollen står i stället i texten vid varje steg.",
+    aiNote:
+      "**Där AI-stödet är inblandat är steget märkt.** Ingenting AI:t föreslår sparas av sig självt: varje förslag granskas och godkänns av en handläggare, och helt nya avtal registreras alltid för hand. Ett eget steg visar AI-panelen i sin helhet.",
+    provenance:
+      "*Varje bild i dokumentet är tagen automatiskt ur det körande systemet, och texten kommer ur samma källa som den klickbara genomgången. Dokumentet kan därför inte beskriva något som inte finns i bygget.*",
+    scored: "Bedöms i avropet",
+    supporting: "Visas som komplement",
     role: "Roll",
     steps: "steg",
-    taskAndGoal: "Uppgift och mål",
-    workflow: "Arbetsflöde",
+    taskAndGoal: "Vad rollen ska uträtta",
+    workflow: "Så går arbetet till",
     usability: "Användbarhet, effektivitet och tillgänglighet",
-    requirements: "Krav",
+    requirements: "Krav som steget svarar mot",
+    tryStep: (role, href) => `**Prova själv:** växla till *${role}* i demoraden och öppna \`${href}\`.`,
     ai: "AI-stöd",
   },
   en: {
-    title: "Flow images — the main flow of every scenario",
-    generated:
-      "*Generated from `lib/domain/walkthrough.ts` by `npm run flows -- --lang=en`. Do not write in this file — change the step in the walkthrough, re-run, and both the images and the text follow. It is the same flow the guided walkthrough at **miis-poc.vercel.app/genomgang** takes, and the same build an evaluator clicks through.*",
+    title: "How MIIS is worked in — six scenarios, step by step",
+    lead:
+      "This document exists so that Medlingsinstitutet can **try the system themselves** and see the reasoning behind what has been built. Each section is one scenario: a role, a task, and the screens that task goes through in order. Under every image is what you are looking at and why it is built that way — not what the buttons are called, but which problem the solution answers.",
+    tryIt:
+      "**Try it alongside if you like.** The system is at **miis-poc.vercel.app** and is the same build the images were taken from. Every step names the role it is performed as and the address it lives on — the role is switched in the grey strip at the top. If you would rather be guided, the same six scenarios are a clickable walkthrough at **miis-poc.vercel.app/genomgang**, which switches role for you.",
     count: (n, steps) =>
-      `${n} scenarios, ${steps} steps. The first three are the roles being assessed and come first; the last three are here as evidence that the system is complete, not as part of the assessed response.`,
+      `**${n} scenarios, ${steps} steps.** The first three are the roles the call-off assesses and come first for that reason. The last three are here to show the system is complete — they are not part of the assessed response, but they are built and can be clicked through.`,
     stripped:
-      "**The demo strip is removed from the images.** The role switcher and the language choice are review aids and are not part of MIIS, so they do not belong in a document that says *this is what the system looks like*. The role is named in the text at each step instead.",
-    scored: "Assessed scenario",
-    supporting: "Supporting scenario",
+      "**The grey demo strip is cropped out of the images.** The role switcher, the language choice and the requirement numbers are aids for the review and are not part of MIIS — they appear when you click through it yourself, but they do not belong in a document showing how the system looks in use. The role is named in the text at each step instead.",
+    aiNote:
+      "**Where the AI support is involved, the step is marked.** Nothing the AI proposes is saved by itself: every proposal is reviewed and approved by a case officer, and wholly new agreements are always registered by hand. A step of its own shows the AI panel in full.",
+    provenance:
+      "*Every image in this document is captured automatically from the running system, and the text comes from the same source as the clickable walkthrough. The document therefore cannot describe anything that is not in the build.*",
+    scored: "Assessed in the call-off",
+    supporting: "Shown as supporting evidence",
     role: "Role",
     steps: "steps",
-    taskAndGoal: "Task and goal",
-    workflow: "Workflow",
+    taskAndGoal: "What the role has to get done",
+    workflow: "How the work goes",
     usability: "Usability, efficiency and accessibility",
-    requirements: "Requirements",
+    requirements: "Requirements this step answers",
+    tryStep: (role, href) => `**Try it yourself:** switch to *${role}* in the demo strip and open \`${href}\`.`,
     ai: "AI support",
   },
 }[LANG];
@@ -196,11 +210,17 @@ const DOC_COPY = {
 lines.push(
   `# ${DOC_COPY.title}`,
   "",
-  DOC_COPY.generated,
+  DOC_COPY.lead,
+  "",
+  DOC_COPY.tryIt,
   "",
   DOC_COPY.count(WALKTHROUGH.length, totalSteps()),
   "",
   DOC_COPY.stripped,
+  "",
+  DOC_COPY.aiNote,
+  "",
+  DOC_COPY.provenance,
   "",
   "---",
   "",
@@ -227,7 +247,7 @@ for (const scenario of WALKTHROUGH) {
     const file = `${name}.png`;
 
     const ctx = await browser.newContext({
-      viewport: { width: WIDTH, height: 900 },
+      viewport: { width: WIDTH, height: step.drawer ? 1000 : 900 },
       /* Printed at 1x, 13px body text is soft. */
       deviceScaleFactor: 2,
       locale: LOCALE,
@@ -247,8 +267,22 @@ for (const scenario of WALKTHROUGH) {
        full height instead of being pushed down and clipped. */
     await page.addStyleTag({ content: "[data-demo-bar]{display:none!important}" });
     await PREPARE[step.href]?.(page);
+    /* The panel is a drawer behind a launcher, so a shot of the route alone
+       shows the screen in front of it rather than the thing the step is about. */
+    if (step.drawer) {
+      const launcher = page.getByRole("button", { name: /AI-stöd|AI support/ });
+      if (await launcher.count()) {
+        await launcher.first().click();
+        await page.waitForTimeout(500);
+      }
+    }
     await page.waitForTimeout(500);
-    await page.screenshot({ path: path.join(OUT, file), fullPage: true });
+    await page.screenshot({
+      path: path.join(OUT, file),
+      /* A fixed drawer is not part of the scrolling document — full-page it
+         becomes a strip at the top of a very tall image. */
+      fullPage: !step.drawer,
+    });
     await ctx.close();
     shots += 1;
     console.log(`  ${file}`);
@@ -256,7 +290,7 @@ for (const scenario of WALKTHROUGH) {
     lines.push(
       `#### ${n}. ${step.label[LANG]}${step.ai ? ` [${DOC_COPY.ai}]` : ""}`,
       "",
-      `*${DOC_COPY.role}: ${ROLE[step.role]} · \`${step.href}\`*`,
+      DOC_COPY.tryStep(ROLE[step.role], step.href),
       "",
       step.detail[LANG],
       "",

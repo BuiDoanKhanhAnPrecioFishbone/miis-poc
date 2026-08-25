@@ -42,6 +42,14 @@ export interface WalkthroughStep {
    * `aiFunctionsForPath`, so a function added or moved cannot leave it stale.
    */
   ai?: true;
+  /**
+   * Open the AI panel before the screen is captured.
+   *
+   * The panel is a drawer reached from a launcher, so a screenshot of the route
+   * alone shows the screen behind it. The step's own text tells a reviewer to
+   * open it; this tells the capture to.
+   */
+  drawer?: true;
 }
 
 export interface WalkthroughScenario {
@@ -84,8 +92,8 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
           en: "Register a new collective agreement",
         },
         detail: {
-          sv: "Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Lägg upp **Stål- och metallindustrin tjänstemän**, mellan Industriarbetsgivarna och Unionen: protokollet i nästa steg är mellan just de två parterna, och inget avtal i registret är det — A-001 är samma bransch fast med IF Metall. Nästa steg matchar därför protokollet mot posten som skapades här, vilket är hela poängen med §4.1:s ordning: ett förstagångsavtal har ingenting att matchas mot förrän det finns.",
-          en: "An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. Create **Stål- och metallindustrin tjänstemän**, between Industriarbetsgivarna and Unionen: the protocol in the next step is between exactly those two parties, and no agreement in the register is — A-001 is the same industry with IF Metall. The next step therefore matches the protocol to the record created here, which is the point of §4.1’s order: a first-time agreement has nothing to match against until it exists.",
+          sv: "Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Lägg upp **Stål- och metallindustrin tjänstemän**, mellan Industriarbetsgivarna och Unionen. Posten dyker upp bland kandidaterna redan i nästa steg — matchningen ser alltså även det som registrerades för en minut sedan, vilket är hela poängen med §4.1:s ordning: ett förstagångsavtal har ingenting att matchas mot förrän det finns. Resten av scenariot följer det avtal protokollet gäller.",
+          en: "An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. Create **Stål- och metallindustrin tjänstemän**, between Industriarbetsgivarna and Unionen. The record appears among the candidates in the very next step — so the matching sees what was registered a minute ago too, which is the point of §4.1’s order: a first-time agreement has nothing to match against until it exists. The rest of the scenario follows the agreement the protocol concerns.",
         },
         role: "agreement-admin",
         href: "/avtal/ny",
@@ -94,13 +102,25 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Registrera avtalsprotokoll", en: "Register the agreement protocol" },
         detail: {
-          sv: "Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). Det matchade avtalet är en lista, inte ett påstående: varje kandidat säger vad den lästes ur — rubrikens avtalsnamn, båda parterna eller filnamnet — och avtalet som lades upp i steg 1 står bland dem. OCR, bevakningsord och matchning körs automatiskt; AI-förslagen är källkopplade — välj ett så markeras stycket det lästes ur. Ett förslag är avsiktligt fel, så den avvisade vägen visas och inte bara påstås.",
-          en: "Upload the protocol and walk Medlingsinstitutet's own five steps (§4.4). The matched agreement is a list rather than an assertion: every candidate says what it was read from — the heading's agreement name, both parties, or the file name — and the agreement created in step 1 is among them. OCR, watchwords and matching run automatically; the AI proposals are source-linked — select one and the passage it was read from is highlighted. One proposal is deliberately wrong, so the rejected path is shown rather than merely asserted.",
+          sv: "Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). Det matchade avtalet är en lista, inte ett påstående. AI:t föreslår det starkaste skälet — här avtalsnamnet i rubriken — men varje kandidat säger vad den lästes ur, och handläggaren avgör. Det är värt att stanna vid: protokollets parter är Industriarbetsgivarna och **Unionen**, medan det föreslagna avtalet är samma bransch med IF Metall. Avtalet från steg 1 ligger näst i listan, matchat på just parterna. OCR, bevakningsord och matchning körs automatiskt; AI-förslagen är källkopplade — välj ett så markeras stycket det lästes ur. Ett förslag är avsiktligt fel, så den avvisade vägen visas och inte bara påstås.",
+          en: "Upload the protocol and walk Medlingsinstitutet's own five steps (§4.4). The matched agreement is a list rather than an assertion. The AI proposes the strongest reason — here the agreement name in the heading — but every candidate says what it was read from, and the officer decides. It is worth pausing on: the protocol's parties are Industriarbetsgivarna and **Unionen**, while the proposed agreement is the same industry with IF Metall. The agreement from step 1 is next in the list, matched on those very parties. OCR, watchwords and matching run automatically; the AI proposals are source-linked — select one and the passage it was read from is highlighted. One proposal is deliberately wrong, so the rejected path is shown rather than merely asserted.",
         },
         role: "agreement-admin",
         href: "/registrera",
         requirements: ["FAI-001", "FAI-002", "FAI-003", "FAI-004", "FA-021"],
         ai: true,
+      },
+      {
+        label: { sv: "AI-stödet, samlat", en: "The AI support, in one place" },
+        detail: {
+          sv: "Öppna AI-panelen nere till höger. Den har tre flikar, för att en handläggare har tre olika ärenden med ett AI-stöd. **Fråga** ställer en fråga om registret och svarar med de poster den räknade — den skriver ingenting och formulerar ingen text om kollektivavtal. **Granska** är kön: varje maskinellt framtaget förslag som ingen har godkänt, gemensam för alla som får registrera i respektive register, och siffran faller när ett förslag godkänns eller avvisas. **Om** är katalogen: §4.1:s fyra funktioner med var de körs, de två tillägg vi föreslår utöver dem, och gränserna i Medlingsinstitutets egna ord — allt AI:t föreslår ska granskas och godkännas, och helt nya avtal registreras alltid manuellt.",
+          en: "Open the AI panel at the bottom right. It has three tabs, because an officer has three different kinds of business with an AI support. **Ask** puts a question to the register and answers with the records it counted — it writes nothing and composes no text about collective agreements. **Review** is the queue: every machine-made proposal nobody has approved, shared between everyone who may register in each register, and the number falls when a proposal is approved or rejected. **About** is the catalogue: §4.1's four functions with where each runs, the two additions we propose beyond them, and the boundaries in Medlingsinstitutet's own words — everything the AI proposes is to be reviewed and approved, and wholly new agreements are always registered manually.",
+        },
+        role: "agreement-admin",
+        href: "/registrera",
+        requirements: ["FAI-002", "NFÅ-003"],
+        ai: true,
+        drawer: true,
       },
       {
         label: { sv: "Avtalsregistret", en: "The agreement register" },

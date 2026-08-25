@@ -1,47 +1,51 @@
 # Demomanus — inspelad genomgång av Scenario 2
 
-*Framtaget 2026-08-25. Ett scenario, inspelat. Komplement till
-`docs/27-presentationsmanus.md`, som är repliken för de femton minuterna hos
-Medlingsinstitutet — det här är manus för filmen.*
+*Omarbetat 2026-08-25 mot systemet som det ser ut nu. Ett scenario, inspelat.
+Komplement till `docs/27-presentationsmanus.md`, som är repliken för de femton
+minuterna hos Medlingsinstitutet — det här är manus för filmen.*
 
 ## Varför just det här scenariot
 
-Bilaga 2 §3.5 bedömer tre roller. Den här filmen visar **en**:
+Avropsförfrågan bedömer tre roller. Den här filmen visar **en**:
 Avtalsadministratör/Handläggare. Skälen är tre, och de är värda att säga rakt ut
 innan någon lägger tid på inspelningen.
 
-Det är **myndighetens dagliga arbete**. Systemadministratörens scenario handlar om
-vem som får göra vad, allmänhetens dator om vad som lämnas ut. Det här är det
-arbete som sker varje vecka under en avtalsrörelse, och det är det arbete
-resten läser: Konjunkturlönerapporten, årsrapporten och den publika datorn läser
-alla det handläggaren skriver in.
+Det är **myndighetens dagliga arbete**. Systemadministratörens scenario handlar
+om vem som får göra vad, allmänhetens dator om vad som lämnas ut. Det här är det
+arbete som sker varje vecka under en avtalsrörelse, och det är det arbete resten
+läser: Konjunkturlönerapporten, årsrapporten och den publika datorn läser alla
+det handläggaren skriver in.
 
-Det är **det längsta**: sju steg mot sex och fem. Alla fyra av §3.5:s punkter för
-rollen ligger i det, och de går att gå igenom på **ett och samma avtal** — vilket
-är hela poängen med att filma det som ett flöde i stället för som skärmar.
+Det är **det längsta**: åtta steg mot sex och fem. Alla fyra punkter som avropet
+räknar upp för rollen ligger i det.
 
 Och det är den del där systemet gör något **som inte går att visa med en skiss**:
-protokollet bredvid formuläret, källkopplingen, det avvisade förslaget, och
-publiceringen som syns på en annan roll efteråt.
+protokollet bredvid formuläret, matchningen som är ett val och inte ett
+påstående, det avvisade förslaget, och publiceringen som syns på en annan roll
+efteråt.
 
 ---
 
 ## Berättelsen på en rad
 
-> **Två vägar in i registret, en väg ut. Filmen lägger upp ett nytt
-> kollektivavtal, registrerar ett inkommet protokoll, rättar en uppgift — och
-> slutar med att avtalet som lades upp i början kan läsas av en besökare på
-> datorn i Medlingsinstitutets lokaler.**
+> **Ett undertecknat protokoll kommer in. Filmen följer arbetet från den tomma
+> posten till den dag en besökare kan läsa avtalet på datorn i
+> Medlingsinstitutets lokaler — och stannar tre gånger på ställen där maskinen
+> föreslår och en människa avgör.**
 
-Det är hela storylinen, och den ska höras i öppningen och stängas i slutet. Allt
+Det är storylinen, och den ska höras i öppningen och stängas i slutet. Allt
 däremellan är stationer på den vägen — inte funktioner som räknas upp.
+
+**De tre stoppen är filmens poäng.** Matchningen som handläggaren kan ändra, det
+felaktiga förslaget som avvisas, och klarmarkeringen som ingen regel gör åt
+någon. Blir filmen för lång är det de andra scenerna som kortas.
 
 Två saker som **inte** ska styra dispositionen:
 
 - **Inte menyn.** En film som går igenom menyalternativ visar ett systems
   innehållsförteckning, inte dess arbete.
-- **Inte kravlistan.** Kraven syns i traceability-lagret och i svarstexten. En
-  film som läser upp krav-ID:n läser upp något tittaren redan har på papper.
+- **Inte kravlistan.** Kravnumren finns i svarstexten och i systemets eget
+  krav-ID-läge. En film som läser upp dem läser upp något tittaren har på papper.
 
 ---
 
@@ -50,12 +54,17 @@ Två saker som **inte** ska styra dispositionen:
 | | |
 |---|---|
 | Adress | `miis-poc.vercel.app` — samma bygge som utvärderaren klickar i |
-| Roll | Avtalsadministratör, hela filmen utom sista scenen |
+| Roll | Avtalsadministratör, hela filmen utom näst sista scenen |
 | Datamängd | Normalläge |
 | Språk | Svenska |
-| Krav-ID | **Dolda** — produktvyn. Se scen 11 för det enda undantaget |
+| Krav-ID | **Dolda** — produktvyn |
 | Fönster | 1440 × 900, webbläsaren i helskärm, inga bokmärken eller flikar synliga |
 | Muspekare | Synlig. Rör den långsamt och pausa **innan** klicket, inte efter |
+
+**Börja med en ren session.** Rensa webbläsarens data för adressen först — filmen
+lägger upp ett avtal och publicerar ett annat, och båda ligger kvar i sessionen.
+En andra tagning på en smutsig session visar ett avtal som redan är publicerat i
+den scen som handlar om att publicera det.
 
 **Demoraden lämnas synlig och förklaras en gång, i scen 1.** Den som ser en
 rollväxlare i en film och inte får den förklarad tror att den är föreslagen
@@ -74,35 +83,31 @@ Räknat mot **130 ord i minuten**, vilket är presenterande svensk taltakt. Dryg
 fyra tiondelar av speltiden går till klick och tystnad — det är inte spilltid
 utan den tid tittaren läser skärmen.
 
+Klockan är räknad ur replikerna och inte tvärtom: varje scens tid är dess taltid
+delad med 0,58, så alla scener får samma andrum i stället för att totalen stämmer
+medan enskilda scener kräver att man pratar oavbrutet över två klick.
+
 | Scen | Klocka | Ord |
 |---|---|---|
-| 1 · Vad det här är | 0:00–1:00 | 76 |
-| 2 · Avtalet AI:t inte får röra | 1:00–1:55 | 66 |
-| 3 · Protokollet kommer in | 1:55–2:45 | 61 |
-| 4 · Varifrån siffran kom | 2:45–3:20 | 41 |
-| 5 · Det avvisade förslaget | 3:20–4:05 | 59 |
-| 6 · Var registreringen hamnar | 4:05–4:40 | 45 |
-| 7 · Att rätta en uppgift | 4:40–5:35 | 72 |
-| 8 · En rad per avtalsrörelse | 5:35–6:05 | 39 |
-| 9 · Klarmarkering och publicering | 6:05–7:20 | 95 |
-| 10 · Datorn i lokalerna | 7:20–8:00 | 50 |
-| 11 · Avslut | 8:00–8:25 | 32 |
-| **Summa** | **8:25** | **636** |
+| 1 · Vad det här är | 0:00–1:10 | 86 |
+| 2 · Avtalet AI:t inte får röra | 1:10–2:10 | 74 |
+| 3 · Protokollet kommer in | 2:10–3:00 | 61 |
+| 4 · Första stoppet — vilket avtal gäller det? | 3:00–4:00 | 78 |
+| 5 · Varifrån siffran kom | 4:00–4:25 | 34 |
+| 6 · Andra stoppet — det avvisade förslaget | 4:25–5:10 | 59 |
+| 7 · AI-stödet, samlat | 5:10–6:25 | 94 |
+| 8 · Var registreringen hamnar | 6:25–7:00 | 45 |
+| 9 · Att rätta en uppgift | 7:00–7:55 | 70 |
+| 10 · Tredje stoppet — klarmarkering och publicering | 7:55–8:50 | 71 |
+| 11 · Datorn i lokalerna | 8:50–9:10 | 28 |
+| 12 · Avslut | 9:10–9:45 | 46 |
+| **Summa** | **9:45** | **746** |
 
-636 ord i 130 ord/minut är **4:54 ren taltid inom 8:25** —
-3:31 tystnad, och den tystnaden är där tittaren hinner läsa skärmen. Fyll
-den inte.
+746 ord i 130 ord/minut är **5:44 ren taltid inom 9:45** — 4:01
+tystnad, och den tystnaden är där tittaren hinner läsa skärmen. Fyll den inte.
 
-**Klockan är räknad ur replikerna, inte tvärtom.** Varje scens tid är dess
-taltid delad med 0,58 — samma andel tal i alla scener, i stället för att totalen
-stämmer medan enskilda scener kräver att man pratar oavbrutet över två klick.
-Behövs en kortare version är det scen 7 och scen 9 som ska kortas, inte scen 5:
-det avvisade förslaget är det enda i filmen en konkurrent inte kan påstå sig ha.
-
-Siffrorna är räknade ur scenernas egna repliker, inte uppskattade. Kommandot
-räknar **bara** det som står under en `## Scen`-rubrik — storylinen längre upp är
-inte något som sägs i filmen, och en kontroll som räknar med den återger inte
-tabellen den ska kontrollera:
+*Räkna om efter varje ändring av replikerna — en tidsbudget som ingen räknat om
+är en gissning:*
 
 ```bash
 python -c "import io,re;s=io.open('docs/30-demomanus-video-SV.md',encoding='utf-8').read();parts=re.split(r'^## ',s,flags=re.M);print(sum(len(q.split()) for p in parts if p.startswith('Scen ') for q in re.findall(r'^> (.*)$',p,re.M)))"
@@ -110,11 +115,11 @@ python -c "import io,re;s=io.open('docs/30-demomanus-video-SV.md',encoding='utf-
 
 ---
 
-## Scen 1 · Vad det här är — 0:00–1:00
+## Scen 1 · Vad det här är — 0:00–1:10
 
 **Bild:** `/avtal` i produktvyn. Ingen rörelse de första två sekunderna.
 
-**Pekare:** vilar. Vid andra meningen: peka på den grå raden överst, en gång.
+**Pekare:** vilar. Vid andra stycket: peka på den grå raden överst, en gång.
 
 **Replik:**
 
@@ -125,43 +130,42 @@ python -c "import io,re;s=io.open('docs/30-demomanus-video-SV.md',encoding='utf-
 > granskningsverktyg — roll, datamängd, språk. De ligger utanför systemets ram
 > just för att ingen ska ta dem för föreslagen funktionalitet.
 >
-> Jag är inloggad som avtalsadministratör. Jag lägger upp ett avtal, registrerar
-> ett protokoll, och slutar med att avtalet finns på den publika datorn.
+> Jag är inloggad som avtalsadministratör. Ett protokoll har kommit in, och jag
+> ska följa det hela vägen till datorn ute i era lokaler. Tre gånger på vägen
+> föreslår systemet något och jag avgör.
 
-*Regi:* sista meningen är storylinen och den ska hållas. Avtalet som läggs upp i
-scen 2 är samma post som publiceras i scen 9 och som söks fram i scen 10 — det
-är därför filmen hänger ihop i stället för att vara en rundvandring.
+*Regi:* sista meningen är storylinen. Säg den långsamt — den ska höras igen i
+sista scenen.
 
 ---
 
-## Scen 2 · Avtalet AI:t inte får röra — 1:00–1:55
+## Scen 2 · Avtalet AI:t inte får röra — 1:10–2:10
 
 **Bild:** klicka **Registrera nytt kollektivavtal**. `/avtal/ny`.
 
-**Pekare:** fyll fälten i takt med repliken. **Fyll även i teckningsdatum** —
-avtalet kommer tillbaka i scen 9, och publicering kräver att det är tecknat.
-Spara.
+**Pekare:** fyll fälten i takt med repliken. Namn **Stål- och metallindustrin
+tjänstemän**, avtalsområde **Stål och metall**, arbetsgivarpart
+**Industriarbetsgivarna**, arbetstagarpart **Unionen**. Fyll också i
+teckningsdatum. Spara.
 
 **Replik:**
 
 > Ibland är avtalet nytt — parterna har aldrig tecknat något förut. Då finns
-> ingenting i registret att matcha mot, och det är därför er
-> kravspecifikation säger att helt nya avtal alltid registreras manuellt.
+> ingenting i registret att matcha mot, och det är därför er kravspecifikation
+> säger att helt nya avtal alltid registreras för hand.
 >
-> Skärmen säger det själv, i stället för att bara göra det.
+> Skärmen säger det själv i stället för att bara göra det.
 >
-> Det sparas som ofullständigt och opublicerat, och listan under bekräftelsen
-> räknar upp vad som återstår. En lucka blockerar ingenting — den syns.
+> Och titta på kvittot. Avtalet är sparat, men ofullständigt — och listan visar
+> vad som är registrerat och vad som återstår. Teckningsdatumet jag nyss skrev
+> in är redan avbockat.
 
-*Regi:* låt bekräftelsens punktlista ligga kvar två sekunder. Den listan är
-kvittot på att systemet vet vad som fattas — och sista punkten på den,
-*"markera registreringen som klar och publicera avtalet"*, är exakt det scen 9
-gör. **Anteckna avtalets namn.** Filmen kommer tillbaka till just den här
-posten.
+*Regi:* låt checklistan ligga kvar två sekunder. Den är svaret på frågan *hur
+långt har jag kommit*, och den kommer tillbaka i scen 10.
 
 ---
 
-## Scen 3 · Protokollet kommer in — 1:55–2:45
+## Scen 3 · Protokollet kommer in — 2:10–3:00
 
 **Bild:** `/registrera`. Ladda upp PDF:en. Låt OCR-momenten löpa.
 
@@ -176,15 +180,40 @@ tittaren se att protokollet står stilla till vänster.
 > Det här är era egna fem steg. Vi har inte lagt till några.
 >
 > Och det viktigaste på hela skärmen är att protokollet står kvar bredvid
-> formuläret medan handläggaren arbetar. Att kontrollera ett värde blir en
-> blick i stället för en scroll fram och tillbaka.
+> formuläret medan handläggaren arbetar. Att kontrollera ett värde blir en blick
+> i stället för en scroll fram och tillbaka.
 
 *Regi:* scrollningen **är** poängen i den här scenen. Gör den långsamt nog att
 den syns, och säg ingenting under den.
 
 ---
 
-## Scen 4 · Varifrån siffran kom — 2:45–3:20
+## Scen 4 · Första stoppet — vilket avtal gäller det? — 3:00–4:00
+
+**Bild:** fältet **Avtal (befintligt i MIIS)** överst i AI-analysen. Öppna listan
+så att kandidaterna syns. Peka på protokollets partsrad till vänster.
+
+**Pekare:** från det föreslagna avtalet, till protokollets parter, till andra
+raden i listan.
+
+**Replik:**
+
+> Systemet har läst protokollet och föreslår vilket avtal det gäller. Under
+> rutan står varför: avtalsnamnet i rubriken.
+>
+> Men titta på parterna i protokollet till vänster. Industriarbetsgivarna och
+> **Unionen**. Det föreslagna avtalet är samma bransch, fast med IF Metall.
+>
+> Därför är det här en lista och inte ett påstående. Varje rad säger vad den
+> lästes ur — rubriken, parterna eller filnamnet — och avtalet jag lade upp för
+> en minut sedan ligger där, matchat på just parterna. Handläggaren avgör.
+
+*Regi:* det viktigaste stoppet i filmen. Låt listan stå öppen. Om ni bara har tid
+med en scen till, är det den här som ska vara med.
+
+---
+
+## Scen 5 · Varifrån siffran kom — 4:00–4:25
 
 **Bild:** klicka AI-märket vid ett fält. Stycket markeras i protokollet.
 
@@ -192,24 +221,23 @@ den syns, och säg ingenting under den.
 
 **Replik:**
 
-> AI-stödet har läst protokollet och föreslår värden. Varje förslag är
-> källkopplat.
+> Varje förslag är källkopplat. Jag markerar det här fältet — och stycket det
+> lästes ur markeras i protokollet.
 >
-> Jag markerar det här fältet — och stycket det lästes ur markeras i
-> protokollet. Handläggaren behöver aldrig leta efter var en siffra kom ifrån
-> för att kunna lita på den.
+> Handläggaren behöver aldrig leta efter var en siffra kom ifrån för att kunna
+> lita på den.
 
 *Regi:* gör det **två gånger**, med två olika fält, andra gången utan replik.
 Upprepningen visar att det är ett beteende och inte ett specialfall.
 
 ---
 
-## Scen 5 · Det avvisade förslaget — 3:20–4:05
+## Scen 6 · Andra stoppet — det avvisade förslaget — 4:25–5:10
 
-**Bild:** ett av förslagen är fel. Avvisa det.
+**Bild:** förslaget på arbetstagarpart är fel. Avvisa det.
 
-**Pekare:** vila på förslaget medan repliken börjar. Klicka **Avvisa** på
-"Jag avvisar det".
+**Pekare:** vila på förslaget medan repliken börjar. Klicka på *"Jag avvisar
+det"*.
 
 **Replik:**
 
@@ -218,15 +246,42 @@ Upprepningen visar att det är ett beteende och inte ett specialfall.
 >
 > Ett av förslagen här är avsiktligt fel. Jag avvisar det.
 >
-> Vi visar den vägen med flit. Ett flöde som bara visar den lyckade vägen
-> påstår granskningen. Det här demonstrerar den.
+> Vi visar den vägen med flit. Ett flöde som bara visar den lyckade vägen påstår
+> granskningen. Det här demonstrerar den.
 
-*Regi:* den viktigaste scenen i filmen. Låt det avvisade förslaget försvinna i
-bild innan du går vidare — klipp inte över det.
+*Regi:* låt det avvisade förslaget försvinna i bild innan du går vidare — klipp
+inte över det.
 
 ---
 
-## Scen 6 · Var registreringen hamnar — 4:05–4:40
+## Scen 7 · AI-stödet, samlat — 5:10–6:25
+
+**Bild:** öppna AI-panelen nere till höger. Visa de tre flikarna i tur och
+ordning: **Fråga**, **Granska**, **Om**.
+
+**Pekare:** på fliknamnen medan de nämns. Öppna **Om** sist och låt den ligga.
+
+**Replik:**
+
+> Det här är hela AI-stödet, samlat på ett ställe.
+>
+> **Fråga** ställer en fråga om registret. Svaret är de poster systemet räknade,
+> och man kan öppna var och en. Det formulerar ingen text om kollektivavtal — en
+> myndighet kan inte publicera ett svar den inte kan stå för.
+>
+> **Granska** är kön: varje maskinellt framtaget förslag som ingen godkänt än.
+> Den är gemensam, inte personlig, och siffran faller när ett förslag godkänns
+> eller avvisas.
+>
+> **Om** är katalogen. De fyra funktioner ni beskrivit, var och en med var den
+> körs — och gränserna i era egna ord.
+
+*Regi:* säg **fyra** och peka på listan. Att kunna säga "det finns ingen femte"
+är hela poängen med att ha en katalog.
+
+---
+
+## Scen 8 · Var registreringen hamnar — 6:25–7:00
 
 **Bild:** `/avtal`. Sätt ett filter så att tabellen smalnar av.
 
@@ -240,15 +295,15 @@ bild innan du går vidare — klipp inte över det.
 > Färgen står aldrig ensam. Den bärs av en form och ett ord också, för ett
 > register där färgen är enda bäraren är oläsbart för en del av era användare.
 
-*Regi:* filtret ska **smalna av tabellen i bild**. En kontroll som ser levande
-ut och inte är det är det värsta en utvärderare kan hitta.
+*Regi:* filtret ska **smalna av tabellen i bild**. En kontroll som ser levande ut
+och inte är det är det värsta en utvärderare kan hitta.
 
 ---
 
-## Scen 7 · Att rätta en uppgift — 4:40–5:35
+## Scen 9 · Att rätta en uppgift — 7:00–7:55
 
-**Bild:** öppna avtalet. Klicka **Redigera** i panelen *Avtalets omfattning*.
-Ändra antal anställda och fackmedlemmar.
+**Bild:** öppna Stål- och metallindustrin. Klicka **Redigera** i panelen
+*Avtalets omfattning*. Ändra antal anställda och fackmedlemmar.
 
 **Pekare:** på Organisationsgrad medan de två talen ovanför skrivs in.
 
@@ -258,72 +313,42 @@ ut och inte är det är det värsta en utvärderare kan hitta.
 > sin egen Redigera-knapp, och rättningen sker på värdena själva — inte på en
 > andra skärm med samma uppgifter en gång till.
 >
-> Titta på organisationsgraden här nere medan jag skriver. Den räknas fram. Den
-> är inte ett tredje tal någon matar in, för då kan den bli inaktuell.
+> Titta på organisationsgraden medan jag skriver. Den räknas fram. Den är inte
+> ett tredje tal någon matar in, för då kan den bli inaktuell.
 >
 > Ändringen skrivs till ändringsloggen med gammalt värde, nytt värde, tidpunkt
 > och användare.
 
-*Regi:* skriv långsamt nog att organisationsgraden hinner uppdateras synligt.
-Det är den enda scenen där ett tal ändrar sig av sig självt, och det ska ses.
+*Regi:* skriv långsamt nog att organisationsgraden hinner uppdateras synligt. Det
+är den enda scenen där ett tal ändrar sig av sig självt, och det ska ses.
 
 ---
 
-## Scen 8 · En rad per avtalsrörelse — 5:35–6:05
+## Scen 10 · Tredje stoppet — klarmarkering och publicering — 7:55–8:50
 
-**Bild:** fliken **Löneavtal**.
+**Bild:** högerspalten. Peka på checklistan, klicka **Markera registreringen som
+klar**, sedan **Publicera avtalet**.
 
-**Pekare:** längs raderna, uppifrån och ned.
-
-**Replik:**
-
-> Ett avtal har ingen versionslista. Det har en rad per avtalsrörelse — varje
-> omförhandling får sin egen konstruktion, sitt eget löneutrymme och sin egen
-> kostnadsram.
->
-> Jämförelsen mot förra ronden är alltså inte en rapport man beställer. Den är
-> tabellen.
-
-*Regi:* håll den kort. Poängen är strukturen, inte siffrorna.
-
----
-
-## Scen 9 · Klarmarkering och publicering — 6:05–7:20
-
-**Bild:** **öppna avtalet från scen 2** — det som sparades som ofullständigt.
-Högerspalten: klicka **Markera registreringen som klar**, sedan **Publicera
-avtalet**.
-
-**Pekare:** peka först på raden *Registreringen saknar …*, och på den nekade
-publiceringsknappen, innan du klarmarkerar.
+**Pekare:** på checklistans rader innan du klarmarkerar.
 
 **Replik:**
 
-> Nu tillbaka till avtalet jag lade upp i början. Det är fortfarande
-> ofullständigt, och publiceringen nekas — skärmen säger att registreringen
-> måste vara markerad som klar.
+> Två handlingar till slut, och de är avsiktligt åtskilda.
 >
-> Så det är två handlingar, och de är avsiktligt åtskilda.
->
-> Först klarmarkeringen. Systemet visar vad posten saknar, men det avgör inte.
-> Ett kvarstående avtal som ingen omförhandlat i år är en komplett registrering
-> utan löneavtal under sig — så handläggaren avgör, inte en regel.
+> Först klarmarkeringen. Checklistan visar vad posten innehåller och vad den
+> saknar — men den avgör inte. Ett kvarstående avtal som ingen omförhandlat i år
+> är en komplett registrering utan löneavtal under sig. Handläggaren avgör, inte
+> en regel.
 >
 > Sedan publiceringen. Den är en handling med datum och person, inte en följd av
 > att posten är komplett. Ni avgör när ett avtal lämnas ut.
 
-*Regi:* visa den nekade knappen **innan** du klarmarkerar — vägran och vägen
-förbi den hör ihop, och det är den ordningen en handläggare möter dem i. Låt
-raden *Publicerat …, av …* ligga kvar två sekunder efteråt. Datumet och personen
-är hela argumentet.
-
-Det här är den väg `npm run scenario` går igenom och kontrollerar vid varje
-ändring, så filmen följer ett flöde som är verifierat och inte ett som råkar
-fungera den dagen.
+*Regi:* låt raden *Publicerat …, av …* ligga kvar två sekunder. Datumet och
+personen är hela argumentet.
 
 ---
 
-## Scen 10 · Datorn i lokalerna — 7:20–8:00
+## Scen 11 · Datorn i lokalerna — 8:50–9:10
 
 **Bild:** byt roll till **Publik dator** i demoraden. `/allmanheten`. Sök upp
 avtalet.
@@ -336,37 +361,37 @@ avtalet.
 >
 > Ingen inloggning, ingen meny, inget fackspråk. En besökare, ett sökfält.
 >
-> Och avtalet jag lade upp i början av filmen ligger här. Det är hela vägen:
-> från en tom post till något en journalist kan läsa och ta med sig.
+> Och avtalet jag nyss publicerade ligger här.
 
 *Regi:* sök fram avtalet **i bild**. Att det finns där är beviset; att säga att
 det finns där är ett påstående.
 
 ---
 
-## Scen 11 · Avslut — 8:00–8:25
+## Scen 12 · Avslut — 9:10–9:45
 
-**Bild:** avtalet i den publika vyn ligger kvar. **Valfritt:** slå på Krav-ID i
-demoraden och låt taggarna tona in under sista meningen.
+**Bild:** avtalet i den publika vyn ligger kvar.
 
 **Replik:**
 
-> Det var handläggarens scenario. Systemadministratörens ligger i svaret och i
-> den guidade genomgången, och allmänhetens dator såg ni just slutet av.
+> Det var handläggarens arbete, från protokollet på skrivbordet till det en
+> besökare kan läsa.
 >
-> Allt ni sett är det körande systemet. Ingenting är en skiss.
+> Tre gånger föreslog systemet något och en människa avgjorde: vilket avtal
+> protokollet gällde, vilka värden som stämde, och när posten var klar att
+> lämnas ut.
+>
+> Allt ni sett är det körande systemet.
 
-*Regi:* om Krav-ID slås på: säg ingenting om det. Taggarna talar för sig själva
-och en förklaring gör en tyst styrka till en utläggning.
+*Regi:* stanna på bilden två sekunder efter sista ordet.
 
 ---
 
 ## Vad som inte får sägas
 
-Bilaga 2 §3.6: *"Leverantören får ej tillföra nya åtaganden, det är inte en
-möjlighet till en andra anbudsomgång."* Det gäller filmen lika mycket som den
-muntliga presentationen — en film som visas för Medlingsinstitutet är en del av
-anbudet.
+Avropets regel om den muntliga presentationen — *"leverantören får ej tillföra
+nya åtaganden"* — gäller filmen lika mycket. En film som visas för
+Medlingsinstitutet är en del av anbudet.
 
 **Varje påstående i manuset ovan finns i den inlämnade texten.** Kontrollera mot
 `docs/18-role-scenarios-SV.md` innan inspelning, inte efter.
@@ -392,7 +417,7 @@ till Medlingsinstitutet är en onödig sak att låta hända.
 
 **Filnamn:** `MIIS-demo-scenario2-avtalsadministrator-SV.mp4`.
 
-**Om filmen ska finnas på engelska** görs den om från början med `miis_lang=en`,
-inte med engelsk textning över svenska skärmar. Gränssnittet är översatt i sin
-helhet; en film som säger en sak och visar en annan väcker frågan om vad mer som
-skiljer.
+**Om filmen ska finnas på engelska** görs den om från början med språket satt
+till engelska, inte med engelsk textning över svenska skärmar. Gränssnittet är
+översatt i sin helhet; en film som säger en sak och visar en annan väcker frågan
+om vad mer som skiljer.
