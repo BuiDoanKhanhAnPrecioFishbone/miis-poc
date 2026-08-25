@@ -1320,6 +1320,7 @@ export const sv = {
       "Publik vy hos Medlingsinstitutet. Åtkomst sker från en särskild klientdator i MI:s lokaler, utan inloggning.",
     publicMarker: "Publik vy",
     backToReport: "Tillbaka till rapporten",
+    backToAgreement: "avtalet",
     fromReport:
       "Urvalet kommer från rapporten Avtal – Allmänheten. Det går att ändra här, och listan smalnar av på riktigt.",
     publicExplain:

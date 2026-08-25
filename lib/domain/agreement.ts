@@ -259,6 +259,30 @@ export type RegistrationGap =
   | "protocol"
   | "signedDate";
 
+/**
+ * Where each line of the checklist is done.
+ *
+ * Four of the five are sections of the agreement's own view, so they are hash
+ * anchors: `SectionTabs` already resolves a deep link into the tab that owns the
+ * element, which is what makes `#loneavtal` open the Löneavtal tab rather than
+ * scrolling into a panel `display: none` has given no position.
+ *
+ * `protocol` is the exception and is deliberately absent — a protocol is not a
+ * field on this record, it is `/registrera`'s own five-step flow against an
+ * agreement the register already holds. The component routes that one; putting
+ * a route here would make this map look like it answers a question it does not.
+ *
+ * Kept beside the rule rather than typed into the components, because the row
+ * that says *Avtalets omfattning* and the panel it opens have to agree, and two
+ * hand-written strings in two files is how they stop agreeing.
+ */
+export const REGISTRATION_ANCHOR = {
+  wageAgreement: "loneavtal",
+  validity: "avtalets-identitet",
+  scope: "avtalets-omfattning",
+  signedDate: "avtalets-identitet",
+} as const satisfies Partial<Record<RegistrationGap, string>>;
+
 /** One line of the checklist: what it is, and whether the record carries it. */
 export interface RegistrationCheck {
   id: RegistrationGap;

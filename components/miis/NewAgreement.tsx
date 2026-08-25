@@ -133,7 +133,11 @@ export function NewAgreement({
         <div className="mt-4 max-w-4xl">
           <p className="text-table">{t.nextSteps}</p>
           <div className="mt-3">
-            <RegistrationChecklist record={savedRecord} lang={lang} />
+            <RegistrationChecklist
+              record={savedRecord}
+              lang={lang}
+              {...(savedId ? { base: `/avtal/${savedId}` } : {})}
+            />
           </div>
         </div>
         <div className="mt-5 flex flex-wrap items-center gap-3">

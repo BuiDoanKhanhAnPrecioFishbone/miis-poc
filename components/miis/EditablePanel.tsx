@@ -54,9 +54,12 @@ export function EditablePanel({
   savedAt,
   headingLevel,
   tone,
+  id,
   children,
 }: {
   title: string;
+  /** So a checklist row, or any deep link, can name this section. */
+  id?: string;
   tags?: readonly string[];
   intro?: string;
   lang: Lang;
@@ -84,6 +87,7 @@ export function EditablePanel({
       {...(tags ? { tags } : {})}
       {...(headingLevel ? { headingLevel } : {})}
       {...(tone ? { tone } : {})}
+      {...(id ? { id } : {})}
     >
       {intro && <p className="mb-4 max-w-4xl text-table">{intro}</p>}
 

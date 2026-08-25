@@ -57,6 +57,12 @@ export default async function PublicAgreementPage({
   /* An officer who followed *Avtal – Allmänheten* here needs the way back; the
      public view has no menu, which is deliberate and is why this is a prop. */
   const fromReport = query["fran"] === "rapport";
+  /*
+    Where the visitor came from, and whether they may go back there. The public
+    computer answers `none` to both and keeps the plain return to the register.
+  */
+  const fromAgreement =
+    query["fran"] === "avtal" && accessLevel(session.role, "avtal") !== "none";
   const agreement = await getPublicAgreement(id, lang);
   if (!agreement) notFound();
 
@@ -79,11 +85,20 @@ export default async function PublicAgreementPage({
         subtitle={t.subtitle}
         tags={["FR-011", "D-002", "NFÅ-006"]}
         back={
+          /*
+            One control, pointing where the reader actually came from. It was
+            hard-coded to the public register, so an officer arriving from their
+            own agreement was offered a way back to a screen they had never
+            been on.
+          */
           <Link
-            href="/allmanheten"
+            href={fromAgreement ? `/avtal/${id}` : "/allmanheten"}
             className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
           >
-            <IconBack /> {i18n.common.backTo(i18n.allmanheten.title)}
+            <IconBack />{" "}
+            {fromAgreement
+              ? i18n.common.backTo(i18n.allmanheten.backToAgreement)
+              : i18n.common.backTo(i18n.allmanheten.title)}
           </Link>
         }
         action={<PublicAgreementActions agreement={agreement} lang={lang} />}

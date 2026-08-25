@@ -6,6 +6,7 @@ import { startTransition, useState } from "react";
 import {
   mayMarkComplete,
   mayPublish,
+  REGISTRATION_ANCHOR,
   mayReopenRegistration,
   registrationGaps,
   registrationStatusLabel,
@@ -115,6 +116,7 @@ export function AgreementIdentity({
 
   return (
     <EditablePanel
+      id={REGISTRATION_ANCHOR.signedDate}
       title={t.identity}
       tags={["FA-001", "FA-005"]}
       intro={editing ? t.identityIntro : undefined}
@@ -269,6 +271,7 @@ export function AgreementScope({
 
   return (
     <EditablePanel
+      id={REGISTRATION_ANCHOR.scope}
       title={t.scopeHeading}
       tags={["FA-001", "FR-008"]}
       intro={t.scopeIntro}
@@ -539,8 +542,12 @@ export function AgreementPublication({
               middle-click behaves. The house rule has said so since the seven
               screens that hand-rolled it were fixed; this one was missed.
             */}
+            {/* `?fran=avtal` so the public view can offer a way back to this
+                record rather than to the public register, which is a screen the
+                officer following this link has never been on. Same mechanism a
+                report uses when it sends someone here. */}
             <LinkButton
-              href={`/allmanheten/${agreement.id}`}
+              href={`/allmanheten/${agreement.id}?fran=avtal`}
               variant="secondary"
               size="sm"
               iconEnd={<IconForward />}

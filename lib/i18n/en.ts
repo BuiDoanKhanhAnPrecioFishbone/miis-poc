@@ -1321,6 +1321,7 @@ export const en: Dictionary = {
       "Public view at the Mediation Office. Access is from a dedicated client computer on MI's premises, without signing in.",
     publicMarker: "Public view",
     backToReport: "Back to the report",
+    backToAgreement: "the agreement",
     fromReport:
       "The selection comes from the report Agreement – The public. It can be changed here, and the list narrows for real.",
     publicExplain:
