@@ -103,8 +103,12 @@ medan enskilda scener kräver att man pratar oavbrutet över två klick.
 | 12 · Avslut | 9:10–9:45 | 46 |
 | **Summa** | **9:45** | **746** |
 
-746 ord i 130 ord/minut är **5:44 ren taltid inom 9:45** — 4:01
+746 ord i 130 ord/minut är **5:44 ren taltid inom 9:45** scentid — 4:01
 tystnad, och den tystnaden är där tittaren hinner läsa skärmen. Fyll den inte.
+
+**Titelkorten lägger till 0:32**, så den färdiga filmen blir
+**10:17**. Korten räknas separat eftersom de inte har någon replik —
+men de tar riktig tid, och en budget som utelämnar dem är en halv minut fel.
 
 *Räkna om efter varje ändring av replikerna — en tidsbudget som ingen räknat om
 är en gissning:*
@@ -112,6 +116,39 @@ tystnad, och den tystnaden är där tittaren hinner läsa skärmen. Fyll den int
 ```bash
 python -c "import io,re;s=io.open('docs/30-demomanus-video-SV.md',encoding='utf-8').read();parts=re.split(r'^## ',s,flags=re.M);print(sum(len(q.split()) for p in parts if p.startswith('Scen ') for q in re.findall(r'^> (.*)$',p,re.M)))"
 ```
+
+---
+
+## Titelkort
+
+**Varje scen inleds med ett titelkort: tom bakgrund, rubriken i mitten.** En film
+om ett register är många skärmar som liknar varandra, och utan något emellan
+tappar tittaren tråden vid fjärde minuten — tråden är hela skälet att filma ett
+*scenario* i stället för att ta skärmbilder. Kortet säger var i berättelsen man
+är innan skärmen tar över.
+
+Korten **genereras**, de sätts inte i klippprogrammet:
+
+```bash
+npm run titlecards
+```
+
+De hamnar i `export/titelkort/`, 1920 × 1080, i systemets egna färger och med
+samma självhostade Public Sans som gränssnittet. Ett kort satt i klippprogrammets
+standardtypsnitt är den enda del av filmen som inte är Medlingsinstitutets form —
+och den delen syns fjorton gånger. Scennamnen läses ur det här manuset, så ett
+kort kan inte heta något annat än scenen det inleder: ändra rubriken här och kör
+om.
+
+| | Tid | Innehåll |
+|---|---|---|
+| Öppningskort | 4 s | Filmens titel och storyline |
+| Scenkort 1–12 | 2 s styck | *Scen N* och scenens rubrik |
+| Slutkort | 4 s | *Allt ni sett är det körande systemet* + adressen |
+
+**Hårt klipp in och ut, ingen animering, inget ljud under kortet.** De är pauser
+och inte överlägg — det är i pausen tittaren hinner byta sammanhang, vilket är
+det korten finns för. En övertoning gör ett kort till en effekt.
 
 ---
 

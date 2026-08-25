@@ -13,6 +13,7 @@
     "screenshots": "node scripts/screenshots.mjs",
     "flows": "node scripts/flows.mjs",
     "flow-export": "node scripts/flow-export.mjs",
+    "titlecards": "node scripts/titlecards.mjs",
     "audit": "node scripts/audit.mjs",
     "sweep": "node scripts/sweep.mjs",
     "scenario": "node scripts/scenario.mjs",
