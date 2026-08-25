@@ -84,8 +84,8 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
           en: "Register a new collective agreement",
         },
         detail: {
-          sv: "Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår.",
-          en: "An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains.",
+          sv: "Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Resten av scenariot följer ett annat avtal — det som protokollet i nästa steg gäller — eftersom ett förstagångsavtal per definition inte har något inkommet protokoll att läsa.",
+          en: "An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. The rest of the scenario follows a different agreement — the one the protocol in the next step concerns — because a first-time agreement has, by definition, no incoming protocol to read.",
         },
         role: "agreement-admin",
         href: "/avtal/ny",
@@ -143,11 +143,11 @@ export const WALKTHROUGH: readonly WalkthroughScenario[] = [
       {
         label: { sv: "Publicera avtalet", en: "Publish the agreement" },
         detail: {
-          sv: "Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Den ligger i högerspalten bredvid statusen den ändrar, inte i redigeringen: att rätta en uppgift och att lämna ut avtalet är två olika saker. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Efteråt går det att öppna avtalet som allmänheten ser det.",
-          en: "Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. It sits in the right-hand column beside the status it changes, not inside editing: correcting a detail and releasing the agreement are two different things. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. Afterwards the agreement can be opened as the public sees it.",
+          sv: "Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Den ligger i högerspalten bredvid statusen den ändrar, inte i redigeringen: att rätta en uppgift och att lämna ut avtalet är två olika saker. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Samma avtal som de fyra stegen ovan: protokollet lästes mot det, uppgifterna rättades i det, och det är det som nu lämnas ut. Efteråt går det att öppna avtalet som allmänheten ser det.",
+          en: "Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. It sits in the right-hand column beside the status it changes, not inside editing: correcting a detail and releasing the agreement are two different things. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. The same agreement as the four steps above: the protocol was read against it, the details were corrected in it, and it is the one now being released. Afterwards the agreement can be opened as the public sees it.",
         },
         role: "agreement-admin",
-        href: "/avtal/A-010",
+        href: "/avtal/A-001",
         requirements: ["FR-009", "FR-011", "FH-001"],
       },
       {

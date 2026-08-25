@@ -22,7 +22,7 @@ A collective agreement has to get into the register, be kept current, and finall
 
 *Role: Agreement administrator · `/avtal/ny`*
 
-An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains.
+An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. The rest of the scenario follows a different agreement — the one the protocol in the next step concerns — because a first-time agreement has, by definition, no incoming protocol to read.
 
 ![Register a new collective agreement](../screenshots/flow-en/agreement-admin-01-register-a-new-collective-agreement.png)
 
@@ -70,9 +70,9 @@ An agreement has no version list but a row per bargaining round: FA-002 gives ev
 
 #### 6. Publish the agreement
 
-*Role: Agreement administrator · `/avtal/A-010`*
+*Role: Agreement administrator · `/avtal/A-001`*
 
-Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. It sits in the right-hand column beside the status it changes, not inside editing: correcting a detail and releasing the agreement are two different things. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. Afterwards the agreement can be opened as the public sees it.
+Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. It sits in the right-hand column beside the status it changes, not inside editing: correcting a detail and releasing the agreement are two different things. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. The same agreement as the four steps above: the protocol was read against it, the details were corrected in it, and it is the one now being released. Afterwards the agreement can be opened as the public sees it.
 
 ![Publish the agreement](../screenshots/flow-en/agreement-admin-06-publish-the-agreement.png)
 

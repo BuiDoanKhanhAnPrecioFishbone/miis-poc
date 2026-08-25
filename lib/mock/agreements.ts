@@ -30,7 +30,13 @@ const STANDARD_TYPE = "Löneavtal + Allmänna villkor";
 export const AGREEMENTS: Agreement[] = [
   {
     id: "A-001",
-    published: { date: "2027-04-03", by: "Anna Andersson" },
+    /*
+      Deliberately unpublished: this is the agreement the guided walkthrough
+      follows from the protocol to the public computer, and publication is the
+      step it ends on. Signed 2027-03-31 and valid from 2027-04-01, so a
+      record still waiting to be released is the ordinary case rather than a
+      contrivance.
+    */
     employees: 24500,
     annualWorkers: 23800,
     unionMembers: 19100,

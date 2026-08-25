@@ -115,13 +115,6 @@ export const EVENTS: AuditEvent[] = [
     sweep caught them on the next run.
   */
   {
-    id: "H-10",
-    timestamp: "2027-04-03 11:20",
-    type: "email-sent",
-    detail: "Stål- och metallindustrin publicerat – avisering till Analysenheten",
-    agreementId: "A-001",
-  },
-  {
     id: "H-13",
     timestamp: "2027-05-03 09:20",
     type: "email-sent",

@@ -22,7 +22,7 @@ Ett kollektivavtal ska in i registret, hållas aktuellt och till slut lämnas ut
 
 *Roll: Avtalsadministratör · `/avtal/ny`*
 
-Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår.
+Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Resten av scenariot följer ett annat avtal — det som protokollet i nästa steg gäller — eftersom ett förstagångsavtal per definition inte har något inkommet protokoll att läsa.
 
 ![Registrera ett nytt kollektivavtal](../screenshots/flode/agreement-admin-01-registrera-ett-nytt-kollektivavtal.png)
 
@@ -70,9 +70,9 @@ Ett avtal har ingen versionslista utan en rad per avtalsrörelse: FA-002 ger var
 
 #### 6. Publicera avtalet
 
-*Roll: Avtalsadministratör · `/avtal/A-010`*
+*Roll: Avtalsadministratör · `/avtal/A-001`*
 
-Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Den ligger i högerspalten bredvid statusen den ändrar, inte i redigeringen: att rätta en uppgift och att lämna ut avtalet är två olika saker. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Efteråt går det att öppna avtalet som allmänheten ser det.
+Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Den ligger i högerspalten bredvid statusen den ändrar, inte i redigeringen: att rätta en uppgift och att lämna ut avtalet är två olika saker. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Samma avtal som de fyra stegen ovan: protokollet lästes mot det, uppgifterna rättades i det, och det är det som nu lämnas ut. Efteråt går det att öppna avtalet som allmänheten ser det.
 
 ![Publicera avtalet](../screenshots/flode/agreement-admin-06-publicera-avtalet.png)
 
