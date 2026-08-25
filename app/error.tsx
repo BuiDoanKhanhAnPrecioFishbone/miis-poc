@@ -3,6 +3,21 @@
 import Link from "next/link";
 import { useEffect } from "react";
 
+import { DEFAULT_LANG, isLang, type Lang } from "@/lib/domain/lang";
+import { dictionary } from "@/lib/i18n";
+import { Button } from "@/components/miis/primitives";
+
+/**
+ * An error boundary is a client component, so it cannot read the language
+ * cookie on the server. It reads the `data-lang` attribute the root layout
+ * already put on <html> instead — the same source, one step later.
+ */
+function currentLang(): Lang {
+  if (typeof document === "undefined") return DEFAULT_LANG;
+  const value = document.documentElement.dataset.lang;
+  return isLang(value) ? value : DEFAULT_LANG;
+}
+
 export default function Error({
   error,
   reset,
@@ -14,28 +29,22 @@ export default function Error({
     console.error(error);
   }, [error]);
 
+  const i18n = dictionary(currentLang());
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          Sidan kunde inte laddas
+        <h1 className="font-display text-page-title font-semibold text-foreground">
+          {i18n.error.title}
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Något gick fel. Försök igen eller gå tillbaka till startsidan.
-        </p>
+        <p className="mt-2 text-table text-muted-foreground">{i18n.error.body}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Försök igen
-          </button>
+          <Button onClick={reset}>{i18n.error.retry}</Button>
           <Link
             href="/"
-            className="inline-flex min-h-12 items-center justify-center rounded-md border-2 border-primary bg-background px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border-2 border-primary bg-background px-5 py-3 text-table font-bold text-foreground transition-colors hover:bg-secondary"
           >
-            Till startsidan
+            {i18n.notFound.home}
           </Link>
         </div>
       </div>

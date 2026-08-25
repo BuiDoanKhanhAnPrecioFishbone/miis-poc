@@ -1,0 +1,2617 @@
+                  W3D3 Avtal
+Användarmanual för kundanpassning
+
+              Medlingsinstitutet
+                                             Datum       Författare        Sida
+
+                                             2025-10-31  Mikael Skareflod  2 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Användarmanual – 2025-10-31 Avtalsserie
+
+Detta dokument beskriver kundanpassningen av W3D3 för att administrera avtal mellan
+arbetsmarknadens parter. Grundläggande information om hur W3D3 fungerar finns be-
+skrivet i W3D3s användarmanualer. Detta dokument riktar sig till användare av W3D3.
+Skärmbilder är tagna från W3D3 2024 R2.
+
+Ändringsförteckning
+
+Version  Datum             Ansvarig          Ändring
+1.0      2019-07-10        Mikael Skareflod
+1.1      2019-12-20        Mikael Skareflod  Skapat dokumentet.
+
+1.2      2020-02-14 Mikael Skareflod         Bytt namn på rapporten Avtalsinformation till Avtal – Huvud-
+                                             rapport.
+1.3      2020-03-31 Mikael Skareflod         Lagt till ärenderapporten Avtal – Huvudrapport.
+                                             Lagt till rapporten Avtal – Medlare.
+1.4      2020-05-30 Mikael Skareflod         Lagt till möjlighet att kopiera handlingar till befintligt ärende.
+                                             Lagt till sökbyggarfälten Arbetsgivarorganisation.Sektor, Ar-
+1.5      2020-11-10 Mikael Skareflod         betsgivarorganisation.Central arbetsgivarorganisation, Ar-
+                                             betsgivarorganisation.Arbetsgivargrupp, Arbetstagarorgani-
+1.6      2021-01-15 Mikael Skareflod         sation.Central arbetstagarorganisation, Arbetstatagrorgani-
+                                             sation.Samverkansgrupp, Ärendelänk.Medling i sökbyggar-
+1.7      2021-03-31 Mikael Skareflod         objetet Avtal.Basfakta.
+                                             Lagt till sökbyggarfälten Föregående år, I år och Nästa år i
+1.8      2024-10-31 Mikael Skareflod         sökbyggarobjektet Avtal.Lönerevision.
+                                             Skapat generellt metadata för Avtal.
+
+                                             Skapat gränssnitten Allmänheten och Medlare.
+                                             Lagt till sökbyggarobjekten Medlingshandlingar, Avtal.Med-
+                                             lingshandlingar.
+                                             Ändrat till ny profilfärg på rapporter.
+                                             Lagt till Medling på rapporten Avtal – Medlare.
+
+                                             Lagt till rapporten Avtal – Utlöpningstidpunkter.
+                                             Anpassat rapporter enligt ny grafisk profil.
+                                             Lagt till vissa numeriska sökbyggarfält för sökbyggarobjekten
+                                             Avtal.Basfakta, Avtal.Lönerevision, Avtal.Lägstlön.
+
+                                             Ändrat rapporten Avtal – Utlöpningstidpunkter.
+
+                                             Ändrat rapporten Avtal – Medlare.
+                                             Lagt till rapporten Avtal – Avtalsrörelse.
+
+                                             Lagt till rapporten Avtal – Medlare (Kansli).
+
+                                             Ändrat rapporten Avtal – Avtalsrörelse.
+                                             Lagt till rapporten Avtal – Avtalskonstruktioner.
+
+                                             Bytt namn på Branschkod (SNI) till Branschkod i ärendefor-
+                                             muläret Basfakta.
+                                             Ändrat handlingstypen Övrigt avtal. Lagt till fälten Gäller fr o
+                                             m, Gäller t o m, Premie (%), Premie kommentar, Inkopplings-
+                                             datum, Inkopplingsdatum kommentar. Satt Avtalstyp obligato-
+                                             riskt.
+                                             Lagt till handlingstyperna Pensionsavtal, Försäkringar, Proto-
+                                             koll PFÖ, Avtal PFÖ.
+                                             Ändrat rapporten Avtal – Huvudrapport.
+                                             Lagt till rapporterna Avtal – Pensionsavtal och övriga avtal,
+                                             Avtal – Allmänheten.
+                                             Tagit bort rapporten Avtal – Medlare (Kansli).
+                                             Ersatt alla skärmbilder.
+                                             Datum       Författare                   Sida
+
+                                             2025-10-31  Mikael Skareflod             3 / 95
+
+Dokumentnamn                                             Identitet                    Version
+
+Användarmanual                                           2505-AM-001                  1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Version  Datum             Ansvarig          Ändring
+1.9      2025-10-31        Mikael Skareflod
+                                             Bytt logotyp i alla rapporter.
+                                             Ändrat rapporten Avtal – Avtalsrörelse.
+
+© 2019 Mikael Skareflod Consulting AB. All rights reserved.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  4 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Innehåll
+
+1 Allmänt........................................................................................................................6
+2 Huvudregistrator .......................................................................................................7
+
+     2.1 Metadata ............................................................................................................7
+3 Registrator ................................................................................................................11
+
+     3.1 Avsändare/mottagare .......................................................................................11
+     3.2 Avtalspart.........................................................................................................11
+     3.3 Basfakta ...........................................................................................................13
+
+             3.3.1 Kopiera avtal .......................................................................................18
+     3.4 Arbetsgivarorganisation...................................................................................20
+     3.5 Arbetstagarorganisation ...................................................................................22
+     3.6 Löneavtal .........................................................................................................24
+     3.7 Allmänna villkor ..............................................................................................27
+     3.8 Lönerevision ....................................................................................................29
+     3.9 Lägstlön ...........................................................................................................32
+     3.10 Arbetsgrupp .....................................................................................................34
+     3.11 Särskilda frågor................................................................................................36
+     3.12 Pensionsavtal ...................................................................................................38
+     3.13 Försäkringar .....................................................................................................43
+     3.14 Övrigt avtal ......................................................................................................45
+     3.15 Kontaktpersoner...............................................................................................48
+     3.16 Alla parter ........................................................................................................50
+     3.17 Protokoll ..........................................................................................................53
+     3.18 Avtal ................................................................................................................54
+     3.19 Övriga handlingar ............................................................................................55
+     3.20 Protokoll PFÖ ..................................................................................................56
+     3.21 Avtal PFÖ ........................................................................................................57
+     3.22 Ärendelänkar....................................................................................................58
+4 Allmänheten..............................................................................................................59
+     4.1 Gränssnitt Allmänheten ...................................................................................59
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  5 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+     4.2 Användare Allmänheten ..................................................................................59
+     4.3 Gränssnitt Allmänheten Avtal .........................................................................59
+     4.4 Användare Allmänheten ..................................................................................59
+5 Medlare .....................................................................................................................60
+     5.1 Gränssnitt Medlare...........................................................................................60
+     5.2 Användare Medlare..........................................................................................60
+6 Sökbyggarobjekt ......................................................................................................61
+     6.1 Generellt ..........................................................................................................61
+     6.2 Avtal.Basfakta..................................................................................................62
+     6.3 Avtal.Lönerevision ..........................................................................................62
+     6.4 Medlingshandlingar .........................................................................................64
+     6.5 Avtal.Medlingshandlingar ...............................................................................64
+     6.6 Avtal.Protokoll, Avtal.Protokoll PFÖ, Avtal.Avtal, Avtal.Avtal PFÖ ............64
+7 Rapporter..................................................................................................................65
+     7.1 Avtal – Huvudrapport ......................................................................................66
+     7.2 Avtal – Huvudrapport (Test)............................................................................70
+     7.3 Avtal – Allmänheten ........................................................................................71
+     7.4 Avtal – Medlare ...............................................................................................73
+     7.5 Avtal – Pensionsavtal och övriga avtal ............................................................75
+     7.6 Avtal – Avtalskonstruktioner...........................................................................78
+     7.7 Avtal – Avtalskonstruktioner (Test) ................................................................83
+     7.8 Avtal – Avtalskonstruktioner (Test diagram) ..................................................83
+     7.9 Avtal – Avtalsrörelse .......................................................................................84
+     7.10 Avtal – Avtalsrörelse (Test).............................................................................90
+     7.11 Avtal – Utlöpningstidpunkter ..........................................................................91
+                                             Datum       Författare         Sida
+
+                                             2025-10-31  Mikael Skareflod   6 / 95
+
+Dokumentnamn                                             Identitet          Version
+
+Användarmanual                                           2505-AM-001        1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+1  Allmänt
+
+   Avtal administreras i serien Avtal i W3D3.
+
+   Avtalsparter registreras i registret för avsändare/mottagare/motparter.
+
+   Varje avtal utgörs av ett ärende i W3D3.
+
+   Ett avtal ska ha en (1-1) av varje av följande handlingar för att vara ett giltigt avtal:
+   • Arbetsgivarorganisation (1-1) med koppling till avsändare/mottagare (1-1)
+   • Arbetstagarorganisation (1-1) med koppling till avsändare/mottagare (1-1)
+   • Löneavtal (1-1)
+   • Allmänna villkor (1-1)
+
+   Ett avtal kan även ha ingen eller en (0-1) respektive ingen, en eller flera (0-n) av följande
+   handlingar:
+   • Lönerevision (0-n)
+   • Lägstlön (0-n)
+   • Arbetsgrupp (0-n)
+   • Särskilda frågor (0-1)
+   • Pensionsavtal (0-n) med koppling till avsändare/mottagare (2-n), minst 1 arbetsgivar-
+
+       organisation och minst 1 arbetstagarorganisation
+   • Försäkringar (0-1)
+   • Övrigt avtal (0-n) med koppling till avsändare/mottagare (2-n), minst 1 arbetsgivaror-
+
+       ganisation och minst 1 arbetstagarorganisation
+   • Kontaktpersoner (0-1)
+   • Alla parter (0-1)
+   • Protokoll (0-n) med fil
+   • Avtal (0-n) med fil
+   • Protokoll PFÖ (0-n) med fil
+   • Avtal PFÖ (0-n) med fil
+
+   Ett avtal kan även ha ingen, en eller flera (0-n):
+   • Arbetsdokument (= Övriga handlingar) (0-n)
+   • Ärendelänkar (0-n)
+                                      Datum       Författare        Sida
+
+                                      2025-10-31  Mikael Skareflod  7 / 95
+
+Dokumentnamn                                      Identitet         Version
+
+Användarmanual                                    2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+2    Huvudregistrator
+
+2.1  Metadata
+
+     Följande metadatatyper har lagts till:
+     • Medlingsinstitutet_Avtal_PersonExtendedForm (Avtalspart)
+
+     • AGO/ATO
+     • Sektor (AGO)
+
+     • Central arbetsgivarorganisation (AGO)
+
+     • Arbetsgivargrupp (AGO)
+     • Central arbetstagarorganisation (ATO)
+
+        • Samverkansgrupp (ATO)
+     • Avtal_ExtendedForm (Basfakta)
+
+        • Avtalstyp
+     • Allmänna villkor
+
+        • Villkorsförändring 1
+
+     • Villkorsförändring 2
+
+        • Villkorsförändring 3
+     • Lönerevision
+
+        • Avtalskonstruktion
+
+     • Alternativ avtalskonstruktion
+
+     • Nivåhöjning 1 enhet
+     • Nivåhöjning 2 enhet
+
+     • Nivåhöjning 3 enhet
+
+     • Individgaranti enhet
+     • Andra arbetskraftskostnader 1
+
+     • Andra arbetskraftskostnader 1 enhet
+
+     • Andra arbetskraftskostnader 2
+     • Andra arbetskraftskostnader 2 enhet
+
+     • Andra arbetskraftskostnader 3
+
+        • Andra arbetskraftskostnader 3 enhet
+     • Lägstlön
+
+     • Enhet 1
+
+        • Enhet 2
+     • Arbetsgrupp
+                               Datum       Författare        Sida
+
+                               2025-10-31  Mikael Skareflod  8 / 95
+
+Dokumentnamn                               Identitet         Version
+
+Användarmanual                             2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+                 • Huvudgrupp
+                                Datum       Författare        Sida
+
+                                2025-10-31  Mikael Skareflod  9 / 95
+
+Dokumentnamn                                Identitet         Version
+
+Användarmanual                              2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Pensionsavtal
+   • System 1 primärt system
+   • System 1 sekundärt system
+   • System 2 primärt system
+   • System 2 sekundärt system
+   • System 3 primärt system
+   • System 3 sekundärt system
+
+• Övrigt avtal
+   • Avtalstyp
+
+• Avtal
+   • Diarienr Industriavtalet
+   • Industrins avtal
+                           Datum                     Författare        Sida
+
+                           2025-10-31                Mikael Skareflod  10 / 95
+
+Dokumentnamn                                         Identitet         Version
+
+Användarmanual                                       2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Uppdatera vid behov aktuella värden.
+Dessa värden är valbara i motsvarande formulärfält.
+                           Datum       Författare                                    Sida
+
+                           2025-10-31  Mikael Skareflod                              11 / 95
+
+Dokumentnamn                           Identitet                                     Version
+
+Användarmanual                         2505-AM-001                                   1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3    Registrator
+
+3.1  Avsändare/mottagare
+
+     Avtalens parter ska registreras i registret för avsändare/mottagare/motparter.
+
+     Fyll i fältet Namn.
+     Spara.
+     Öppna aktuell avsändare/mottagare/motpart genom att klicka på länken med namnet.
+     Klicka på länken Utökad information.
+
+3.2  Avtalspart
+
+     Formuläret har anpassats genom att följande fält har lagts till:
+     • AGO/ATO: metadata
+     • Sektor (AGO): metadata
+     • Centralorganisation (AGO): metadata
+     • Arbetsgivargrupp (AGO): metadata
+     • Centralorganisation (ATO): metadata
+     • Samverkansgrupp (ATO): metadata
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  12 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fälten är åtkomliga via länken Utökad information i formuläret Avsändare/mottagare.
+
+Fyll i aktuella fält.
+Spara.
+                           Datum       Författare                      Sida
+
+                           2025-10-31  Mikael Skareflod                13 / 95
+
+Dokumentnamn                           Identitet                       Version
+
+Användarmanual                         2505-AM-001                     1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.3  Basfakta
+
+     Formuläret har anpassats genom att följande fält har lagts till:
+     • Avtalstyp: metadata
+     • Branschkod
+     • Förhandlingsordningsavtal Dnr
+     • Hängavtal
+     • Hängavtal kommentar
+     • Organisatorisk avtalsförändring
+     • Organisatorisk avtalsförändring kommentar
+     • Avtalet upphört
+     • Avtalet upphört kommentar
+     • Uppdatera avtalet
+     • Uppdatera avtalet kommentar
+     • Rapporturval MI
+     • Rapporturval lägstlöner
+     • Informationsbegränsning arbetsgrupper
+     • Informationsbegränsning lägstlöner
+     • Anställda: 0–999 999
+     • Årsarbetare: 0–999 999
+     • Fackmedlemmar: 0–999 999
+     • Anställda ackumulerat
+     • Anställda ackumulerat kommentar
+     • Anställda ändringsdatum
+     • Medellön: 0–99 999
+     • Medellön ändringsdatum
+     • Timlönefaktor: 0–999,99
+     • Arbetstidsförkortning totalt
+     • Arbetstidskonto/-bank
+     • Arbetstidskonto-/bank kommentar
+     • Pensionsavtal deltid
+     • Pensionsavtal extra avsättning totalt
+     • Pensionsavtal kommentar
+     • Semester
+     • Semester kommentar
+     • Föräldraledighetstillägg
+     • Föräldraledighetstillägg kommentar
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  14 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+             • Kommentar
+
+Hela formuläret.
+                                          Datum       Författare        Sida
+
+                                          2025-10-31  Mikael Skareflod  15 / 95
+
+Dokumentnamn                                          Identitet         Version
+
+Användarmanual                                        2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Övre delen av formuläret (standardfält).
+
+Vänstra mellersta delen av formuläret (anpassade fält).
+                           Datum                       Författare        Sida
+
+                           2025-10-31                  Mikael Skareflod  16 / 95
+
+Dokumentnamn                                           Identitet         Version
+
+Användarmanual                                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Högra mellersta delen av formuläret (anpassade fält).
+Nedre delen av formuläret (standard handlingslista).
+                           Datum             Författare        Sida
+
+                           2025-10-31        Mikael Skareflod  17 / 95
+
+Dokumentnamn                                 Identitet         Version
+
+Användarmanual                               2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i avtalets namn i fältet Ärendemening.
+Fyll i aktuella anpassade fält (Basfakta).
+Spara.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  18 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.3.1  Kopiera avtal
+
+       Denna anpassade funktion för att kopiera ett avtalsärende fungerar på samma sätt som
+       standardfunktionen Kopiera ärendet med följande skillnader:
+       • Avtalet kopieras till samma serie
+       • En eller flera handlingar kan markeras individuellt
+       • Möjlighet att välja om markerade handlingar ska kopieras till ett befintligt ärende el-
+
+           ler om ett nytt ärende ska skapas
+
+       Markera vilka handlingar som ska kopieras genom att markera kryssrutan framför respek-
+       tive handling eller markera kryssrutan i rubrikraden för att markera alla handlingar.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  19 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Ange ärendenummer endast om markerade handlingar ska kopieras till ett befintligt avtal-
+särende.
+
+Klicka på knappen Kopiera.
+                              Datum       Författare        Sida
+
+                              2025-10-31  Mikael Skareflod  20 / 95
+
+Dokumentnamn                              Identitet         Version
+
+Användarmanual                            2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.4  Arbetsgivarorganisation
+
+     Formuläret har anpassats genom att följande fält från formuläret Avtalspart visas:
+     • Sektor
+     • Central arbetsgivarorganisation
+     • Arbetsgivargrupp
+
+     Välj handlingstypen Arbetsgivarorganisation. OBS! Ändra inte handlingstyp efter det att
+     handlingen har sparats.
+
+     Skriv in början på arbetsgivarorganisationens namn i fältet Namn och tryck TAB.
+
+     Välj aktuell arbetsgivarorganisation genom att klicka på länken med namnet. Om aktuell
+     arbetsgivarorganisation saknas måste den först registreras, se avsnitt
+     Avsändare/mottagare.
+                           Datum       Författare                             Sida
+
+                           2025-10-31  Mikael Skareflod                       21 / 95
+
+Dokumentnamn                           Identitet                              Version
+
+Användarmanual                         2505-AM-001                            1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Kopiera namnet till fältet Åtgärd/Handling.
+
+Spara.
+
+Nästa gång handlingen öppnas visas arbetsgivarorganisationens anpassade fält
+(gråmarkerade).
+                              Datum       Författare        Sida
+
+                              2025-10-31  Mikael Skareflod  22 / 95
+
+Dokumentnamn                              Identitet         Version
+
+Användarmanual                            2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.5  Arbetstagarorganisation
+
+     Formuläret har anpassats genom att följande fält från formuläret Avtalspart visas:
+     • Central arbetstagarorganisation
+     • Samverkansgrupp
+
+     Välj handlingstypen Arbetstagarorganisation. OBS! Ändra inte handlingstyp efter det att
+     handlingen har sparats.
+
+     Skriv in början på arbetstagarorganisationens namn i fältet Namn och tryck TAB.
+
+     Välj aktuell arbetstagarorganisation genom att klicka på länken med namnet. Om aktuell
+     arbetstagarorganisation saknas måste den först registreras, se avsnitt
+     Avsändare/mottagare.
+
+     Kopiera namnet till fältet Åtgärd/Handling.
+
+     Spara.
+                           Datum       Författare                             Sida
+
+                           2025-10-31  Mikael Skareflod                       23 / 95
+
+Dokumentnamn                           Identitet                              Version
+
+Användarmanual                         2505-AM-001                            1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Nästa gång handlingen öppnas visas arbetstagarorganisationens anpassade fält
+(gråmarkerade).
+                           Datum       Författare                      Sida
+
+                           2025-10-31  Mikael Skareflod                24 / 95
+
+Dokumentnamn                           Identitet                       Version
+
+Användarmanual                         2505-AM-001                     1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.6  Löneavtal
+
+     Formuläret har anpassats genom att följande fält har lagts till:
+     • Tecknades: obligatoriskt
+     • Gäller fr o m: obligatoriskt
+     • Gäller t o m
+     • Gäller t o m kommentar
+     • Föregående avtal slutdatum
+     • Förtida uppsägning
+     • Förtida uppsägning kommentar
+     • Förtida uppsägning slutdatum
+     • Annan uppsägning
+     • Annan uppsägning kommentar
+     • Annan uppsägning slutdatum
+     • Avtalet prolongerat
+     • Avtalet prolongerat kommentar
+     • Jämställdhet
+     • Jämställdhet kommentar
+     • Protokollet inkommit
+     • Avtalet inkommit
+     • Arbetskraftskostnad (%): 0–99,99
+     • Löneutrymme (%): 0–99,99
+     • Engångsbelopp
+     • Engångsbelopp kommentar
+     • Andra kostnader (%): 0–99,99
+     • Andra kostnader kommentar
+     • Kostnadsavräkning
+     • Kostnadsavräkning kommentar
+     • Kommentar
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  25 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+
+Välj handlingstypen Löneavtal. OBS! Ändra inte handlingstyp efter det att handlingen
+har sparats.
+
+Fyll i aktuella anpassade fält (Löneavtal).
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  26 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+             Spara.
+                           Datum       Författare                      Sida
+
+                           2025-10-31  Mikael Skareflod                27 / 95
+
+Dokumentnamn                           Identitet                       Version
+
+Användarmanual                         2505-AM-001                     1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.7  Allmänna villkor
+
+     Formuläret har anpassats genom att följande fält har lagts till:
+     • Tecknades: obligatoriskt
+     • Gäller fr o m: obligatoriskt
+     • Gäller t o m
+     • Villkorsförändring 1: metadata
+     • Villkorsförändring 1 jämställdhet
+     • Villkorsförändring 1 sektors-/branschövergripande
+     • Villkorsförändring 1 kommentar
+     • Villkorsförändring 2: metadata
+     • Villkorsförändring 2 jämställdhet
+     • Villkorsförändring 2 sektors-/branschövergripande
+     • Villkorsförändring 2 kommentar
+     • Villkorsförändring 3: metadata
+     • Villkorsförändring 3 jämställdhet
+     • Villkorsförändring 3 sektors-/branschövergripande
+     • Villkorsförändring 3 kommentar
+     • Kommentar
+                           Datum       Författare                                 Sida
+
+                           2025-10-31  Mikael Skareflod                           28 / 95
+
+Dokumentnamn                           Identitet                                  Version
+
+Användarmanual                         2505-AM-001                                1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+Välj handlingstypen Allmänna villkor. OBS! Ändra inte handlingstyp efter det att
+handlingen har sparats.
+Fyll i aktuella anpassade fält (Allmänna villkor).
+Spara.
+                           Datum       Författare                      Sida
+
+                           2025-10-31  Mikael Skareflod                29 / 95
+
+Dokumentnamn                           Identitet                       Version
+
+Användarmanual                         2505-AM-001                     1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.8  Lönerevision
+
+     Formuläret har anpassats genom att följande fält har lagts till:
+     • Revisionsdatum: obligatoriskt
+     • Revisionsdatum kommentar
+     • Avtalskonstruktion: metadata
+     • Avtalskonstruktion kommentar
+     • Alternativ avtalskonstruktion: metadata
+     • Alternativ avtalskonstruktion kommentar
+     • Nivåhöjning 1 alternativ avtalskonstruktion
+     • Nivåhöjning 1 lägst värde
+     • Nivåhöjning 1 värde: 0–99 999,99
+     • Nivåhöjning 1 enhet: metadata
+     • Nivåhöjning 2 alternativ avtalskonstruktion
+     • Nivåhöjning 2 lägst värde
+     • Nivåhöjning 2 värde: 0–99 999,99
+     • Nivåhöjning 2 enhet: metadata
+     • Nivåhöjning 3 alternativ avtalskonstruktion
+     • Nivåhöjning 3 lägst värde
+     • Nivåhöjning 3 värde: 0–99 999,99
+     • Nivåhöjning 3 enhet: metadata
+     • Löneöversyn
+     • Löneöversyn värde (%): 0–99,99
+     • Individgaranti värde: 0–99 999,99
+     • Individgaranti enhet: metadata
+     • Andra ersättningar värde (%): 0–99,99
+     • Andra ersättningar kommentar
+     • Andra arbetskraftskostnader 1: metadata
+     • Andra arbetskraftskostnader 1 värde: 0–99 999,99
+     • Andra arbetskraftskostnader 1 enhet: metadata
+     • Andra arbetskraftskostnader 1 kommentar
+     • Andra arbetskraftskostnader 2: metadata
+     • Andra arbetskraftskostnader 2 värde: 0–99 999,99
+     • Andra arbetskraftskostnader 2 enhet: metadata
+     • Andra arbetskraftskostnader 2 kommentar
+     • Andra arbetskraftskostnader 3: metadata
+     • Andra arbetskraftskostnader 3 värde: 0–99 999,99
+                           Datum                 Författare        Sida
+
+                           2025-10-31            Mikael Skareflod  30 / 95
+
+Dokumentnamn                                     Identitet         Version
+
+Användarmanual                                   2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Andra arbetskraftskostnader 3 enhet: metadata
+• Andra arbetskraftskostnader 3 kommentar
+• Kommentar
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  31 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal för lönerevision (ÅÅÅÅ) i fältet Åtgärd/Handling.
+Välj handlingstypen Lönerevision. OBS! Ändra inte handlingstyp efter det att handlingen
+har sparats.
+Fyll i aktuella anpassade fält (Lönerevision).
+Spara.
+                           Datum       Författare                      Sida
+
+                           2025-10-31  Mikael Skareflod                32 / 95
+
+Dokumentnamn                           Identitet                       Version
+
+Användarmanual                         2505-AM-001                     1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.9  Lägstlön
+
+     Formuläret har anpassats genom att följande fält har lagts till:
+     • Revisionsdatum (obligatoriskt)
+     • Värde 1: 0–99 999,99
+     • Enhet 1: metadata
+     • Värde 2: 0–99 999,99
+     • Enhet 2: metadata
+     • Ålder: 0–99
+     • Anställningstid
+     • Utbildning
+     • Befattning
+     • Kommentar
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  33 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal för lönerevisionen och namnet på yrkesgruppen (ÅÅÅÅ Xxx) i fältet Åt-
+gärd/Handling.
+
+Välj handlingstypen Lägstlön. OBS! Ändra inte handlingstyp efter det att handlingen har
+sparats.
+
+Fyll i aktuella anpassade fält (Lägstlön).
+
+Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 34 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.10  Arbetsgrupp
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Prolongerad
+      • Huvudgrupp: metadata
+      • Sektors-/branschövergripande
+      • Kommentar
+
+      Fyll i årtal när arbetsgruppen tillsattes och namnet på arbetsgruppen (ÅÅÅÅ Xxx) i fältet
+      Åtgärd/Handling.
+
+      Välj handlingstypen Arbetsgrupp. OBS! Ändra inte handlingstyp efter det att handlingen
+      har sparats.
+
+      Fyll i aktuella anpassade fält (Arbetsgrupp).
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  35 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+             Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 36 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.11  Särskilda frågor
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Särskild fråga 1
+      • Särskild fråga 1 jämställdhet
+      • Särskild fråga 1 avtalstext
+      • Särskild fråga 1 kommentar
+      • Särskild fråga 2
+      • Särskild fråga 2 jämställdhet
+      • Särskild fråga 2 avtalstext
+      • Särskild fråga 2 kommentar
+      • Särskild fråga 3
+      • Särskild fråga 3 jämställdhet
+      • Särskild fråga 3 avtalstext
+      • Särskild fråga 3 kommentar
+      • Kommentar
+                           Datum       Författare                                 Sida
+
+                           2025-10-31  Mikael Skareflod                           37 / 95
+
+Dokumentnamn                           Identitet                                  Version
+
+Användarmanual                         2505-AM-001                                1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+Välj handlingstypen Särskilda frågor. OBS! Ändra inte handlingstyp efter det att
+handlingen har sparats.
+Fyll i aktuella anpassade fält (Särskilda frågor).
+Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 38 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.12  Pensionsavtal
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Tecknades
+      • Gäller fr o m
+      • Gäller t o m
+      • Arbetsgivarorganisation (gråmarkerat)
+      • Arbetstagarorganisation (gråmarkerat)
+      • System 1 avdelning/grupp
+      • System 1 primärt system
+      • System 1 sekundärt system
+      • System 1 anställningsår
+      • System 1 åldersstyrt
+      • System 1 inträdesålder
+      • System 1 utträdesålder
+      • System 1 lönegräns 1 (IBB)
+      • System 1 lönegräns 2 (IBB)
+      • System 1 lönegräns 3 (IBB)
+      • System 1 övriga
+      • System 1 noll - lönegräns 1 (%)
+      • System 1 lönegräns 1 - lönegräns 2 (%)
+      • System 1 lönegräns 2 - lönegräns 3 (%)
+      • System 1 premier kommentar
+      • System 1 centralt avtal (%)
+      • System 1 centralt avtal kommentar
+      • System 1 branschavtal
+      • System 1 lokalt/individuellt avtal
+      • System 2 avdelning/grupp
+      • System 2 primärt system
+      • System 2 sekundärt system
+      • System 2 anställningsår
+      • System 2 åldersstyrt
+      • System 2 inträdesålder
+      • System 2 utträdesålder
+      • System 2 lönegräns 1 (IBB)
+      • System 2 lönegräns 2 (IBB)
+      • System 2 lönegräns 3 (IBB)
+                           Datum          Författare        Sida
+
+                           2025-10-31     Mikael Skareflod  39 / 95
+
+Dokumentnamn                              Identitet         Version
+
+Användarmanual                            2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• System 2 övriga
+• System 2 noll - lönegräns 1 (%)
+• System 2 lönegräns 1 - lönegräns 2 (%)
+• System 2 lönegräns 2 - lönegräns 3 (%)
+• System 2 premier kommentar
+• System 2 centralt avtal (%)
+• System 2 centralt avtal kommentar
+• System 2 branschavtal
+• System 2 lokalt/individuellt avtal
+• System 3 avdelning/grupp
+• System 3 primärt system
+• System 3 sekundärt system
+• System 3 anställningsår
+• System 3 åldersstyrt
+• System 3 inträdesålder
+• System 3 utträdesålder
+• System 3 lönegräns 1 (IBB)
+• System 3 lönegräns 2 (IBB)
+• System 3 lönegräns 3 (IBB)
+• System 3 övriga
+• System 3 noll - lönegräns 1 (%)
+• System 3 lönegräns 1 - lönegräns 2 (%)
+• System 3 lönegräns 2 - lönegräns 3 (%)
+• System 3 premier kommentar
+• System 3 centralt avtal (%)
+• System 3 centralt avtal kommentar
+• System 3 branschavtal
+• System 3 lokalt/individuellt avtal
+• Kommentar avdelning/grupp
+• Kommentar primärt system
+• Kommentar sekundärt system
+• Kommentar anställningsår
+• Kommentar åldersstyrt
+• Kommentar inträdesålder
+• Kommentar utträdesålder
+• Kommentar lönegräns 1 (IBB)
+• Kommentar lönegräns 2 (IBB)
+• Kommentar lönegräns 3 (IBB)
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  40 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Kommentar övriga
+• Kommentar noll - lönegräns 1 (%)
+• Kommentar lönegräns 1 - lönegräns 2 (%)
+• Kommentar lönegräns 2 - lönegräns 3 (%)
+• Kommentar centralt avtal (%)
+• Kommentar branschavtal
+• Kommentar lokalt/individuellt avtal
+• Inkopplingsdatum
+• Inkopplingsdatum kommentar
+• Kommentar
+
+I fälten Arbetsgivarorganisation och Arbetstagarorganisation visas fältet Namn från
+formuläret Avsändare/mottagare.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  41 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  42 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades och namnet på avtalet (ÅÅÅÅ Xxx) i fältet Åt-
+gärd/Handling.
+
+Välj handlingstypen Pensionsavtal. OBS! Ändra inte handlingstyp efter det att
+handlingen har sparats.
+
+Fyll i aktuella anpassade fält (Pensionsavtal).
+
+Registrera två eller fler arbetsgivar-/arbetstagarorganisationer för pensionsavtal:
+• Skriv in början på arbetsgivar-/arbetstagarorganisationens namn i fältet Namn och
+
+    tryck TAB.
+• Välj aktuell arbetsgivar-/arbetstagarorganisation genom att klicka på länken med
+
+    namnet. Om aktuell arbetsgivar-/arbetstagarorganisation saknas måste den först regi-
+    streras, se avsnitt Avsändare/mottagare.
+• Klicka på knappen Lägg till avsändare/mottagare i funktionslisten för att regi-
+    strera fler arbetsgivar-/arbetstagarorganisationer.
+
+Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 43 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.13  Försäkringar
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Tecknades
+      • Sjukdom pensionsavtal
+      • Sjukdom löner och allmänna villkor
+      • Sjukdom separat avtal
+      • Sjukdom kommentar
+      • Arbetsskada pensionsavtal
+      • Arbetsskada löner och allmänna villkor
+      • Arbetsskada separat avtal
+      • Arbetsskada kommentar
+      • Föräldraskap pensionsavtal
+      • Föräldraskap löner och allmänna villkor
+      • Föräldraskap separat avtal
+      • Föräldraskap kommentar
+      • Dödsfall pensionsavtal
+      • Dödsfall löner och allmänna villkor
+      • Dödsfall separat avtal
+      • Dödsfall kommentar
+      • Omställning/arbetslöshet pensionsavtal
+      • Omställning/arbetslöshet löner och allmänna villkor
+      • Omställning/arbetslöshet separat avtal
+      • Omställning/arbetslöshet kommentar
+      • Annan pensionsavtal
+      • Annan löner och allmänna villkor
+      • Annan separat avtal
+      • Annan kommentar
+      • Kommentar
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  44 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+Välj handlingstypen Försäkringar. OBS! Ändra inte handlingstyp efter det att handlingen
+har sparats.
+Fyll i aktuella anpassade fält (Försäkringar).
+Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 45 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.14  Övrigt avtal
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Avtalstyp: metadata
+      • Avtalstyp kommentar
+      • Tecknades
+      • Gäller fr o m
+      • Gäller t o m
+      • Upphört
+      • Upphört kommentar
+      • Arbetsgivarorganisation (gråmarkerat)
+      • Arbetstagarorganisation (gråmarkerat)
+      • Premie (%)
+      • Premie kommentar
+      • Inkopplingsdatum
+      • Inkopplingsdatum kommentar
+      • Kommentar
+
+      I fälten Arbetsgivarorganisation och Arbetstagarorganisation visas fältet Namn från
+      formuläret Avsändare/mottagare.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  46 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  47 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades och namnet på avtalet (ÅÅÅÅ Xxx) i fältet Åt-
+gärd/Handling.
+
+Välj handlingstypen Övrigt avtal. OBS! Ändra inte handlingstyp efter det att handlingen
+har sparats.
+
+Fyll i aktuella anpassade fält (Övrigt avtal).
+
+Registrera två eller fler arbetsgivar-/arbetstagarorganisationer för övrigt avtal:
+• Skriv in början på arbetsgivar-/arbetstagarorganisationens namn i fältet Namn och
+
+    tryck TAB.
+• Välj aktuell arbetsgivar-/arbetstagarorganisation genom att klicka på länken med
+
+    namnet. Om aktuell arbetsgivar-/arbetstagarorganisation saknas måste den först regi-
+    streras, se avsnitt Avsändare/mottagare.
+• Klicka på knappen Lägg till avsändare/mottagare i funktionslisten för att regi-
+    strera fler arbetsgivar-/arbetstagarorganisationer.
+
+Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 48 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.15  Kontaktpersoner
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Namn (AGO)
+      • Titel (AGO)
+      • Telefon (AGO)
+      • E-post (AGO)
+      • Namn (ATO)
+      • Titel (ATO)
+      • Telefon (ATO)
+      • E-post (ATO)
+      • Kommentar
+                           Datum       Författare                                Sida
+
+                           2025-10-31  Mikael Skareflod                          49 / 95
+
+Dokumentnamn                           Identitet                                 Version
+
+Användarmanual                         2505-AM-001                               1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+Välj handlingstypen Kontaktpersoner. OBS! Ändra inte handlingstyp efter det att
+handlingen har sparats.
+Fyll i aktuella anpassade fält (Kontaktpersoner).
+Spara.
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 50 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.16  Alla parter
+
+      Formuläret har anpassats genom att följande fält har lagts till:
+      • Arbetsgivarorganisation 1
+      • Arbetstagarorganisation 1
+      • Avtalskoppling 1: 0–9
+      • Avtalskoppling 1 kommentar
+      • Arbetsgivarorganisation 2
+      • Arbetstagarorganisation 2
+      • Avtalskoppling 2: 0–9
+      • Avtalskoppling 2 kommentar
+      • Arbetsgivarorganisation 3
+      • Arbetstagarorganisation 3
+      • Avtalskoppling 3: 0–9
+      • Avtalskoppling 3 kommentar
+      • Arbetsgivarorganisation 4
+      • Arbetstagarorganisation 4
+      • Avtalskoppling 4: 0–9
+      • Avtalskoppling 4 kommentar
+      • Arbetsgivarorganisation 5
+      • Arbetstagarorganisation 5
+      • Avtalskoppling 5: 0–9
+      • Avtalskoppling 5 kommentar
+      • Arbetsgivarorganisation 6
+      • Arbetstagarorganisation 6
+      • Avtalskoppling 6: 0–9
+      • Avtalskoppling 6 kommentar
+      • Arbetsgivarorganisation 7
+      • Arbetstagarorganisation 7
+      • Avtalskoppling 7: 0–9
+      • Avtalskoppling 7 kommentar
+      • Arbetsgivarorganisation 8
+      • Arbetstagarorganisation 8
+      • Avtalskoppling 8: 0–9
+      • Avtalskoppling 8 kommentar
+      • Arbetsgivarorganisation 9
+      • Arbetstagarorganisation 9
+                              Datum       Författare        Sida
+
+                              2025-10-31  Mikael Skareflod  51 / 95
+
+Dokumentnamn                              Identitet         Version
+
+Användarmanual                            2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Avtalskoppling 9: 0–9
+• Avtalskoppling 9 kommentar
+• Kommentar
+
+Fyll i namn på avtalsområdet i fältet Åtgärd/Handling.
+
+Välj handlingstypen Alla parter. OBS! Ändra inte handlingstyp efter det att handlingen
+har sparats.
+                           Datum               Författare        Sida
+
+                           2025-10-31          Mikael Skareflod  52 / 95
+
+Dokumentnamn                                   Identitet         Version
+
+Användarmanual                                 2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Fyll i aktuella anpassade fält (Alla parter).
+Spara.
+                                      Datum       Författare               Sida
+
+                                      2025-10-31  Mikael Skareflod         53 / 95
+
+Dokumentnamn                                      Identitet                Version
+
+Användarmanual                                    2505-AM-001              1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.17  Protokoll
+
+      Formuläret har inte anpassats.
+
+      Fyll i årtal då protokollet skrevs (ÅÅÅÅ) i fältet Åtgärd/Handling.
+      Välj handlingstypen Protokoll.
+      Bifoga protokollet.
+      Spara.
+                                      Datum       Författare              Sida
+
+                                      2025-10-31  Mikael Skareflod        54 / 95
+
+Dokumentnamn                                      Identitet               Version
+
+Användarmanual                                    2505-AM-001             1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.18  Avtal
+
+      Formuläret har inte anpassats.
+
+      Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+      Välj handlingstypen Avtal.
+      Bifoga avtalet.
+      Spara.
+                                      Datum             Författare        Sida
+
+                                      2025-10-31        Mikael Skareflod  55 / 95
+
+Dokumentnamn                                            Identitet         Version
+
+Användarmanual                                          2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.19  Övriga handlingar
+
+      Formuläret har inte anpassats.
+
+      Registrera övriga handlingar som arbetsdokument.
+                                      Datum       Författare               Sida
+
+                                      2025-10-31  Mikael Skareflod         56 / 95
+
+Dokumentnamn                                      Identitet                Version
+
+Användarmanual                                    2505-AM-001              1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.20  Protokoll PFÖ
+
+      Formuläret har inte anpassats.
+
+      Fyll i årtal då protokollet skrevs (ÅÅÅÅ) i fältet Åtgärd/Handling.
+      Välj handlingstypen Protokoll PFÖ.
+      Bifoga protokollet.
+      Spara.
+                                      Datum       Författare              Sida
+
+                                      2025-10-31  Mikael Skareflod        57 / 95
+
+Dokumentnamn                                      Identitet               Version
+
+Användarmanual                                    2505-AM-001             1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.21  Avtal PFÖ
+
+      Formuläret har inte anpassats.
+
+      Fyll i årtal då avtalet tecknades (ÅÅÅÅ) i fältet Åtgärd/Handling.
+      Välj handlingstypen Avtal PFÖ.
+      Bifoga avtalet.
+      Spara.
+                                             Datum       Författare        Sida
+
+                                             2025-10-31  Mikael Skareflod  58 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+3.22  Ärendelänkar
+
+      Formuläret har inte anpassats.
+
+      Registrera länkar till andra ärenden.
+                               Datum                     Författare        Sida
+
+                               2025-10-31                Mikael Skareflod  59 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+4    Allmänheten
+
+     Sekretess- och GDPR-markerad information visas ej.
+
+4.1  Gränssnitt Allmänheten
+
+     För allmänheten som besöker Medlingsinstitutet har ett anpassat gränssnitt skapats. Detta
+     innehåller följande sökfunktioner:
+     • (Sök) Via ärendekort
+     • Sökbyggaren
+     • Fritextsökning
+
+4.2  Användare Allmänheten
+
+     Användarid: ALLM_DIARIET
+
+     Lösenord:
+
+4.3  Gränssnitt Allmänheten Avtal
+
+     För allmänheten som besöker Medlingsinstitutet har ett anpassat gränssnitt skapats. Detta
+     innehåller följande rapport:
+     • Avtal – Allmänheten
+
+4.4  Användare Allmänheten
+
+     Användarid: ALLM_AVTAL
+
+     Lösenord:
+                           Datum                         Författare        Sida
+
+                           2025-10-31                    Mikael Skareflod  60 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+5    Medlare
+
+     Sekretess- och GDPR-markerad information visas ej.
+
+5.1  Gränssnitt Medlare
+
+     För medlare har ett anpassat gränssnitt skapats. Detta innehåller endast följande rapporter:
+     • Avtal – Medlare
+     • Avtal – Avtalsrörelse
+     • Avtal – Utlöpningstidpunkter
+
+5.2  Användare Medlare
+
+     Användarid: MEDL
+
+     Lösenord:
+                                      Datum       Författare              Sida
+
+                                      2025-10-31  Mikael Skareflod        61 / 95
+
+Dokumentnamn                                      Identitet               Version
+
+Användarmanual                                    2505-AM-001             1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+6    Sökbyggarobjekt
+
+     Anpassade sökbyggarobjekt:
+
+     • Avtal.Basfakta
+
+     • Avtal.Arbetsgivarorganisation
+
+     • Avtal.Arbetstagarorganisation
+
+     • Avtal.Löneavtal
+
+     • Avtal.Allmänna villkor
+
+     • Avtal.Lönerevision
+
+     • Avtal.Lägstlön
+
+     • Avtal.Arbetsgrupp
+
+     • Avtal.Särskilda frågor
+
+     • Avtal.Pensionsavtal
+
+     • Avtal.Försäkringar
+
+     • Avtal.Övrigt avtal
+
+     • Avtal.Kontaktpersoner
+
+     • Avtal.Protokoll
+
+     • Avtal.Avtal
+
+     • Avtal.Övriga handlingar
+
+     • Avtal.Protokoll PFÖ
+
+     • Avtal.Avtal PFÖ
+
+     • Avtal.Ärendelänk
+
+     • Avtal.Alla parter
+
+     • Medlingshandlingar
+
+     • Avtal.Medlingshandlingar
+
+     • Avs./mott. Extra (Avtalspart)
+
+6.1  Generellt
+
+     Sökbyggarfält som motsvaras av en kryssruta i formuläret visas som:
+     • Ja om den är markerad
+     • Nej om den är omarkerad
+
+     Vissa sökbyggarfält finns formaterade både som text och som numeriskt värde. Detta för
+     att underlätta vidarebearbetning av data efter export från Sökbyggaren till Excel (Tab). I
+     förekommande fall har det numeriskt formaterade alternativet av dessa sökbyggarfält till-
+     ägget (numeriskt) i fältnamnet, t ex Anställda (numeriskt).
+                                             Datum       Författare          Sida
+
+                                             2025-10-31  Mikael Skareflod    62 / 95
+
+Dokumentnamn                                             Identitet           Version
+
+Användarmanual                                           2505-AM-001         1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+     Sekretess- och GDPR-markerad information visas för behöriga användare.
+
+6.2  Avtal.Basfakta
+
+     Sökbyggarfältet Gällande avtal visar:
+
+     • Uppgift saknas om någon av följande uppgifter på följande handlingar saknas på
+         ärendet:
+
+     • Arbetsgivarorganisation.Avsändare/mottagare.Namn
+
+     • Arbetstagarorganisation.Avsändare/mottagare.Namn
+     • Löneavtal.Tecknades
+
+     • Löneavtal.Gäller fr o m
+
+         • Allmänna villkor.Tecknades
+         • Allmänna villkor.Gäller fr o m
+     • Ja om följande villkor är uppfyllda:
+
+     • Löneavtal.Gäller fr o m är det senaste för avtal med samma Ärendemening, Ar-
+         betsgivarorganisation och Arbetstagarorganisation
+
+     • Allmänna villkor.Gäller fr o m är det senaste för avtal med samma Ärendeme-
+         ning, Arbetsgivarorganisation och Arbetstagarorganisation
+
+         • Basfakta.Avtalet upphört är tomt eller Basfakta.Avtalet upphört >= Dagens da-
+              tum
+
+     • Nej i alla övriga fall
+
+     Sökbyggarfältet Längd (mån) beräknas som:
+     • Gäller t o m – Gäller fr o m (i månader, avrundat uppåt)
+
+     Sökbyggarfältet Ärendelänk.Medling visar:
+     • Ja om följande villkor är uppfyllda:
+
+         • Ärendet har en ärendelänk där fältet Länkinformation = Medling
+     • Nej i alla övriga fall
+
+6.3  Avtal.Lönerevision
+
+     Sökbyggarfältet Föregående år visar:
+     • Ja om följande villkor är uppfyllda:
+
+         • Lönerevision.Revisionsdatum är föregående år eller Lönerevision.Revisionsda-
+              tum är tidigare år och senaste lönerevision
+
+     • Nej i alla övriga fall
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  63 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                               Datum       Författare                  Sida
+
+                               2025-10-31  Mikael Skareflod            64 / 95
+
+Dokumentnamn                               Identitet                   Version
+
+Användarmanual                             2505-AM-001                 1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+     Sökbyggarfältet I år visar:
+     • Ja om följande villkor är uppfyllda:
+
+         • Lönerevision.Revisionsdatum är i år eller Lönerevision.Revisionsdatum är tidi-
+              gare år och senaste lönerevision
+
+     • Nej i alla övriga fall
+
+     Sökbyggarfältet Nästa år visar:
+     • Ja om följande villkor är uppfyllda:
+
+         • Lönerevision.Revisionsdatum är nästa år eller Lönerevision.Revisionsdatum är i
+              år/tidigare år och senaste lönerevision
+
+     • Nej i alla övriga fall
+
+6.4  Medlingshandlingar
+
+     Sökbyggarobjektet Medlingshandlingar visar filer på ärenden där:
+     • Handlingstypen är Medlarrapport eller
+     • Filnamnet innehåller ”hemst”
+     • Filnamnet inte börjar med ”meddelande” eller ”image”
+     • Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+
+6.5  Avtal.Medlingshandlingar
+
+     Sökbyggarobjektet Avtal.Medlingshandlingar visar filer på länkade ärenden där länkin-
+     formation börjar på "Medling" och där:
+     • Handlingstypen är Medlarrapport eller
+     • Filnamnet innehåller ”hemst”
+     • Filnamnet inte börjar med ”meddelande” eller ”image”
+     • Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+
+6.6  Avtal.Protokoll, Avtal.Protokoll PFÖ, Avtal.Avtal, Avtal.Avtal
+
+     PFÖ
+
+     Sökbyggarobjekten Avtal.Protokoll, Avtal.Protokoll PFÖ, Avtal.Avtal och Avtal.Avtal
+     PF visar filer på ärenden där:
+     • Filnamnet inte börjar med ”meddelande” eller ”image”
+     • Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+                                             Datum       Författare        Sida
+
+                                             2025-10-31  Mikael Skareflod  65 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7  Rapporter
+
+   Sidhuvud
+
+   I sidhuvudet visas följande information:
+   • Logotyp
+   • Utskriftsdatum och tid
+   • Sidnummer
+
+   Generellt
+   • Markerad kryssruta skrivs ut som ”Ja”.
+                                          Datum       Författare             Sida
+
+                                          2025-10-31  Mikael Skareflod       66 / 95
+
+Dokumentnamn                                          Identitet              Version
+
+Användarmanual                                        2505-AM-001            1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.1  Avtal – Huvudrapport
+
+     Sekretess- och GDPR-markerad information visas för behöriga användare.
+
+     Urvalskriterier
+
+     Rapporten innehåller följande urvalskriterier:
+     • Arbetsgivarorganisation
+     • Arbetstagarorganisation
+     • Avtal (Ärendemening, Löneavtal.Avtalet tecknades, Allmänna villkor.Avtalet teckna-
+
+         des). Endast giltiga avtal visas.
+
+     Välj arbetsgivarorganisation.
+     Välj arbetstagarorganisation.
+     Välj avtal.
+     Klicka på knappen Generera rapport.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  67 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  68 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  69 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+Rapportens delar har följande sorteringsordning:
+• Lönerevisioner: Revisionsdatum
+• Lägstlöner:
+
+    • Gruppering: Handlingsnamn (tecken 6-n)
+    • Sortering: Revisionsdatum
+• Arbetsgrupper: Handlingsnamn (tecken 1-4), Handlingsnamn (tecken 6-n)
+• Pensionsavtal: Handlingsnamn (tecken 6-n), Teckningsdatum
+• Försäkringar
+• Övriga avtal: Handlingsnamn (tecken 6-n), Teckningsdatum
+• Kontaktpersoner: Arbetsgivarorganisation, Arbetstagarorganisation
+• Protokoll: Filnamn
+• Avtal: Filnamn
+• Övriga handlingar: Filnamn
+• Protokoll PFÖ: Filnamn
+• Avtal PFÖ: Filnamn
+• Ärendelänkar: Länkinformation, Ärendenummer
+• Alla parter: Nr
+
+Rapporthuvud
+I rapporthuvudet hämtas informationen från följande fält:
+• Arbetsgivarorganisation, Sektor, Central arbetsgivarorganisation, Arbetsgivargrupp
+• Arbetstagarorganisation, Central arbetstagarorganisation, Samverkansgrupp
+• Avtalsnamn (Ärendemening)
+• Ärendenummer
+
+Löneavtal
+• Längd (mån) = Gäller t o m – Gäller fr o m (i månader, avrundat uppåt)
+
+Lönerevisioner
+• Markerad kryssruta för Alternativ avtalskonstruktion skrivs ut som ”Alt.ak”
+• Markerad kryssruta för Lägst värde skrivs ut som ”Lägst”
+• För Löneöversyn värde (%) skrivs ”procent” ut
+                           Datum       Författare                       Sida
+
+                           2025-10-31  Mikael Skareflod                 70 / 95
+
+Dokumentnamn                           Identitet                        Version
+
+Användarmanual                         2505-AM-001                      1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+     Protokoll, Protokoll PFÖ, Avtal och Avtal PFÖ
+
+     Visar filer där:
+     • Filnamnet inte börjar med ”meddelande” eller ”image”
+     • Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+
+7.2  Avtal – Huvudrapport (Test)
+
+     Detta är normalt samma rapport som Avtal – Huvudrapport och är endast åtkomlig i serie
+     Avtal Test.
+
+     I samband med systemutveckling kan dessa rapporter skilja sig åt.
+                                          Datum          Författare        Sida
+
+                                          2025-10-31     Mikael Skareflod  71 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.3  Avtal – Allmänheten
+
+     Sekretess- och GDPR-markerad information visas ej.
+
+     Urvalskriterier
+
+     Rapporten innehåller följande urvalskriterier:
+     • Arbetsgivarorganisation
+     • Arbetstagarorganisation
+     • Avtal (Ärendemening, Löneavtal.Avtalet tecknades, Allmänna villkor.Avtalet teckna-
+
+         des). Endast giltiga avtal visas.
+
+     Välj arbetsgivarorganisation.
+     Välj arbetstagarorganisation.
+     Välj avtal.
+     Klicka på knappen Generera rapport.
+                           Datum       Författare            Sida
+
+                           2025-10-31  Mikael Skareflod      72 / 95
+
+Dokumentnamn                           Identitet             Version
+
+Användarmanual                         2505-AM-001           1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+Rapportens delar har följande sorteringsordning:
+• Protokoll: Filnamn
+• Avtal: Filnamn
+
+Protokoll och Avtal
+Visar filer där:
+• Filnamnet inte börjar med ”meddelande” eller ”image”
+• Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+                                          Datum          Författare        Sida
+
+                                          2025-10-31     Mikael Skareflod  73 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.4  Avtal – Medlare
+
+     Sekretess- och GDPR-markerad information visas ej.
+
+     Urvalskriterier
+
+     Rapporten innehåller följande urvalskriterier:
+     • Arbetsgivarorganisation
+     • Arbetstagarorganisation
+     • Avtal (Ärendemening, Löneavtal.Avtalet tecknades, Allmänna villkor.Avtalet teckna-
+
+         des). Endast giltiga avtal visas.
+
+     Välj arbetsgivarorganisation.
+     Välj arbetstagarorganisation.
+     Välj avtal.
+     Klicka på knappen Generera rapport.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  74 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+Rapportens delar har följande sorteringsordning:
+• Protokoll: Filnamn
+• Avtal: Filnamn
+• Medlingshandlingar: Filnamn
+• Övriga avtal som arbetsgivaren tecknar: Arbetstagarorganisation, Ärendemening
+
+Protokoll och Avtal
+Visar filer där:
+• Filnamnet inte börjar med ”meddelande” eller ”image”
+• Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+
+Medlingshandlingar
+Visar filer på länkade ärenden där länkinformation börjar på "Medling" och där:
+• Handlingstypen är Medlarrapport eller
+• Filnamnet innehåller ”hemst”
+• Filnamnet inte börjar med ”meddelande” eller ”image”
+• Filnamnet (filändelsen) inte slutar med ”msg” eller ”eml”
+                           Datum                       Författare            Sida
+
+                           2025-10-31                  Mikael Skareflod      75 / 95
+
+Dokumentnamn                                           Identitet             Version
+
+Användarmanual                                         2505-AM-001           1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.5  Avtal – Pensionsavtal och övriga avtal
+
+     Sekretess- och GDPR-markerad information visas för behöriga användare.
+
+     Urvalskriterier
+
+     Rapporten innehåller följande urvalskriterier:
+     • Pensionsavtal
+     • Övrigt avtal
+     • Avtalsparter på löneavtal och allmänna villkor
+
+         • Arbetsgivarorganisation
+         • Sektor
+         • Branschkod
+         • Centralorganisation
+         • Arbetsgivargrupp
+         • Arbetstagarorganisation
+         • Centralorganisation
+         • Samverkansgrupp
+     • Avtalsparter på pensionsavtal och övriga avtal
+         • Arbetsgivarorganisation
+         • Arbetstagarorganisation
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  76 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Ange pensionsavtal eller övrigt avtal (inte både och).
+
+Begränsa urvalet genom att välja avtalsparter på löneavtal och allmänna villkor (arbetsgi-
+varorganisation, sektor, centralorganisation, arbetsgivargrupp, arbetstagarorganisation,
+centralorganisation, samverkansgrupp) och/eller avtalsparter på pensionsavtal och övriga
+avtal (arbetsgivarorganisation arbetstagarorganisation).
+
+Klicka på knappen Generera rapport.
+
+OBS! Endast gällande avtal ingår i rapporten.
+
+Urvalskriterier för avtalsparter på löneavtal och allmänna villkor styr val av handlingar
+med avsändare/mottagare i handlingstyperna Arbetsgivarorganisation respektive Arbets-
+tagarorganisation.
+
+Urvalskriterier för avtalsparter på pensionsavtal och övriga avtal styr val av handlingar
+med avsändare/mottagare i handlingstyperna Pensionsavtal respektive Övrigt avtal.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  77 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+
+Rapportens delar har följande sorteringsordning:
+• Lista: Arbetsgivarorganisation, Arbetstagarorganisation, Avtal, Pensionsavtal/Övrigt
+
+    avtal
+                              Datum                  Författare              Sida
+
+                              2025-10-31             Mikael Skareflod        78 / 95
+
+Dokumentnamn                                         Identitet               Version
+
+Användarmanual                                       2505-AM-001             1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.6  Avtal – Avtalskonstruktioner
+
+     Sekretess- och GDPR-markerad information visas för behöriga användare.
+
+     Urvalskriterier
+
+     Rapporten innehåller följande urvalskriterier:
+     • Årtal
+     • Arbetsgivarorganisation
+     • Sektor
+     • Branschkod
+     • Centralorganisation
+     • Arbetsgivargrupp
+     • Arbetstagarorganisation
+     • Centralorganisation
+     • Samverkansgrupp
+
+     Ange årtal (4 siffror).
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  79 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Begränsa urvalet genom att välja arbetsgivarorganisation, centralorganisation, arbets-
+givargrupp, arbetstagarorganisation och/eller centralorganisation.
+
+Klicka på knappen Generera rapport.
+
+OBS! Endast gällande avtal, med senaste lönerevision, med angiven ordinarie Avtalskon-
+struktion, ingår i rapporten.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  80 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  81 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  82 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+
+Rapportens delar har följande sorteringsordning:
+• Tabell 1: Sektor, Central arbetsgivarorganisation, Arbetsgivargrupp
+
+    • Gruppering: Sektorgrupp (privat/offentlig), Sektor, Central arbetsgivarorganisat-
+         ion, Arbetsgivargrupp
+
+• Figur 1: Avtalskonstruktion
+    • Gruppering: Lokal lönebildning (sifferlösa avtal) (Avtalskonstruktion 1), Lokal
+         lönebildning med stupstock (Avtalskonstruktion 2-3), Central lönebildning (Av-
+         talskonstruktion 4-7), Lokal lönebildning (Avtalskonstruktion 1-3)
+
+• Figur 2: Avtalskonstruktion
+    • Gruppering: Lokal lönebildning (sifferlösa avtal) (Avtalskonstruktion 1), Lokal
+         lönebildning med stupstock (Avtalskonstruktion 2-3), Central lönebildning (Av-
+         talskonstruktion 4-7), Lokal lönebildning (Avtalskonstruktion 1-3)
+
+• Figur 3: Avtalskonstruktion
+    • Gruppering: Generella påslag (Avtalskonstruktion 7), Individgarantier (Avtals-
+         konstruktion 3, 5, 6), Individuellt (Avtalskonstruktion 1, 2, 4)
+
+• Figur 4: Avtalskonstruktion
+    • Gruppering: Generella påslag (Avtalskonstruktion 7), Individgarantier (Avtals-
+         konstruktion 3, 5, 6), Individuellt (Avtalskonstruktion 1, 2, 4)
+
+• Figur 5: Avtalskonstruktion
+    • Gruppering: Avtalskonstruktion
+
+• Figur 6: Avtalskonstruktion
+    • Gruppering: Avtalskonstruktion
+
+• Tabell 2: Avtalskonstruktion, Central arbetstagarorganisation, Sektorgrupp
+    • Gruppering: Avtalskonstruktion, Central arbetstagarorganisation (arbetare/tjäns-
+         temän), Sektorgrupp (privat/offentlig)
+
+• Lista 1: Arbetsgivarorganisation, Arbetstagarorganisation, Avtal
+    • Gruppering: Avtalskonstruktion
+
+Urvalets avtal fördelade efter avtalskonstruktion
+• För avtal där Basfakta.Anställda ackumulerat är ifyllt skrivs ’*’ ut efter antal an-
+
+    ställda.
+                           Datum          Författare        Sida
+
+                           2025-10-31     Mikael Skareflod  83 / 95
+
+Dokumentnamn                              Identitet         Version
+
+Användarmanual                            2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.7  Avtal – Avtalskonstruktioner (Test)
+
+     Detta är en variant av rapporten Avtal – Avtalskonstruktioner som bara innehåller tabeller
+     och listor.
+
+7.8  Avtal – Avtalskonstruktioner (Test diagram)
+
+     Detta är en variant av rapporten Avtal – Avtalskonstruktioner som bara innehåller figurer.
+                              Datum                      Författare        Sida
+
+                              2025-10-31                 Mikael Skareflod  84 / 95
+
+Dokumentnamn                                             Identitet         Version
+
+Användarmanual                                           2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.9  Avtal – Avtalsrörelse
+
+     Sekretess- och GDPR-markerad information visas ej.
+
+     Urvalskriterier
+
+     Rapporten innehåller följande urvalskriterier:
+     • Årtal
+     • Arbetsgivarorganisation
+     • Sektor
+     • Branschkod
+     • Centralorganisation
+     • Arbetsgivargrupp
+     • Arbetstagarorganisation
+     • Centralorganisation
+     • Samverkansgrupp
+
+     Ange årtal (4 siffror).
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  85 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Begränsa urvalet genom att välja arbetsgivarorganisation, centralorganisation, arbets-
+givargrupp, arbetstagarorganisation och/eller centralorganisation.
+
+Klicka på knappen Generera rapport.
+OBS! Endast gällande avtal ingår i rapporten såvida inte annat anges.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  86 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  87 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+
+Rapportens delar har följande sorteringsordning:
+• Diagram 1: Avtal: Månad, Typ
+
+    • Gruppering: Månad, Typ
+• Diagram 2: Anställda: Månad, Typ
+
+    • Gruppering: Månad, Typ
+• Tabell 1: Avtal: Månad, Typ
+
+    • Gruppering: Månad, Typ
+• Tabell 2: Anställda: Månad, Typ
+
+    • Gruppering: Månad, Typ
+• Lista 1: Avtal efter utlöpningstidpunkt för 20xx: Månad, Sorteringsdatum (Kvarstå-
+
+    ende avtal: Löneavtal.Gäller t o m; Nytecknade avtal: Löneavtal.Förtida slutdatum),
+    Arbetsgivarorganisation, Arbetstagarorganisation, Avtal
+    • Gruppering: Månad
+• Diagram 3: Avtal: Typ
+    • Gruppering: Typ
+• Diagram 4: Anställda: Typ
+    • Gruppering: Typ
+• Tabell 3: Slutna avtal fördelade efter teckningsmånad: Månad, Typ
+    • Gruppering: Månad, Typ
+• Tabell 4: Avtalsuppgörelser i förhållande till avtalens utlöpningstidpunkt: Längd
+    (mån)
+    • Gruppering: Längd (mån)
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  88 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Lista 2: Avtal som tecknats under 20xx: Månad, Tecknades, Arbetsgivarorganisation,
+    Arbetstagarorganisation, Avtal
+    • Gruppering: Månad
+
+• Lista 3: Kvarstående avtal som ska nytecknas under 20xx sorterat efter arbetsgivaror-
+    ganisation: Arbetsgivarorganisation, Löneavtal.Gäller t o m, Arbetstagarorganisation,
+    Avtal
+
+• Lista 4: Avtal som upphör under 20xx: Arbetsgivarorganisation, Avtalet upphört, Av-
+    tal, Arbetstagarorganisation
+    • Gruppering: Månad
+
+Avtal som är kvarstående, nytecknade och nytecknade efter medling
+fördelade efter avtalens utlöpningstidpunkter 20xx i procent.
+• Avtal där Löneavtal.Gäller t o m = 20xx skrivs ut med beige färg.
+• Avtal där Löneavtal.Föregående avtal slutdatum = 20xx och som inte har en ärende-
+
+    länk där fältet Länkinformation = Medling skrivs ut med grön färg.
+• Avtal där Löneavtal.Föregående avtal slutdatum = 20xx och som har en ärendelänk
+
+    där fältet Länkinformation = Medling skrivs ut med röd färg.
+
+Anställda som omfattas av avtal som är kvarstående, nytecknade och
+nytecknade efter medling fördelade efter avtalens utlöpningstidpunk-
+ter 20xx i procent.
+• Anställda som omfattas av avtal där Löneavtal.Gäller t o m = 20xx skrivs ut med
+
+    beige färg.
+• Anställda som omfattas av avtal där Löneavtal.Föregående avtal slutdatum = 20xx
+
+    och som inte har en ärendelänk där fältet Länkinformation = Medling skrivs ut med
+    grön färg.
+• Anställda som omfattas av avtal där Löneavtal.Föregående avtal slutdatum = 20xx
+    och som har en ärendelänk där fältet Länkinformation = Medling skrivs ut med röd
+    färg.
+
+Avtal efter utlöpningstidpunkt för 20xx
+• Avtal där Löneavtal.Gäller t o m = 20xx skrivs ut med beige bakgrund.
+• Avtal där Löneavtal.Föregående avtal slutdatum = 20xx skrivs ut med grön bakgrund.
+• Avtal där Löneavtal.Föregående avtal slutdatum = 20xx och som har en ärendelänk
+
+    där fältet Länkinformation = Medling skrivs ut med röd bakgrund.
+
+Avtalsuppgörelser i förhållande till avtalens utlöpningstidpunkt. Pro-
+cent av antalet avtal.
+• Avtal där Löneavtal.Tecknades <= Löneavtal.Föregående avtal slutdatum skrivs ut
+
+    med grön färg.
+• Avtal där Löneavtal.Föregående avtal slutdatum < Löneavtal.Tecknades <= Löneav-
+
+    tal.Föregående avtal slutdatum + 3 veckor skrivs ut med beige färg.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  89 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Avtal där Löneavtal.Tecknades > Löneavtal.Föregående avtal slutdatum + 3 veckor
+    skrivs ut med röd färg.
+
+Avtalsuppgörelser i förhållande till avtalens utlöpningstidpunkt. Pro-
+cent av antalet anställda.
+• Avtal där Löneavtal.Tecknades <= Löneavtal.Föregående avtal slutdatum skrivs ut
+
+    med grön färg.
+• Avtal där Löneavtal.Föregående avtal slutdatum < Löneavtal.Tecknades <= Löneav-
+
+    tal.Föregående avtal slutdatum + 3 veckor skrivs ut med beige färg.
+• Avtal där Löneavtal.Tecknades > Löneavtal.Föregående avtal slutdatum + 3 veckor
+
+    skrivs ut med röd färg.
+
+Avtal som tecknats under 20xx
+• Endast avtal där Löneavtal.Tecknades = 20xx skrivs ut.
+• Avtal där Löneavtal.Föregående avtal slutdatum <> 20xx skrivs ut med beige bak-
+
+    grund.
+• Avtal som har en ärendelänk där fältet Länkinformation = Medling skrivs ut med röd
+
+    bakgrund.
+
+Kvarstående avtal som ska nytecknas under 20xx sorterat efter ar-
+betsgivarorganisation
+• Endast avtal där Löneavtal.Gäller t o m = 20xx skrivs ut.
+• Avtal som inte har en ärendelänk där fältet Länkinformation = Medling skrivs ut med
+
+    blå bakgrund.
+• Avtal som har en ärendelänk där fältet Länkinformation = Medling skrivs ut med röd
+
+    bakgrund.
+
+Avtal som upphör under 20xx
+• Endast avtal där Basfakta.Upphört = 20xx och Löneavtal.Gäller t o m = 20xx skrivs
+
+    ut med grå bakgrund.
+• OBS! Även avtal som inte är gällande avtal skrivs ut.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  90 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.10  Avtal – Avtalsrörelse (Test)
+
+      Detta är en variant av rapporten Avtal – Avtalsrörelse som även innehåller Lista 2, vilken
+      skrivs ut efter Lista 1.
+
+      Sorteringsordning
+      Rapportens delar har följande sorteringsordning:
+      • Lista 2: Ej nytecknade avtal som löper tills vidare: Arbetsgivarorganisation, Arbetsta-
+
+          garorganisation, Avtal
+          • Gruppering: Månad
+
+      Ej nytecknade avtal som löper tills vidare
+      • Avtal där Löneavtal.Gäller t o m är tomt skrivs ut med vit bakgrund.
+      • OBS! Avtal där Löneavtal.Föregående avtal slutdatum = 20xx skrivs inte ut.
+                           Datum                          Författare        Sida
+
+                           2025-10-31                     Mikael Skareflod  91 / 95
+
+Dokumentnamn                                              Identitet         Version
+
+Användarmanual                                            2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+7.11  Avtal – Utlöpningstidpunkter
+
+      Sekretess- och GDPR-markerad information visas ej.
+
+      Urvalskriterier
+      Rapporten innehåller följande urvalskriterier:
+      • Årtal
+
+      Ange årtal (4 siffror).
+      Klicka på knappen Generera rapport.
+
+      OBS! Endast gällande avtal ingår i rapporten.
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  92 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  93 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+                           Datum       Författare                   Sida
+
+                           2025-10-31  Mikael Skareflod             94 / 95
+
+Dokumentnamn                           Identitet                    Version
+
+Användarmanual                         2505-AM-001                  1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+Sorteringsordning
+
+Rapportens delar har följande sorteringsordning:
+• Diagram: Månad
+
+    • Gruppering: Månad
+• Samtliga sektorer: Månad
+
+    • Gruppering: Månad
+• Svenskt Näringsliv: Månad
+
+    • Gruppering: Månad
+• Svenskt Näringsliv per arbetsgivargrupp: Månad, Arbetsgivargrupp
+
+    • Gruppering: Månad, Arbetsgivargrupp
+• Övrig privat sektor: Månad
+
+    • Gruppering: Månad
+                           Datum       Författare        Sida
+
+                           2025-10-31  Mikael Skareflod  95 / 95
+
+Dokumentnamn                           Identitet         Version
+
+Användarmanual                         2505-AM-001       1.9
+
+Uppdrag
+
+Medlingsinstitutet – W3D3
+
+• Offentlig sektor: Månad, Sektor
+    • Gruppering: Månad, Sektor
+
+• Avtal som löper ut 20xx: Månad, Gäller t o m, Arbetsgivarorganisation, Arbetstagar-
+    organisation, Avtal
+    • Gruppering: Månad
+
+• Avtal som löper ut 20xx – Industriavtalet: Månad, Gäller t o m, Arbetsgivarorganisat-
+    ion, Arbetstagarorganisation, Avtal
+    • Gruppering: Månad
+
+• Avtal som löper ut 20xx om förtida uppsägning utnyttjas: Månad, Förtida slutdatum,
+    Arbetsgivarorganisation, Arbetstagarorganisation, Avtal
+    • Gruppering: Månad
+
+Sida 1 – 4
+• X av totalt Y antal gällande avtal, där
+
+    X = antal gällande avtal som löper ut efterfrågat år (totalt/Svenskt Näringsliv/Övrig
+    privat sektor/Offentlig sektor)
+    Y = totalt antal gällande avtal (totalt/Svenskt Näringsliv/Övrig privat sektor/Offentlig
+    sektor)
+
+Avtal som löper ut 20xx
+• Endast avtal där Löneavtal.Förtida slutdatum = 20xx skrivs ut.
+
+Rapportfältet Uppsagt i förtid visar:
+• Ja om följande villkor är uppfyllda:
+
+    • Löneavtal.Gäller t o m = Löneavtal.Förtida slutdatum
+
+Avtal som löper ut 20xx – Industriavtalet
+• Endast avtal där Basfakta.Förhandlingsordning (Dnr) = metadata Avtal.Diarienr In-
+
+    dustriavtal och Löneavtal.Förtida slutdatum = 20xx skrivs ut.
+
+Avtal som löper ut 20xx om förtida uppsägning utnyttjas
+• Endast avtal där Löneavtal.Gäller t o m <> Löneavtal.Förtida slutdatum och
+
+    Löneavtal.Förtida slutdatum = 20xx skrivs ut.
+

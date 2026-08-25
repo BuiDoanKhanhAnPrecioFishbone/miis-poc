@@ -49,8 +49,27 @@
   --color-ai: var(--ai);
   --color-ai-foreground: var(--ai-foreground);
   --color-ai-border: var(--ai-border);
+  --color-ai-ring: var(--ai-ring);
+  --color-ai-solid: var(--ai-solid);
+  --color-ai-solid-foreground: var(--ai-solid-foreground);
   --color-req: var(--req);
   --color-req-foreground: var(--req-foreground);
+  --color-req-border: var(--req-border);
+  --color-demo: var(--demo);
+  --color-demo-foreground: var(--demo-foreground);
+  --color-demo-border: var(--demo-border);
+  --color-public: var(--public);
+  --color-public-foreground: var(--public-foreground);
+  --color-public-border: var(--public-border);
+  --color-ok: var(--ok);
+  --color-ok-foreground: var(--ok-foreground);
+  --color-ok-border: var(--ok-border);
+  --color-attention: var(--attention);
+  --color-attention-foreground: var(--attention-foreground);
+  --color-attention-border: var(--attention-border);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-error-border: var(--error-border);
   --color-status-green: var(--status-green);
   --color-status-red: var(--status-red);
   --color-status-blue: var(--status-blue);
@@ -67,9 +86,40 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: Arial, Helvetica, sans-serif;
-  --font-display: Arial, Helvetica, sans-serif;
+  /*
+    Public Sans, self-hosted (see `app/layout.tsx` for why, and for NFA-001).
+    Arial stays behind it: MI's real brand font is still unverified, so the
+    stack has to degrade to something every machine has.
+  */
+  --font-sans: var(--font-public-sans), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-public-sans), Arial, Helvetica, sans-serif;
   --shadow-card: 0 1px 2px rgba(23, 37, 44, 0.1);
+
+  /*
+   * The MIIS type scale — one brand, two expressions.
+   *
+   * mi.se is editorial: large headings, tight tracking, generous air. MIIS is a
+   * dense case tool where an administrator compares rows of agreements, so it
+   * takes the same tokens at a working density. The editorial scale is still
+   * the right expression for the public website; it is the wrong one here.
+   *
+   * 14px is the floor for anything a user must read. `--text-meta` at 13px is
+   * reserved for chrome annotations that are not content — requirement tags and
+   * the demo bar's own labels — never for information from the case.
+   */
+  --text-page-title: 1.75rem; /* 28px */
+  --text-page-title--line-height: 1.2;
+  --text-page-title--letter-spacing: -0.01em;
+  --text-section: 1.25rem; /* 20px */
+  --text-section--line-height: 1.3;
+  --text-body: 1rem; /* 16px */
+  --text-body--line-height: 1.6;
+  --text-table: 0.9375rem; /* 15px */
+  --text-table--line-height: 1.45;
+  --text-label: 0.875rem; /* 14px */
+  --text-label--line-height: 1.45;
+  --text-meta: 0.8125rem; /* 13px — annotation only */
+  --text-meta--line-height: 1.4;
 }
 
 :root {
@@ -88,6 +138,55 @@
   --mi-sand-100: #F3ECDD;
   --mi-paper: #F7F5F0;
   --mi-focus: #1D5F7A;
+  /* Deliberately outside the MI palette: the demo bar must not read as MIIS. */
+  --mi-demo-grey: #DDDFDD;
+
+  /*
+   * AI — the one place where stepping outside the MI identity is the point.
+   *
+   * These are the violets from the CEO's US-01 sketch, restored. An AI proposal
+   * is machine-generated and unverified, which is categorically different from
+   * Märket (a registered fact) or a sekretessmarkering (a legal status). Those
+   * are MI's own information and wear MI's own sand; a proposal awaiting a case
+   * officer's approval should not.
+   *
+   * The implementation had folded AI into sand, which left one hue carrying
+   * seven meanings — Märket, AI, attention, requirement tags, the public view,
+   * watchword hits and accent — all of them on screen together in /registrera.
+   * That is the same failure the FR-012 status colours are protected from.
+   *
+   * **Two failed attempts, and what they taught.** It was Material's Deep
+   * Purple 700 (#5E35B1, h260 s54 **l45**), which read as heavy and muddy. The
+   * correction desaturated it into MI's own chroma band (#60508F, h255 **s28**
+   * l44) on the reasoning that one colour at twice the chroma of the identity
+   * looks imported — and that produced a grey mauve, which reads as *sad*.
+   *
+   * Both failures were the same failure: **lightness**, not saturation. Both
+   * sat at L44–45. Every violet other systems actually use for AI is lighter
+   * and clearly chromatic — GitHub Copilot #6E40C9 is l52 s56, Atlassian's
+   * discovery token #8270DB is l65 s60, Tailwind violet-600 #7C3AED is l58
+   * s83. A dark, greyed purple is not restraint; it is a colour with the life
+   * taken out of it.
+   *
+   * So: **l52 and s58**, at hue 266. The hue is deliberate too. The de-facto
+   * "AI" colours cluster at h260-262 (Tailwind violet, Copilot) and h234
+   * (Linear's #5E6AD2, which is really indigo - close enough to a link blue to
+   * be a hazard beside MI's own focus colour #1D5F7A, h197). A few degrees red
+   * of that cluster gives a royal violet rather than a tech indigo:
+   * unmistakably purple at a glance, warmer against MI's sand (h36), and not
+   * the exact shade every AI product shipped in 2025.
+   *
+   * One part of the chroma argument survives and is worth keeping: violet is
+   * **the one deliberate step outside the MI palette**, so it is the one colour
+   * allowed to break the identity's chroma discipline. That is what it is for.
+   *
+   * Contrast, measured: 9.81:1 text on the tint, 5.78:1 spine against paper,
+   * 9.03:1 white on the solid marker.
+   */
+  --mi-ai-100: #F3EAFB;
+  --mi-ai-500: #7B3FCC;
+  --mi-ai-700: #5F2AA0;
+  --mi-ai-800: #4A2280;
 
   --radius: 8px;
   --background: var(--mi-paper);
@@ -102,7 +201,18 @@
   --secondary: var(--mi-slate-100);
   --secondary-foreground: var(--mi-slate-900);
   --muted: var(--mi-slate-100);
-  --muted-foreground: var(--mi-slate-700);
+  /*
+    Secondary text, at slate-800 rather than slate-700.
+
+    slate-700 measured 4.79:1 on the slate tint and 4.72:1 on the AI tint —
+    passing AA by two hundredths, which is why an automated sweep stayed silent
+    while the text still looked thin. Hints and helper lines are 13–14px and sit
+    on six different tinted grounds in this system; a token that only just
+    clears on the palest one has no margin for the rest. slate-800 measures
+    6.12:1 at worst and 7.40:1 on card, and is still visibly secondary to the
+    ink.
+  */
+  --muted-foreground: var(--mi-slate-800);
   --accent: var(--mi-sand-100);
   --accent-foreground: var(--mi-ink);
   --destructive: #A33B35;
@@ -116,15 +226,93 @@
   --sand-foreground: #4A3A1C;
   --mint: #E9F0EC;
   --mint-border: #2E6B57;
-  --ai: var(--mi-sand-100);
-  --ai-foreground: #6B4E14;
-  --ai-border: var(--mi-sand-600);
-  --req: var(--mi-slate-700);
-  --req-foreground: #ffffff;
+  --ai: var(--mi-ai-100);
+  --ai-foreground: var(--mi-ai-800);
+  --ai-border: var(--mi-ai-500);
+  /*
+    The one filled marker in MIIS. Every other badge is an outline on a tint, so
+    a solid block is a silhouette no other state word can imitate — recognition
+    survives greyscale, a projector and a colour-blind reader, which a hue on
+    its own does not.
+  */
+  --ai-solid: var(--mi-ai-700);
+  --ai-solid-foreground: #ffffff;
+  /*
+    The AI gradient - two steps of the same hue, deep to lively.
 
+    It briefly ended in --mi-slate-800, on the theory that resolving the band
+    into MI's own colour said "machine-generated material inside MI's system".
+    On screen it said something else: the far end went grey-teal and the band
+    read as a smudge, which was half of why the compartment looked drab. A band
+    is 44px tall - there is no room in it for an argument, only for a colour.
+
+    The mark and the 6px spine sit at the deep end, so the signal is strongest
+    exactly where it is read. Both stops are dark, which is the constraint a
+    gradient has to meet before text may sit on it: a gradient has no single
+    contrast ratio, so white has to clear 4.5:1 against the *lightest* stop -
+    6.13:1 on --mi-ai-500 - or the figure is a guess.
+  */
+  --ai-gradient: linear-gradient(100deg, var(--mi-ai-700) 0%, var(--mi-ai-500) 100%);
+  /*
+    The ring on a traced field. A non-text indicator needs 3:1 against what it
+    sits on (WCAG 1.4.11); --mi-ai-500 on the panel's paper measures 4.78:1, so
+    it clears it with room and stays unmistakably the AI hue rather than a
+    second violet nobody can name.
+  */
+  --ai-ring: var(--mi-ai-500);
+  /*
+   * Requirement tags are annotation, not interface. Sand on ink reads as a
+   * margin note pencilled onto the screen; the slate chip they used to be read
+   * as a component of the product itself.
+   */
+  --req: var(--mi-sand-300);
+  --req-foreground: var(--mi-ink);
+  --req-border: var(--mi-sand-600);
+
+  /* The demo bar — reviewer tools, visibly not part of MIIS. */
+  --demo: var(--mi-demo-grey);
+  --demo-foreground: var(--mi-ink);
+  --demo-border: var(--mi-slate-600);
+
+  /* The public computer view (US-14) — a reduced, read-only entrance. */
+  --public: var(--mi-sand-100);
+  --public-foreground: #4A3A1C;
+  --public-border: var(--mi-sand-600);
+
+  /*
+   * FR-012 agreement status — RESERVED. These three belong to the agreement's
+   * status and to nothing else.
+   *
+   * In MIIS red is not "bad": it means "tecknat efter medling", a neutral fact
+   * about how an agreement came about. If red also meant "error" and green
+   * "success", a red row in an agreement table would be unreadable — the user
+   * could not tell a domain fact from a system complaint. System feedback
+   * therefore has its own tokens below, and its own shape.
+   *
+   * Never use --status-* for validation, for a trend, or for a percentage.
+   */
   --status-green: #2E6B57;
   --status-red: #A33B35;
   --status-blue: #1D5F7A;
+
+  /*
+   * System feedback. Distinguished by form as much as by colour: a Callout has
+   * a left rule, an icon and a bold label word, so it can never be confused
+   * with an agreement's status marker.
+   *
+   * There are no "up" and "down" tokens on purpose. Medlingsinstitutet mediates
+   * between employers and unions; colouring a 3,2 % settlement green because it
+   * is high states a position the authority does not have.
+   */
+  --ok: var(--mint);
+  --ok-foreground: #1F4A3B;
+  --ok-border: var(--mint-border);
+  --attention: var(--mi-sand-100);
+  --attention-foreground: #4A3A1C;
+  --attention-border: var(--mi-sand-600);
+  --error: #FBF0EF;
+  --error-foreground: #7E2B26;
+  --error-border: var(--destructive);
 
   --chart-1: var(--mi-slate-800);
   --chart-2: var(--mi-slate-600);
@@ -168,6 +356,28 @@
   --sidebar-accent-foreground: #F7F5F0;
   --sidebar-border: #405966;
   --sidebar-ring: #7FB6CE;
+  --req: var(--mi-sand-300);
+  --req-foreground: #17252C;
+  --req-border: var(--mi-sand-600);
+  /* The same chroma correction as the light ramp — see the note above it. */
+  --ai: #2E2447;
+  --ai-foreground: #DACCF5;
+  --ai-border: #9B78E0;
+  --demo: #2A3A42;
+  --demo-foreground: #F7F5F0;
+  --demo-border: #6C818A;
+  --public: #2E4048;
+  --public-foreground: #F3ECDD;
+  --public-border: var(--mi-sand-600);
+  --ok: #233A33;
+  --ok-foreground: #CFE6DB;
+  --ok-border: #4C8A73;
+  --attention: #3A3325;
+  --attention-foreground: #EBDCC0;
+  --attention-border: var(--mi-sand-600);
+  --error: #3A2523;
+  --error-foreground: #F2C9C5;
+  --error-border: #C4564F;
 }
 
 @layer base {
@@ -179,7 +389,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 1rem;
+    font-size: var(--text-body);
     line-height: 1.6;
   }
 
@@ -188,16 +398,30 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 600;
     color: var(--mi-slate-900);
-    line-height: 1.12;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.01em;
   }
 
-  h3,
+  h1 {
+    font-size: var(--text-page-title);
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: var(--text-section);
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: var(--text-body);
+    line-height: 1.4;
+  }
+
   h4 {
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-size: var(--text-label);
+    line-height: 1.4;
+    letter-spacing: 0;
   }
 
   :focus-visible {
@@ -206,11 +430,104 @@
   }
 }
 
+/*
+ * Requirement tags (§2.2 of the update plan).
+ *
+ * Deliberately NOT inside `@layer base`. Tailwind's `utilities` layer would
+ * outrank it and a `block` utility on the tooltip text would defeat the
+ * language switch; unlayered rules beat every layered one, which is what these
+ * two toggles need in order to be reliable.
+ *
+ * `visibility` rather than `display`: the space stays reserved, so toggling the
+ * tags does not reflow a single row and the two views of a screen — the
+ * traceability document and the product — can be compared honestly. A hidden
+ * tag is also out of the accessibility tree and cannot be hovered, so its
+ * tooltip goes with it.
+ */
+:root[data-reqtags="off"] .req-tag {
+  visibility: hidden;
+}
+
+/*
+ * Both requirement sentences ship in the markup and CSS picks the active one.
+ * The alternative is threading the language through every one of the ~200 call
+ * sites for a tag that is off by default.
+ */
+.req-sv,
+.req-en {
+  display: block;
+}
+
+:root[data-lang="en"] .req-sv {
+  display: none;
+}
+
+:root:not([data-lang="en"]) .req-en {
+  display: none;
+}
+
+/* A tooltip must never be what makes the page scroll sideways. */
+.req-tip {
+  overflow-wrap: anywhere;
+}
+
+/*
+ * The annotation layer (§4 of docs/08-design-system-and-interaction-plan.md).
+ *
+ * Prose that justifies a design or restates a requirement is addressed to the
+ * evaluator, not to the case officer registering their fortieth protocol. It
+ * hangs off the same switch as the requirement tags, so the two views are:
+ *
+ *   tags off — the product MI evaluates as a system
+ *   tags on  — the traceability document: IDs, their sentences, and the why
+ *
+ * `display: none` rather than the tags' reserved space, deliberately. Holding
+ * room for a removed paragraph would leave the product view full of gaps, which
+ * is the opposite of the point. Pixel-stable comparison matters for the inline
+ * tags, where the two views sit on top of each other; it does not matter for
+ * prose, which is read in one view or the other.
+ */
+:root[data-reqtags="off"] .rationale {
+  display: none;
+}
+
+/*
+  The AI band. A utility rather than an arbitrary class so the gradient is
+  defined once and `AiRegion` is the only thing that can reach for it.
+*/
+@utility ai-band {
+  background-image: var(--ai-gradient);
+  color: var(--ai-solid-foreground);
+}
+
 @utility card-panel {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+}
+
+/*
+  MI's own small-label treatment, from `docs/design-system/mi-design-system.css`.
+
+  Three places in the app already asked for `.mi-kicker` — the start page's
+  Märket kicker, the constructions report's selection heading and the AI
+  assistant's section headings — and none of them got it: the rule lives in the
+  design-system stylesheet, which the application does not import, so the class
+  resolved to nothing and those three headings quietly rendered as ordinary
+  text. It is defined here because `Badge` applies the same treatment inline and
+  the two must not drift.
+
+  Casing is presentation. `Ofullständig` is what goes in the dictionary; the
+  capitals happen in CSS, so a screen reader is handed the natural word rather
+  than a shouted string it may try to spell out.
+*/
+@utility mi-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: var(--text-meta);
+  line-height: var(--text-meta--line-height);
+  font-weight: 700;
 }
 
 @utility field-input {
@@ -223,4 +540,410 @@
   padding: 0.65rem 0.8rem;
   font-size: 1rem;
   color: var(--color-foreground);
+}
+
+/*
+  The chevron.
+
+  A native <select> anchors the platform's own arrow to the *border box*, a few
+  pixels in, and ignores `padding-inline-end` while doing it — measured in
+  Chrome at `appearance: auto`: 24px of end padding moved the text and left the
+  mark 10px from the border. Padding cannot fix this because padding is not what
+  positions it.
+
+  So the platform mark is turned off and the component draws its own, absolutely
+  positioned at a stated distance from the edge. `appearance: none` removes the
+  OS painting only — the keyboard behaviour, the mobile picker and the
+  accessibility tree are the native ones still. The reserved end padding is the
+  gap plus the mark plus a gap, so a long option label can never run underneath
+  it.
+*/
+select.field-input,
+select.demo-select {
+  appearance: none;
+  padding-inline-end: calc(var(--select-chevron-gap) * 2 + var(--select-chevron-size));
+}
+
+:root {
+  /*
+    16px is MI's `space.4`. The field's text sits 12.8px from its inner edge, so
+    matching that would be symmetric and one step past it reads as air that was
+    put there on purpose — which is the complaint being answered.
+  */
+  --select-chevron-gap: 1rem;
+  --select-chevron-size: 0.75rem; /* 12px */
+
+  /*
+    One form column, and everything about a form row is derived from it.
+
+    A field's width is a cue about its content (CLAUDE.md rule 5), so the column
+    has to be the *field's* width rather than a fraction of whatever panel it
+    landed in. Twelve rem holds a date, a percentage or an amount with room to
+    spare, which is the smallest thing a column ever has to carry.
+  */
+  --form-col: 12rem;
+  --form-gap: 1.5rem;
+}
+
+/*
+ * A form row whose columns come from the fields, not from the panel.
+ *
+ * Every form in MIIS was a `grid-cols-N` of equal fractions with the fields
+ * capped inside it, and that produces the three faults reported together:
+ *
+ * - **ragged rows** — five fields in a three-column grid is 3 then 2, and the
+ *   next block of four is 2 then 2, so one panel showed four different row
+ *   shapes;
+ * - **two gaps in one panel** — two fields in a two-column grid sit ~300px
+ *   apart, three in a three-column grid sit ~24px apart, and the reader is
+ *   asked to believe that distance means something;
+ * - **fields that do not line up** — a 12rem box inside a 350px column starts
+ *   at the column edge and ends nowhere near the box below it.
+ *
+ * `repeat(auto-fill, minmax(var(--form-col), 1fr))` fixes all three at once:
+ * the browser fits as many field-width columns as the panel has room for, every
+ * gap is `--form-gap`, and a field fills its column so left *and* right edges
+ * align down the form. Width becomes a span — short is one column, medium two,
+ * free text the whole row — which is the same three-step scale `TextField` and
+ * `Select` already take.
+ *
+ * The wrapper is the query container, so the columns are counted against the
+ * panel the form is in and not against `main`. A form inside the registration
+ * screen's narrow right-hand pane gets two columns while the same markup on a
+ * full-width screen gets four, with no breakpoint written anywhere.
+ */
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem var(--form-gap);
+  align-items: start;
+}
+
+.form-grid > [data-span="full"] {
+  grid-column: 1 / -1;
+}
+
+@container form (min-width: 27rem) {
+  .form-grid {
+    grid-template-columns: repeat(auto-fill, minmax(var(--form-col), 1fr));
+  }
+
+  .form-grid > [data-span="2"] {
+    grid-column: span 2;
+  }
+}
+
+/*
+  Inside a form row the column is the width, so the component's own cap comes
+  off. Outside one — a field standing alone in a panel — the cap is still what
+  keeps a thirty-character name out of a 700px box.
+*/
+.form-grid .field-input,
+.form-grid .field-control {
+  max-width: none;
+}
+
+/*
+ * Print — FR-011, and the shape MI's own printouts take.
+ *
+ * Bilaga F is six reports "faktiska utskrifter från nuvarande system", and every
+ * one of them is a document: MI's mark, an Utskriftsdatum, a page number, then
+ * the data. Nothing in this application printed like that — a print produced the
+ * demo bar, the navigation rail and the application header, because no print
+ * stylesheet existed at all.
+ *
+ * The demo bar in particular must never reach paper. It is reviewer scaffolding
+ * that is not part of MIIS, and a printout carrying it would be evidence of a
+ * system that does not exist.
+ *
+ * Requirement tags are annotation about the interface, so they go too — a
+ * printed report is for MI's own reader, not for an evaluator tracing IDs.
+ */
+@media print {
+  /*
+    A report prints as the report, not as the screen it was taken from.
+
+    When a `.print-document` is on the page — a generated report result, a
+    document produced from a template — it is the only thing that goes on the
+    paper. Everything else is the application around it: the catalogue, the
+    selection screen, the other tabs, the page heading, the shell's letterhead.
+
+    **The document stays in normal flow**, which is the whole point of doing it
+    this way. The first version hid everything with `visibility` and then lifted
+    the document out with `position: absolute` — it measured correctly and would
+    have failed on the thing it exists for, because an absolutely positioned box
+    in paged media is not reliably broken across pages. Bilaga F's Rapport 4 runs
+    to several sheets; a one-page report that silently loses page two is worse
+    than one that prints the navigation.
+
+    So the ancestors become `display: contents` — they stop generating boxes and
+    their children take their place — and everything that is neither an ancestor
+    nor the document nor inside it is dropped outright. The document is then an
+    ordinary block in an ordinary flow, and the printer paginates it.
+
+    The document carries its own letterhead — the mark and the *Utskriftsdatum
+    och tid* Bilaga 3 §7 names — so the shell's is suppressed rather than
+    duplicated.
+  */
+  body:has(.print-document) :has(.print-document) {
+    display: contents !important;
+  }
+
+  body:has(.print-document) *:not(:has(.print-document), .print-document, .print-document *) {
+    display: none !important;
+  }
+
+  /* The letterhead exists only on paper. */
+  .print-only {
+    display: block !important;
+  }
+
+  .print-hide,
+  nav[aria-label],
+  header {
+    display: none !important;
+  }
+
+  .req-tag,
+  .rationale {
+    display: none !important;
+  }
+
+  /*
+    An AI region does not print, and this is a requirement rather than a taste.
+
+    FAI-002 guarantees that nothing machine-generated is applied without a
+    human approving it, and the interface makes that visible with four signals
+    at once — the violet, the banded header, the 6px spine and the `AI`
+    letter-mark — precisely because any one of them can be lost. On paper three
+    of the four are: browsers drop background colours and gradients by default,
+    which takes the band, the spine's colour and the violet with them. Measured
+    on the mediation case, the decision support printed with
+    `background-image: none` and an ordinary heading — indistinguishable from
+    Medlingsinstitutet's own register content, on a sheet that will be filed.
+
+    Dropping it is also the truer answer. An unapproved proposal is working
+    material, not a record: FAI-002 means nothing reaches the register until an
+    officer accepts it, and once accepted the value prints as the record's own.
+    A printed case file does not carry the officer's scratch notes either.
+  */
+  .ai-region {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  /* A panel is a section of the document, not a card floating on a page. */
+  .card-panel {
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 0 1.25rem !important;
+    break-inside: avoid;
+  }
+
+  /*
+    A tab is a view state, and paper has no view state. Every section of a
+    tabbed screen prints; the strip that chose between them does not.
+  */
+  [data-tab-panel] {
+    display: block !important;
+  }
+
+  /*
+    A two-column screen is a screen. Paper is one column.
+
+    The agreement view and the mediation case put a sidebar of short facts
+    beside the content, which is right at 1440px and wrong on A4: the sidebar
+    ran out after four rows and left a third of every printed page blank down
+    the right-hand side while the content carried on underneath it. A reader
+    handed that sees a screenshot of a browser window, which is exactly what
+    Bilaga F's six printouts are not.
+  */
+  .print-stack {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .print-stack > * + * {
+    margin-top: 1rem;
+  }
+
+  /*
+    The sidebar leads on paper. It holds the facts a reader needs before the
+    detail — FR-012's status, the validity period, the Märket marking — and
+    stacking put them after three pages of wage agreements, where a reader who
+    only wanted to know whether the agreement was signed had to go looking.
+    On screen they sit beside the content and are read first anyway.
+  */
+  .print-stack > .print-first {
+    order: -1;
+  }
+
+  /*
+    A control is not part of a document.
+
+    CLAUDE.md has said so since the report screen was built, and it was being
+    enforced one screen at a time — so every screen added since brought its own
+    buttons back onto the paper. The agreement printout carried *Redigera
+    avtalet*, *Visa som allmänheten ser det* and six sortable column headers,
+    and that is the whole of the report that printing produces the screen
+    rather than the document.
+
+    Three exceptions, and each one is a control that carries a **value** rather
+    than an action:
+
+      - a sortable column header, which is a heading wearing a button;
+      - a switch, whose Ja/Nej word already sits beside it — Bilaga 3 §7 states
+        MI's own rule, *"Markerad kryssruta skrivs ut som Ja"*;
+      - the chosen option of a radiogroup, which is data the reader needs and
+        the unchosen ones are not.
+  */
+  main button {
+    display: none !important;
+  }
+
+  main :where(th, thead) button {
+    display: inline !important;
+    border: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    font: inherit !important;
+    color: inherit !important;
+  }
+
+  /* The sort mark is an invitation to press, and paper cannot be pressed. */
+  main :where(th, thead) button svg {
+    display: none !important;
+  }
+
+  main [role="radiogroup"] {
+    border: 0 !important;
+  }
+
+  /*
+    A field prints its **value**, not its box — which is how a register's
+    filter row becomes Bilaga F's *Urvalskriterier* without a second component
+    to keep in step. Bilaga F opens by saying every report shows *"urvalsbild
+    och resultat"*, and the selection is the criteria a reader has to be able
+    to check: a printed table headed by three empty dropdowns reading "Alla"
+    tells them nothing about whether Sektor was narrowed, because it looks like
+    a control they are expected to use.
+
+    Stripped to text, the label above each one is already doing the work —
+    *Avtalsområde: Alla* — and a narrowed register prints its filter chips,
+    which say the same thing in the same place.
+  */
+  main :where(select, input, textarea, .field-input) {
+    border: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    font: inherit !important;
+    color: inherit !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+  }
+
+  /* The mark that says a list can be opened. Paper has no list to open. */
+  main .field-control > span[aria-hidden] {
+    display: none !important;
+  }
+
+  /*
+    A field prints its value and nothing that was there to help someone type it.
+
+    The public register's selection printed as a page of form furniture: the
+    placeholder *"T.ex. Apotek, Unionen eller Spårtrafik"* read as if it were a
+    value, every hint under every list came out as body text, and the date
+    criterion printed the browser's own empty `mm/dd/yyyy`. A reader cannot tell
+    a prompt from an answer, so on paper none of it is an answer.
+  */
+  main input::placeholder,
+  main textarea::placeholder {
+    color: transparent !important;
+  }
+
+  main .field-hint {
+    display: none !important;
+  }
+
+  /*
+    An empty date input still paints the browser's own `åååå-mm-dd` skeleton and
+    its picker button. Neither is a value. The component supplies a `print-only`
+    reading of the field where one is needed — the same arrangement the checkbox
+    uses — so the widget itself has nothing left to say on paper.
+  */
+  main input[type="date"] {
+    color: transparent !important;
+  }
+
+  main input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
+
+  main input[type="date"][data-filled="true"] {
+    color: inherit !important;
+  }
+
+  /*
+    Bilaga 3 §7, in MI's own words: *"Markerad kryssruta skrivs ut som Ja."*
+
+    A tick in a box is a control's rendering of a value, and on paper it is
+    also indistinguishable from a box someone is meant to tick by hand — which
+    on a report listing which agreements go into Konjunkturlönerapporten is
+    worse than useless. The box goes; the word beside it, which the component
+    supplies print-only, stays.
+  */
+  main input[type="checkbox"] {
+    display: none !important;
+  }
+
+  main [role="radio"][aria-checked="true"] {
+    display: inline !important;
+    border: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    color: inherit !important;
+  }
+
+  /* A table that scrolls on screen has to print whole. */
+  [role="region"] {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  table {
+    min-width: 0 !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  /*
+    The address behind a link, since a printed link cannot be followed — but
+    not inside a table. A register prints one link per row, so this rule turned
+    a twelve-row result into twelve rows each carrying a URL longer than the
+    agreement name beside it, and the column it was in had to grow to hold it.
+    In prose the address is the only way to follow the reference; in a table
+    the identifier in the next column already is.
+  */
+  main a[href^="/"]:not(td a, th a)::after {
+    content: " (miis.mi.se" attr(href) ")";
+    font-size: 0.85em;
+    color: #444;
+  }
 }

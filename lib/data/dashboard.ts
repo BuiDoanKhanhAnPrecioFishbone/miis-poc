@@ -4,159 +4,201 @@
  * "The information shall be adapted to the different roles in the system; for
  * example, a mediation administrator shall see ongoing mediations."
  *
- * Identifiers are English; every user-facing string is Swedish.
+ * The role decides the panels; the language decides the words. Both are
+ * resolved here so the screen stays one rendering path with no branching in it.
  */
 
 import { partiesShort } from "@/lib/domain/agreement";
-import type { Dashboard, DashboardPanel } from "@/lib/domain/dashboard";
+import { START_PAGE_ROWS } from "@/lib/domain/dashboard";
+import type { Dashboard, DashboardPanel, LogLine } from "@/lib/domain/dashboard";
+import { eventText } from "@/lib/domain/event";
+import { DEFAULT_LANG, t, type Lang } from "@/lib/domain/lang";
 import { caseNumber, MEDIATION_TYPE_LABEL } from "@/lib/domain/mediation";
-import { roleInfo, type Role } from "@/lib/domain/role";
-import { listIncompleteAgreements, listRecentAgreements } from "./agreements";
+import { NAV_HREF } from "@/lib/domain/nav";
+import { accessLevel, roleInfo, type Role } from "@/lib/domain/role";
+import { dictionary } from "@/lib/i18n";
+import { countAgreements, listIncompleteAgreements, listRecentAgreements } from "./agreements";
+import { SESSION_TIMEOUT } from "@/lib/domain/settings";
 import { getCurrentBenchmark } from "./benchmark";
 import { listEvents, listReminders, reminderCount } from "./events";
 import { listMediationCases, listMediators, listOngoingMediationCases } from "./mediation";
 
-export async function getDashboard(role: Role): Promise<Dashboard> {
-  const info = roleInfo(role);
-  const benchmark = await getCurrentBenchmark();
+export async function getDashboard(
+  role: Role,
+  lang: Lang = DEFAULT_LANG,
+  /* NFÅ-002's configured limit, so the start page states the limit that is
+     actually in force rather than a number typed into the dictionary. */
+  sessionTimeoutMinutes = SESSION_TIMEOUT.defaultMinutes,
+): Promise<Dashboard> {
+  const i18n = dictionary(lang);
+  const d = i18n;
+  const s = i18n.start;
+  const info = roleInfo(role, lang);
+
+  /*
+    The Märket banner carries a link to /market, so it belongs only to a role
+    that may open it. The mediator's §3.1 permission is "Specifika rapporter"
+    and its nav is Start and Rapporter — the banner was handing that role a
+    button whose only outcome is the authorisation notice, which is the same
+    failure as a <Button> with no onClick.
+  */
+  const benchmark = accessLevel(info, "market") === "none" ? undefined : await getCurrentBenchmark();
 
   const base = {
     role: info,
-    heading: `Startsida – ${info.label}`,
-    subheading:
-      "Rollanpassat innehåll enligt tilldelad roll och behörighet (FS-001, NFÅ-003). Inloggad via EFOS-kort, session avslutas efter 30 min inaktivitet (NFÅ-001, NFÅ-002).",
+    heading: s.heading(info.label),
+    subheading: s.subheading(sessionTimeoutMinutes),
     ...(benchmark ? { benchmark } : {}),
   };
 
+  /** The two log panels share a shape; only their source differs. */
+  async function eventPanel(): Promise<DashboardPanel> {
+    const events = await listEvents(START_PAGE_ROWS);
+    return {
+      kind: "log",
+      title: s.events.title,
+      reqTags: ["FH-002"],
+      items: events.map<LogLine>((e) => ({
+        id: e.id,
+        when: e.timestamp,
+        text: eventText(e, lang),
+        /* Not every event names an agreement; those that do become a link. */
+        ...(e.agreementId ? { agreementId: e.agreementId } : {}),
+      })),
+      emptyText: s.events.empty,
+      note: s.events.footnote,
+    };
+  }
+
   switch (role) {
     case "agreement-admin": {
-      const [reminders, total, incomplete, recent, events] = await Promise.all([
-        listReminders(),
+      const [reminders, total, incomplete, recent, events, agreementCount] = await Promise.all([
+        listReminders(START_PAGE_ROWS),
         reminderCount(),
         listIncompleteAgreements(),
-        listRecentAgreements(),
-        listEvents(2),
+        listRecentAgreements(lang, START_PAGE_ROWS),
+        eventPanel(),
+        countAgreements(),
       ]);
 
       const panels: DashboardPanel[] = [
         {
-          kind: "reminders",
-          title: "Mina påminnelser",
+          kind: "log",
+          title: s.reminders.title,
           reqTags: ["FA-022"],
-          items: reminders,
-          emptyText: "Inga påminnelser just nu.",
-          footnote: "Påminnelser skickas även som e-post med länk till avtalet",
-          ...(total > 0 ? { action: { text: `Visa alla (${total})` } } : {}),
+          items: reminders.map<LogLine>((r) => ({
+            id: r.id,
+            when: r.date,
+            text: t(r.text, lang),
+          })),
+          lead: s.reminders.lead,
+          emphasis: "action",
+          total,
+          emptyText: s.reminders.empty,
+          rationale: s.reminders.footnote,
+          /*
+            A destination, not a refusal. This action rendered as a `disabled`
+            button reading "Ej aktiv i demon" because it carried no `href` —
+            the last of that phrase in the product. FA-022's reminders are set
+            and cleared on Konjunkturlönerapporten's watch list, so that is
+            where "show all" goes; the deep link opens the tab that owns it.
+          */
+          ...(total > 0
+            ? { action: { text: i18n.common.showAll(total), href: "/rapporter#konjunkturlon" } }
+            : {}),
         },
         {
           kind: "list",
-          title: "Ofullständiga registreringar",
+          title: s.incomplete.title,
+          lead: s.incomplete.lead,
+          emphasis: "action",
+          total: incomplete.length,
           reqTags: ["FA-021"],
           // Registrations still awaiting information come first — those are the
           // ones an agreement administrator has to chase (US-04).
           items: incomplete
             .slice()
             .sort((a, b) => Number(Boolean(a.signedDate)) - Number(Boolean(b.signedDate)))
-            .slice(0, 3)
-            .map((a) => ({ text: `${a.name} – ${partiesShort(a)}`, badge: "OFULLSTÄNDIG" })),
-          emptyText: "Alla registreringar är kompletta.",
-          footnote:
-            "Visas i Konjunkturlönerapportens vy med statuskolumn (registrerat / delvis registrerat), protokollslänk och vilka avtal som redan exporterats",
-          action: { text: "Öppna Konjunkturlönerapportens vy", reqTag: "FR-008" },
+            .slice(0, START_PAGE_ROWS)
+            .map((a) => ({
+              text: `${a.name} – ${partiesShort(a)}`,
+              badge: s.incomplete.badge,
+            })),
+          emptyText: s.incomplete.empty,
+          rationale: s.incomplete.footnote,
+          action: {
+            text: s.incomplete.action,
+            href: NAV_HREF.rapporter,
+            reqTag: "FR-008",
+          },
         },
         {
           kind: "agreement-table",
-          title: "Senast registrerade avtal",
+          title: s.recent.title,
+          lead: s.recent.lead,
+          emphasis: "reference",
+          total: agreementCount,
           reqTags: ["FR-012"],
           rows: recent,
-          emptyText: "Inga avtal registrerade ännu.",
+          emptyText: s.recent.empty,
         },
-        {
-          kind: "events",
-          title: "Senaste händelser",
-          reqTags: ["FH-002"],
-          items: events,
-          emptyText: "Inga händelser loggade ännu.",
-          footnote: "Ur händelseloggen – fullständig logg under Administration",
-        },
+        events,
       ];
 
       return {
         ...base,
-        primaryAction: { text: "+ Ladda upp avtalsprotokoll", href: "/registrera" },
+        primaryAction: { text: s.uploadProtocol, href: "/registrera" },
+        /* US-03 — a merger or a rename is the other thing this role does. */
+        secondaryActions: [{ text: d.parter.newParty.action, href: "/parter/ny" }],
         panels,
-        aiIntro:
-          "Ställ frågor om påminnelser, ofullständiga registreringar och senast registrerade avtal – som komplement till vyerna på startsidan.",
-        aiSuggestions: [
-          "Vilka avtal löper ut inom 90 dagar?",
-          "Sammanfatta mina ofullständiga registreringar",
-          "Vad innebär märket 2027–2029 för mina avtal?",
-          "Visa händelser kopplade till medling senaste månaden",
-        ],
       };
     }
 
     case "mediation-admin": {
-      const [ongoing, events] = await Promise.all([listOngoingMediationCases(), listEvents(2)]);
+      const [ongoing, events] = await Promise.all([listOngoingMediationCases(), eventPanel()]);
 
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Pågående medlingar",
+          title: s.ongoingMediations.title,
           reqTags: ["FF-006", "FS-001"],
           items: ongoing.map((c) => ({
-            text: `${caseNumber(c.id)} · ${c.name} · ${MEDIATION_TYPE_LABEL[c.type]}`,
-            badge: "PÅGÅENDE",
+            text: `${caseNumber(c.id)} · ${c.name} · ${MEDIATION_TYPE_LABEL[lang][c.type]}`,
+            badge: s.ongoingMediations.badge,
           })),
-          emptyText: "Inga pågående medlingar.",
-          footnote: "Medlingsärenden skapas automatiskt när ett GD-beslut laddas upp",
-          action: { text: "Öppna medlingsärenden", href: "/medling" },
+          emptyText: s.ongoingMediations.empty,
+          rationale: s.ongoingMediations.footnote,
+          action: { text: s.ongoingMediations.action, href: NAV_HREF.medling },
         },
         {
           kind: "list",
-          title: "GD-beslut att slutföra",
+          title: s.dgDecisions.title,
           reqTags: ["FSD-001", "FE-001"],
           items: ongoing.map((c) => ({
             text: `${c.dgDecision.number} · ${c.name}`,
-            badge: "EJ KLARMARKERAT",
+            badge: s.dgDecisions.badge,
           })),
-          emptyText: "Inga beslut väntar på klarmarkering.",
-          footnote:
-            "Vid klarmarkering skickas notifierings-epost med länk till medlaradministratören och sändningen loggas",
+          emptyText: s.dgDecisions.empty,
+          note: s.dgDecisions.footnote,
         },
         {
           kind: "list",
-          title: "Kommande partsträffar",
+          title: s.partyMeetings.title,
           reqTags: ["FF-004"],
-          items: [
-            { text: "2027-06-04 · Almega Tjänsteförbunden – inför avtalsrörelsen" },
-            { text: "2027-06-11 · IF Metall – samordnade avtalskrav" },
-          ],
-          footnote: "Interaktiv vy för att föra in information direkt under mötet",
-          action: { text: "Öppna partsträffar", href: "/partstraffar" },
+          items: s.partyMeetings.items.map((text) => ({ text })),
+          emptyText: s.partyMeetings.empty,
+          rationale: s.partyMeetings.footnote,
+          action: { text: s.partyMeetings.action, href: NAV_HREF.partstraffar },
         },
-        {
-          kind: "events",
-          title: "Senaste händelser",
-          reqTags: ["FH-002"],
-          items: events,
-          emptyText: "Inga händelser loggade ännu.",
-          footnote: "Ur händelseloggen – fullständig logg under Administration",
-        },
+        events,
       ];
 
       return {
         ...base,
-        primaryAction: { text: "+ Ladda upp GD-beslut", href: "/medling" },
+        primaryAction: { text: s.uploadDgDecision, href: NAV_HREF.medling },
+        /* US-08 — party meetings are booked ahead of every round. */
+        secondaryActions: [{ text: d.partstraffar.register.create, href: "/partstraffar/ny" }],
         panels,
-        aiIntro:
-          "Ställ frågor om pågående medlingar, berörda avtal, spridningsrisker och tidigare medlingar på avtalsområdet.",
-        aiSuggestions: [
-          "Vilka avtal berörs av M-2027/12?",
-          "Finns spridningsrisk till närliggande avtalsområden?",
-          "Vilka avtal omfattas av förhandlingsordningsavtal?",
-          "Sammanfatta tidigare medlingar inom spårtrafik",
-        ],
       };
     }
 
@@ -166,81 +208,63 @@ export async function getDashboard(role: Role): Promise<Dashboard> {
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Medlarregister",
+          title: s.mediatorRegister.title,
           reqTags: ["FF-009"],
           items: mediators.map((m) => ({
-            text: `${m.name} · ${m.types.map((t) => MEDIATION_TYPE_LABEL[t]).join(", ")} · ${m.history.length} uppdrag`,
-            badge: m.active ? "AKTIV" : "INAKTIV",
+            text: `${m.name} · ${m.types.map((type) => MEDIATION_TYPE_LABEL[lang][type]).join(", ")} · ${s.mediatorRegister.assignments(m.history.length)}`,
+            badge: m.active ? s.mediatorRegister.active : s.mediatorRegister.inactive,
           })),
-          emptyText: "Inga medlare registrerade ännu.",
-          footnote: "Statistik per medlare (år/avtalsområde) visas som beslutsstöd inför tillsättning",
-          action: { text: "Öppna medlarregistret", href: "/medlare" },
+          emptyText: s.mediatorRegister.empty,
+          rationale: s.mediatorRegister.footnote,
+          action: { text: s.mediatorRegister.action, href: NAV_HREF.medlare },
         },
         {
           kind: "list",
-          title: "Ärenden att komplettera med medlare",
+          title: s.casesNeedingMediators.title,
           reqTags: ["FE-001", "FF-009"],
           items: cases.map((c) => ({
             text: `${caseNumber(c.id)} · ${c.name}`,
-            badge: c.mediators.length > 0 ? "MEDLARE TILLSATTA" : "MEDLARE SAKNAS",
+            badge:
+              c.mediators.length > 0
+                ? s.casesNeedingMediators.assigned
+                : s.casesNeedingMediators.missing,
           })),
-          emptyText: "Inga ärenden att komplettera.",
-          footnote: "Notifiering kommer via e-post när ett medlingsbeslut klarmarkeras (FE-001)",
+          emptyText: s.casesNeedingMediators.empty,
+          note: s.casesNeedingMediators.footnote,
         },
       ];
 
-      return {
-        ...base,
-        panels,
-        aiIntro:
-          "Ställ frågor om medlarnas historik, statistik per avtalsområde och underlag inför tillsättning.",
-        aiSuggestions: [
-          "Vilka medlare har erfarenhet av spårtrafik?",
-          "Visa uppdrag per medlare 2027",
-          "Vilka medlare är aktiva för fast medling?",
-        ],
-      };
+      return { ...base, panels };
     }
 
     case "statistics-user": {
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Sparade sökningar",
+          title: s.savedSearches.title,
           reqTags: ["FR-002"],
-          items: [
-            { text: "Årsrapport 2026" },
-            { text: "Eurofound-urval" },
-            { text: "Sifferlösa avtal privat sektor" },
-          ],
-          footnote: "Sammansatta sökningar över flera handlingstyper – utan hjälpvariabler",
-          action: { text: "Öppna sökbyggaren", href: "/sok" },
+          items: s.savedSearches.items.map((text) => ({ text })),
+          rationale: s.savedSearches.footnote,
+          action: { text: s.savedSearches.action, href: NAV_HREF.sok },
         },
         {
           kind: "list",
-          title: "Bokslut och uttag",
+          title: s.snapshots.title,
           reqTags: ["FH-003", "FR-004", "FR-013"],
-          items: [
-            { text: "Bokslut per 2026-12-31 · 143 träffar", badge: "SENAST" },
-            { text: "Export till Excel · 2026-12-31" },
-            { text: "Export till CSV/JSON · 2026-11-30" },
-          ],
-          footnote:
-            "Bokslut återskapar hur data såg ut vid en viss tidpunkt. Standardsökningar svarar inom 3 sekunder (NFP-003)",
+          items: s.snapshots.items.map((text, i) => ({
+            text,
+            ...(i === 0 ? { badge: s.snapshots.latest } : {}),
+          })),
+          rationale: s.snapshots.footnote,
         },
       ];
 
       return {
         ...base,
-        primaryAction: { text: "Ny sökning", href: "/sok" },
+        primaryAction: { text: s.newSearch, href: NAV_HREF.sok },
+        /* US-17 — the standard reports are this role's other daily errand. */
+        secondaryActions: [{ text: d.rapporter.title, href: NAV_HREF.rapporter }],
         panels,
-        aiIntro:
-          "Beskriv ditt urval i naturligt språk så föreslår AI villkor, presentationskolumner och export.",
-        aiSuggestions: [
-          "Alla sifferlösa avtal i privat sektor giltiga 2026-12-31",
-          "Jämför löneutrymme mellan Almega-avtal 2025 och 2026",
-          "Skapa underlag för Eurofound-rapporten",
-        ],
       };
     }
 
@@ -248,105 +272,65 @@ export async function getDashboard(role: Role): Promise<Dashboard> {
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Loggar",
+          title: s.logs.title,
           reqTags: ["NFL-001", "NFL-002", "NFL-004"],
-          items: [
-            { text: "Ändringslogg · 1 284 poster senaste 30 dagarna" },
-            { text: "Händelselogg · 96 poster senaste 30 dagarna" },
-            { text: "Inloggningar · 412 poster senaste 30 dagarna" },
-          ],
-          footnote:
-            "Loggar bevaras i minst 24 månader och kan inte ändras eller raderas – inte heller av systemadministratören (NFL-003)",
-          action: { text: "Öppna administrationsvyn", href: "/administration" },
+          items: s.logs.items.map((text) => ({ text })),
+          rationale: s.logs.footnote,
+          action: { text: s.logs.action, href: NAV_HREF.administration },
         },
         {
           kind: "list",
-          title: "Bevakningsord",
+          title: s.watchwords.title,
           reqTags: ["FAI-004"],
-          items: [
-            { text: "arbetstidsförkortning", badge: "AKTIVT" },
-            { text: "deltidspension", badge: "AKTIVT" },
-            { text: "jämställdhetspott", badge: "AKTIVT" },
-          ],
-          footnote: "Tabellen uppdateras inför kommande avtalsrörelse",
+          items: s.watchwords.items.map((text) => ({ text, badge: s.watchwords.active })),
+          rationale: s.watchwords.footnote,
         },
       ];
 
-      return {
-        ...base,
-        panels,
-        aiIntro: "Ställ frågor om loggar, ändringshistorik och systemkonfiguration.",
-        aiSuggestions: [
-          "Vem ändrade avtal A-002 senast?",
-          "Visa inloggningar senaste veckan",
-          "Vilka bevakningsord saknas inför avtalsrörelsen?",
-        ],
-      };
+      return { ...base, panels };
     }
 
     case "permission-admin": {
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Användare och roller",
+          title: s.users.title,
           reqTags: ["NFÅ-005", "NFÅ-003"],
-          items: [
-            { text: "Anna Andersson · Avtalsadministratör", badge: "AKTIV" },
-            { text: "Per Persson · Medlingsadministratör", badge: "AKTIV" },
-            { text: "Karin Karlsson · Statistikanvändare", badge: "AKTIV" },
-          ],
-          footnote:
-            "Behörigheter administreras av MI:s egna behörighetsadministratörer utan leverantörens medverkan",
-          action: { text: "Öppna administrationsvyn", href: "/administration" },
+          items: s.users.items.map((text) => ({ text, badge: s.users.active })),
+          rationale: s.users.footnote,
+          action: { text: s.users.action, href: NAV_HREF.anvandare },
         },
         {
           kind: "list",
-          title: "Att hantera",
+          title: s.userTasks.title,
           reqTags: ["NFÅ-005"],
-          items: [
-            { text: "Ny medarbetare finns i Enterprise IAM/SSID – roll ej tilldelad", badge: "ÅTGÄRD" },
-          ],
-          footnote: "Användare autentiseras med EFOS-kort via Försäkringskassans IdP (SAML 2.0)",
+          items: [{ text: s.userTasks.item, badge: s.userTasks.badge }],
+          rationale: s.userTasks.footnote,
         },
       ];
 
-      return {
-        ...base,
-        panels,
-        aiIntro: "Ställ frågor om roller, behörigheter och användaradministration.",
-        aiSuggestions: [
-          "Vilka roller finns i MIIS?",
-          "Vem har behörighet att sekretessmarkera avtal?",
-        ],
-      };
+      return { ...base, panels };
     }
 
     case "public": {
+      // The public computer has its own entrance at /allmanheten. This branch
+      // only exists so the role switcher never lands on an empty screen.
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Tillgängliga rapporter",
+          title: i18n.allmanheten.result.title,
           reqTags: ["FR-011", "NFÅ-006"],
-          items: [
-            { text: "Avtal – Allmänheten · urval på AGO, ATO och avtal" },
-            { text: "Avtalsrörelserapporten · publik version" },
-          ],
-          footnote:
-            "Åtkomst endast från Medlingsinstitutets IP-adress, utan inloggning. Sekretessmarkerad avtalsinformation visas inte (NFÅ-004, D-002)",
+          items: [{ text: i18n.allmanheten.publicExplain }],
+          note: i18n.allmanheten.subtitle,
+          action: { text: i18n.allmanheten.title, href: "/allmanheten" },
         },
       ];
 
       return {
         ...base,
-        heading: "Publik åtkomst – Medlingsinstitutet",
-        subheading:
-          "Åtkomst från Medlingsinstitutets lokaler via särskild klientdator med IP-spärr, utan inloggning (NFÅ-006).",
+        heading: i18n.allmanheten.title,
+        subheading: i18n.allmanheten.subtitle,
         panels,
-        aiIntro: "Sök bland de publika rapporterna.",
-        aiSuggestions: [
-          "Vilka avtal löper ut under 2027?",
-          "Visa avtal för Almega Tjänsteförbunden",
-        ],
       };
     }
 
@@ -354,32 +338,26 @@ export async function getDashboard(role: Role): Promise<Dashboard> {
       const panels: DashboardPanel[] = [
         {
           kind: "list",
-          title: "Mina medlingsuppdrag",
+          title: s.mediatorAssignments.title,
           reqTags: ["FF-006", "NFÅ-007"],
-          items: [
-            { text: "M-2027/12 · Spårtrafik – Tågföretagen / Seko · Ettan", badge: "PÅGÅENDE" },
-          ],
-          emptyText: "Inga aktiva uppdrag.",
-          footnote:
-            "Extern åtkomst via Bank-ID genom Försäkringskassans identifieringslösning (option, steg 2)",
+          items: [{ text: s.mediatorAssignments.item, badge: s.mediatorAssignments.badge }],
+          emptyText: s.mediatorAssignments.empty,
+          rationale: s.mediatorAssignments.footnote,
         },
         {
           kind: "list",
-          title: "Underlag",
+          title: s.mediatorMaterial.title,
           reqTags: ["FM-003", "FR-011"],
-          items: [
-            { text: "Märket 2027–2029 · kostnadsram 6,4 %" },
-            { text: "Protokoll och avtalsutskrifter utan sekretessmarkerad information" },
-          ],
+          items: s.mediatorMaterial.items.map((text) => ({ text })),
+          /* The three are the role's whole system, so the panel that names
+             them is where the way in belongs — otherwise the only route is the
+             menu, and the start page lists work it cannot open. */
+          rationale: s.mediatorMaterial.footnote,
+          action: { text: s.mediatorMaterial.action, href: "/rapporter" },
         },
       ];
 
-      return {
-        ...base,
-        panels,
-        aiIntro: "Ställ frågor om ditt medlingsuppdrag och gällande märke.",
-        aiSuggestions: ["Vad är märket för perioden?", "Vilka avtal omfattas av mitt uppdrag?"],
-      };
+      return { ...base, panels };
     }
   }
 }

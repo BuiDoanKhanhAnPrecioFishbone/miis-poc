@@ -131,6 +131,11 @@ git commit -m "US-08: partsträffar med interaktiv mötesvy"
 
 - Commit after each finished screen, with the scenario in the message.
 - Push and the deployment updates; send her the link.
+
+**The deployment is <https://miis-poc.vercel.app>.** Written down because it was not, and a
+reviewer walkthrough that cannot name the address it points at is not much of a walkthrough.
+It carries `X-Robots-Tag: noindex` and a `Disallow` in `robots.txt`, so it is unlisted rather
+than private — it serves MI's own material, including a scanned protocol from Bilaga D.
 - Screenshots from `/flow-test` are the fastest way to show progress in a message —
   she can react to pictures without opening anything.
 

@@ -1,39 +1,99 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { roleInfo } from "@/lib/domain/role";
-import { activeDataset } from "@/lib/session";
+import { AppShell } from "@/components/miis/AppShell";
+import { IconPlus } from "@/components/miis/icons";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { Badge, LinkButton, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { listPartyMeetings } from "@/lib/data/party-meetings";
+import { t as text } from "@/lib/domain/lang";
+import { MEETING_STATE_LABEL } from "@/lib/domain/party-meeting";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Partsträffar och samordnade avtalskrav",
-  description:
-    "Registrering av partsträffar inför avtalsrörelse samt samordnade avtalskrav per part.",
-  openGraph: {
-    title: "MIIS – Partsträffar och samordnade avtalskrav",
-    description:
-      "Registrering av partsträffar inför avtalsrörelse samt samordnade avtalskrav per part.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.partstraffar.title}`;
+  const description = i18n.partstraffar.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
+/**
+ * The party-meeting register.
+ *
+ * The list and one meeting's detail used to sit on the same page, which made
+ * the table look selectable when it was not — the detail was pinned to
+ * whichever meeting happened to have been held. A register that ignores the row
+ * you click is worse than no register, so the two are separate now: this page
+ * lists, `/partstraffar/[id]` opens one, and `/partstraffar/ny` starts an empty
+ * one. That is also the shape `/medling` already uses.
+ */
 export default async function PartstraffarPage() {
-  // US-08 is performed by the mediation administrator (Appendix 1 §8, US-08).
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const { i18n, lang } = session;
+  const meetings = await listPartyMeetings();
+  const t = i18n.partstraffar;
+
+  const columns: Column[] = [
+    { key: "date", header: t.table.date, sortable: true },
+    { key: "party", header: t.table.party, sortable: true },
+    { key: "area", header: t.table.area, sortable: true },
+    { key: "state", header: t.table.state, sortable: true },
+    { key: "demands", header: t.table.demands, numeric: true, sortable: true },
+  ];
+
+  const rows: Row[] = meetings.map((m) => ({
+    key: m.id,
+    cells: [
+      <span key="d" className="tabular-nums">
+        {m.date}
+      </span>,
+      <Link
+        key="p"
+        href={`/partstraffar/${m.id}`}
+        className="font-semibold text-primary underline underline-offset-2"
+      >
+        {m.party}
+      </Link>,
+      text(m.agreementArea, lang),
+      <Badge key="s" tone={m.state === "planned" ? "neutral" : "ok"}>
+        {MEETING_STATE_LABEL[lang][m.state]}
+      </Badge>,
+      m.demands.length,
+    ],
+    sort: [
+      m.date,
+      m.party,
+      text(m.agreementArea, lang),
+      MEETING_STATE_LABEL[lang][m.state],
+      m.demands.length,
+    ],
+  }));
+
   return (
-    <PlaceholderPage
-      title="Partsträffar"
-      epic="Epic F9 – Partsträffar (US-08)"
-      subtitle="Möten mellan MI och enskild part inför avtalsrörelsen"
-      role={roleInfo("mediation-admin")}
-      dataset={dataset}
-      features={[
-        { id: "FF-004", text: "Registrering av partsträff före, under och efter mötet." },
-        {
-          id: "FF-005",
-          text: "Samordnade avtalskrav med flagga samordnat/eget förbund och kopplade fackförbund.",
-        },
-        { id: "FSD-002", text: "Partsträffsdokument skapas från mall förifylld med MIIS-information." },
-        { id: "FAI-004", text: "Krav från mötet kan läggas till i bevakningsordstabellen." },
-      ]}
-    />
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="partstraffar" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FF-004", "FF-005", "FSD-002"]}
+        action={
+          <LinkButton href="/partstraffar/ny" iconStart={<IconPlus />}>
+            {t.register.create}
+          </LinkButton>
+        }
+      />
+
+      <Panel title={t.register.heading} tags={["FF-004"]}>
+        <p className="mb-3 max-w-4xl text-table">{t.register.intro}</p>
+        <DataTable columns={columns} rows={rows} lang={lang} caption={t.register.heading} />
+        {/*
+          A party meeting is MI meeting one party at a time — never both
+          together — and it is explicitly not a negotiation (Bilaga 1 §4.2).
+          Saying so matters: the instrument works precisely because the other
+          side is not in the room.
+        */}
+        <Rationale>{t.register.onePartyNote}</Rationale>
+      </Panel>
+    </AppShell>
   );
 }

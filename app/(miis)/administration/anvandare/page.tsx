@@ -1,0 +1,205 @@
+import type { Metadata } from "next";
+
+import { AppShell } from "@/components/miis/AppShell";
+import { SectionTabs } from "@/components/miis/SectionTabs";
+import { UserAdmin } from "@/components/miis/UserAdmin";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { Badge, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import type { NavId } from "@/lib/domain/nav";
+import { accessLevel, ROLES } from "@/lib/domain/role";
+import { unstaffedRoles, usersPerRole } from "@/lib/domain/user";
+import { listUsers } from "@/lib/data/users";
+import { getSession } from "@/lib/session";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.anvandare.title}`;
+  const description = i18n.anvandare.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
+
+/**
+ * User and authorisation administration — NFÅ-001, NFÅ-003, NFÅ-005, NFL-001.
+ *
+ * The table is generated from `ROLES`, the same definition the navigation is
+ * filtered by. That is the point rather than a convenience: the claim this
+ * screen makes is "the role decides what you see", and generating the menu
+ * column from the very array the shell reads means the claim cannot quietly
+ * stop being true. Change a role's `nav` and both the menu and this page move
+ * together.
+ *
+ * Sign-in itself is described, not demonstrated. NFÅ-001 puts authentication in
+ * Försäkringskassan's IdP over SAML 2.0, and a mockup that drew a login form
+ * would be claiming to have built the one thing it certainly has not.
+ */
+export default async function AnvandarePage() {
+  const session = await getSession();
+  const { i18n, lang } = session;
+  const t = i18n.anvandare;
+  const users = await listUsers();
+  const counts = usersPerRole(users);
+  const unstaffed = unstaffedRoles(users, ROLES);
+
+  /*
+    The matrix, screen by screen, rather than a sentence per role.
+
+    §3.1 gives each role a verb — "read, write, edit", "read, data extract",
+    "specific reports" — and a prose column cannot be checked against a screen.
+    A column per module can: every cell is `accessLevel` for that role and that
+    menu item, the same function the shell asks before it renders anything.
+  */
+  const MODULES: NavId[] = [
+    "avtal",
+    "parter",
+    "forhandlingar",
+    "medling",
+    "partstraffar",
+    "medlare",
+    "dokument",
+    "rapporter",
+    "sok",
+    "market",
+    "administration",
+    "anvandare",
+  ];
+
+  const columns: Column[] = [
+    { key: "role", header: t.roles.role, sortable: true },
+    /*
+      How many people hold the role, not an example of one.
+
+      The column read "Exempelanvändare" and carried a demo persona, which told
+      an evaluator that nobody had thought about who actually holds the role. A
+      count is the question an authorisation administrator has — and a role with
+      nobody in it is a part of the system nobody can reach, so zero is called
+      out rather than shown as a quiet 0.
+    */
+    { key: "held", header: t.roles.held, numeric: true, sortable: true },
+    ...MODULES.map((m) => ({ key: m, header: i18n.nav[m] })),
+  ];
+
+  const LEVEL_TONE = { write: "ok", read: "neutral", none: "neutral" } as const;
+
+  const rows: Row[] = ROLES.map((r) => ({
+    key: r.id,
+    cells: [
+      <span key="r" className="font-semibold">
+        {r.label[lang]}
+      </span>,
+      /*
+        The count, which is what the header says and what the sort uses.
+
+        The cell rendered `r.person` — a demo persona's name — in a column
+        declared `numeric`, headed with a count's label, and sorted by
+        `counts[r.id]`. So the column right-aligned a name as though it were a
+        figure and ordered the table by a number the reader could not see: a fix
+        applied to the header and the sort and never to the cell.
+
+        Nought is not a quiet zero. NFÅ-003 defines access by these eight roles,
+        so a role nobody holds is a part of the system nobody can reach, and the
+        page says so underneath — the row should say it too.
+      */
+      (counts[r.id] ?? 0) === 0 ? (
+        <Badge key="h" tone="attention">{t.roles.unstaffed}</Badge>
+      ) : (
+        <span key="h" className="tabular-nums">{counts[r.id]}</span>
+      ),
+      ...MODULES.map((m) => {
+        const level = accessLevel(r, m);
+        /* An em dash for "none": an empty cell reads as data we did not have. */
+        return level === "none" ? (
+          <span key={m} className="text-muted-foreground">
+            {i18n.common.none}
+          </span>
+        ) : (
+          <Badge key={m} tone={LEVEL_TONE[level]}>
+            {t.roles.level[level]}
+          </Badge>
+        );
+      }),
+    ],
+    sort: [r.label[lang], counts[r.id] ?? 0, ...MODULES.map((m) => accessLevel(r, m))],
+  }));
+
+  return (
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="anvandare" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["NFÅ-001", "NFÅ-003", "NFÅ-005"]}
+      />
+
+      {/*
+        Three jobs, one at a time.
+
+        The register, the permission matrix and the sign-in note were stacked,
+        and only the first is work: the other two are what the work is done
+        against. That would argue for a sidebar, except the matrix is eight
+        roles against fourteen modules — `minWidth="96rem"` — so an
+        administrator who came to add one colleague scrolled the length of it
+        first. It is the same fault Administration and Rapporter had, and
+        `SectionTabs` is the same answer.
+
+        The order is the order they are used in: the register daily, the matrix
+        when a role assignment needs checking against what the role actually
+        means, and the sign-in note once.
+      */}
+      <SectionTabs
+        label={t.tabs.label}
+        lang={lang}
+        sections={[
+          {
+            id: "anvandare",
+            label: t.tabs.users,
+            node: <UserAdmin users={users} lang={lang} />,
+          },
+          {
+            id: "behorigheter",
+            label: t.tabs.permissions,
+            node: (
+              <Panel title={t.roles.heading} tags={["NFÅ-003"]}>
+                <p className="mb-4 max-w-4xl text-table">{t.roles.intro}</p>
+                <p className="mb-4 max-w-4xl text-label text-muted-foreground">
+                  {t.roles.matrixNote}
+                </p>
+                <DataTable
+                  columns={columns}
+                  rows={rows}
+                  lang={lang}
+                  caption={t.roles.heading}
+                  minWidth="96rem"
+                />
+                {unstaffed.length > 0 && (
+                  <div className="mt-4">
+                    <Callout tone="attention" label={t.roles.unstaffed}>
+                      {t.roles.unstaffedNote(
+                        unstaffed
+                          .map((id) => ROLES.find((r) => r.id === id)?.label[lang] ?? id)
+                          .join(", "),
+                      )}
+                    </Callout>
+                  </div>
+                )}
+                <Rationale>{t.roles.readOnlyNote}</Rationale>
+              </Panel>
+            ),
+          },
+          {
+            id: "inloggning",
+            label: t.tabs.signIn,
+            node: (
+              <Panel title={t.auth.heading} tags={["NFÅ-001", "NFL-001"]}>
+                <Callout tone="ok" label={t.auth.heading}>
+                  {t.auth.body}
+                </Callout>
+                <p className="mt-3 max-w-4xl text-table">{t.auth.logging}</p>
+                <Rationale>{t.roles.intro}</Rationale>
+              </Panel>
+            ),
+          },
+        ]}
+      />
+    </AppShell>
+  );
+}

@@ -2,92 +2,81 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
-import { EmptyState, PageHeading, Panel, ReqTag, StatusDot } from "@/components/miis/primitives";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { Badge, EmptyState, PageHeading, Panel, StatusDot } from "@/components/miis/primitives";
 import { listMediationCases } from "@/lib/data/mediation";
+import { t } from "@/lib/domain/lang";
 import { caseNumber, MEDIATION_TYPE_LABEL } from "@/lib/domain/mediation";
-import { roleInfo } from "@/lib/domain/role";
 import { statusInfo } from "@/lib/domain/status";
-import { activeDataset } from "@/lib/session";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Medlingsärenden och GD-beslut",
-  description:
-    "Översikt över pågående och avslutade medlingsärenden, GD-beslut, tillsatta medlare och medlingsresultat.",
-  openGraph: {
-    title: "MIIS – Medlingsärenden och GD-beslut",
-    description:
-      "Pågående medlingar, GD-beslut och medlingsresultat i Medlingsinstitutets informationssystem.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.medling.title}`;
+  const description = i18n.medling.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function MediationListPage() {
-  const [cases, dataset] = await Promise.all([listMediationCases(), activeDataset()]);
-  const role = roleInfo("mediation-admin");
+  const session = await getSession();
+  const { i18n, lang } = session;
+  const cases = await listMediationCases();
+  const m = i18n.medling;
+
+  const columns: Column[] = [
+    { key: "case", header: m.table.caseNumber, sortable: true },
+    { key: "name", header: m.table.name, sortable: true },
+    { key: "type", header: m.table.type, sortable: true },
+    { key: "dg", header: m.table.dgDecision, sortable: true },
+    { key: "agreements", header: m.table.agreements, numeric: true, sortable: true },
+    { key: "mediators", header: m.table.mediators },
+    { key: "status", header: m.table.status, sortable: true },
+  ];
+
+  const rows: Row[] = cases.map((c) => {
+    return {
+      key: c.id,
+      cells: [
+        <Link
+          key="c"
+          href={`/medling/${c.id}`}
+          className="font-semibold text-primary underline underline-offset-2"
+        >
+          {caseNumber(c.id)}
+        </Link>,
+        c.name,
+        MEDIATION_TYPE_LABEL[lang][c.type],
+        <span key="d" className="tabular-nums">
+          {c.dgDecision.number} · {c.dgDecision.date}
+        </span>,
+        c.agreementIds.length,
+        c.mediators.length === 0 ? m.noMediators : c.mediators.map((x) => x.name).join(", "),
+        <Badge key="b" tone={c.ongoing ? "attention" : "ok"}>
+          {t(c.status, lang)}
+        </Badge>,
+      ],
+      sort: [
+        c.id,
+        c.name,
+        MEDIATION_TYPE_LABEL[lang][c.type],
+        c.dgDecision.date,
+        c.agreementIds.length,
+        "",
+        t(c.status, lang),
+      ],
+    };
+  });
 
   return (
-    <AppShell role={role} dataset={dataset}>
-      <PageHeading
-        title="Medling"
-        subtitle="Medlingsärenden skapas automatiskt vid uppladdat GD-beslut"
-        tags={["FF-006", "FF-007"]}
-      />
-      <Panel title="Medlingsärenden">
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="medling" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading title={m.title} subtitle={m.subtitle} tags={["FF-006", "FF-007"]} />
+
+      <Panel title={m.title} tags={["FF-008"]}>
         {cases.length === 0 ? (
-          <EmptyState text="Inga medlingsärenden registrerade. Ärenden skapas när ett GD-beslut laddas upp." />
+          <EmptyState text={m.empty} />
         ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[36rem] text-[0.95rem]">
-                <thead>
-                  <tr className="border-b border-border text-left text-sm text-muted-foreground">
-                    <th scope="col" className="py-2 pr-4 font-semibold">
-                      Status
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-semibold">
-                      Ärende
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-semibold">
-                      Avtalsområde / parter
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-semibold">
-                      Typ
-                    </th>
-                    <th scope="col" className="py-2 pr-4 font-semibold">
-                      GD-beslut
-                    </th>
-                    <th scope="col" className="py-2 font-semibold">
-                      Läge
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cases.map((c) => (
-                    <tr key={c.id} className="border-b border-border/60">
-                      <td className="py-3 pr-4">
-                        <StatusDot
-                          status={statusInfo(c.ongoing ? "after-mediation" : "remaining")}
-                        />
-                      </td>
-                      <td className="py-3 pr-4 font-semibold text-primary">
-                        <Link href={`/medling/${c.id}`} className="underline-offset-2 hover:underline">
-                          {caseNumber(c.id)}
-                        </Link>
-                      </td>
-                      <td className="py-3 pr-4">{c.name}</td>
-                      <td className="py-3 pr-4">{MEDIATION_TYPE_LABEL[c.type]}</td>
-                      <td className="py-3 pr-4">
-                        {c.dgDecision.number} · {c.dgDecision.date}
-                      </td>
-                      <td className="py-3">{c.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-              Öppna M-2027/12 för den kravannoterade vyn för US-07 <ReqTag id="FF-008" />
-            </p>
-          </>
+          <DataTable columns={columns} rows={rows} lang={lang} caption={m.title} />
         )}
       </Panel>
     </AppShell>

@@ -23,7 +23,7 @@ proceed.
 
 ## 3. Build
 
-- `app/(miis)/<route>/page.tsx`, replacing the `PlaceholderPage` stub if there is one.
+- `app/(miis)/<route>/page.tsx`. Every route is built; there are no stubs left to replace.
   It is a **server component**: `await` the data it needs from `lib/data/`, then render.
 - Compose from `components/miis/primitives.tsx` (`Panel`, `Field`, `Button`,
   `PageHeading`, `ReqTag`, `StatusDot`) and shadcn/ui in `components/ui/`. Add a new

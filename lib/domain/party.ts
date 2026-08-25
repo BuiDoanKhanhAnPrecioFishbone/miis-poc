@@ -1,17 +1,24 @@
 /**
  * Parties and cooperation bodies — Epic F3, Appendix 1 §4.2.
  *
- * Identifiers are English; every user-facing string is Swedish.
+ * Identifiers are English; user-facing strings exist in both languages.
  * Pure domain — no imports beyond sibling types, no I/O.
  */
 
 import type { Sector } from "./agreement";
+import type { Lang } from "./lang";
 
 export type PartyType = "employer" | "employee";
 
-export const PARTY_TYPE_LABEL: Record<PartyType, string> = {
-  employer: "Arbetsgivarorganisation",
-  employee: "Arbetstagarorganisation",
+export const PARTY_TYPE_LABEL: Record<Lang, Record<PartyType, string>> = {
+  sv: {
+    employer: "Arbetsgivarorganisation",
+    employee: "Arbetstagarorganisation",
+  },
+  en: {
+    employer: "Employer organisation",
+    employee: "Employee organisation",
+  },
 };
 
 /** Swedish abbreviations used throughout the requirement spec. */
@@ -48,16 +55,59 @@ export interface Party {
   employerGroup?: string;
   /** Employer orgs within Svenskt Näringsliv carry an industry code (FP-001). */
   industryCode?: string;
+  /**
+   * The confederation the party belongs to — Svenskt Näringsliv, LO, TCO, Saco.
+   *
+   * Not in FP-001's sentence, and in the model anyway: MI's own report selection
+   * screens offer *Centralorganisation* twice, once per side, and the
+   * Huvudrapport prints the chain the agreement sits in — "Almega · Svenskt
+   * Näringsliv · Privat" against "6F Fackförbund i samverkan · LO". A criterion
+   * MI selects six of its reports on is a property of the register whether or
+   * not the requirement table lists it.
+   */
+  centralOrganisation?: string;
   nameHistory: NameHistoryEntry[];
   contacts: ContactPerson[];
   active: boolean;
+  /**
+   * FP-002's *organisatoriska förändringar*, as a relationship rather than a
+   * sentence.
+   *
+   * The information model §4.2 is explicit: *"Mergers (Sveriges Lärare, Fremia)
+   * are handled as new parties with relationships to their predecessors …
+   * preserving statistical continuity."* So a merger is not a name change with
+   * a note attached — it is a new party that points at the ones it replaced,
+   * and the pointer is what lets a report follow an agreement's history across
+   * the merger. A free-text note cannot be queried, so it cannot preserve
+   * continuity of anything.
+   */
+  predecessorIds?: string[];
+  /** Set when the party has been replaced, so the register can say by whom. */
+  successorId?: string;
+}
+
+/** The parties this one replaced, resolved against the register. */
+export function predecessorsOf(party: Party, register: readonly Party[]): Party[] {
+  const ids = party.predecessorIds ?? [];
+  return ids.map((id) => register.find((p) => p.id === id)).filter((p): p is Party => Boolean(p));
+}
+
+/** The party that replaced this one, if any. */
+export function successorOf(party: Party, register: readonly Party[]): Party | undefined {
+  return party.successorId ? register.find((p) => p.id === party.successorId) : undefined;
 }
 
 export type CooperationBodyType = "umbrella" | "cooperation";
 
-export const COOPERATION_BODY_TYPE_LABEL: Record<CooperationBodyType, string> = {
-  umbrella: "Huvudorganisation",
-  cooperation: "Samverkan",
+export const COOPERATION_BODY_TYPE_LABEL: Record<Lang, Record<CooperationBodyType, string>> = {
+  sv: {
+    umbrella: "Huvudorganisation",
+    cooperation: "Samverkan",
+  },
+  en: {
+    umbrella: "Umbrella organisation",
+    cooperation: "Cooperation body",
+  },
 };
 
 /** FP-003 – cooperation body between unions, with time period. */

@@ -12,6 +12,12 @@
  */
 
 import { AGREEMENTS } from "./agreements";
+import { DOCUMENTS } from "./documents";
+import { CHANGE_LOG } from "./changelog";
+import { NEGOTIATIONS } from "./negotiations";
+import { WAGE_AGREEMENTS } from "./wageAgreements";
+import { SPECIAL_QUESTIONS } from "./specialQuestions";
+import { WORKING_GROUPS } from "./workingGroups";
 import { generateAgreements, generateEvents, generateReminders } from "./generate";
 import { assertIntegrity } from "./integrity";
 import { MEDIATION_CASES, MEDIATORS } from "./mediation";
@@ -22,11 +28,17 @@ import type { Dataset } from "./types";
 /** Nothing registered yet — the first weeks after go-live. */
 const quiet: Dataset = {
   agreements: AGREEMENTS.slice(0, 2),
+  wageAgreements: WAGE_AGREEMENTS.slice(0, 1),
+  workingGroups: [],
+  specialQuestions: [],
+  documents: DOCUMENTS.slice(0, 1),
   mediationCases: [],
   mediators: MEDIATORS.slice(0, 1),
+  negotiations: NEGOTIATIONS.slice(0, 1),
   benchmarks: [],
   reminders: [],
   events: [],
+  changeLog: [],
   mediationEvents: [],
   totalReminders: 0,
 };
@@ -34,11 +46,17 @@ const quiet: Dataset = {
 /** Everyday state between bargaining rounds. The default. */
 const normal: Dataset = {
   agreements: AGREEMENTS,
+  wageAgreements: WAGE_AGREEMENTS,
+  workingGroups: WORKING_GROUPS,
+  specialQuestions: SPECIAL_QUESTIONS,
+  documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
+  negotiations: NEGOTIATIONS,
   benchmarks: BENCHMARKS,
   reminders: REMINDERS,
   events: EVENTS,
+  changeLog: CHANGE_LOG,
   mediationEvents: MEDIATION_EVENTS,
   totalReminders: 12,
 };
@@ -49,11 +67,17 @@ const peakAgreements = [...AGREEMENTS, ...generated];
 
 const peak: Dataset = {
   agreements: peakAgreements,
+  wageAgreements: WAGE_AGREEMENTS,
+  workingGroups: WORKING_GROUPS,
+  specialQuestions: SPECIAL_QUESTIONS,
+  documents: DOCUMENTS,
   mediationCases: MEDIATION_CASES,
   mediators: MEDIATORS,
+  negotiations: NEGOTIATIONS,
   benchmarks: BENCHMARKS,
   reminders: [...REMINDERS, ...generateReminders(9, generated)],
   events: [...EVENTS, ...generateEvents(18, generated)],
+  changeLog: CHANGE_LOG,
   mediationEvents: MEDIATION_EVENTS,
   totalReminders: 64,
 };

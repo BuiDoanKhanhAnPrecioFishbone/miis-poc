@@ -24,9 +24,18 @@ export function findIntegrityProblems(name: string, data: Dataset): string[] {
     }
   };
 
-  duplicate("agreements", data.agreements.map((a) => a.id));
-  duplicate("mediationCases", data.mediationCases.map((c) => c.id));
-  duplicate("mediators", data.mediators.map((m) => m.id));
+  duplicate(
+    "agreements",
+    data.agreements.map((a) => a.id),
+  );
+  duplicate(
+    "mediationCases",
+    data.mediationCases.map((c) => c.id),
+  );
+  duplicate(
+    "mediators",
+    data.mediators.map((m) => m.id),
+  );
 
   for (const c of data.mediationCases) {
     for (const id of c.agreementIds) {
@@ -41,9 +50,47 @@ export function findIntegrityProblems(name: string, data: Dataset): string[] {
     }
   }
 
+  duplicate(
+    "wageAgreements",
+    data.wageAgreements.map((w) => w.id),
+  );
+  duplicate(
+    "documents",
+    data.documents.map((d) => d.id),
+  );
+
+  for (const w of data.wageAgreements) {
+    if (!agreementIds.has(w.agreementId)) {
+      problems.push(`wageAgreement ${w.id}: references missing agreement "${w.agreementId}"`);
+    }
+  }
+
+  for (const doc of data.documents) {
+    if (doc.agreementId && !agreementIds.has(doc.agreementId)) {
+      problems.push(`document ${doc.id}: references missing agreement "${doc.agreementId}"`);
+    }
+  }
+
   for (const r of data.reminders) {
     if (r.agreementId && !agreementIds.has(r.agreementId)) {
       problems.push(`reminder ${r.id}: references missing agreement "${r.agreementId}"`);
+    }
+  }
+
+  for (const set of data.specialQuestions) {
+    if (!agreementIds.has(set.agreementId)) {
+      problems.push(
+        `specialQuestions ${set.agreementId}: references missing agreement "${set.agreementId}"`,
+      );
+    }
+    /* MI's form has three numbered slots and no more. Two questions filed under
+       the same number would print twice under one heading in Rapport 4. */
+    const numbers = new Set<number>();
+    for (const q of set.questions) {
+      if (numbers.has(q.number)) {
+        problems.push(`specialQuestions ${set.agreementId}: duplicate question number ${q.number}`);
+      }
+      numbers.add(q.number);
     }
   }
 

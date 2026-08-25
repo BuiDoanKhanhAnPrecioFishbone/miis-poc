@@ -1,262 +1,334 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AppShell } from "@/components/miis/AppShell";
-import { Button, Field, Panel, ReqTag, StatusDot } from "@/components/miis/primitives";
-import { roleInfo } from "@/lib/domain/role";
-import { statusInfo, type StatusCode } from "@/lib/domain/status";
-import { activeDataset } from "@/lib/session";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { SearchBuilder, type SearchPopulation } from "@/components/miis/SearchBuilder";
+import {
+  Button,
+  ConfidentialityMarker,
+  PageHeading,
+  Rationale,
+  ReqTag,
+  ReqTags,
+  StatusDot,
+} from "@/components/miis/primitives";
+import { countAgreements, listAgreements, listRecentAgreements } from "@/lib/data/agreements";
+import { listMediationCases } from "@/lib/data/mediation";
+import { listNegotiations } from "@/lib/data/negotiations";
+import { listParties } from "@/lib/data/parties";
+import { listWageAgreements } from "@/lib/data/reports";
+import { AGREEMENT_CONSTRUCTIONS, SECTOR_LABEL } from "@/lib/domain/agreement";
+import { MEDIATION_TYPE_LABEL, NEGOTIATION_TYPE_LABEL, caseNumber } from "@/lib/domain/mediation";
+import type { InfoTypeId } from "@/lib/domain/options";
+import { PARTY_TYPE_LABEL } from "@/lib/domain/party";
+import type { Searchable } from "@/lib/domain/query";
+import { statusInfo } from "@/lib/domain/status";
+import { decimal, percent } from "@/lib/format";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Sökbyggaren med bokslut och export",
-  description:
-    "US-11: sammansatt sökning över flera handlingstyper, bokslut per datum, sparade sökningar och export till Excel, CSV, JSON och rapportgenerator.",
-  openGraph: {
-    title: "MIIS – Sökbyggaren med bokslut och export",
-    description:
-      "Bygg sammansatta sökningar över avtal, medling, förhandlingar och parter – med bokslut och export.",
-  },
-};
+/* FH-003's own example is a year-end, and this one falls inside the round the
+   sample data describes — see the seed in `SearchBuilder`. */
+const SNAPSHOT_DATE = "2027-12-31";
 
-const tabs = ["Avtalsinformation", "Medlingsinformation", "Förhandlingar", "Parter"];
+/**
+ * NFP-003 allows 3 seconds for a standard search. 1,8 s is a believable figure
+ * for a query of this shape against this volume; a faster number would read as
+ * invented and damage the feasibility score more than the speed would gain.
+ */
+const RESPONSE_SECONDS = 1.8;
 
-const kolumner = [
-  { label: "Avtal", on: true },
-  { label: "Parter (AGO/ATO)", on: true },
-  { label: "Avtalskonstruktion", on: true },
-  { label: "Löneutrymme %", on: true },
-  { label: "Anställda", on: false },
-  { label: "Branschkod", on: false },
-];
+/*
+  A found record opens. The search result is the register reached a different
+  way, so its name cell is the same link the register draws — a search that
+  finds an agreement and cannot open it is a lookup table, which is most of what
+  "no value actions here" was pointing at.
+*/
+const RESULT_LINK = "font-semibold text-primary underline underline-offset-2";
 
-const rows: { status: StatusCode; agreement: string; parties: string }[] = [
-  {
-    status: "remaining",
-    agreement: "Apotek",
-    parties: "Almega Tjänsteförbunden / Sveriges Ingenjörer",
-  },
-  { status: "newly-signed", agreement: "Fastigheter", parties: "Almega Tjänsteförbunden / Ledarna" },
-  { status: "remaining", agreement: "Kommunikation", parties: "Almega Tjänsteförbunden / Ledarna" },
-  {
-    status: "after-mediation",
-    agreement: "Hemserviceföretag",
-    parties: "Almega Tjänsteförbunden / Kommunal",
-  },
-  {
-    status: "remaining",
-    agreement: "Utveckling och tjänster",
-    parties: "Almega Tjänsteförbunden / Ledarna",
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.sok.title}`;
+  const description = i18n.sok.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function SokPage() {
-  // US-11 is performed by the statistics user.
-  const role = roleInfo("statistics-user");
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const { i18n, lang } = session;
+  const [rows, total, wageAgreements, agreements, parties, cases, negotiations] =
+    await Promise.all([
+      listRecentAgreements(lang, Number.MAX_SAFE_INTEGER),
+      countAgreements(),
+      listWageAgreements(),
+      /* The full records and the party register: the validity dates live on the
+         agreement and the sector on its employer organisation (FP-001), and
+         `AgreementRow` is a display projection that carries neither. */
+      listAgreements(),
+      listParties(),
+      /* FR-002 has four information types. The tab strip used to change a
+         variable nothing read; choosing an information type is choosing which
+         register is searched, so each one has to be here. */
+      listMediationCases(),
+      listNegotiations(),
+    ]);
+  const t = i18n.sok;
+
+  // The construction and wage scope come from the wage agreement (FA-002, one
+  // row per bargaining round), not from the agreement. Both columns used to be
+  // hardcoded, which read as a contradiction once the criteria became real —
+  // the filter said "construction 1 or 2" and every row answered "1".
+  const wageByAgreement = new Map(wageAgreements.map((w) => [w.agreementId, w]));
+
+  const columns: Column[] = [
+    { key: "status", header: t.results.status, sortable: true },
+    { key: "agreement", header: t.results.agreement, sortable: true },
+    { key: "parties", header: t.results.parties, sortable: true },
+    { key: "construction", header: t.results.construction, sortable: true },
+    { key: "scope", header: t.results.scope, numeric: true },
+  ];
+
+  /*
+    What the query runs over. The construction lives on the latest wage
+    agreement rather than on the agreement, so the join happens once here — a
+    pure rule reaching for that relation would need the whole register to answer
+    one condition.
+  */
+  const sectorOf = new Map(parties.map((p) => [p.name, p.sector]));
+  const searchable: Searchable[] = agreements.map((a) => {
+    const wage = wageByAgreement.get(a.id);
+    const sector = sectorOf.get(a.employerOrg.name);
+    return {
+      id: a.id,
+      facets: {
+        construction: wage ? String(wage.construction) : undefined,
+        sector,
+        benchmarkFlag: wage ? (wage.industryBenchmark ? "yes" : "no") : undefined,
+      },
+      ...(a.validFrom ? { validFrom: a.validFrom } : {}),
+      ...(a.validTo ? { validTo: a.validTo } : {}),
+    };
+  });
+
+  const rowFor: Record<string, Row> = {};
+  const tableRows: Row[] = rows.map((row) => {
+    const status = statusInfo(row.status, lang);
+    const wage = wageByAgreement.get(row.id);
+    return {
+      key: row.id,
+      cells: [
+        <StatusDot key="s" status={status} showLabel />,
+        <span key="a" className="flex flex-wrap items-center gap-2">
+          <Link href={`/avtal/${row.id}`} className={RESULT_LINK}>
+            {row.name}
+          </Link>
+          {row.confidential && (
+            <ConfidentialityMarker
+              compact
+              label={i18n.confidentiality.marked}
+              note={i18n.confidentiality.inStatistics}
+            />
+          )}
+        </span>,
+        /* The Parter column had no cell at all: five headers, four cells, so
+           construction rendered under *Parter* and *Löneutr. %* came out empty.
+           Found by the column picker, which could not line the two up. */
+        row.parties,
+        wage
+          ? `${wage.construction}. ${AGREEMENT_CONSTRUCTIONS[lang][wage.construction]}`
+          : i18n.common.none,
+        wage?.wageScopePercent === undefined
+          ? i18n.common.none
+          : percent(wage.wageScopePercent, lang),
+      ],
+      sort: [
+        status.label,
+        row.name,
+        row.parties,
+        wage?.construction ?? 99,
+        wage?.wageScopePercent ?? -1,
+      ],
+    };
+  });
+  for (const r of tableRows) rowFor[r.key] = r;
+
+  /* ---------------------------------------------------------------------- */
+  /* The other three registers. Same shape each time: the rows the query runs
+     over, the server-rendered row per id, and the columns that register
+     prints. They share no criterion and no column, which is the point.       */
+  /* ---------------------------------------------------------------------- */
+
+  const mediationRows: Searchable[] = cases.map((mc) => ({
+    id: mc.id,
+    facets: {
+      mediationType: mc.type,
+      mediationOngoing: mc.ongoing ? "yes" : "no",
+      procedureAgreement: mc.coveredByProcedureAgreement ? "yes" : "no",
+    },
+  }));
+  const mediationTable: Row[] = cases.map((mc) => ({
+    key: mc.id,
+    cells: [
+      <Link key="c" href={`/medling/${mc.id}`} className={RESULT_LINK}>
+        {`${caseNumber(mc.id)} · ${mc.name}`}
+      </Link>,
+      MEDIATION_TYPE_LABEL[lang][mc.type],
+      mc.mediators.length === 0 ? i18n.common.none : mc.mediators.map((m) => m.name).join(", "),
+      mc.status[lang],
+    ],
+    sort: [mc.id, MEDIATION_TYPE_LABEL[lang][mc.type], mc.mediators.length, mc.status[lang]],
+  }));
+
+  const negotiationRows: Searchable[] = negotiations.map(({ negotiation }) => ({
+    id: negotiation.id,
+    facets: { negotiationType: negotiation.type, negotiationStatus: negotiation.status },
+  }));
+  const negotiationTable: Row[] = negotiations.map(({ negotiation, agreementName }) => {
+    const status = t.results.negotiationStatus[negotiation.status];
+    const type = NEGOTIATION_TYPE_LABEL[lang][negotiation.type];
+    /* FF-003 - a standalone negotiation has no agreement, and that is data
+       rather than a gap, so its own id carries the row instead of a blank. */
+    const label = agreementName ?? negotiation.id;
+    /* FF-002 - a negotiation is read on the agreement it belongs to; a
+       standalone one (FF-003) has no record of its own to open, and a link
+       that went nowhere would be worse than none. */
+    const cell = negotiation.agreementId ? (
+      <Link key="n" href={`/avtal/${negotiation.agreementId}`} className={RESULT_LINK}>
+        {label}
+      </Link>
+    ) : (
+      label
+    );
+    return {
+      key: negotiation.id,
+      cells: [cell, type, negotiation.parties.join(", "), status],
+      sort: [label, type, negotiation.parties.join(", "), status],
+    };
+  });
+
+  const partyRows: Searchable[] = parties.map((party) => ({
+    id: party.id,
+    facets: { partyType: party.type, partySector: party.sector },
+  }));
+  const partyTable: Row[] = parties.map((party) => {
+    const sector = party.sector ? SECTOR_LABEL[lang][party.sector] : i18n.common.none;
+    const central = party.centralOrganisation ?? i18n.common.none;
+    return {
+      key: party.id,
+      cells: [
+        <Link key="p" href={`/parter/${party.id}`} className={RESULT_LINK}>
+          {party.name}
+        </Link>,
+        PARTY_TYPE_LABEL[lang][party.type],
+        sector,
+        central,
+      ],
+      sort: [party.name, PARTY_TYPE_LABEL[lang][party.type], sector, central],
+    };
+  });
+
+  const byKey = (list: Row[]): Record<string, Row> =>
+    Object.fromEntries(list.map((r) => [r.key, r]));
+
+  const populations: Record<InfoTypeId, SearchPopulation> = {
+    /* The agreement register leads with FR-012's status, so the identity
+        column is the name rather than the first one. */
+    agreements: { rows: searchable, rowFor, columns, identityColumn: "agreement" },
+    mediation: {
+      rows: mediationRows,
+      rowFor: byKey(mediationTable),
+      identityColumn: "case",
+      columns: [
+        { key: "case", header: t.results.mediationCase, sortable: true },
+        { key: "type", header: t.results.mediationType, sortable: true },
+        { key: "mediators", header: t.results.mediators, sortable: true },
+        { key: "status", header: t.results.status, sortable: true },
+      ],
+    },
+    negotiations: {
+      rows: negotiationRows,
+      rowFor: byKey(negotiationTable),
+      identityColumn: "negotiation",
+      columns: [
+        { key: "negotiation", header: t.results.negotiation, sortable: true },
+        { key: "type", header: t.results.negotiationType, sortable: true },
+        { key: "parties", header: t.results.parties, sortable: true },
+        { key: "status", header: t.results.status, sortable: true },
+      ],
+    },
+    parties: {
+      rows: partyRows,
+      rowFor: byKey(partyTable),
+      identityColumn: "party",
+      columns: [
+        { key: "party", header: t.results.party, sortable: true },
+        { key: "type", header: t.results.partyType, sortable: true },
+        { key: "sector", header: t.results.sector, sortable: true },
+        { key: "central", header: t.results.centralOrganisation, sortable: true },
+      ],
+    },
+  };
 
   return (
     <AppShell
-      role={role}
-      dataset={dataset}
-      aiTitle="AI-sökassistent"
-      aiIntro="Beskriv ditt urval i naturligt språk så föreslår AI villkor, presentationskolumner och export – som alternativ till sökbyggaren."
-      aiReqTag="FR-002"
-      aiSuggestions={[
-        "Alla sifferlösa avtal i privat sektor giltiga 2026-12-31",
-        "Jämför löneutrymme mellan Almega-avtal 2025 och 2026",
-        "Vilka avtal nämner arbetstidsförkortning?",
-        "Skapa underlag för Eurofound-rapporten",
-      ]}
-    >
-      <div className="mb-6 flex flex-wrap items-center gap-3">
-        {tabs.map((t, i) => (
-          <span
-            key={t}
-            className={`rounded-md px-5 py-2.5 text-sm font-semibold ${
-              i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
-            }`}
-          >
-            {t}
-          </span>
-        ))}
-        <ReqTag id="FR-002" />
-      </div>
+      walkthrough={session.walkthrough} role={session.role} requires="sok" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      {/* FA-019 "söka fram avtal med vissa egenskaper" is what this screen is; it
+          sat untagged because our English rendering filed the same capability
+          under FR-001/FR-002 only. */}
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FA-019", "FR-001", "FR-002"]}
+      />
 
-      <div className="grid gap-5 @3xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
-        <Panel title="Urvalskriterier">
-          <div className="space-y-3">
-            <div className="grid gap-3 @xl:grid-cols-[minmax(0,1fr)_7rem_minmax(0,1.4fr)]">
-              <Field label="" value="Avtalskonstruktion ▾" />
-              <Field label="" value="är ▾" />
-              <Field label="" value="1. Lokal lönebildning (sifferlösa avtal) ▾" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-md bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
-                OCH
-              </span>
-              <span className="rounded-md bg-secondary px-3 py-1 text-xs font-bold text-muted-foreground">
-                ELLER
-              </span>
-              <span className="ml-2 text-xs text-muted-foreground">och / eller</span>
-            </div>
-            <div className="grid gap-3 @xl:grid-cols-[minmax(0,1fr)_7rem_minmax(0,1.4fr)]">
-              <Field label="" value="Sektor ▾" />
-              <Field label="" value="är ▾" />
-              <Field label="" value="Privat ▾" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-md bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
-                OCH
-              </span>
-            </div>
-            <div className="grid gap-3 @xl:grid-cols-[minmax(0,1fr)_7rem_minmax(0,1fr)_auto]">
-              <Field label="" value="Giltig vid tidpunkt ▾" />
-              <Field label="" value="per ▾" />
-              <Field label="" value="2026-12-31" />
-              <div className="self-end">
-                <Button variant="outline">+ Lägg till villkor</Button>
-              </div>
-            </div>
-            <div className="grid items-end gap-3 pt-2 @xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-              <span className="text-sm font-semibold">
-                Fritext i uppladdade dokument och urval
-              </span>
-              <Field label="" value={'"arbetstidsförkortning"'} />
-              <ReqTag id="FR-003" />
-            </div>
-
-            <div className="pt-4">
-              <div className="mb-2 flex items-center gap-2">
-                <span className="text-[0.95rem] font-bold">
-                  Handlingstyper i sökningen (fler än två samtidigt)
-                </span>
-                <ReqTag id="FR-002" />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["Löneavtal", "Allmänna villkor", "Pensionsavtal", "Övriga avtal"].map((h, i) => (
-                  <span
-                    key={h}
-                    className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
-                      i < 3 ? "bg-accent text-accent-foreground" : "bg-secondary text-muted-foreground"
-                    }`}
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Fullt stöd utan de tekniska hjälpvariabler som dagens sökbyggare kräver (§2.5)
-              </p>
-            </div>
-
-            <div className="grid items-end gap-3 pt-4 @xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-              <Field label="Bokslut – återskapa data per" value="2026-12-31" />
-              <Field label="Bokslutsläge" value="Aktiverat ▾" />
-              <ReqTag id="FH-003" />
-            </div>
-          </div>
-        </Panel>
-
-        <Panel title="Presentationskolumner">
-          <ul className="space-y-2.5">
-            {kolumner.map((k) => (
-              <li key={k.label} className="flex items-center gap-3 text-[0.95rem]">
-                <span
-                  className={`inline-block size-4 rounded-sm border ${
-                    k.on ? "border-primary bg-primary" : "border-input bg-card"
-                  }`}
-                />
-                {k.label}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-5 space-y-3">
-            <div className="flex items-center gap-3">
-              <Button variant="outline">Spara sökning: &quot;Årsrapport 2026&quot;</Button>
-              <ReqTag id="FR-002" />
-            </div>
-            <div className="w-full">
-              <button
-                type="button"
-                className="w-full rounded-md bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
-              >
-                Sök
-              </button>
-            </div>
-          </div>
-        </Panel>
-      </div>
+      {/*
+        The criteria run. `lib/domain/query.ts` decides which rows match; the
+        cells stay on the server because they carry FR-012's status marker and
+        the confidentiality marker, which must not be re-decided in the browser.
+      */}
+      <SearchBuilder
+        lang={lang}
+        populations={populations}
+        seconds={decimal(RESPONSE_SECONDS, lang)}
+        snapshotDate={SNAPSHOT_DATE}
+      />
 
       <div className="mt-5">
-        <Panel title="Resultat · 143 träffar · 1,8 s · Bokslut per 2026-12-31" tags={["FH-003"]}>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[36rem] text-[0.95rem]">
-              <thead>
-                <tr className="border-b border-border text-left text-sm text-muted-foreground">
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Status
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Avtal
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Parter
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Konstruktion
-                  </th>
-                  <th scope="col" className="py-2 pr-4 font-semibold">
-                    Löneutr. %
-                  </th>
-                  <th scope="col" className="py-2 font-semibold">
-                    Öppna
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r) => (
-                  <tr key={r.agreement} className="border-b border-border/60">
-                    <td className="py-3 pr-4">
-                      <StatusDot status={statusInfo(r.status)} />
-                    </td>
-                    <td className="py-3 pr-4">{r.agreement}</td>
-                    <td className="py-3 pr-4">{r.parties}</td>
-                    <td className="py-3 pr-4">1. Lokal lönebildning</td>
-                    <td className="py-3 pr-4">–</td>
-                    <td className="py-3">
-                      <span className="font-semibold text-primary underline">
-                        Visa per 2026-12-31
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-sm text-muted-foreground">… ytterligare 138 rader</p>
-          <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-            Enskilt avtal öppnas med de löneavtal och allmänna villkor som var giltiga vid
-            tidpunkten
-            <ReqTag id="FA-020" />
-            <span>· Steg 2: även avtalsområde med tillhörande avtal vid vald tidpunkt</span>
-            <ReqTag id="FA-025" />
-          </p>
+        <Rationale>
+          {t.results.pointInTimeNote} · {t.results.stage2Note}{" "}
+          <ReqTags ids={["FA-020", "FA-025"]} />
+        </Rationale>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-            <span className="text-sm font-semibold">Exportera:</span>
-            <Button variant="outline">Excel</Button>
-            <Button variant="outline">CSV</Button>
-            <Button variant="outline">JSON</Button>
-            <Button variant="outline">Rapportgenerator (Word/PDF)</Button>
-            <span className="text-sm text-muted-foreground">
-              Sammansatta sökningar över flera handlingstyper – utan hjälpvariabler
-            </span>
-            <ReqTag id="FR-004 / 013" />
-          </div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Sparade sökningar: Årsrapport 2026 · Eurofound-urval · Sifferlösa avtal privat
-            sektor
-          </p>
-        </Panel>
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+          <span className="text-label font-bold">{i18n.common.exportLabel}</span>
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.exportNeedsServer}
+      >
+            Excel
+          </Button>
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.exportNeedsServer}
+      >
+            CSV
+          </Button>
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.exportNeedsServer}
+      >
+            JSON
+          </Button>
+          <Button variant="secondary" size="sm"
+        disabled
+        disabledReason={i18n.common.exportNeedsServer}
+      >
+            Word / PDF
+          </Button>
+          <ReqTags ids={["FR-004", "FR-005", "FR-013"]} />
+        </div>
+        <Rationale>{t.results.exportNote}</Rationale>
+
       </div>
     </AppShell>
   );

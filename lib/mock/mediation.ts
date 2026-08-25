@@ -24,9 +24,11 @@ export const MEDIATION_CASES: MediationCase[] = [
     mediators: [
       { id: "ME-01", name: "Gunilla Runnquist", position: "first-chair", previousAssignments: 14 },
       { id: "ME-02", name: "Bengt Huldt", position: "second-chair", previousAssignments: 9 },
+      /* Bilaga E appoints three mediators to this dispute, not two. */
+      { id: "ME-05", name: "Gerald Lindberg", position: "second-chair", previousAssignments: 6 },
     ],
     coveredByProcedureAgreement: false,
-    status: "Pågående",
+    status: { sv: "Pågående", en: "Ongoing" },
     ongoing: true,
     outcome: {
       mediationType: "special",
@@ -36,11 +38,23 @@ export const MEDIATION_CASES: MediationCase[] = [
       affectedEmployees: 1150,
     },
     decisionSupport: {
-      otherParties: "SRAT, Sveriges Ingenjörer",
-      previousMediations:
-        "2023 (Spårtrafik) · Spridningsrisk: närliggande avtal inom Transportföretagen utlöper i maj",
+      otherParties: {
+        sv: "SRAT och Sveriges Ingenjörer har egna avtal på samma avtalsområde. Båda löper ut 2027-06-30.",
+        en: "SRAT and Sveriges Ingenjörer hold their own agreements in the same agreement area. Both expire on 2027-06-30.",
+      },
+      previousMediations: {
+        sv: "2023 – Spårtrafik, särskild medling, avslutad med avtal efter 19 dagar. Samma parter, medlare Gunilla Runnquist som ettan.",
+        en: "2023 – Rail traffic, special mediation, closed with an agreement after 19 days. Same parties, Gunilla Runnquist as lead mediator.",
+      },
+      contagionRisk: {
+        sv: "Fyra närliggande avtal inom Transportföretagen löper ut i maj 2027. Två av dem har samma arbetstagarorganisation.",
+        en: "Four adjacent agreements within Transportföretagen expire in May 2027. Two of them have the same employee organisation.",
+      },
     },
-    documents: "GD-beslut_12-2027.pdf · Medlarrapport (väntas)",
+    documents: {
+      sv: "GD-beslut_12-2027.pdf · Medlarrapport (väntas)",
+      en: "GD-beslut_12-2027.pdf · Mediator report (pending)",
+    },
   },
   {
     id: "M-2027-09",
@@ -57,17 +71,30 @@ export const MEDIATION_CASES: MediationCase[] = [
       { id: "ME-03", name: "Anders Lindström", position: "first-chair", previousAssignments: 21 },
     ],
     coveredByProcedureAgreement: false,
-    status: "Avslutad – avtal tecknat",
+    status: { sv: "Avslutad", en: "Closed" },
     ongoing: false,
     outcome: {
       mediationType: "special",
       industrialAction: false,
     },
     decisionSupport: {
-      otherParties: "Fastighetsanställdas Förbund",
-      previousMediations: "2021 (Hemserviceföretag) · Ingen spridningsrisk identifierad",
+      otherParties: {
+        sv: "Fastighetsanställdas Förbund har ett eget avtal med samma arbetsgivarorganisation.",
+        en: "Fastighetsanställdas Förbund holds its own agreement with the same employer organisation.",
+      },
+      previousMediations: {
+        sv: "2021 – Hemserviceföretag, särskild medling, avslutad med avtal. Medlare Anders Lindström som ettan.",
+        en: "2021 – Home services, special mediation, closed with an agreement. Anders Lindström as lead mediator.",
+      },
+      contagionRisk: {
+        sv: "Ingen spridningsrisk identifierad. Närliggande avtal löper till 2028.",
+        en: "No contagion risk identified. Adjacent agreements run until 2028.",
+      },
     },
-    documents: "GD-beslut_9-2027.pdf · Medlarrapport_2027-04-28.pdf",
+    documents: {
+      sv: "GD-beslut_9-2027.pdf · Medlarrapport_2027-04-28.pdf",
+      en: "GD-beslut_9-2027.pdf · Medlarrapport_2027-04-28.pdf",
+    },
   },
   {
     id: "M-2027-04",
@@ -82,13 +109,23 @@ export const MEDIATION_CASES: MediationCase[] = [
     agreementIds: ["A-010"],
     mediators: [],
     coveredByProcedureAgreement: true,
-    status: "Avslutad",
+    status: { sv: "Avslutad", en: "Closed" },
     ongoing: false,
     decisionSupport: {
-      otherParties: "Akademikerförbunden",
-      previousMediations: "Parterna medlar i egen regi enligt förhandlingsordningsavtal",
+      otherParties: {
+        sv: "Akademikerförbunden har ett eget avtal på avtalsområdet.",
+        en: "Akademikerförbunden holds its own agreement in the agreement area.",
+      },
+      previousMediations: {
+        sv: "Inga tidigare medlingar registrerade. Parterna medlar i egen regi enligt förhandlingsordningsavtal.",
+        en: "No previous mediations registered. The parties mediate under their own procedure per a negotiation procedure agreement.",
+      },
+      contagionRisk: {
+        sv: "Låg. Tvisten är lokal och omfattar ett enskilt bemanningsföretag.",
+        en: "Low. The dispute is local and concerns a single staffing company.",
+      },
     },
-    documents: "GD-beslut_4-2027.pdf",
+    documents: { sv: "GD-beslut_4-2027.pdf", en: "GD-beslut_4-2027.pdf" },
   },
 ];
 
@@ -116,6 +153,19 @@ export const MEDIATORS: Mediator[] = [
     history: [
       { year: 2027, agreementArea: "Spårtrafik", position: "second-chair" },
       { year: 2025, agreementArea: "Byggverksamhet", position: "second-chair" },
+    ],
+  },
+  {
+    /* Named with Runnquist and Huldt on the Spårtrafik decision in Bilaga E. */
+    id: "ME-05",
+    name: "Gerald Lindberg",
+    email: "gerald.lindberg@example.se",
+    phone: "070-456 78 90",
+    types: ["special"],
+    active: true,
+    history: [
+      { year: 2027, agreementArea: "Spårtrafik", position: "second-chair" },
+      { year: 2024, agreementArea: "Transport", position: "second-chair" },
     ],
   },
   {

@@ -29,13 +29,7 @@ const AREAS = [
   "Lantbruk",
 ];
 
-const QUALIFIERS = [
-  "",
-  " – tjänstemän",
-  " – arbetare",
-  " – riksavtal",
-  " – storstadsregioner",
-];
+const QUALIFIERS = ["", " – tjänstemän", " – arbetare", " – riksavtal", " – storstadsregioner"];
 
 const REPORTS: ReportSelection = {
   eurofound: false,
@@ -80,6 +74,13 @@ export function generateAgreements(count: number, startIndex = 100): Agreement[]
       agreementType: "Löneavtal + Allmänna villkor",
       registrationStatus: incomplete ? "incomplete" : "complete",
       confidential: i % 13 === 0,
+      /*
+        A spread rather than a constant: the bargaining-round report counts
+        employees, and 48 agreements of equal size would produce a chart whose
+        two halves are the same shape, which is exactly the thing the employee
+        count exists to disprove. Every ninth is a large sector agreement.
+      */
+      employees: i % 9 === 0 ? 18000 + (i % 5) * 4000 : 400 + (i % 17) * 350,
       reportSelection: REPORTS,
       ...(mediation ? { mediationLinked: true } : {}),
       ...(signed
@@ -102,7 +103,10 @@ export function generateReminders(count: number, agreements: Agreement[]): Remin
     return {
       id: `PM-G${i}`,
       date: `2027-${pad((i % 12) + 1)}-${pad((i % 27) + 1)}`,
-      text: `Komplettera ${agreement.name}`,
+      text: {
+        sv: `Komplettera ${agreement.name}`,
+        en: `Complete ${agreement.name}`,
+      },
       agreementId: agreement.id,
     };
   });
@@ -116,9 +120,7 @@ export function generateEvents(count: number, agreements: Agreement[]): AuditEve
       id: `H-G${i}`,
       timestamp: `2027-${pad((i % 12) + 1)}-${pad((i % 27) + 1)} ${pad(8 + (i % 9))}:${pad((i * 7) % 60)}`,
       type: signed ? "agreement-signed" : "mediation-started",
-      text: signed
-        ? `Avtal tecknat – ${agreement.name}`
-        : `Medling startar – ${agreement.name}`,
+      detail: agreement.name,
       agreementId: agreement.id,
       color: signed ? "green" : "red",
     };

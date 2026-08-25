@@ -2,137 +2,340 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import type { RoleInfo } from "@/lib/domain/role";
 import type { DatasetName } from "@/lib/domain/dataset";
-import { AiPanel, AiPanelTrigger } from "./AiPanel";
-import { DemoControls } from "./DemoControls";
+import type { Lang } from "@/lib/domain/lang";
+import { isHeadingOnly, navFor, NAV_HREF, type NavId } from "@/lib/domain/nav";
+import { canAccess, type RoleInfo } from "@/lib/domain/role";
+import type { WalkthroughPosition } from "@/lib/domain/walkthrough";
+import { dictionary } from "@/lib/i18n";
+import { AiAssistant, AiAssistantLauncher } from "./AiAssistant";
+import { DemoBar } from "./DemoBar";
+import { PrintHeader } from "./Print";
+import { Callout } from "./primitives";
+import { SessionTimeoutWarning } from "./SessionTimeoutWarning";
 
-const nav = [
-  { to: "/", label: "Start" },
-  { to: "/avtal", label: "Avtal" },
-  { to: "/registrera", label: "Registrera avtal" },
-  { to: "/parter", label: "Parter" },
-  { to: "/forhandlingar", label: "Förhandlingar" },
-  { to: "/medling", label: "Medling" },
-  { to: "/partstraffar", label: "Partsträffar" },
-  { to: "/medlare", label: "Medlare" },
-  { to: "/sok", label: "Sök & Rapporter" },
-  { to: "/market", label: "Märket" },
-  { to: "/administration", label: "Administration" },
-] as const;
+/**
+ * The application shell: demo bar, header, role-filtered navigation, content.
+ *
+ * The header carries the AI support launcher. §4.1 asks for an *integrerat
+ * AI-stöd* and §4.3's system sketch lists AI-assisted registration as a module
+ * of the system in its own right, so it is reachable from every screen the role
+ * may act on. What it opens is a catalogue of §4.1's four functions, the queue
+ * of proposals waiting for approval and a statement of the limits — not a
+ * chatbot. An assistant that answers questions nobody asked is still
+ * functionality nobody asked for, on a bid partly scored on demonstrated
+ * understanding of the assignment.
+ */
+
+function isActive(pathname: string, href: string): boolean {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
 
 export function AppShell({
   role,
   dataset,
+  lang,
+  reqTags,
+  walkthrough,
+  requires,
   children,
-  aiTitle,
-  aiIntro,
-  aiSuggestions,
-  aiReqTag,
 }: {
   role: RoleInfo;
   dataset: DatasetName;
+  lang: Lang;
+  reqTags: boolean;
+  /** The reviewer's place in `/genomgang`, carried into the demo strip. */
+  walkthrough?: WalkthroughPosition | null;
+  /**
+   * NFÅ-003 — the menu item this screen belongs to. A role without it is
+   * refused here rather than merely not shown the link.
+   *
+   * Filtering the menu satisfies the sketch; it does not satisfy the
+   * requirement. A statistics user who could not see an Administration item
+   * could still open `/administration` by typing it, and read the change log.
+   * Authorisation that only exists in the navigation is a navigation feature.
+   */
+  requires?: NavId;
   children: ReactNode;
-  aiTitle?: string;
-  aiIntro?: string;
-  aiSuggestions?: string[];
-  aiReqTag?: string;
 }) {
   const pathname = usePathname();
-  const [aiOpen, setAiOpen] = useState(false);
+  const [sessionWarning, setSessionWarning] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  /*
+    Below `md` the menu was a permanently open list above the content, capped
+    at `max-h-56` and scrolled. That works for nine items and stops working for
+    twelve: a scrolling strip of links is not navigation, and the first thing a
+    phone user sees should be the page they asked for. It is a disclosure now.
+
+    Nothing changes at `md` and up — the rail is still one DOM, still no
+    JavaScript for its layout — so the desktop the evaluators will use is
+    untouched.
+  */
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        toggleRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+  const t = dictionary(lang);
+  const nav = navFor(role.nav);
+
+  function itemClass(active: boolean, nested: boolean) {
+    return [
+      "block border-l-4 py-3 text-table transition-colors",
+      nested ? "pl-9 pr-4" : "px-5",
+      /*
+        The current-page rule is slate, not sand.
+
+        Two reasons and they agree. Sand-500 measured 1.74:1 against the active
+        item's own fill and sand-600 only 2.81:1, so neither clears WCAG
+        1.4.11's 3:1 for an indicator that identifies a state. And sand already
+        carries Märket, attention, requirement tags, the public view and
+        watchword hits — "you are here" was quietly a sixth meaning for it.
+        Primary slate is MI's identity colour and measures 6.21:1.
+      */
+      active
+        ? "border-primary bg-sidebar-accent font-bold text-sidebar-accent-foreground"
+        : "border-transparent text-sidebar-foreground hover:bg-sidebar-accent/60",
+    ].join(" ");
+  }
+
+  function NavLink({ id, nested = false }: { id: NavId; nested?: boolean }) {
+    const href = NAV_HREF[id];
+    const active = isActive(pathname, href);
+    return (
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        onClick={() => setMenuOpen(false)}
+        className={itemClass(active, nested)}
+      >
+        {t.nav[id]}
+      </Link>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <a
         href="#innehall"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-card focus:px-4 focus:py-2 focus:font-bold"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[70] focus:rounded-sm focus:bg-card focus:px-4 focus:py-2 focus:font-bold"
       >
-        Hoppa till innehåll
+        {t.common.skipToContent}
       </a>
+
+      <DemoBar
+        walkthrough={walkthrough}
+        role={role.id}
+        dataset={dataset}
+        lang={lang}
+        reqTags={reqTags}
+        onShowSessionWarning={() => setSessionWarning(true)}
+      />
+
       <header className="border-b-4 border-[var(--mi-sand-500)] bg-primary text-primary-foreground">
-        <div className="flex flex-wrap items-center justify-between gap-4 px-8 py-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
           <Link href="/" className="flex items-center gap-4">
-            {/* Placeholder mark. The official MI logo contains a protected state
-                emblem and must never be redrawn — see CLAUDE.md. */}
-            <span
+            {/*
+              Medlingsinstitutet's own mark, supplied by MI and installed
+              verbatim — the crown is a protected state emblem and is never
+              redrawn (CLAUDE.md rule 6). The file is the white version, which
+              is the one MI's artwork is drawn for: every path is #FFFFFF, i.e.
+              it is made for a dark or coloured ground, which is what the header
+              is. Its own proportions are 284.8 × 511.5, so it is set by height
+              and left to find its width rather than forced into the square the
+              placeholder used.
+            */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/mi-mark-white.svg"
+              alt=""
               aria-hidden
-              className="grid size-11 place-items-center rounded-sm bg-[var(--mi-sand-500)] font-display text-xl font-bold text-[var(--mi-ink)]"
-            >
-              MI
-            </span>
+              width={25}
+              height={44}
+              className="h-11 w-auto shrink-0"
+            />
             <span className="leading-tight">
-              <span className="block font-display text-xl font-semibold tracking-tight">MIIS</span>
-              <span className="block text-sm opacity-80">
-                Medlingsinstitutets informationssystem
+              <span className="block font-display text-section font-semibold">
+                {t.common.appName}
               </span>
+              <span className="block text-label opacity-85">{t.common.appSubtitle}</span>
             </span>
           </Link>
-          <div className="flex items-end gap-5">
-            <div className="pb-1 text-right text-sm leading-tight opacity-90">
-              <div>miis.mi.se · Inloggad via EFOS</div>
-              <div>
+          {/*
+            Who is signed in, and the way out.
+
+            There is no sign-*in* screen in MIIS and there should not be:
+            NFÅ-001 puts authentication in Försäkringskassan's IdP over SAML,
+            so the login page belongs to them and drawing one here would claim
+            we had built the one thing we certainly have not. Signing *out* is
+            different — NFL-001 logs logins and logouts, so the action exists,
+            and it had no control anywhere except inside the session-timeout
+            dialog, which a user only sees if they wait.
+          */}
+          {/*
+            `grow`, and it is the fix for the header's right edge on a narrow
+            screen.
+
+            The row is `justify-between`, which only positions items that share
+            a line. Once the identity block wraps below the logo it is a lone
+            flex item on its own line, so `justify-between` puts it at the
+            *start* — while its own `justify-end` right-aligns its contents
+            inside its content-width box. The result was a right-aligned block
+            floating in the middle of the header with 140px of dead space beyond
+            it, which reads as a broken right margin rather than as a choice.
+            Growing it to fill the line makes `justify-end` land on the header's
+            real padding edge, wrapped or not.
+          */}
+          <div className="flex grow flex-wrap items-center justify-end gap-4">
+            <div className="text-right text-label leading-tight">
+              <div className="opacity-90">{t.common.loggedInVia}</div>
+              <div className="font-semibold">
                 {role.person} · {role.label}
               </div>
             </div>
-            <DemoControls role={role.id} dataset={dataset} />
+            <button
+              type="button"
+              onClick={() => setSessionWarning(true)}
+              className="min-h-11 rounded-sm border-2 border-primary-foreground/60 px-3 py-2 text-label font-bold transition-colors hover:bg-primary-foreground hover:text-primary"
+            >
+              {t.session.logout}
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="flex min-h-[calc(100vh-88px)]">
+      <div className="flex min-h-[60vh] flex-col md:flex-row">
+        {/*
+          NFUI-002 responsive. Below 768px the menu stacks above the content with
+          its own scroll, so it never eats the screen; 768–1023px it is a narrow
+          rail; from 1024px the full 240px rail. One DOM, no JavaScript, no
+          hydration flash.
+        */}
         <nav
-          aria-label="Huvudmeny"
-          className="w-60 shrink-0 border-r border-sidebar-border bg-sidebar py-4"
+          aria-label={t.common.mainMenu}
+          /*
+            Sticky from `md` up, so the menu stays put while a long screen
+            scrolls under it. `top-0` and its own scroll, because a nav taller
+            than the viewport that cannot scroll is worse than one that moves.
+            Below `md` it is the disclosure, which is already at the top.
+          */
+          className="w-full shrink-0 border-b border-sidebar-border bg-sidebar md:sticky md:top-0 md:h-screen md:w-44 md:overflow-y-auto md:border-b-0 md:border-r md:py-4 lg:w-60"
         >
-          <ul className="space-y-0.5">
-            {nav.map((item) => {
-              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              return (
-                <li key={item.to}>
-                  <Link
-                    href={item.to}
-                    aria-current={active ? "page" : undefined}
-                    className={`block border-l-4 px-5 py-3 text-[0.95rem] transition-colors ${
-                      active
-                        ? "border-[var(--mi-sand-500)] bg-sidebar-accent font-bold text-sidebar-accent-foreground"
-                        : "border-transparent text-sidebar-foreground hover:bg-sidebar-accent/60"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
+          <button
+            ref={toggleRef}
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-controls="huvudmeny"
+            className="flex min-h-12 w-full items-center gap-3 px-5 py-3 text-left text-table font-bold text-sidebar-foreground md:hidden"
+          >
+            {/* Three bars, or a cross when open — the state is in `aria-expanded`
+                for assistive technology and in the shape for everyone else. */}
+            <span aria-hidden className="grid size-5 shrink-0 place-items-center">
+              <span
+                className={`relative block h-0.5 w-5 bg-current transition-all before:absolute before:left-0 before:block before:h-0.5 before:w-5 before:bg-current before:transition-all before:content-[''] after:absolute after:left-0 after:block after:h-0.5 after:w-5 after:bg-current after:transition-all after:content-[''] ${
+                  menuOpen
+                    ? "rotate-45 before:top-0 before:rotate-90 after:top-0 after:opacity-0"
+                    : "before:-top-1.5 after:top-1.5"
+                }`}
+              />
+            </span>
+            {t.common.mainMenu}
+          </button>
+
+          <ul
+            id="huvudmeny"
+            className={`space-y-0.5 pb-2 md:block md:pb-0 ${menuOpen ? "block" : "hidden"}`}
+          >
+            {nav.map((node) => (
+              <li key={node.id}>
+                {isHeadingOnly(node, role.nav) ? (
+                  <span className="block px-5 py-2 text-meta font-bold uppercase tracking-wide text-muted-foreground">
+                    {t.nav[node.id]}
+                  </span>
+                ) : (
+                  <NavLink id={node.id} />
+                )}
+                {node.children && node.children.length > 0 && (
+                  <ul className="space-y-0.5">
+                    {node.children.map((child) => (
+                      <li key={child}>
+                        <NavLink id={child} nested />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
           </ul>
         </nav>
 
-        <main id="innehall" className="@container min-w-0 flex-1 bg-background px-5 py-8 sm:px-8 xl:px-10">
-          <div className="mb-4 flex justify-end">
-            {!aiOpen && <AiPanelTrigger onOpen={() => setAiOpen(true)} />}
-          </div>
-          {children}
-        </main>
+        <main
+          id="innehall"
+          /*
+            `pb-28` rather than a symmetric `py-8`. The AI launcher is fixed
+            24px from the bottom and 48px tall, so without room to scroll past
+            it the last row of a long table sits underneath it permanently.
+            Padding is the fix rather than moving the control — the corner is
+            the point of the corner.
+          */
+          className="@container min-w-0 flex-1 bg-background px-5 pb-28 pt-8 sm:px-8 xl:px-10"
+        >
+          {/*
+            NFÅ-003 enforced, not merely reflected. A role that does not have
+            this screen's menu item is refused the screen, so authorisation is a
+            property of the system rather than of the navigation.
+          */}
+          {/*
+            MI's letterhead on every printed screen, not on the six that
+            remembered to ask for it. Sixteen screens were printing without the
+            mark and without an Utskriftsdatum, which is the difference between
+            a document and a screenshot — and it is not something a page should
+            have to opt into.
 
-        {aiOpen && (
-          <>
-            <button
-              type="button"
-              aria-label="Stäng AI-assistent"
-              onClick={() => setAiOpen(false)}
-              className="fixed inset-0 z-30 bg-[var(--mi-ink)]/40 xl:hidden"
-            />
-            <AiPanel
-              title={aiTitle}
-              intro={aiIntro}
-              suggestions={aiSuggestions}
-              reqTag={aiReqTag}
-              onClose={() => setAiOpen(false)}
-            />
-          </>
-        )}
+            No title here: the page's own `<h1>` follows immediately and is the
+            document's title. Passing one as well printed it twice.
+          */}
+          <PrintHeader lang={lang} />
+
+          {requires && !canAccess(role, requires) ? (
+            <Callout tone="attention" label={t.common.notAuthorised}>
+              {t.common.notAuthorisedFor(t.nav[requires], role.label)}
+            </Callout>
+          ) : (
+            children
+          )}
+        </main>
       </div>
+
+      {/*
+        The AI support, reachable from every screen the role may act on.
+
+        Fixed to the bottom right rather than in the header. §4.1 asks for an
+        *integrerat* AI-stöd and §4.3 carries AI-assisted registration as a
+        module of the system, so it has to be everywhere — but beside Sign out
+        it was findable only by someone already looking for it, because the
+        header is where a user goes to *leave*. The corner is the same place on
+        all nineteen screens and does not move with what the page contains.
+      */}
+      <AiAssistantLauncher lang={lang} role={role} />
+      <AiAssistant lang={lang} role={role} />
+
+      <SessionTimeoutWarning
+        lang={lang}
+        forcedOpen={sessionWarning}
+        onDismiss={() => setSessionWarning(false)}
+      />
     </div>
   );
 }

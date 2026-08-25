@@ -1,14 +1,11 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# This deployment is an unlisted UX/UI mockup for a procurement bid, not a
+# public service. It serves Medlingsinstitutet's own material — their logo, a
+# scanned example protocol from Bilaga D of the requirement specification, and
+# report figures from Bilaga F — none of which is ours to publish.
+#
+# Crawling is disallowed here, and every response also carries an
+# `X-Robots-Tag: noindex` header set in `next.config.ts`, because a header
+# reaches static files under `public/` while a meta tag cannot.
 
 User-agent: *
-Allow: /
+Disallow: /

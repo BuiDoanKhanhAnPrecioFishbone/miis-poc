@@ -4,62 +4,104 @@
  * Newly signed without mediation = green, signed after mediation = red,
  * remaining = blue, but red when linked to mediation.
  *
- * The return type carries the label together with the colour, so no view can
- * render the colour on its own. Colour is never the only carrier of meaning
+ * The return type carries the label AND a shape together with the colour, so no
+ * view can render the colour on its own and no view can distinguish the three
+ * states by hue alone. Colour is never the only carrier of meaning
  * (WCAG 2.1 AA, 1.4.1).
  *
- * Pure domain — no imports, no I/O.
+ * Pure domain — no imports beyond sibling types, no I/O.
  */
+
+import { DEFAULT_LANG, type Lang } from "./lang";
 
 export type StatusCode = "newly-signed" | "after-mediation" | "remaining";
 
 export type StatusColor = "green" | "red" | "blue";
 
+/**
+ * The second, non-colour channel. Filled circle, filled square and hollow ring
+ * are distinguishable in greyscale and to a colour-blind reader.
+ */
+export type StatusShape = "circle" | "square" | "ring";
+
 export interface StatusInfo {
   code: StatusCode;
   color: StatusColor;
-  /** Swedish label, always rendered alongside the colour. */
+  shape: StatusShape;
+  /** Label in the active language, always rendered alongside the colour. */
   label: string;
 }
 
-const STATUS: Record<StatusCode, StatusInfo> = {
-  "newly-signed": {
-    code: "newly-signed",
-    color: "green",
-    label: "Nytecknat utan medling",
+const COLOR: Record<StatusCode, StatusColor> = {
+  "newly-signed": "green",
+  "after-mediation": "red",
+  remaining: "blue",
+};
+
+const SHAPE: Record<StatusCode, StatusShape> = {
+  "newly-signed": "circle",
+  "after-mediation": "square",
+  remaining: "ring",
+};
+
+export const STATUS_LABEL: Record<Lang, Record<StatusCode, string>> = {
+  sv: {
+    "newly-signed": "Nytecknat utan medling",
+    "after-mediation": "Tecknat efter medling",
+    remaining: "Kvarstående",
   },
-  "after-mediation": {
-    code: "after-mediation",
-    color: "red",
-    label: "Tecknat efter medling",
-  },
-  remaining: {
-    code: "remaining",
-    color: "blue",
-    label: "Kvarstående",
+  en: {
+    "newly-signed": "Newly signed, no mediation",
+    "after-mediation": "Signed after mediation",
+    remaining: "Remaining",
   },
 };
 
-export function statusInfo(code: StatusCode): StatusInfo {
-  return STATUS[code];
+const LINKED_TO_MEDIATION: Record<Lang, string> = {
+  sv: "Kvarstående – kopplat till medling",
+  en: "Remaining – linked to mediation",
+};
+
+export function statusInfo(code: StatusCode, lang: Lang = DEFAULT_LANG): StatusInfo {
+  return {
+    code,
+    color: COLOR[code],
+    shape: SHAPE[code],
+    label: STATUS_LABEL[lang][code],
+  };
 }
 
 /**
  * Derives the status of an agreement. An agreement linked to a mediation is
  * always red, whether it has been signed yet or not (FR-012).
  */
-export function agreementStatus(agreement: {
-  signedDate?: string | undefined;
-  mediationLinked?: boolean | undefined;
-}): StatusInfo {
+export function agreementStatus(
+  agreement: {
+    signedDate?: string | undefined;
+    mediationLinked?: boolean | undefined;
+  },
+  lang: Lang = DEFAULT_LANG,
+): StatusInfo {
   if (agreement.mediationLinked) {
     return agreement.signedDate
-      ? STATUS["after-mediation"]
-      : { code: "remaining", color: "red", label: "Kvarstående – kopplat till medling" };
+      ? statusInfo("after-mediation", lang)
+      : {
+          code: "remaining",
+          color: "red",
+          shape: "ring",
+          label: LINKED_TO_MEDIATION[lang],
+        };
   }
-  return agreement.signedDate ? STATUS["newly-signed"] : STATUS.remaining;
+  return statusInfo(agreement.signedDate ? "newly-signed" : "remaining", lang);
 }
 
-/** The legend shown under status-coded tables. */
-export const STATUS_LEGEND =
-  "Grön = nytecknat utan medling · Röd = tecknat efter medling / medlingskoppling · Blå = kvarstående";
+/**
+ * The legend, as the three status codes rather than a pre-drawn sentence.
+ *
+ * It used to be a string with ● ■ ○ typed into it, which drew the shapes twice
+ * in two different ways — once as CSS in `StatusDot` and once as Unicode
+ * characters here — and left the two free to disagree. Rendering the legend
+ * from the same `statusInfo` the rows use means the mark in the key is the mark
+ * in the table, by construction.
+ */
+export const STATUS_LEGEND_CODES = ["newly-signed", "after-mediation", "remaining"] as const;

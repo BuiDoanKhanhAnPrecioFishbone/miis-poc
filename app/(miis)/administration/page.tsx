@@ -1,40 +1,228 @@
 import type { Metadata } from "next";
 
-import { PlaceholderPage } from "@/components/miis/Placeholder";
-import { roleInfo } from "@/lib/domain/role";
-import { activeDataset } from "@/lib/session";
+import { AppShell } from "@/components/miis/AppShell";
+import { PrintButton } from "@/components/miis/Print";
+import { SystemSettings } from "@/components/miis/SystemSettings";
+import { RetentionRules } from "@/components/miis/RetentionRules";
+import { SectionTabs } from "@/components/miis/SectionTabs";
+import { DataTable, type Column, type Row } from "@/components/miis/DataTable";
+import { Badge, Button, Callout, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
+import { listChangeLog, listEvents } from "@/lib/data/events";
+import { listWatchwords, predefinedTerms } from "@/lib/data/watchwords";
+import { WatchwordTable } from "@/components/miis/WatchwordTable";
+import { EVENT_TYPE_LABEL } from "@/lib/domain/event";
+import { getSession } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "MIIS – Administration, behörigheter och loggar",
-  description:
-    "Användare och roller, systemkonfiguration, bevakningsord samt händelse- och ändringslogg.",
-  openGraph: {
-    title: "MIIS – Administration, behörigheter och loggar",
-    description:
-      "Användare och roller, systemkonfiguration, bevakningsord samt händelse- och ändringslogg.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { i18n } = await getSession();
+  const title = `${i18n.common.appName} – ${i18n.administration.title}`;
+  const description = i18n.administration.subtitle;
+  return { title, description, openGraph: { title, description } };
+}
 
+/**
+ * Administration — FH-001, FH-002, FAI-004, NFL-003, NFL-004.
+ *
+ * Two logs and a support table, and they are on one screen because they answer
+ * one question: what has this system done, and can MI see it without asking us.
+ *
+ * **The change log is the one that matters for the bid.** FH-001 asks for the
+ * old *and* the new value, which is the difference between a log that records
+ * that something changed and one that can reconstruct what it was — and it is
+ * what makes FAI-002's guarantee checkable after the fact. The rows are the
+ * changes the walkthrough's own scenarios make, so a reviewer who corrects the
+ * employee party in US-01 finds that correction here.
+ *
+ * NFL-003 and NFL-004 are stated rather than demonstrated, and the note says
+ * which: retention and vendor-free access are properties of the delivered
+ * system, not of a prototype with no database behind it.
+ */
 export default async function AdministrationPage() {
-  const dataset = await activeDataset();
+  const session = await getSession();
+  const { i18n, lang } = session;
+  const t = i18n.administration;
+  const [changes, events, watchwords] = await Promise.all([
+    listChangeLog(),
+    listEvents(8),
+    listWatchwords(),
+  ]);
+
+  const changeColumns: Column[] = [
+    { key: "time", header: t.changeLog.time, sortable: true },
+    { key: "user", header: t.changeLog.user, sortable: true },
+    { key: "object", header: t.changeLog.object, sortable: true },
+    { key: "field", header: t.changeLog.field, sortable: true },
+    { key: "from", header: t.changeLog.from },
+    { key: "to", header: t.changeLog.to },
+  ];
+
+  const changeRows: Row[] = changes.map((c) => ({
+    key: c.id,
+    cells: [
+      <span key="t" className="whitespace-nowrap tabular-nums">
+        {c.timestamp}
+      </span>,
+      c.user,
+      `${c.entity} ${c.entityId}`,
+      c.field,
+      /* A null is "there was no value", which is not the same as "unknown". */
+      c.oldValue ?? <span className="text-muted-foreground">{i18n.common.none}</span>,
+      c.newValue ?? <span className="text-muted-foreground">{i18n.common.none}</span>,
+    ],
+    sort: [c.timestamp, c.user, `${c.entity} ${c.entityId}`, c.field, c.oldValue ?? "", c.newValue ?? ""],
+  }));
+
+  const eventColumns: Column[] = [
+    { key: "time", header: t.eventLog.time, sortable: true },
+    { key: "type", header: t.eventLog.type, sortable: true },
+    { key: "detail", header: t.eventLog.detail },
+  ];
+
+  const eventRows: Row[] = events.map((e) => ({
+    key: e.id,
+    cells: [
+      <span key="t" className="whitespace-nowrap tabular-nums">
+        {e.timestamp}
+      </span>,
+      EVENT_TYPE_LABEL[lang][e.type],
+      e.detail,
+    ],
+    sort: [e.timestamp, EVENT_TYPE_LABEL[lang][e.type], e.detail],
+  }));
+
+  const watchwordColumns: Column[] = [
+    { key: "term", header: t.watchwords.term, sortable: true },
+    { key: "source", header: t.watchwords.source, sortable: true },
+  ];
+
+  const watchwordRows: Row[] = watchwords.map((w) => ({
+    key: w.term,
+    cells: [
+      w.term,
+      /* `origin` is set by the predefined table; a term promoted from a party
+         meeting arrives without one, and that is what tells them apart. */
+      <Badge key="s" tone={w.origin ? "neutral" : "attention"}>
+        {w.origin ? t.watchwords.predefined : t.watchwords.added}
+      </Badge>,
+    ],
+    sort: [w.term, w.origin ? "0" : "1"],
+  }));
+
   return (
-    <PlaceholderPage
-      title="Administration"
-      epic="Epic F5 och NF2 – Loggar, behörighet och konfiguration"
-      subtitle="Användare, roller, stödtabeller och spårbarhet (US-12, US-13)"
-      role={roleInfo("system-admin")}
-      dataset={dataset}
-      features={[
-        { id: "NFÅ-001", text: "Autentisering med EFOS-kort via Försäkringskassans IdP (SAML2)." },
-        { id: "NFÅ-003", text: "Rollbaserad behörighetsstyrning enligt de åtta användarrollerna." },
-        {
-          id: "FH-001",
-          text: "Ändringslogg med vem, vad och när – inklusive gammalt och nytt värde.",
-        },
-        { id: "FH-002", text: "Händelselogg över systemhändelser och utskickade e-postmeddelanden." },
-        { id: "NFL-003", text: "Loggar bevaras i minst 24 månader och kan inte ändras eller raderas." },
-        { id: "FAI-004", text: "Underhåll av bevakningsordstabellen inför avtalsrörelsen." },
-      ]}
-    />
+    <AppShell
+      walkthrough={session.walkthrough} role={session.role} requires="administration" dataset={session.dataset} lang={lang} reqTags={session.reqTags}>
+      <PageHeading
+        title={t.title}
+        subtitle={t.subtitle}
+        tags={["FH-001", "FH-002", "NFL-003", "NFL-004"]}
+        /*
+          NFL-004 — *"tillgång till loggarna via ett administrativt gränssnitt
+          eller exportfunktion utan att behöva kontakta leverantören"*. The
+          interface is this screen, and the export that actually runs is the
+          print: it needs no server, and it carries MI's letterhead and an
+          Utskriftsdatum the way their own printouts do.
+        */
+        action={<PrintButton lang={lang} />}
+      />
+
+      {/*
+        Four sections, four jobs. Settings to change, a change log to search, an
+        event log to read and a watchword table to maintain — an administrator
+        comes to do one of them, and stacking made them scroll past the other
+        three. Every panel still prints; see `SectionTabs`.
+      */}
+      <SectionTabs
+        label={t.tabsLabel}
+        lang={lang}
+        sections={[
+          {
+            id: "settings",
+            label: t.tabs.settings,
+            node: (
+              <>
+                <SystemSettings
+                  lang={lang}
+                  timeoutMinutes={session.sessionTimeoutMinutes}
+                  watchwordCount={watchwords.length}
+                />
+                {/*
+                  D-004 is a ska-krav and names two halves — gallring *and*
+                  *"möjlighet att definiera automatiska gallringsregler"*. The
+                  second half existed as a Rationale on two other screens saying
+                  contact details fall under MI's retention routines, which is a
+                  sentence about a rule rather than the ability to define one.
+                */}
+                <RetentionRules lang={lang} />
+                <Panel title={t.retention.heading} tags={["NFL-003", "NFL-004"]}>
+                  <Callout tone="ok" label={t.retention.heading}>
+                    {t.retention.body}
+                  </Callout>
+                  <div className="mt-4">
+                    <Button variant="secondary" disabled disabledReason={i18n.common.exportNeedsServer}>
+                      {t.retention.export}
+                    </Button>
+                  </div>
+                </Panel>
+              </>
+            ),
+          },
+          {
+            id: "change-log",
+            label: t.tabs.changeLog,
+            node: (
+              <Panel title={t.changeLog.heading} tags={["FH-001"]}>
+                <p className="mb-4 max-w-4xl text-table">{t.changeLog.intro}</p>
+                <DataTable
+                  columns={changeColumns}
+                  rows={changeRows}
+                  lang={lang}
+                  caption={t.changeLog.heading}
+                  minWidth="70rem"
+                />
+              </Panel>
+            ),
+          },
+          {
+            id: "event-log",
+            label: t.tabs.eventLog,
+            node: (
+              <Panel title={t.eventLog.heading} tags={["FH-002"]}>
+                <p className="mb-3 max-w-3xl text-table">{t.eventLog.intro}</p>
+                <DataTable
+                  columns={eventColumns}
+                  rows={eventRows}
+                  lang={lang}
+                  caption={t.eventLog.heading}
+                  minWidth="34rem"
+                />
+              </Panel>
+            ),
+          },
+          {
+            id: "watchwords",
+            label: t.tabs.watchwords,
+            node: (
+              /*
+                FAI-004's table, maintained here rather than inside the
+                registration flow: the terms are set ahead of the bargaining
+                round, and the screen that reads them is not the screen that
+                owns them.
+
+                §4.1 calls the table *fördefinierad och anpassningsbar*, and
+                only the first half was built — Administration showed a list an
+                administrator could read and never change, on the one screen
+                whose purpose is maintaining things.
+              */
+              <WatchwordTable
+                watchwords={watchwords}
+                predefined={predefinedTerms()}
+                lang={lang}
+              />
+            ),
+          },
+        ]}
+      />
+
+    </AppShell>
   );
 }

@@ -1,0 +1,321 @@
+                                                                                 Datum: 2026-07-27
+                                              Medlingsinstitutets diarienummer: 2026/0059
+
+Bilaga 2 Leverantörskontroll
+   Innehåll
+
+   1 Krav på ramavtalsleverantören .................................................................................................... 3
+      1.1 Förnyad kontroll av leverantörskrav (ESPD) ........................................................................... 3
+      1.2 Ramavtalsleverantörens försäkran ............................................................................................. 3
+      1.3 Uppgift om underleverantörer...................................................................................................... 4
+
+   2 Beskrivning av uppdragets omfattning och innehåll .............................................................. 4
+      2.1 Deltagande i uppstartsmöte........................................................................................................... 4
+      2.2 Delta i och leda projektmöten ....................................................................................................... 4
+      2.3 Utgöra ett bollplank för projektledaren hos Medlingsinstitutet ...................................... 4
+      2.4 Utveckla det nya informationssystemet.................................................................................... 5
+      2.5 Samarbeta med Medlingsinstitutets IT-driftsleverantör .................................................... 5
+      2.6 Tillfällig utvecklingsmiljö hos leverantören.............................................................................. 5
+
+   3 Ska-krav på uppdragets genomförande ..................................................................................... 5
+      3.1 Arbetsgrupp ......................................................................................................................................... 5
+      3.2 Tidplan.................................................................................................................................................... 6
+      3.3 Möten och avstämningar................................................................................................................. 6
+      3.4 Arbetsprocesser och metoder....................................................................................................... 6
+      3.5 Rollbaserade användarscenarier och användargränssnitt ................................................. 7
+      3.6 Muntlig presentation ........................................................................................................................ 9
+      3.7 Immateriella rättigheter .................................................................................................................. 9
+
+   4 Alla ska-krav i bilaga 1...................................................................................................................... 9
+   5 Pris.......................................................................................................................................................... 9
+
+2  INNEHÅLL
+   1 Krav på ramavtalsleverantören
+
+   1.1 Förnyad kontroll av leverantörskrav (ESPD)
+
+   Enligt 15 kap. 4 § LOU krävs en ny leverantörskontroll, bland annat av kvalifice-
+   ringskraven, vid avrop genom förnyad konkurrensutsättning från ramavtal. Denna
+   kontrollskyldighet ansvarar Kammarkollegiet för genom att löpande genomföra
+   leverantörsprövning under hela ramavtalsperioden.
+
+   Av ramavtalsleverantörens avropssvar ska framgå att i ramavtalsupphandlingen lämnad
+   egenförsäkran fortfarande är korrekt samt att ingivna bevis fortfarande är aktuella.
+
+   Ramavtalsleverantören ska besvara följande frågor:
+
+   Är i ramavtalsupphandlingen lämnad egenförsäkran           Ja ☐
+   fortfarande korrekt?
+
+   Är i ramavtalsupphandlingen ingivna bevis, såsom           Ja ☐
+   Sanningsförsäkran avseende uteslutningsgrunder (gällande
+   leverantören och ev. åberopade företag) fortfarande
+   aktuella?
+
+   Har ni säkerställt att åberopade företag inte omfattas av  Ja ☐
+   någon uteslutningsgrund?
+
+   1.2 Ramavtalsleverantörens försäkran
+
+   Ramavtalsleverantören försäkrar att:
+
+   • Avropssvaret har godkänts av behörig företrädare för ramavtalsleverantören.
+   • Samtliga ställda krav accepteras och uppfylls.
+   • Kravet på avropssvarets giltighetstid accepteras.
+
+   Försäkras ovan?                                            Ja ☐
+
+3  KRAV PÅ RAMAVTALSLEVERANTÖREN
+   1.3 Uppgift om underleverantörer
+
+   Leverantören ska redovisa samtliga underleverantörer som avses att användas för
+   uppdraget. För varje underleverantör ska följande information lämnas:
+
+   - Företagsnamn och organisationsnummer
+   - Beskrivning av vilken del av uppdraget underleverantören ska utföra
+   - Kontaktperson hos underleverantören (namn, e-post och telefonnummer)
+
+   Accepteras och uppfylls kravet?                    Ja ☐
+
+   Beskrivning enligt ovan bifogas:                   Bilaga nr:
+
+                                                      Bil nr
+
+   2 Beskrivning av uppdragets
+       omfattning och innehåll
+
+   I uppdraget ingår följande delar:
+
+   2.1 Deltagande i uppstartsmöte
+
+   Uppstartsmötet och alla övriga möten ska vara av typen fysiska möten och de ska äga rum
+   i Medlingsinstitutets lokaler på Drottninggatan 89 i Stockholm.
+
+   2.2 Delta i och leda projektmöten
+
+   Leverantören ska planera projektmöten för att arbetet ska ske så effektivt som möjligt.
+   Projektledaren hos leverantören ska tillsammans med projektledaren från
+   Medlingsinstitutet tillsammans leda dessa projektmöten.
+
+   2.3 Utgöra ett bollplank för projektledaren hos
+            Medlingsinstitutet
+
+   Projektledaren hos Medlingsinstitutet ska vid behov kunna kontakta projektledaren hos
+   leverantören för att kunna stämma av frågeställningar som dyker upp mellan planerade
+   projektmöten.
+
+4  BESKRIVNING AV UPPDRAGETS OMFATTNING OCH INNEHÅLL
+   2.4 Utveckla det nya informationssystemet
+
+   Leverantören ska utveckla det nya informationssystemet i enlighet med kraven som anges
+   i bilaga 1 Kravspecifikation samt kraven i denna bilaga.
+
+   2.5 Samarbeta med Medlingsinstitutets IT-driftsleverantör
+
+   Leverantören ska i samråd med Medlingsinstitutet på bästa möjliga sätt samarbeta med
+   Försäkringskassans IT-avdelning som är Medlingsinstitutets leverantör av IT-drift.
+
+   2.6 Tillfällig utvecklingsmiljö hos leverantören
+
+   För att minska risken för fördröjningar vid projektstarten ska leverantören ha möjlighet att
+   i ett första skede sätta upp och ansvara för en tillfällig utvecklingsmiljö ifall inte
+   Försäkringskassan har möjlighet. Så fort som leverantören har tillgång till
+   Försäkringskassans IT-miljö ska all utveckling av systemet ske där och all data som kan
+   härledas till beställaren raderas från den tillfälliga utvecklingsmiljön hos leverantören.
+   Kostnaden för uppsättningen av en tillfällig utvecklingsmiljö ska ej ingå i det fasta priset.
+   Leverantören ska istället lämna ett estimat på kostnaden ifall detta skulle bli aktuellt.
+   Estimatet anges separat i bilaga 4, Prisformulär.
+
+   Accepteras kraven i punkterna 2.1 – 2.6?  Ja ☐
+
+   3 Ska-krav på uppdragets
+       genomförande
+
+   Kraven i avsnitt 3.1-3.7 nedan är obligatoriska att uppfylla för att avropssvaret ska vara
+   godkänt.
+
+   3.1 Arbetsgrupp
+
+   Ramavtalsleverantören ska tillsätta en dedikerad arbetsgrupp för uppdragets
+   genomförande. Leverantören ska beskriva hur denna arbetsgrupp kommer att se ut och
+   vilka olika kompetenser som respektive medlem tillför projektet.
+
+   Konsulterna i arbetsgruppen ska namnges och deras CV bifogas.
+
+   Timkostnaden per konsult/kompetens ska anges i bilaga 4, Prisformulär. I bilaga 4 ska
+   även den procentuella fördelningen av respektive konsulttyp anges.
+
+5  SKA-KRAV PÅ UPPDRAGETS GENOMFÖRANDE
+   Accepteras och uppfylls kravet?       Ja ☐
+   Namn på konsulterna i arbetsgruppen:
+   Namn på konsulterna.                  Bilaga nr:
+   CV enligt ovan bifogas:               Bil nr
+
+   3.2 Tidplan
+
+   Steg 1, enligt bilaga 1 Kravspecifikation, ska vara klart innan den 1 april 2027.
+
+   Steg 2, enligt bilaga 1 Kravspecifikation, kommer att planeras i samråd mellan
+   leverantören och Medlingsinstitutet. I nuläget ser vi att det arbetet bör komma igång
+   under hösten 2027.
+
+   Accepteras kravet?                    Ja ☐
+
+   3.3 Möten och avstämningar
+
+   Leverantören ska genomföra regelbundna fysiska projektmöten i Medlingsinstitutets
+   lokaler på Drottninggatan 89 i Stockholm. Kortare avstämningar och frågeställningar kan
+   ske digitalt.
+
+   Accepteras och uppfylls kravet?       Ja ☐
+
+   3.4 Arbetsprocesser och metoder
+
+   Ramavtalsleverantören ska ha relevanta arbetsprocesser och metoder för att utföra
+   uppdraget och dess olika delar.
+
+   Ramavtalsleverantören ska beskriva hur uppdraget avses utföras; vilken arbetspro-
+   cess/metod som kommer att användas, hur ni avser samarbeta med Medlingsinstitutet
+   samt en övergripande tidplan för uppdragets olika delar.
+
+   Accepteras och uppfylls kravet?       Ja ☐
+
+   Beskrivning enligt ovan bifogas:      Bilaga nr:
+
+                                         Bil nr
+
+6  SKA-KRAV PÅ UPPDRAGETS GENOMFÖRANDE
+   3.5 Rollbaserade användarscenarier och användargränssnitt
+
+   Leverantören ska redovisa hur den erbjudna lösningen kan stödja tre centrala
+   användarroller inom Medlingsinstitutets verksamhet:
+
+         Systemadministratör
+         Avtalsadministratör/Handläggare
+         Allmänhetens dator
+   För respektive användarroll ska leverantören utgå från nedanstående användarscenarier
+   och beskriva hur arbetsuppgifterna genomförs i den erbjudna lösningen.
+   Redovisningen ska innehålla:
+         En kort beskrivning av användarens uppgift och mål.
+         En beskrivning av arbetsflödet för det aktuella scenariot.
+         Visualiseringar i form av exempelvis skärmbilder, wireframes, skisser eller
+
+             motsvarande som illustrerar användargränssnittet.
+         En beskrivning av hur lösningen stödjer användbarhet, effektivitet och
+
+             tillgänglighet för den aktuella användarrollen.
+   Visualiseringarna behöver inte utgöra färdiga systembilder utan ska ses som illustrativa
+   exempel på hur den erbjudna lösningen kan utformas för att stödja användarnas behov.
+   Scenario 1 – Systemadministratör
+   Visa hur en systemadministratör:
+
+         Får en överblick över systemets användare, roller och behörigheter.
+         Skapar en ny användare.
+         Tilldelar användaren lämplig roll och behörighet.
+         Ändrar eller återkallar behörigheter för en befintlig användare.
+         Hanterar systeminställningar eller annan administration som leverantören
+
+             bedömer vara central för systemets förvaltning.
+   Scenario 2 – Avtalsadministratör/Handläggare
+   Visa hur en avtalsadministratör eller handläggare:
+
+         Registrerar ett nytt kollektivavtal.
+
+7  SKA-KRAV PÅ UPPDRAGETS GENOMFÖRANDE
+         Lägger till eller uppdaterar information kopplad till avtalet.
+         Hanterar versioner eller ändringar av avtalet.
+         Publicerar avtalet så att det blir tillgängligt för användare med åtkomst till
+
+             publicerad information.
+   Scenario 3 – Allmänhetens dator
+   Visa hur en användare:
+
+         Söker fram ett kollektivavtal utifrån exempelvis bransch, avtalsområde eller annan
+             relevant sökparameter.
+
+         Filtrerar eller avgränsar sökresultatet.
+         Tar del av information om avtalet.
+         Öppnar och laddar ned avtal.
+   Medlingsinstitutet kommer att bedöma:
+         Hur väl lösningen stödjer de olika användarrollernas behov.
+         Gränssnittets tydlighet, struktur och användbarhet.
+         Hur intuitivt arbetsflödena är utformade.
+         Leverantörens förståelse för verksamhetens krav och arbetsprocesser.
+         Hur väl visualiseringarna bidrar till förståelsen av den föreslagna lösningen.
+         I vilken utsträckning lösningen bedöms skapa mervärde för användarna och
+
+             verksamheten.
+
+   Accepteras och uppfylls kravet?      Ja ☐
+   Beskrivning enligt ovan bifogas:     Bilaga nr:
+                                        Bil nr
+
+8  SKA-KRAV PÅ UPPDRAGETS GENOMFÖRANDE
+   3.6 Muntlig presentation
+
+   Ramavtalsleverantören ska göra en 15 minuters presentation av sitt anropssvar till
+   Medlingsinstitutet. Presentationen ska ske i Medlingsinstitutets lokaler. Presentationen ska
+   ge Medlingsinstitutet en möjlighet att ställa eventuella klargörande frågor som dykt upp
+   under utvärderingen men i huvudsak är tanken att leverantören ska få en möjlighet att
+   presentera sin bild av hur det nya informationssystemet kommer att utformas utifrån de
+   krav och önskemål som framkommit i myndighetens avropsförfrågan. Leverantören får ej
+   tillföra nya åtaganden, det är inte en möjlighet till en andra anbudsomgång.
+
+   Accepteras och uppfylls kravet?  Ja ☐
+
+   3.7 Immateriella rättigheter
+
+   Det nya systemet ska ägas fullt ut av Medlingsinstitutet med rätt att fritt använda och
+   vidareutveckla det. Myndigheten ska vidare ha rätt till: källkod, dokumentation,
+   databasstruktur, integrationer och konfigurationer.
+
+   Accepteras och uppfylls kravet?  Ja ☐
+
+   4 Alla ska-krav i bilaga 1
+
+   Alla ska-krav i avsnitt bilaga 1 är obligatoriska att uppfylla för att avropssvaret ska vara
+   godkänt.
+
+   Accepteras och uppfylls kravet?  Ja ☐
+
+   5 Pris
+
+   Leverantören ska ange i sitt avropssvar vilka olika konsulter och kompetenser som
+   leverantören avser att använda i projektet för steg 1 och steg 2. Leverantören ska även
+   ange eventuella övriga kostnader som kan tillkomma under uppdraget. Priser ska lämnas i
+   svenska kronor exklusive mervärdesskatt.
+
+9  ALLA SKA-KRAV I BILAGA 1
+    Steg 1:  Fast pris
+
+    Leverantören ska ange ett fast pris för utvecklingen av steg 1 enligt bilaga 1,
+    Kravspecifikation. Om Medlingsinstitutet under projektets gång beställer utökade
+    funktioner eller liknande som medför prisökningar måste dessa beställningar beställas
+    skriftligt av Medlingsinstitutet till leverantören. Leverantören ska då utgå från samma
+    timpriser som angetts för projektet i stort.
+
+    Leverantören ska också lämna ett estimat på vad det skulle kosta ifall en tillfällig miljö
+    skulle sättas upp i leverantörens regi i enlighet med avsnittet 2.6 ovan.
+
+    Steg 2:  Rörligt pris
+
+    Leverantören ska ange uppskattat antal timmar och timpriser för konsulterna.
+    Leverantören ska lämna ett uppskattat totalpris för hela uppdraget baserat på den
+    information om steg 2 som finns i bilaga 1 kravspecifikation.
+
+    Steg 3:  Kombination av fast och rörligt pris
+
+    Det tredje steget är en fortsatt vidareutveckling av systemet där Medlingsinstitutet vill ha
+    en option på ett avtal för förvaltning och support där även vidareutveckling av systemet
+    ingår i enlighet med avsnitt 15 i avropsförfrågan. Leverantören ska ange ett fast pris för
+    förvaltning och support. Arbetet med utvecklingsarbete sker till ett rörligt pris som ska
+    baseras på samma timpriser som angetts för projektet i stort.
+
+    Använd bilaga 4, Prisformulär för att ange prisuppgifterna.
+
+    Accepteras och uppfylls kravet?                              Ja ☐
+    Beskrivning enligt ovan bifogas:                             Bilaga nr:
+                                                                 Bil nr
+
+10  PRIS
+
