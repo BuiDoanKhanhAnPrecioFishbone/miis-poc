@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import {
   COOKIE_MAX_AGE_SECONDS,
@@ -10,6 +10,9 @@ import {
   LANG_COOKIE,
   REQTAGS_COOKIE,
   ROLE_COOKIE,
+  COMPLETED_COOKIE,
+  DRAFT_COOKIE,
+  PUBLISHED_COOKIE,
   WALKTHROUGH_COOKIE,
 } from "@/lib/cookies";
 import { datasetOptions, type DatasetName } from "@/lib/domain/dataset";
@@ -79,10 +82,14 @@ export function DemoBar({
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  /* Said once, then gone on the next thing the reviewer does — a receipt that
+     stayed would claim the session is still empty after they refilled it. */
+  const [reset, setReset] = useState(false);
   const t = dictionary(lang).demo;
   const w = dictionary(lang).walkthrough;
 
   function change(cookie: string, value: string) {
+    setReset(false);
     setCookie(cookie, value);
     startTransition(() => router.refresh());
   }
@@ -120,6 +127,23 @@ export function DemoBar({
    * Clearing the cookie rather than navigating: they were looking at a screen
    * and asked to stop being guided, not to be sent somewhere else.
    */
+  /**
+   * Put the session's own records back to the sample data.
+   *
+   * The three cookies below are everything a visit can add: an agreement
+   * registered, one published, one marked complete. Nothing else is written, so
+   * clearing them is a complete reset — and the confirmation says how many
+   * there were, because a control that reports nothing cannot be told from one
+   * that did nothing.
+   */
+  function resetDemoData() {
+    for (const name of [DRAFT_COOKIE, PUBLISHED_COOKIE, COMPLETED_COOKIE]) {
+      document.cookie = `${name}=; path=/; max-age=0; samesite=lax`;
+    }
+    setReset(true);
+    startTransition(() => router.refresh());
+  }
+
   function endWalkthrough() {
     document.cookie = `${WALKTHROUGH_COOKIE}=; path=/; max-age=0; samesite=lax`;
     startTransition(() => router.refresh());
@@ -237,6 +261,21 @@ export function DemoBar({
           <Button variant="secondary" size="sm" onClick={onShowSessionWarning}>
             {t.sessionWarning}
           </Button>
+        )}
+
+        {/*
+          Undoing what a visit added, so the next one starts where the last one
+          did. In the strip because MIIS itself does not delete an agreement —
+          the same control inside the product would read as the delete function
+          that rule exists to forbid.
+        */}
+        <Button variant="secondary" size="sm" onClick={resetDemoData}>
+          {t.resetDemo}
+        </Button>
+        {reset && (
+          <span aria-live="polite" className="text-meta font-semibold">
+            {t.resetDone}
+          </span>
         )}
 
         {/*

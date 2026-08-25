@@ -80,6 +80,8 @@ export const en: Dictionary = {
     reqTagsOn: "Shown",
     reqTagsOff: "Hidden",
     sessionWarning: "Show session warning",
+    resetDemo: "Reset demo data",
+    resetDone: "Reset to the sample data",
   },
 
   nav: {

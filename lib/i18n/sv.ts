@@ -80,6 +80,8 @@ export const sv = {
     reqTagsOn: "Visas",
     reqTagsOff: "Dolda",
     sessionWarning: "Visa sessionsvarning",
+    resetDemo: "Återställ demodata",
+    resetDone: "Återställt till exempeldata",
   },
 
   nav: {
