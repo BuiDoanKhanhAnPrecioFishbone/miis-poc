@@ -1,16 +1,16 @@
 # How MIIS is worked in — six scenarios, step by step
 
-This document exists so that Medlingsinstitutet can **try the system themselves** and see the reasoning behind what has been built. Each section is one scenario: a role, a task, and the screens that task goes through in order. Under every image is what you are looking at and why it is built that way — not what the buttons are called, but which problem the solution answers.
+This document shows **how the system works and the reasoning behind what has been built**. Each section is one scenario: a role, a task, and the screens that task goes through in order. Under every image is what you are looking at and why it is built that way — not what the buttons are called, but which problem the solution answers.
 
-**Try it alongside if you like.** The system is at **miis-poc.vercel.app** and is the same build the images were taken from. Every step names the role it is performed as and the address it lives on — the role is switched in the grey strip at the top. If you would rather be guided, the same six scenarios are a clickable walkthrough at **miis-poc.vercel.app/genomgang**, which switches role for you.
+**The system behind the images is a running build.** A clickable demonstration of the same six scenarios is given at the oral presentation.
 
-**6 scenarios, 23 steps.** The first three are the roles the call-off assesses and come first for that reason. The last three are here to show the system is complete — they are not part of the assessed response, but they are built and can be clicked through.
+**6 scenarios, 23 steps.** The first three are the roles the call-off assesses and come first for that reason. The last three are here to show the system is complete — they are not part of the assessed response, but they are built and are included in the demonstration.
 
-**The grey demo strip is cropped out of the images.** The role switcher, the language choice and the requirement numbers are aids for the review and are not part of MIIS — they appear when you click through it yourself, but they do not belong in a document showing how the system looks in use. The role is named in the text at each step instead.
+**The grey demo strip is cropped out of the images.** The role switcher, the language choice and the requirement numbers are aids for the review and are not part of MIIS — they do not belong in a document showing how the system looks in use. The role is named in the text at each step instead.
 
 **Where the AI support is involved, the step is marked.** Nothing the AI proposes is saved by itself: every proposal is reviewed and approved by a case officer, and wholly new agreements are always registered by hand. A step of its own shows the AI panel in full.
 
-*Every image in this document is captured automatically from the running system, and the text comes from the same source as the clickable walkthrough. The document therefore cannot describe anything that is not in the build.*
+*Every image in this document is captured automatically from the running system. The document therefore cannot describe anything that is not in the build.*
 
 ---
 
@@ -26,7 +26,7 @@ A collective agreement has to get into the register, be kept current, and finall
 
 #### 1. Register a new collective agreement
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/avtal/ny`.
+*Performed as **Agreement administrator**.*
 
 An agreement with no previous counterpart in MIIS. This is the one registration the AI support is not allowed to do: §4.1 says wholly new agreements are always registered manually, and the reason is on the screen — the AI reads a protocol against an agreement the system already holds, and for a first-time agreement there is nothing to match against. It is saved as incomplete and unpublished, and the screen lists what remains. Create **Stål- och metallindustrin tjänstemän**, between Industriarbetsgivarna and Unionen. The record appears among the candidates in the very next step — so the matching sees what was registered a minute ago too, which is the point of §4.1’s order: a first-time agreement has nothing to match against until it exists. The rest of the scenario follows the agreement the protocol concerns.
 
@@ -36,7 +36,7 @@ An agreement with no previous counterpart in MIIS. This is the one registration 
 
 #### 2. Register the agreement protocol [AI support]
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/registrera`.
+*Performed as **Agreement administrator**.*
 
 Upload the protocol and walk Medlingsinstitutet's own five steps (§4.4). The matched agreement is a list rather than an assertion. The AI proposes the strongest reason — here the agreement name in the heading — but every candidate says what it was read from, and the officer decides. It is worth pausing on: the protocol's parties are Industriarbetsgivarna and **Unionen**, while the proposed agreement is the same industry with IF Metall. The agreement from step 1 is next in the list, matched on those very parties. OCR, watchwords and matching run automatically; the AI proposals are source-linked — select one and the passage it was read from is highlighted. One proposal is deliberately wrong, so the rejected path is shown rather than merely asserted.
 
@@ -46,7 +46,7 @@ Upload the protocol and walk Medlingsinstitutet's own five steps (§4.4). The ma
 
 #### 3. The AI support, in one place [AI support]
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/registrera`.
+*Performed as **Agreement administrator**.*
 
 Open the AI panel at the bottom right. It has three tabs, because an officer has three different kinds of business with an AI support. **Ask** puts a question to the register and answers with the records it counted — it writes nothing and composes no text about collective agreements. **Review** is the queue: every machine-made proposal nobody has approved, shared between everyone who may register in each register, and the number falls when a proposal is approved or rejected. **About** is the catalogue: §4.1's four functions with where each runs, the two additions we propose beyond them, and the boundaries in Medlingsinstitutet's own words — everything the AI proposes is to be reviewed and approved, and wholly new agreements are always registered manually.
 
@@ -56,7 +56,7 @@ Open the AI panel at the bottom right. It has three tabs, because an officer has
 
 #### 4. The agreement register
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/avtal`.
+*Performed as **Agreement administrator**.*
 
 Where the registration lands. The filters genuinely narrow the table, and FR-012's colour coding carries a shape and a word as well.
 
@@ -66,7 +66,7 @@ Where the registration lands. The filters genuinely narrow the table, and FR-012
 
 #### 5. Add or update information
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/avtal/A-001`.
+*Performed as **Agreement administrator**.*
 
 FA-001 is to register *and edit* agreement information. Every section that can be corrected carries its own Edit — the identity and the agreement's scope, the four measures Medlingsinstitutet actually revises between rounds. The change happens on the values themselves rather than on a second screen, and is written to the change log with the time and the user. Two fields are deliberately locked and say why on their own row: the agreement type follows from which wage agreements exist, and the parties are changed in the party register so that the agreement history follows. Union density is calculated while the two figures above it are typed — it follows, it is not entered.
 
@@ -76,7 +76,7 @@ FA-001 is to register *and edit* agreement information. Every section that can b
 
 #### 6. Versions and changes to the agreement
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/avtal/A-001#loneavtal`.
+*Performed as **Agreement administrator**.*
 
 An agreement has no version list but a row per bargaining round: FA-002 gives every renegotiation its own wage agreement with its own construction, scope and cost frame, so the comparison against the last round *is* the table. The row can be corrected: construction, wage scope, cost frame and individual guarantee are changed per bargaining round, from a form that names the period it applies to. The validity period is changed on the agreement instead — a round cannot run longer than the agreement it belongs to. What changed *within* a period is in the event log, with the old and the new value (FH-001).
 
@@ -86,7 +86,7 @@ An agreement has no version list but a row per bargaining round: FA-002 gives ev
 
 #### 7. Publish the agreement
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/avtal/A-001`.
+*Performed as **Agreement administrator**.*
 
 Publication is an act with a date and a person, not a consequence of the record being complete — the authority decides when an agreement is released. It sits in the right-hand column beside the status it changes, not inside editing: correcting a detail and releasing the agreement are two different things. The control is offered only on a registration marked complete whose agreement is signed; on a half-registered one it is refused and says why. The same agreement as the four steps above: the protocol was read against it, the details were corrected in it, and it is the one now being released. Afterwards the agreement can be opened as the public sees it.
 
@@ -96,7 +96,7 @@ Publication is an act with a date and a person, not a consequence of the record 
 
 #### 8. Report extract [AI support]
 
-**Try it yourself:** switch to *Agreement administrator* in the demo strip and open `/rapporter`.
+*Performed as **Agreement administrator**.*
 
 The need can be described in a sentence at the top: the proposal names the report and fills the selection screen, with the words it was read from, and runs nothing — a report the role may not run is refused with the reason rather than quietly dropped. Appendix F opens by stating that for every report a selection screen and a result are shown. Choose the report, fill in the selection — the criteria differ per report — and generate. The criteria are printed at the head of the result.
 
@@ -122,7 +122,7 @@ The system administrator answers for the system rather than for the case work in
 
 #### 1. Overview of users, roles and permissions
 
-**Try it yourself:** switch to *Authorisation administrator* in the demo strip and open `/administration/anvandare`.
+*Performed as **Authorisation administrator**.*
 
 Who has access, as what, since when and granted by whom. Under the register is the permission matrix showing what each role may do in each module — read, not edited, because NFÅ-003 defines access by §3.1's eight roles and a matrix an administrator could rearrange would describe a configuration rather than the authority's own document.
 
@@ -132,7 +132,7 @@ Who has access, as what, since when and granted by whom. Under the register is t
 
 #### 2. Create a new user
 
-**Try it yourself:** switch to *Authorisation administrator* in the demo strip and open `/administration/anvandare`.
+*Performed as **Authorisation administrator**.*
 
 Name, EFOS identity, e-mail and role. No password field and no account creation: NFÅ-001 puts authentication in Försäkringskassan's IdP over SAML with an EFOS card, so a user in MIIS is a link to an identity that already exists — drawing an account form would claim we had built an identity provider.
 
@@ -142,7 +142,7 @@ Name, EFOS identity, e-mail and role. No password field and no account creation:
 
 #### 3. Assign role and permission
 
-**Try it yourself:** switch to *Authorisation administrator* in the demo strip and open `/administration/anvandare`.
+*Performed as **Authorisation administrator**.*
 
 The role is the permission: §3.1 gives each role a verb, and it is the role that decides what the person sees and may do. The assignment is stamped with the date and who made it, which is the FH-001 half of NFÅ-005.
 
@@ -152,7 +152,7 @@ The role is the permission: §3.1 gives each role a verb, and it is the role tha
 
 #### 4. Change or revoke a permission
 
-**Try it yourself:** switch to *Authorisation administrator* in the demo strip and open `/administration/anvandare`.
+*Performed as **Authorisation administrator**.*
 
 Change the role in the row, or revoke access. Both are written to the change log. Try the last authorisation administrator: both the move and the deactivation are refused, and the control says why on itself — that is the lock-out NFÅ-005 exists to prevent. No user is deleted, because the sign-ins in the log have to stay resolvable.
 
@@ -162,7 +162,7 @@ Change the role in the row, or revoke access. Both are written to the change log
 
 #### 5. System settings [AI support]
 
-**Try it yourself:** switch to *System administrator* in the demo strip and open `/administration`.
+*Performed as **System administrator**.*
 
 Four settings, and two of them deliberately cannot be changed: NFL-003 names the system administrator in its prohibition, and NFÅ-006's IP restriction sits in the operating environment. The session limit is genuinely configurable — set it to ten minutes and the start page says ten.
 
@@ -172,7 +172,7 @@ Four settings, and two of them deliberately cannot be changed: NFL-003 names the
 
 #### 6. Change log and event log [AI support]
 
-**Try it yourself:** switch to *System administrator* in the demo strip and open `/administration`.
+*Performed as **System administrator**.*
 
 The other administration that lets the authority answer for the system itself. FH-001 requires the old and the new value — the difference between a log that records that something changed and one that can reconstruct what it was, and what makes FAI-002's guarantee checkable after the fact. The print is NFL-004's export function, and it runs. Under the Watchwords tab, FAI-004's table is maintained: §4.1 calls it predefined *and* adaptable, so the administrator adds their own terms and removes them again. Medlingsinstitutet's own four cannot be removed, and the row says why.
 
@@ -198,7 +198,7 @@ A visitor comes to Medlingsinstitutet's premises — a journalist checking a cla
 
 #### 1. The public entrance
 
-**Try it yourself:** switch to *Public computer* in the demo strip and open `/allmanheten`.
+*Performed as **Public computer**.*
 
 No sign-in page, and that is deliberate: NFÅ-001 puts authentication with Försäkringskassan's IdP for staff, and NFÅ-006 restricts public access to Medlingsinstitutet's own IP address — the machine in the room is the credential.
 
@@ -208,7 +208,7 @@ No sign-in page, and that is deliberate: NFÅ-001 puts authentication with Förs
 
 #### 2. Search for an agreement by industry or agreement area
 
-**Try it yourself:** switch to *Public computer* in the demo strip and open `/allmanheten`.
+*Performed as **Public computer**.*
 
 Type a word and the list narrows as you type. Under the free text comes industry first — a visitor thinks in industries long before they think in employer organisations — then Medlingsinstitutet's own three criteria from Appendix F's Report 1 and a date for what applied at a given point.
 
@@ -218,7 +218,7 @@ Type a word and the list narrows as you type. Under the free text comes industry
 
 #### 3. Narrow the result
 
-**Try it yourself:** switch to *Public computer* in the demo strip and open `/allmanheten`.
+*Performed as **Public computer**.*
 
 Every chosen criterion becomes a chip that can be removed one at a time, and the table genuinely narrows. Confidentiality-marked agreements stay in the list and are counted — what is withheld is their detail, and it is withheld in the markup rather than in the stylesheet. Only published agreements are here: a half-registered agreement on the public computer would be the authority publishing a draft.
 
@@ -228,7 +228,7 @@ Every chosen criterion becomes a chip that can be removed one at a time, and the
 
 #### 4. Read the agreement
 
-**Try it yourself:** switch to *Public computer* in the demo strip and open `/allmanheten/A-013`.
+*Performed as **Public computer**.*
 
 Appendix F's Report 1 in full: parties, agreement area, industry, validity periods per bargaining round, termination and prolongation, and the linked documents. No wage figures — the cost frame and the wage scope are the authority's working material, and this is the release.
 
@@ -238,7 +238,7 @@ Appendix F's Report 1 in full: parties, agreement area, industry, validity perio
 
 #### 5. Open and download
 
-**Try it yourself:** switch to *Public computer* in the demo strip and open `/allmanheten/A-013`.
+*Performed as **Public computer**.*
 
 Two exports, and both of them run. The printout carries Medlingsinstitutet's letterhead and a print date and can be saved as PDF in the browser; the download writes a real CSV file from the details on screen, with no server behind it (FR-013). The visitor's task ends with the answer going home with them, and a dashed button would have ended the scored scenario on a control that does nothing.
 
@@ -264,7 +264,7 @@ The mediation administrator creates a mediation case from a Director-General dec
 
 #### 1. The mediation case [AI support]
 
-**Try it yourself:** switch to *Mediation administrator* in the demo strip and open `/medling/M-2027-12`.
+*Performed as **Mediation administrator**.*
 
 Created from the Director-General decision, with §4.1's decision support and the document template with and without notice. The case is four tabs, because it is four different jobs: **Ärendet** is what the Director-General decided and which agreements it covers, **Medlare** is the appointment, **Handlingar** is the decision and its sign-off, and **Utfall** is what the mediation produced. What each job is done against — the procedure agreement, the decision support and Märket — stays in the right-hand column whichever tab is open. The mediator list offers only active mediators who take this mediation type. The outcome is the basis for Medlingsinstitutet's statistics on industrial action — lost working days and affected employees appear only when there was industrial action, because a zero in that column is a measurement rather than an absence. The decision's number and date cannot be changed: they come from a decision, not from the register.
 
@@ -274,7 +274,7 @@ Created from the Director-General decision, with §4.1's decision support and th
 
 #### 2. The party meeting [AI support]
 
-**Try it yourself:** switch to *Mediation administrator* in the demo strip and open `/partstraffar/PT-2027-05`.
+*Performed as **Mediation administrator**.*
 
 Before, during and after the meeting. A demand can be promoted to the watchword table, and then starts marking text in protocols that arrive months later.
 
@@ -300,7 +300,7 @@ The statistics user builds a composite query over the agreement information and 
 
 #### 1. The search builder [AI support]
 
-**Try it yourself:** switch to *Statistics user* in the demo strip and open `/sok`.
+*Performed as **Statistics user**.*
 
 Above the builder the search can be described in a sentence. The proposal shows which register and which conditions the machine read out, with the words each condition was read from, and nothing is set until the officer approves it — what could not be interpreted is shown too. FR-002’s choice of information type is a choice of which register is searched: four tabs with their own rows, their own criteria and their own columns. A condition is field, operator and value; groups join with OCH and the conditions inside a group with OCH or ELLER, which is the shape W3D3 cannot express. There is no search button — the result narrows as the selection changes. The snapshot date appears only where the rows have periods. Every hit opens its own record, the presentation columns are removed from both the table and the printout, and a saved search loads: what is saved is the selection, never the hits.
 
@@ -326,7 +326,7 @@ The mediator administrator maintains the register of mediators and uses the stat
 
 #### 1. The mediator register
 
-**Try it yourself:** switch to *Mediator administrator* in the demo strip and open `/medlare`.
+*Performed as **Mediator administrator**.*
 
 The register can be maintained, not only read: contact details and mediation types are changed on the row, a new mediator is added from the register’s own header — the same form that corrects an existing one, because they are the same fields, and a mediator who has stopped is deactivated rather than deleted — FF-009's statistics per mediator would otherwise leave with the person. Assignments, first chair, second chair and latest year are calculated from the assignment history and cannot be typed in.
 

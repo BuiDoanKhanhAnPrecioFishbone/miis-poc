@@ -1,16 +1,16 @@
 # Så arbetar man i MIIS — sex scenarier, steg för steg
 
-Det här dokumentet är till för att Medlingsinstitutet ska kunna **pröva systemet själva** och se skälen bakom det som är byggt. Varje avsnitt är ett scenario: en roll, en arbetsuppgift, och de skärmar uppgiften går igenom i tur och ordning. Under varje bild står vad man ser och varför det är gjort så — inte vad knapparna heter, utan vilket problem lösningen svarar mot.
+Det här dokumentet visar **hur systemet fungerar och skälen bakom det som är byggt**. Varje avsnitt är ett scenario: en roll, en arbetsuppgift, och de skärmar uppgiften går igenom i tur och ordning. Under varje bild står vad man ser och varför det är gjort så — inte vad knapparna heter, utan vilket problem lösningen svarar mot.
 
-**Prova gärna samtidigt.** Systemet ligger på **miis-poc.vercel.app** och är samma bygge som bilderna är tagna ur. Varje steg anger vilken roll det utförs som och vilken adress det ligger på — rollen växlas i den grå raden överst. Vill man hellre bli guidad finns samma sex scenarier som en klickbar genomgång på **miis-poc.vercel.app/genomgang**, som byter roll åt en.
+**Systemet bakom bilderna är ett körande bygge.** En klickbar demonstration av samma sex scenarier ges vid den muntliga presentationen.
 
-**6 scenarier, 23 steg.** De tre första är de roller som avropsförfrågan bedömer och ligger därför först. De tre sista är med för att visa att systemet är helt — de ingår inte i det bedömda svaret, men de är byggda och går att klicka i.
+**6 scenarier, 23 steg.** De tre första är de roller som avropsförfrågan bedömer och ligger därför först. De tre sista är med för att visa att systemet är helt — de ingår inte i det bedömda svaret, men de är byggda och ingår i demonstrationen.
 
-**Den grå demoraden är bortklippt ur bilderna.** Rollväxlaren, språkvalet och kravnumren är hjälpmedel för granskningen och ingår inte i MIIS — de syns när man klickar själv, men de hör inte hemma i ett dokument som visar hur systemet ser ut i drift. Rollen står i stället i texten vid varje steg.
+**Den grå demoraden är bortklippt ur bilderna.** Rollväxlaren, språkvalet och kravnumren är hjälpmedel för granskningen och ingår inte i MIIS — de hör inte hemma i ett dokument som visar hur systemet ser ut i drift. Rollen står i stället i texten vid varje steg.
 
 **Där AI-stödet är inblandat är steget märkt.** Ingenting AI:t föreslår sparas av sig självt: varje förslag granskas och godkänns av en handläggare, och helt nya avtal registreras alltid för hand. Ett eget steg visar AI-panelen i sin helhet.
 
-*Varje bild i dokumentet är tagen automatiskt ur det körande systemet, och texten kommer ur samma källa som den klickbara genomgången. Dokumentet kan därför inte beskriva något som inte finns i bygget.*
+*Varje bild i dokumentet är tagen automatiskt ur det körande systemet. Dokumentet kan därför inte beskriva något som inte finns i bygget.*
 
 ---
 
@@ -26,7 +26,7 @@ Ett kollektivavtal ska in i registret, hållas aktuellt och till slut lämnas ut
 
 #### 1. Registrera ett nytt kollektivavtal
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/avtal/ny`.
+*Utförs som **Avtalsadministratör**.*
 
 Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringen AI-stödet inte får göra: §4.1 säger att helt nya avtal alltid registreras manuellt, och skälet syns på skärmen — AI:t läser ett protokoll mot ett avtal systemet redan har, och för ett förstagångsavtal finns ingenting att matcha mot. Avtalet sparas som ofullständigt och opublicerat, och skärmen räknar upp vad som återstår. Lägg upp **Stål- och metallindustrin tjänstemän**, mellan Industriarbetsgivarna och Unionen. Posten dyker upp bland kandidaterna redan i nästa steg — matchningen ser alltså även det som registrerades för en minut sedan, vilket är hela poängen med §4.1:s ordning: ett förstagångsavtal har ingenting att matchas mot förrän det finns. Resten av scenariot följer det avtal protokollet gäller.
 
@@ -36,7 +36,7 @@ Ett avtal utan tidigare motsvarighet i MIIS. Det här är den enda registreringe
 
 #### 2. Registrera avtalsprotokoll [AI-stöd]
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/registrera`.
+*Utförs som **Avtalsadministratör**.*
 
 Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). Det matchade avtalet är en lista, inte ett påstående. AI:t föreslår det starkaste skälet — här avtalsnamnet i rubriken — men varje kandidat säger vad den lästes ur, och handläggaren avgör. Det är värt att stanna vid: protokollets parter är Industriarbetsgivarna och **Unionen**, medan det föreslagna avtalet är samma bransch med IF Metall. Avtalet från steg 1 ligger näst i listan, matchat på just parterna. OCR, bevakningsord och matchning körs automatiskt; AI-förslagen är källkopplade — välj ett så markeras stycket det lästes ur. Ett förslag är avsiktligt fel, så den avvisade vägen visas och inte bara påstås.
 
@@ -46,7 +46,7 @@ Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). 
 
 #### 3. AI-stödet, samlat [AI-stöd]
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/registrera`.
+*Utförs som **Avtalsadministratör**.*
 
 Öppna AI-panelen nere till höger. Den har tre flikar, för att en handläggare har tre olika ärenden med ett AI-stöd. **Fråga** ställer en fråga om registret och svarar med de poster den räknade — den skriver ingenting och formulerar ingen text om kollektivavtal. **Granska** är kön: varje maskinellt framtaget förslag som ingen har godkänt, gemensam för alla som får registrera i respektive register, och siffran faller när ett förslag godkänns eller avvisas. **Om** är katalogen: §4.1:s fyra funktioner med var de körs, de två tillägg vi föreslår utöver dem, och gränserna i Medlingsinstitutets egna ord — allt AI:t föreslår ska granskas och godkännas, och helt nya avtal registreras alltid manuellt.
 
@@ -56,7 +56,7 @@ Ladda upp protokollet och gå igenom Medlingsinstitutets egna fem steg (§4.4). 
 
 #### 4. Avtalsregistret
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/avtal`.
+*Utförs som **Avtalsadministratör**.*
 
 Där registreringen hamnar. Filtren avgränsar tabellen på riktigt, och FR-012:s färgmarkering bär både form och ord.
 
@@ -66,7 +66,7 @@ Där registreringen hamnar. Filtren avgränsar tabellen på riktigt, och FR-012:
 
 #### 5. Lägg till eller uppdatera information
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/avtal/A-001`.
+*Utförs som **Avtalsadministratör**.*
 
 FA-001 är att registrera *och redigera* avtalsinformation. Varje avsnitt som går att rätta har sin egen Redigera — identiteten och avtalets omfattning, de fyra mått Medlingsinstitutet faktiskt räknar om mellan ronderna. Ändringen sker på värdena själva i stället för på en andra skärm, och skrivs till ändringsloggen med tidpunkt och användare. Två fält är avsiktligt låsta och säger varför på sin egen rad: avtalstypen följer av vilka löneavtal som finns, och parterna ändras i partsregistret så att avtalshistoriken följer med. Organisationsgrad räknas fram medan de två talen ovanför skrivs in — den följer, den skrivs inte.
 
@@ -76,7 +76,7 @@ FA-001 är att registrera *och redigera* avtalsinformation. Varje avsnitt som g�
 
 #### 6. Versioner och ändringar av avtalet
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/avtal/A-001#loneavtal`.
+*Utförs som **Avtalsadministratör**.*
 
 Ett avtal har ingen versionslista utan en rad per avtalsrörelse: FA-002 ger varje omförhandling ett eget löneavtal med sin egen konstruktion, sitt utrymme och sin kostnadsram, så jämförelsen mot förra ronden är tabellen. Raden går att rätta: konstruktion, löneutrymme, kostnadsram och individgaranti ändras per avtalsrörelse, från ett formulär som namnger den period det gäller. Löptiden ändras däremot på avtalet och inte här — en avtalsrörelse kan inte gälla längre än avtalet den tillhör. Vad som ändrats *inom* en period står i händelseloggen, med gammalt och nytt värde (FH-001).
 
@@ -86,7 +86,7 @@ Ett avtal har ingen versionslista utan en rad per avtalsrörelse: FA-002 ger var
 
 #### 7. Publicera avtalet
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/avtal/A-001`.
+*Utförs som **Avtalsadministratör**.*
 
 Publicering är en handling med datum och person, inte en följd av att posten är komplett — myndigheten avgör när ett avtal lämnas ut. Den ligger i högerspalten bredvid statusen den ändrar, inte i redigeringen: att rätta en uppgift och att lämna ut avtalet är två olika saker. Kontrollen erbjuds bara på en registrering som är markerad som klar och där avtalet är tecknat; på ett halvregistrerat avtal nekas den och säger varför. Samma avtal som de fyra stegen ovan: protokollet lästes mot det, uppgifterna rättades i det, och det är det som nu lämnas ut. Efteråt går det att öppna avtalet som allmänheten ser det.
 
@@ -96,7 +96,7 @@ Publicering är en handling med datum och person, inte en följd av att posten �
 
 #### 8. Rapportuttag [AI-stöd]
 
-**Prova själv:** växla till *Avtalsadministratör* i demoraden och öppna `/rapporter`.
+*Utförs som **Avtalsadministratör**.*
 
 Behovet går att beskriva i en mening överst: förslaget namnger rapporten och fyller urvalsbilden, med de ord det lästes ur, och kör ingenting — en rapport en roll inte får köra avvisas med skälet i stället för att tyst utelämnas. Bilaga F inleds med att det för varje rapport visas urvalsbild och resultat. Välj rapport, fyll i urvalet — kriterierna skiljer sig mellan rapporterna — och generera. Urvalskriterierna skrivs ut överst i resultatet.
 
@@ -122,7 +122,7 @@ Systemadministratören svarar för systemet, inte för handläggningen i det: ve
 
 #### 1. Överblick över användare, roller och behörigheter
 
-**Prova själv:** växla till *Behörighetsadministratör* i demoraden och öppna `/administration/anvandare`.
+*Utförs som **Behörighetsadministratör**.*
 
 Vem som har åtkomst, som vad, sedan när och av vem. Under registret ligger behörighetsmatrisen, som visar vad varje roll får göra i varje modul — den läses och ändras inte, eftersom NFÅ-003 definierar åtkomsten utifrån §3.1:s åtta roller och en matris som gick att flytta om skulle beskriva en konfiguration i stället för myndighetens eget dokument.
 
@@ -132,7 +132,7 @@ Vem som har åtkomst, som vad, sedan när och av vem. Under registret ligger beh
 
 #### 2. Skapa en ny användare
 
-**Prova själv:** växla till *Behörighetsadministratör* i demoraden och öppna `/administration/anvandare`.
+*Utförs som **Behörighetsadministratör**.*
 
 Namn, EFOS-identitet, e-post och roll. Inget lösenordsfält och ingen kontoskapande åtgärd: NFÅ-001 lägger autentiseringen i Försäkringskassans IdP över SAML med EFOS-kort, så en användare i MIIS är en länk till en identitet som redan finns — att rita ett kontoformulär vore att påstå att vi byggt en identitetsleverantör.
 
@@ -142,7 +142,7 @@ Namn, EFOS-identitet, e-post och roll. Inget lösenordsfält och ingen kontoskap
 
 #### 3. Tilldela roll och behörighet
 
-**Prova själv:** växla till *Behörighetsadministratör* i demoraden och öppna `/administration/anvandare`.
+*Utförs som **Behörighetsadministratör**.*
 
 Rollen är behörigheten: §3.1 ger varje roll ett verb, och det är rollen som avgör vad personen ser och får göra. Tilldelningen stämplas med datum och vem som gjorde den, vilket är FH-001-halvan av NFÅ-005.
 
@@ -152,7 +152,7 @@ Rollen är behörigheten: §3.1 ger varje roll ett verb, och det är rollen som 
 
 #### 4. Ändra eller återkalla behörighet
 
-**Prova själv:** växla till *Behörighetsadministratör* i demoraden och öppna `/administration/anvandare`.
+*Utförs som **Behörighetsadministratör**.*
 
 Ändra rollen i raden, eller återkalla åtkomsten. Båda skrivs till ändringsloggen. Pröva den sista behörighetsadministratören: både flytten och inaktiveringen nekas, och kontrollen säger varför på sig själv — det är den utelåsning NFÅ-005 finns för att förhindra. Ingen användare raderas, eftersom inloggningarna i loggen måste gå att härleda.
 
@@ -162,7 +162,7 @@ Rollen är behörigheten: §3.1 ger varje roll ett verb, och det är rollen som 
 
 #### 5. Systeminställningar [AI-stöd]
 
-**Prova själv:** växla till *Systemadministratör* i demoraden och öppna `/administration`.
+*Utförs som **Systemadministratör**.*
 
 Fyra inställningar, och två av dem går avsiktligt inte att ändra: NFL-003 nämner systemadministratören i sitt förbud, och NFÅ-006:s IP-spärr ligger i driftmiljön. Sessionens tidsgräns är konfigurerbar på riktigt — sätt den till tio minuter och startsidan säger tio.
 
@@ -172,7 +172,7 @@ Fyra inställningar, och två av dem går avsiktligt inte att ändra: NFL-003 n�
 
 #### 6. Ändrings- och händelselogg [AI-stöd]
 
-**Prova själv:** växla till *Systemadministratör* i demoraden och öppna `/administration`.
+*Utförs som **Systemadministratör**.*
 
 Den övriga administration som gör att myndigheten kan svara för systemet själv. FH-001 kräver gammalt och nytt värde — skillnaden mellan en logg som registrerar att något ändrades och en som kan rekonstruera vad det var, och det som gör FAI-002:s garanti kontrollerbar i efterhand. Utskriften är NFL-004:s exportfunktion som faktiskt körs. Under fliken Bevakningsord underhålls FAI-004:s tabell: §4.1 kallar den fördefinierad *och* anpassningsbar, så administratören lägger till egna ord och tar bort dem igen. Medlingsinstitutets egna fyra går inte att ta bort, och raden säger varför.
 
@@ -198,7 +198,7 @@ En besökare kommer till Medlingsinstitutets lokaler — en journalist som kontr
 
 #### 1. Den publika ingången
 
-**Prova själv:** växla till *Publik dator* i demoraden och öppna `/allmanheten`.
+*Utförs som **Publik dator**.*
 
 Ingen inloggningssida, och det är avsiktligt: NFÅ-001 lägger autentiseringen hos Försäkringskassans IdP för personalen, och NFÅ-006 begränsar publik åtkomst till Medlingsinstitutets egen IP-adress — datorn i rummet är legitimationen.
 
@@ -208,7 +208,7 @@ Ingen inloggningssida, och det är avsiktligt: NFÅ-001 lägger autentiseringen 
 
 #### 2. Sök efter avtal på bransch eller avtalsområde
 
-**Prova själv:** växla till *Publik dator* i demoraden och öppna `/allmanheten`.
+*Utförs som **Publik dator**.*
 
 Skriv ett ord så smalnar listan av medan du skriver. Under fritexten ligger bransch först — en besökare tänker i branscher långt innan hen tänker i arbetsgivarorganisationer — och sedan Medlingsinstitutets egna tre kriterier ur Bilaga F:s Rapport 1 och ett datum för vad som gällde vid en viss tidpunkt.
 
@@ -218,7 +218,7 @@ Skriv ett ord så smalnar listan av medan du skriver. Under fritexten ligger bra
 
 #### 3. Avgränsa träfflistan
 
-**Prova själv:** växla till *Publik dator* i demoraden och öppna `/allmanheten`.
+*Utförs som **Publik dator**.*
 
 Varje valt kriterium blir en chip som går att ta bort ett i taget, och tabellen smalnar av på riktigt. Sekretessmarkerade avtal står kvar i listan och räknas med — det som utelämnas är deras uppgifter, och de utelämnas i markupen, inte i stilmallen. Bara publicerade avtal finns här: ett halvregistrerat avtal på den publika datorn vore myndigheten som publicerar ett utkast.
 
@@ -228,7 +228,7 @@ Varje valt kriterium blir en chip som går att ta bort ett i taget, och tabellen
 
 #### 4. Ta del av avtalet
 
-**Prova själv:** växla till *Publik dator* i demoraden och öppna `/allmanheten/A-013`.
+*Utförs som **Publik dator**.*
 
 Bilaga F:s Rapport 1 i sin helhet: parter, avtalsområde, bransch, löptider per avtalsrörelse, uppsägning och prolongering, och de länkade handlingarna. Inga löneuppgifter — kostnadsram och löneutrymme är myndighetens arbetsmaterial, och det här är utlämnandet.
 
@@ -238,7 +238,7 @@ Bilaga F:s Rapport 1 i sin helhet: parter, avtalsområde, bransch, löptider per
 
 #### 5. Öppna och ladda ned
 
-**Prova själv:** växla till *Publik dator* i demoraden och öppna `/allmanheten/A-013`.
+*Utförs som **Publik dator**.*
 
 Två uttag, och båda körs. Utskriften får Medlingsinstitutets brevhuvud och ett utskriftsdatum och kan sparas som PDF i webbläsaren; nedladdningen skriver en riktig CSV-fil ur uppgifterna på skärmen, utan serverdrift (FR-013). Besökarens uppgift slutar med att svaret följer med hem, och en streckad knapp hade avslutat det bedömda scenariot på en kontroll som inte gör något.
 
@@ -264,7 +264,7 @@ Medlingsadministratören skapar ett medlingsärende ur ett generaldirektörsbesl
 
 #### 1. Medlingsärendet [AI-stöd]
 
-**Prova själv:** växla till *Medlingsadministratör* i demoraden och öppna `/medling/M-2027-12`.
+*Utförs som **Medlingsadministratör**.*
 
 Skapat ur GD-beslutet, med §4.1:s beslutsstöd och dokumentmallen med och utan varsel. Ärendet är fyra flikar, eftersom det är fyra olika arbetsuppgifter: **Ärendet** är vad GD beslutade och vilka avtal det omfattar, **Medlare** är förordnandet, **Handlingar** är GD-beslutet och klarmarkeringen, och **Utfall** är vad medlingen gav. Det som varje uppgift utförs mot — förhandlingsordningen, beslutsstödet och Märket — står kvar i högerspalten oavsett flik. Medlarlistan visar bara aktiva medlare som tar den här medlingstypen. Utfallet är underlaget för Medlingsinstitutets statistik över stridsåtgärder — förlorade arbetsdagar och berörda anställda visas bara när det förekom en stridsåtgärd, eftersom en nolla i den kolumnen är en mätning och inte en frånvaro. GD-beslutets nummer och datum går inte att ändra: de kommer ur ett beslut, inte ur registret.
 
@@ -274,7 +274,7 @@ Skapat ur GD-beslutet, med §4.1:s beslutsstöd och dokumentmallen med och utan 
 
 #### 2. Partsträffen [AI-stöd]
 
-**Prova själv:** växla till *Medlingsadministratör* i demoraden och öppna `/partstraffar/PT-2027-05`.
+*Utförs som **Medlingsadministratör**.*
 
 Inför, under och efter mötet. Ett yrkande kan lyftas till bevakningsordstabellen och börjar då markera text i protokoll som kommer in månader senare.
 
@@ -300,7 +300,7 @@ Statistikanvändaren bygger en sammansatt fråga över avtalsinformationen och t
 
 #### 1. Sökbyggaren [AI-stöd]
 
-**Prova själv:** växla till *Statistikanvändare* i demoraden och öppna `/sok`.
+*Utförs som **Statistikanvändare**.*
 
 Ovanför byggaren går det att beskriva sökningen i en mening. Förslaget visar vilket register och vilka villkor maskinen läste ut, med de ord varje villkor lästes ur, och ingenting ställs in förrän handläggaren godkänt det — det som inte kunde tolkas står också där. FR-002:s val av informationstyp är ett val av vilket register som söks: fyra flikar med var sina rader, var sina kriterier och var sina kolumner. Villkoren är fält, operator och värde; grupperna kombineras med OCH och villkoren inom en grupp med OCH eller ELLER, vilket är formen W3D3 inte klarar. Det finns ingen Sök-knapp — resultatet smalnar av medan urvalet ändras. Bokslutsdatumet visas bara där raderna har löptider. Varje träff öppnar sin egen post, presentationskolumnerna tas bort ur både tabellen och utskriften, och ett sparat urval laddas: det är urvalet som sparas, aldrig träffarna.
 
@@ -326,7 +326,7 @@ Medlaradministratören underhåller registret över medlare och använder statis
 
 #### 1. Medlarregistret
 
-**Prova själv:** växla till *Medlaradministratör* i demoraden och öppna `/medlare`.
+*Utförs som **Medlaradministratör**.*
 
 Registret går att underhålla, inte bara läsa: kontaktuppgifter och medlingstyper ändras på raden, en ny medlare läggs till från registrets egen rubrikrad — samma formulär som rättar en befintlig, eftersom det är samma fält, och en medlare som slutat inaktiveras i stället för att raderas — FF-009:s statistik per medlare skulle annars försvinna med personen. Uppdrag, ettan, tvåan och senaste år räknas ur uppdragshistoriken och går inte att skriva in.
 
