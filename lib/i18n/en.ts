@@ -229,6 +229,10 @@ export const en: Dictionary = {
     created: "Document created",
     createdNote: "The document is created and linked to the case.",
     reopen: "Edit the document",
+    switchWarning: (variant: string) =>
+      `Switch to ${variant}? The text you have written is replaced by that template’s text.`,
+    switchConfirm: "Yes, switch template",
+    switchCancel: "Keep my text",
     fileNote: (name: string) => `The file will be named ${name}`,
   },
 

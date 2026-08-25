@@ -235,6 +235,10 @@ export const sv = {
     created: "Dokument skapat",
     createdNote: "Dokumentet är skapat och kopplat till ärendet.",
     reopen: "Ändra dokumentet",
+    switchWarning: (variant: string) =>
+      `Byta till ${variant}? Texten du har skrivit ersätts av den mallens text.`,
+    switchConfirm: "Ja, byt mall",
+    switchCancel: "Behåll min text",
     fileNote: (name: string) => `Filen får namnet ${name}`,
   },
 
