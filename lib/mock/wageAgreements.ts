@@ -33,6 +33,34 @@ export const WAGE_AGREEMENTS: WageAgreement[] = [
       { occupationalGroup: "Nyanställda", amountSekPerMonth: 24380, revisionDate: "2027-04-01" },
     ],
   },
+  /*
+    The round before the current one, on the same agreement.
+
+    Two rows rather than one because FA-002 makes the avtalsrörelse the unit and
+    the comparison against the previous round *is* this table — with a single
+    row there is nothing to compare, and the panel's own heading is plural.
+    Sorted newest first by `listWageAgreements`, so this appears below LA-001.
+  */
+  {
+    id: "LA-008",
+    agreementId: "A-001",
+    /* 5 — Lönepott med individgaranti. The 2027 round moved to 3, local wage
+       formation with a fallback figure, and dropped the guarantee. */
+    construction: 5,
+    wageScopePercent: 3.1,
+    costFramePercent: 6.2,
+    individualGuarantee: true,
+    genderEqualityFlag: false,
+    industryBenchmark: true,
+    signedDate: "2025-03-28",
+    validFrom: "2025-04-01",
+    validTo: "2027-03-31",
+    wageRevision: { date: "2025-04-01", percent: 3.1 },
+    minimumWages: [
+      { occupationalGroup: "Yrkesvana", amountSekPerMonth: 26320, revisionDate: "2025-04-01" },
+      { occupationalGroup: "Nyanställda", amountSekPerMonth: 23640, revisionDate: "2025-04-01" },
+    ],
+  },
   {
     id: "LA-002",
     agreementId: "A-002",
