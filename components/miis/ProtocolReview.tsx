@@ -521,7 +521,10 @@ export function ProtocolReview({
       if (id === "matched" && candidates.length > 0) {
         const chosen = candidates.find((x) => x.id === matchedId) ?? candidates[0]!;
         return (
-          <div key={id} className="@xl/form:col-span-2">
+          <div
+            key={id}
+            className="grid gap-0 @xl:col-span-2 @xl:row-span-3 @xl:grid-rows-subgrid"
+          >
             {approved ? (
               <Field label={label(d, id)} value={chosen.label} width="full" />
             ) : (
@@ -531,11 +534,27 @@ export function ProtocolReview({
                 value={matchedId}
                 onChange={setMatchedId}
                 options={candidates.map((x) => ({ id: x.id, label: x.label }))}
+                /* The same mark its siblings wear, in the slot `Select` already
+                   has for one — pressing it traces the source in the protocol.
+                   A second `<label htmlFor>` of my own would have given the
+                   control two accessible names. */
+                badge={
+                  <button
+                    type="button"
+                    onClick={() => showSource(p)}
+                    aria-pressed={activeField === id}
+                    aria-label={d.registrera.review.sourceButton(label(d, id))}
+                    title={d.registrera.review.sourceButton(label(d, id))}
+                    className="inline-flex h-6 shrink-0 items-center gap-1 rounded-sm border border-ai-border bg-ai px-1.5 text-meta font-bold tracking-[0.08em] text-ai-foreground transition-colors hover:bg-card"
+                  >
+                    <IconAi size="sm" />
+                    {d.common.aiMark}
+                  </button>
+                }
               />
             )}
             <p className="field-hint">
-              {t.analysis1.matchedReason(matchReasonLabel(chosen.reason, lang))}{" "}
-              <span className="italic">”{chosen.source}”</span>
+              {t.analysis1.matchedReason(matchReasonLabel(chosen.reason, lang))}
             </p>
           </div>
         );

@@ -16,7 +16,7 @@ import {
   type AiQueueItem,
 } from "@/lib/domain/ai";
 import { t as text, type Lang } from "@/lib/domain/lang";
-import type { RoleInfo } from "@/lib/domain/role";
+import { accessLevel, type RoleInfo } from "@/lib/domain/role";
 import type { AssistantFacts } from "@/lib/domain/assistant";
 import { dictionary } from "@/lib/i18n";
 import { IconAi, IconClose, IconForward } from "./icons";
@@ -573,14 +573,24 @@ export function AiAssistant({ lang, role }: { lang: Lang; role: RoleInfo }) {
 
                 <Section title={t.traceability}>
                   <p className="text-table">{t.traceabilityBody}</p>
-                  <div className="mt-3">
-                    <Link
-                      href="/administration"
-                      className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
-                    >
-                      {t.traceabilityAction}
-                    </Link>
-                  </div>
+                  {/*
+                    Only for a role that may open it. §3.1 gives the change log
+                    to the system administrator, and the drawer's main user is
+                    the agreement administrator — so this link used to end on
+                    the authorisation notice. The sentence above is the
+                    guarantee and holds either way; NFL-003 keeps the logs
+                    beyond ordinary users deliberately.
+                  */}
+                  {accessLevel(role, "administration") !== "none" && (
+                    <div className="mt-3">
+                      <Link
+                        href="/administration"
+                        className="inline-flex min-h-11 items-center gap-1 text-label font-semibold text-primary underline underline-offset-2"
+                      >
+                        {t.traceabilityAction}
+                      </Link>
+                    </div>
+                  )}
                   <div className="mt-1">
                     <ReqTags ids={["FAI-002", "FH-001", "NFÅ-003"]} />
                   </div>

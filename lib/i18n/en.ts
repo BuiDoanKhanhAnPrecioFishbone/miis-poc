@@ -607,7 +607,7 @@ export const en: Dictionary = {
       agreementType: "Agreement type",
       employerOrg: "Employer party (AGO)",
       employeeOrg: "Employee party (ATO)",
-      matchedReason: (reason: string) => `Basis for the match: ${reason} –`,
+      matchedReason: (reason: string) => `Matched on ${reason.toLowerCase()}`,
       validation:
         "Validation and logical checks: no deviations. Where the protocol does not state the agreement name, the file name or the parties' shared agreement is used instead.",
     },

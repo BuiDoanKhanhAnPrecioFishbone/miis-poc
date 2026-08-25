@@ -264,9 +264,20 @@ if ((await picker.count()) === 0) {
     Boolean(own),
     own ? own[1] : "(saknas)",
   );
+  /* The claim, not the wording: the field is a choice, it is marked as the
+     machine's, and it says which source the proposal was read from. */
+  const matchLabel = await page
+    .locator('label[for="matched-agreement"]')
+    .locator("xpath=..")
+    .innerText();
   check(
     "AI:t föreslår, men väljer inte åt handläggaren",
-    /Underlag för matchningen/.test(await page.locator("main").innerText()),
+    (await page.locator("#matched-agreement").count()) > 0 && /AI/.test(matchLabel),
+    matchLabel.replace(/\s+/g, " ").slice(0, 60),
+  );
+  check(
+    "förslaget säger vilken källa det lästes ur",
+    /[Mm]atchat på/.test(await page.locator("main").innerText()),
   );
   if (own) {
     await page.selectOption("#matched-agreement", own[0]);
