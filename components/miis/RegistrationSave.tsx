@@ -88,7 +88,23 @@ export function RegistrationSave({
         <Callout tone="attention" live label={t.savedIncomplete} tags={["FA-021", "FA-022"]}>
           {t.savedIncompleteNote}
         </Callout>
-        <div className="mt-3">
+        {/*
+          The same ending the approved path gets, for the same reason: the
+          callout names the register, and a confirmation that names a place
+          without offering the way there is a dead end wearing a receipt.
+
+          Opening the agreement is the *more* useful move after pausing, not the
+          lesser one — its own view carries the checklist, so the record answers
+          what is registered and what remains, which is the question someone who
+          just stopped halfway actually has.
+        */}
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <LinkButton
+            href={ctx.matchedId ? `/avtal/${ctx.matchedId}` : agreementHref}
+            iconEnd={<IconForward />}
+          >
+            {t.incompleteNext}
+          </LinkButton>
           <Button variant="secondary" onClick={() => ctx.setIncomplete(false)}>
             {t.reopen}
           </Button>

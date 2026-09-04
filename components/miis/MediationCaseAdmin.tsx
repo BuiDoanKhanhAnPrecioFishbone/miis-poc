@@ -226,6 +226,9 @@ export function CaseAgreements({
   const c = d.mediationCase;
 
   const [linked, setLinked] = useState(initial);
+  /* Which row is asking. One at a time — two open confirmations on one list
+     would leave it unclear which answer belongs to which row. */
+  const [confirming, setConfirming] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [pick, setPick] = useState("");
   const [note, setNote] = useState<string | null>(null);
@@ -247,19 +250,47 @@ export function CaseAgreements({
       ) : (
         <ul className="space-y-3">
           {linked.map((l) => (
-            <li key={l.id} className="flex items-start justify-between gap-3">
-              <span className="min-w-0 flex-1">{rowFor[l.id] ?? l.label}</span>
-              <Button
-                size="sm"
-                variant="danger"
-                iconStart={<IconClose />}
-                onClick={() => {
-                  setLinked((list) => list.filter((x) => x.id !== l.id));
-                  setNote(c.admin.agreementRemoved(l.label));
-                }}
-              >
-                {c.admin.remove}
-              </Button>
+            <li key={l.id} className="space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <span className="min-w-0 flex-1">{rowFor[l.id] ?? l.label}</span>
+                <Button
+                  size="sm"
+                  variant="danger"
+                  iconStart={<IconClose />}
+                  onClick={() => setConfirming(l.id)}
+                >
+                  {c.admin.remove}
+                </Button>
+              </div>
+              {/*
+                Asked, not done. The link is the record of what the GD's
+                decision covers, and removing it was the same single click as
+                ticking a box. Inline rather than a browser `confirm()`, which
+                is unstyled and cannot name the agreement in MI's own words —
+                and the same shape the protocol replace already uses, so a
+                reviewer meets one way of being asked rather than two.
+              */}
+              {confirming === l.id && (
+                <Callout tone="attention" live>
+                  <span className="basis-full">{c.admin.removeWarning(l.label)}</span>
+                  <span className="mt-2 flex flex-wrap gap-2">
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => {
+                        setLinked((list) => list.filter((x) => x.id !== l.id));
+                        setNote(c.admin.agreementRemoved(l.label));
+                        setConfirming(null);
+                      }}
+                    >
+                      {c.admin.removeConfirm}
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={() => setConfirming(null)}>
+                      {c.admin.removeCancel}
+                    </Button>
+                  </span>
+                </Callout>
+              )}
             </li>
           ))}
         </ul>

@@ -85,17 +85,38 @@ export function DocumentTemplate({
   const [body, setBody] = useState(variants[0]!.body);
   const [edited, setEdited] = useState(false);
   const [saved, setSaved] = useState<string | null>(created ?? null);
+  /* The variant the officer asked for while their own text was in the way. */
+  const [switchingTo, setSwitchingTo] = useState<string | null>(null);
 
   const variant = variants.find((v) => v.id === variantId) ?? variants[0]!;
 
+  /**
+   * Switching template, with the officer's own text in the way.
+   *
+   * Untouched, it just switches — there is nothing to lose, and a confirmation
+   * with no cost teaches the reader to dismiss confirmations.
+   *
+   * Edited, it asks. The old behaviour kept the text and changed only the
+   * variant label, which its own comment called the lesser of two failures:
+   * the officer asked for the other template and got the first one's text under
+   * the second one's name, with nothing said. Asking is the third answer, and
+   * the one replacing a protocol and unlinking an agreement already use.
+   */
   function chooseVariant(id: string) {
+    if (edited && id !== variantId) {
+      setSwitchingTo(id);
+      return;
+    }
     setVariantId(id);
-    /*
-      Switching variant reloads the template unless the officer has typed into
-      it. Discarding their edit silently would be the worse of the two failures,
-      so an edited draft keeps its text and says which variant it is now.
-    */
-    if (!edited) setBody(variants.find((v) => v.id === id)?.body ?? "");
+    setBody(variants.find((v) => v.id === id)?.body ?? "");
+  }
+
+  function confirmSwitch() {
+    if (!switchingTo) return;
+    setVariantId(switchingTo);
+    setBody(variants.find((v) => v.id === switchingTo)?.body ?? "");
+    setEdited(false);
+    setSwitchingTo(null);
   }
 
   return (
@@ -155,6 +176,13 @@ export function DocumentTemplate({
 
           <div className="print-hide mt-4 flex flex-wrap items-center gap-3">
             <PrintButton lang={lang} />
+            {/*
+              *Ändra dokumentet*, not *Öppna mallen igen*. The body survives —
+              pressing this returns to the same text with the cursor in it — and
+              the old label described discarding it. Wrong in the one direction
+              that matters: an officer who had just written a GD-beslut would
+              reasonably not press a control offering to throw it away.
+            */}
             <Button
               variant="secondary"
               onClick={() => {
@@ -186,6 +214,30 @@ export function DocumentTemplate({
                 onChange={chooseVariant}
                 options={variants.map((v) => ({ id: v.id, label: v.label }))}
               />
+              {/* Under the control that raised it, and naming the cost. */}
+              {switchingTo && (
+                <div className="mt-3">
+                  <Callout tone="attention" live>
+                    <span className="basis-full">
+                      {t.switchWarning(
+                        variants.find((v) => v.id === switchingTo)?.label ?? "",
+                      )}
+                    </span>
+                    <span className="mt-2 flex flex-wrap gap-2">
+                      <Button variant="danger" size="sm" onClick={confirmSwitch}>
+                        {t.switchConfirm}
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setSwitchingTo(null)}
+                      >
+                        {t.switchCancel}
+                      </Button>
+                    </span>
+                  </Callout>
+                </div>
+              )}
             </div>
           )}
 

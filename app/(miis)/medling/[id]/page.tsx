@@ -34,6 +34,8 @@ import {
   miAppointsMediators,
 } from "@/lib/domain/mediation";
 import { amount, percent } from "@/lib/format";
+import { agreementTitle, validityLabel } from "@/lib/domain/agreement";
+import { agreementStatus } from "@/lib/domain/status";
 import { getSession } from "@/lib/session";
 
 export async function generateMetadata({
@@ -85,13 +87,19 @@ export default async function MediationCasePage({ params }: { params: Promise<{ 
       previousAssignments: mediatorStats(m).assignments,
     }));
   const agreementCandidates = allAgreements.map((a) => ({ id: a.id, name: a.name }));
+  /*
+    Every agreement that could be linked, not only those already linked — the
+    officer picks from the whole register, and a row built only for the seeded
+    ones left anything newly linked as a bare name under two rows carrying a
+    status marker, the parties and a period.
+  */
   const linkedRows: Record<string, React.ReactNode> = {};
-  for (const a of linkedAgreements) {
+  for (const a of allAgreements) {
     linkedRows[a.id] = (
       <span className="flex flex-wrap items-center gap-3 text-table">
-        <StatusDot status={a.status} showLabel />
+        <StatusDot status={agreementStatus(a, lang)} showLabel />
         <span>
-          {a.name} · {a.validity}
+          {agreementTitle(a)} · {validityLabel(a, lang)}
         </span>
       </span>
     );

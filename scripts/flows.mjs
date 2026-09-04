@@ -158,17 +158,17 @@ const DOC_COPY = {
   sv: {
     title: "Så arbetar man i MIIS — sex scenarier, steg för steg",
     lead:
-      "Det här dokumentet är till för att Medlingsinstitutet ska kunna **pröva systemet själva** och se skälen bakom det som är byggt. Varje avsnitt är ett scenario: en roll, en arbetsuppgift, och de skärmar uppgiften går igenom i tur och ordning. Under varje bild står vad man ser och varför det är gjort så — inte vad knapparna heter, utan vilket problem lösningen svarar mot.",
+      "Det här dokumentet visar **hur systemet fungerar och skälen bakom det som är byggt**. Varje avsnitt är ett scenario: en roll, en arbetsuppgift, och de skärmar uppgiften går igenom i tur och ordning. Under varje bild står vad man ser och varför det är gjort så — inte vad knapparna heter, utan vilket problem lösningen svarar mot.",
     tryIt:
-      "**Prova gärna samtidigt.** Systemet ligger på **miis-poc.vercel.app** och är samma bygge som bilderna är tagna ur. Varje steg anger vilken roll det utförs som och vilken adress det ligger på — rollen växlas i den grå raden överst. Vill man hellre bli guidad finns samma sex scenarier som en klickbar genomgång på **miis-poc.vercel.app/genomgang**, som byter roll åt en.",
+      "**Systemet bakom bilderna är ett körande bygge.** En klickbar demonstration av samma sex scenarier ges vid den muntliga presentationen.",
     count: (n, steps) =>
-      `**${n} scenarier, ${steps} steg.** De tre första är de roller som avropsförfrågan bedömer och ligger därför först. De tre sista är med för att visa att systemet är helt — de ingår inte i det bedömda svaret, men de är byggda och går att klicka i.`,
+      `**${n} scenarier, ${steps} steg.** De tre första är de roller som avropsförfrågan bedömer och ligger därför först. De tre sista är med för att visa att systemet är helt — de ingår inte i det bedömda svaret, men de är byggda och ingår i demonstrationen.`,
     stripped:
-      "**Den grå demoraden är bortklippt ur bilderna.** Rollväxlaren, språkvalet och kravnumren är hjälpmedel för granskningen och ingår inte i MIIS — de syns när man klickar själv, men de hör inte hemma i ett dokument som visar hur systemet ser ut i drift. Rollen står i stället i texten vid varje steg.",
+      "**Den grå demoraden är bortklippt ur bilderna.** Rollväxlaren, språkvalet och kravnumren är hjälpmedel för granskningen och ingår inte i MIIS — de hör inte hemma i ett dokument som visar hur systemet ser ut i drift. Rollen står i stället i texten vid varje steg.",
     aiNote:
       "**Där AI-stödet är inblandat är steget märkt.** Ingenting AI:t föreslår sparas av sig självt: varje förslag granskas och godkänns av en handläggare, och helt nya avtal registreras alltid för hand. Ett eget steg visar AI-panelen i sin helhet.",
     provenance:
-      "*Varje bild i dokumentet är tagen automatiskt ur det körande systemet, och texten kommer ur samma källa som den klickbara genomgången. Dokumentet kan därför inte beskriva något som inte finns i bygget.*",
+      "*Varje bild i dokumentet är tagen automatiskt ur det körande systemet. Dokumentet kan därför inte beskriva något som inte finns i bygget.*",
     scored: "Bedöms i avropet",
     supporting: "Visas som komplement",
     role: "Roll",
@@ -177,23 +177,23 @@ const DOC_COPY = {
     workflow: "Så går arbetet till",
     usability: "Användbarhet, effektivitet och tillgänglighet",
     requirements: "Krav som steget svarar mot",
-    tryStep: (role, href) => `**Prova själv:** växla till *${role}* i demoraden och öppna \`${href}\`.`,
+    tryStep: (role) => `*Utförs som **${role}**.*`,
     ai: "AI-stöd",
   },
   en: {
     title: "How MIIS is worked in — six scenarios, step by step",
     lead:
-      "This document exists so that Medlingsinstitutet can **try the system themselves** and see the reasoning behind what has been built. Each section is one scenario: a role, a task, and the screens that task goes through in order. Under every image is what you are looking at and why it is built that way — not what the buttons are called, but which problem the solution answers.",
+      "This document shows **how the system works and the reasoning behind what has been built**. Each section is one scenario: a role, a task, and the screens that task goes through in order. Under every image is what you are looking at and why it is built that way — not what the buttons are called, but which problem the solution answers.",
     tryIt:
-      "**Try it alongside if you like.** The system is at **miis-poc.vercel.app** and is the same build the images were taken from. Every step names the role it is performed as and the address it lives on — the role is switched in the grey strip at the top. If you would rather be guided, the same six scenarios are a clickable walkthrough at **miis-poc.vercel.app/genomgang**, which switches role for you.",
+      "**The system behind the images is a running build.** A clickable demonstration of the same six scenarios is given at the oral presentation.",
     count: (n, steps) =>
-      `**${n} scenarios, ${steps} steps.** The first three are the roles the call-off assesses and come first for that reason. The last three are here to show the system is complete — they are not part of the assessed response, but they are built and can be clicked through.`,
+      `**${n} scenarios, ${steps} steps.** The first three are the roles the call-off assesses and come first for that reason. The last three are here to show the system is complete — they are not part of the assessed response, but they are built and are included in the demonstration.`,
     stripped:
-      "**The grey demo strip is cropped out of the images.** The role switcher, the language choice and the requirement numbers are aids for the review and are not part of MIIS — they appear when you click through it yourself, but they do not belong in a document showing how the system looks in use. The role is named in the text at each step instead.",
+      "**The grey demo strip is cropped out of the images.** The role switcher, the language choice and the requirement numbers are aids for the review and are not part of MIIS — they do not belong in a document showing how the system looks in use. The role is named in the text at each step instead.",
     aiNote:
       "**Where the AI support is involved, the step is marked.** Nothing the AI proposes is saved by itself: every proposal is reviewed and approved by a case officer, and wholly new agreements are always registered by hand. A step of its own shows the AI panel in full.",
     provenance:
-      "*Every image in this document is captured automatically from the running system, and the text comes from the same source as the clickable walkthrough. The document therefore cannot describe anything that is not in the build.*",
+      "*Every image in this document is captured automatically from the running system. The document therefore cannot describe anything that is not in the build.*",
     scored: "Assessed in the call-off",
     supporting: "Shown as supporting evidence",
     role: "Role",
@@ -202,7 +202,7 @@ const DOC_COPY = {
     workflow: "How the work goes",
     usability: "Usability, efficiency and accessibility",
     requirements: "Requirements this step answers",
-    tryStep: (role, href) => `**Try it yourself:** switch to *${role}* in the demo strip and open \`${href}\`.`,
+    tryStep: (role) => `*Performed as **${role}**.*`,
     ai: "AI support",
   },
 }[LANG];
@@ -290,7 +290,7 @@ for (const scenario of WALKTHROUGH) {
     lines.push(
       `#### ${n}. ${step.label[LANG]}${step.ai ? ` [${DOC_COPY.ai}]` : ""}`,
       "",
-      DOC_COPY.tryStep(ROLE[step.role], step.href),
+      DOC_COPY.tryStep(ROLE[step.role]),
       "",
       step.detail[LANG],
       "",

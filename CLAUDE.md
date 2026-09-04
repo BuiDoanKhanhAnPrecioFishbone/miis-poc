@@ -559,7 +559,11 @@ reviewer to a screen its own role would be refused.
    pre-filled values, the variant and the body all gone. A receipt naming a file
    that cannot be opened is the least useful thing a screen can say. The
    document stays, the callout sits above it, and the controls become **Skriv
-   ut** and **Öppna mallen igen**. Same fault as the mediator register's save,
+   ut** and **Ändra dokumentet** — *edit*, because the body survives and the
+   control returns to it, and a label saying *Öppna mallen igen* described
+   discarding the officer's work. Wrong in the one direction that matters:
+   nobody presses a control that offers to throw away what they just wrote.
+   Same fault as the mediator register's save,
    and the general rule is the one already written: an act that produces
    something ends **on that thing**.
    **A document template shows what it pre-filled.** FSD-001 and FSD-002 ask for
@@ -570,6 +574,18 @@ reviewer to a screen its own role would be refused.
    it states the requirement and demonstrates none of it. FSD-001's two variants
    are a `SegmentedControl`, because *med varsel* and *utan varsel* are one
    document with a property, not two documents.
+   **And switching variant asks once the officer has typed.** Untouched it just
+   switches; edited, it names the cost — *texten du har skrivit ersätts av den
+   mallens text* — and *Behåll min text* leaves the variant where it was. The
+   old behaviour kept the text and changed only the label, which its own comment
+   called the lesser of two failures: the officer asked for the other template
+   and got the first one's text under the second one's name, with nothing said.
+   A confirmation with no cost is worse than none, so an unedited switch is
+   never questioned. Same inline shape as replacing a protocol and unlinking an
+   agreement — one way of being asked, not three. **Before and after a meeting
+   are two documents, not two variants**, which is why the partsträff template
+   has one: the after phase has its own printout, which is the *utskrift*
+   FF-004 asks for.
    **An `AiRegion` never prints.** Four signals mark machine-generated content —
    the violet, the banded header, the 6px spine, the `AI` letter-mark — and on
    paper three of them are gone, because browsers drop backgrounds and

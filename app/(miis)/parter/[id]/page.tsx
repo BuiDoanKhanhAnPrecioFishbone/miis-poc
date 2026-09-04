@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { AppShell } from "@/components/miis/AppShell";
 import { IconBack } from "@/components/miis/icons";
 import { NameChange } from "@/components/miis/NameChange";
+import { PartyIdentity } from "@/components/miis/PartyIdentity";
 import { PartyContacts } from "@/components/miis/PartyContacts";
 import { Badge, Field, PageHeading, Panel, Rationale } from "@/components/miis/primitives";
 import { agreementsForParty, getParty } from "@/lib/data/parties";
@@ -64,22 +65,12 @@ export default async function PartyPage({ params }: { params: Promise<{ id: stri
         }
       />
 
-      <Panel title={t.detail.identity} tags={["FP-001", "FP-002"]}>
-        <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
-          <Field label={t.table.type} value={PARTY_TYPE_ABBREVIATION[party.type]} />
-          <Field
-            label={t.table.sector}
-            value={party.sector ? SECTOR_LABEL[lang][party.sector] : i18n.common.none}
-            hint={party.type === "employee" ? t.detail.sectorEmployeeHint : undefined}
-          />
-          <Field label={t.table.group} value={party.employerGroup ?? i18n.common.none} />
-          <Field
-            label={t.detail.industryCode}
-            value={party.industryCode ?? i18n.common.none}
-            hint={t.detail.industryCodeHint}
-          />
-        </div>
-      </Panel>
+      {/*
+        FP-001's registered attributes, correctable rather than displayed. The
+        register could be added to and renamed but not corrected, so a
+        mis-registered sector or SNI code needed the supplier.
+      */}
+      <PartyIdentity party={party} lang={lang} />
 
       <div className="mt-5">
         <NameChange

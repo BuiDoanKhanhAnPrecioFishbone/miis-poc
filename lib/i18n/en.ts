@@ -80,6 +80,8 @@ export const en: Dictionary = {
     reqTagsOn: "Shown",
     reqTagsOff: "Hidden",
     sessionWarning: "Show session warning",
+    resetDemo: "Reset demo data",
+    resetDone: "Reset to the sample data",
   },
 
   nav: {
@@ -226,7 +228,11 @@ export const en: Dictionary = {
     create: "Create document",
     created: "Document created",
     createdNote: "The document is created and linked to the case.",
-    reopen: "Open the template again",
+    reopen: "Edit the document",
+    switchWarning: (variant: string) =>
+      `Switch to ${variant}? The text you have written is replaced by that template’s text.`,
+    switchConfirm: "Yes, switch template",
+    switchCancel: "Keep my text",
     fileNote: (name: string) => `The file will be named ${name}`,
   },
 
@@ -707,6 +713,7 @@ export const en: Dictionary = {
       reopen: "Change the registration",
       saveIncomplete: "Save as incomplete",
       savedIncomplete: "Saved as incomplete",
+      incompleteNext: "Open the agreement and see what remains",
       savedIncompleteNote:
         "The registration keeps the status Incomplete and a reminder is sent until the details are completed. The agreement appears in the register, marked Incomplete.",
       incompleteNote: "An incomplete registration is followed up with a reminder",
@@ -925,6 +932,10 @@ export const en: Dictionary = {
       "The document templates are pre-filled with information from MIIS and can be edited before completion",
     admin: {
       remove: "Remove",
+      removeWarning: (name: string) =>
+        `Remove the link to ${name}? The case then no longer covers that agreement, and the change is written to the change log.`,
+      removeConfirm: "Yes, remove the link",
+      removeCancel: "Keep the link",
       mediatorLabel: "Mediator from the register",
       mediatorPlaceholder: "Choose a mediator",
       positionLabel: "Position",
@@ -1703,7 +1714,10 @@ export const en: Dictionary = {
       identity: "Party details",
       industryCode: "Industry code",
       industryCodeHint: "Applies to organisations inside Svenskt Näringsliv",
-      sectorEmployeeHint: "Sector is registered on the employer side",
+      sectorEmployeeHint: "Registered on the employer side",
+      typeFixed: "Follows from which side the party is on and is not changed here",
+      employeeSideOnly:
+        "Sector, employer group and industry code are registered on the employer side — there is nothing to correct here.",
       contacts: "Contact people",
       contactAdd: "Add a contact person",
       contactName: "Name",
